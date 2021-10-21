@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.drone.IMUShasha">
+    <!--<item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:title="@string/action_connect"/> -->
+
+    <item android:id="@+id/mi_imu_Help"
+        android:title="@string/gen_help"
+        android:orderInCategory="100"
+        android:showAsAction="never"/>
+</menu>

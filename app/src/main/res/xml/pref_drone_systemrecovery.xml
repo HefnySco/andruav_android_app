@@ -1,0 +1,61 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:title="@string/pref_gr_recovery_fm_chk"
+        android:key="PUMKXwYrA"
+        android:summary="@string/pref_gr_recovery_fm_chk_summary"
+        android:entries="@array/pref_gr_recovery_fm"
+        android:entryValues="@array/pref_gr_recovery_fm_value" />
+
+    <EditTextPreference
+        android:title="@string/pref_gr_recovery_edt_blk_battery_min"
+        android:key="WiDVQ"
+        android:inputType="phone"
+        android:summary="@string/pref_gr_recovery_edt_blk_battery_min_summary"
+        />
+
+    <CheckBoxPreference
+        android:title="@string/pref_gr_recovery_flash_chk"
+        android:key="Ua22l1asZBc3w"
+        android:summary="@string/pref_gr_recovery_flash_chk_summary"
+        android:defaultValue="false"
+        />
+    <CheckBoxPreference
+        android:title="@string/pref_gr_recovery_siren_chk"
+        android:key="f7LyU1wAGk"
+        android:summary="@string/pref_gr_recovery_siren_chk_summary"
+        android:defaultValue="false"
+        />
+    <CheckBoxPreference
+        android:title="@string/pref_gr_recovery_chk"
+        android:key="ZOHYJWnn"
+        android:summary="@string/pref_gr_recovery_chk_summary"
+        android:defaultValue="false"
+        />
+    <EditTextPreference
+        android:title="@string/pref_gr_recovery_txt"
+        android:key="ZB8vM05KAdg"
+        android:inputType="phone"
+        />
+    <CheckBoxPreference
+        android:title="@string/pref_gr_recovery_chk_rc_block"
+        android:key="RFdWXmZaN0"
+        android:summary="@string/pref_gr_recovery_chk_rc_block_summary"
+        android:defaultValue="false"
+        android:textColor="@color/btn_TXT_ERROR"
+        android:textStyle="bold"
+        android:textColorHighlight="@color/btn_TXT_ERROR" />
+    <EditTextPreference
+        android:title="@string/pref_gr_recovery_edt_rcCh_blk_trigger"
+        android:key="p7wCvhb2Akm"
+        android:summary="@string/pref_gr_recovery_edt_rcCh_blk_trigger_summary"
+        android:inputType="phone"
+        />
+    <EditTextPreference
+        android:title="@string/pref_gr_recovery_edt_blk_trigger_min"
+        android:key="xokpINK9PECd"
+        android:inputType="phone"
+        android:summary="@string/pref_gr_recovery_edt_blk_trigger_min_summary"
+        />
+
+</PreferenceScreen>

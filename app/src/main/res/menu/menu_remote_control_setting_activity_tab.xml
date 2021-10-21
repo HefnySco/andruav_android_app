@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="rcmobile.FPV.activities.remote.RemoteControlSettingActivityTab">
+    <item android:id="@+id/mi_remotescreen"
+        android:title="@string/action_refresh"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:icon="@drawable/remote_w_32x32"/>
+    <item android:id="@+id/action_save"
+        android:title="@string/action_save"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:icon="@drawable/save_w_32x32"/>
+    <item android:id="@+id/action_refresh"
+        android:title="@string/action_refresh"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:icon="@drawable/refresh_w_32x32"/>
+    <item android:id="@+id/mi_Help"
+        android:title="@string/gen_help"
+        android:orderInCategory="100"
+        android:showAsAction="never"/>
+</menu>

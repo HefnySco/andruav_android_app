@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_gr_unitmetric_unitTypes">
+        <item name="m">Metric System</item>
+        <item name="i">Imperial System</item>
+    </string-array>
+    <string-array name="pref_gr_unitmetric_unitTypesValues">
+        <item name="m">2</item>
+        <item name="i">3</item>
+    </string-array>
+    <string-array name="pref_gr_fpv_videoimagesize">
+        <item name="m">Very Low</item>
+        <item name="n">Low</item>
+        <item name="o">Medium</item>
+        <item name="p">High</item>
+        <item name="q">Best</item>
+    </string-array>
+    <string-array name="pref_gr_fpv_videoimagesize_value">
+        <item name="m">0</item>
+        <item name="n">1</item>
+        <item name="o">2</item>
+        <item name="p">3</item>
+        <item name="q">4</item>
+    </string-array>
+    <string-array name="pref_gr_fpv_videocameraselect">
+        <item name="m">Back Facing Camera</item>
+        <item name="n">Front Facing Camera</item>
+    </string-array>
+    <string-array name="pref_gr_fpv_videocameraselect_value">
+        <item name="m">0</item>
+        <item name="n">1</item>
+    </string-array>
+    <string-array name="pref_gr_fcb_smarttelemetrylevel">
+        <item name="m">OFF</item>
+        <item name="n">Low Opimization</item>
+        <item name="o">Mid Opimization</item>
+        <item name="p">High Opimization</item>
+    </string-array>
+    <string-array name="pref_gr_fcb_smarttelemetrylevelt_value">
+        <item name="m">0</item>
+        <item name="n">1</item>
+        <item name="o">2</item>
+        <item name="p">3</item>
+    </string-array>
+    <string-array name="pref_gr_fpv_videocamerarotation">
+        <item name="m">0 Degree</item>
+        <item name="n">90 Degrees</item>
+        <item name="o">180 Degrees</item>
+        <item name="p">270 Degrees</item>
+    </string-array>
+    <string-array name="pref_gr_fpv_videocamerarotation_value">
+        <item name="m">0</item>
+        <item name="n">90</item>
+        <item name="o">180</item>
+        <item name="p">270</item>
+    </string-array>
+    <string-array name="pref_gr_fpv_screenorientation">
+        <item name="m">Landscape</item>
+        <item name="n">Portrait</item>
+    </string-array>
+    <string-array name="pref_gr_fpv_screenorientation_value">
+        <item name="m">0</item>
+        <item name="n">1</item>
+    </string-array>
+    <string-array name="pref_gr_recovery_fm">
+        <item name="m">RTL</item>
+        <item name="n">Loiter</item>
+        <item name="n">Break</item>
+        <item name="n">Land</item>
+        <item name="n">None</item>
+    </string-array>
+    <string-array name="pref_gr_recovery_fm_value">
+        <item name="rtl">2</item>
+        <item name="loiter">10</item>
+        <item name="break">17</item>
+        <item name="land">12</item>
+        <item name="none">0</item>
+    </string-array>
+
+
+</resources>

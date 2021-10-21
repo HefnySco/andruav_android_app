@@ -1,0 +1,235 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        class="rcmobile.FPV.activities.map.AndruavMapWidget"
+        android:layout_toRightOf="@+id/fpvactivity_left_buttons" />
+
+    <rcmobile.FPV.widgets.camera.AndruavRTCVideoDecorderWidget
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fpvactivity_widget_andruav_rtc_video_decoder" />
+
+
+
+    <rcmobile.FPV.widgets.flightControlWidgets.AndruavUnitInfoWidget
+        android:id="@+id/fpvactivity_widget_andruavinfo"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_telem_height"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:keepScreenOn="true"
+        android:layout_alignParentBottom="false"
+        android:weightSum="1"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentRight="false"
+        android:layout_toRightOf="@+id/fpvactivity_left_buttons" />
+    <rcmobile.FPV.widgets.flightControlWidgets.AttitudeWidget
+        android:id="@+id/fpvactivity_widget_attitude"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/fpvactivity_widget_andruavinfo"
+        android:alpha="0.8"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
+
+    <rcmobile.FPV.widgets.camera.AndruavImageView
+        android:id="@+id/fpvactivity_imgSnapShot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/imgview_shape"
+        android:contentDescription="Camera Capture"
+        android:padding="2dp"
+        android:visibility="invisible" />
+
+    <ScrollView
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/fpvactivity_left_buttons"
+        android:layout_width="wrap_content"
+        android:padding="1dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_width="52dp">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fpvactivity_btnTakePhoto"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:background="@drawable/sel_trans_button_color"
+                android:drawableTop="@drawable/camera_gy_32x32"
+                android:layout_margin="2dp"
+                android:text="@string/action_cam_shoot"
+                android:textSize="10sp"
+                android:padding="1dp"
+                style="?android:attr/buttonStyleSmall" />
+
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fpvactivity_btnVideo"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:background="@drawable/sel_trans_button_color"
+                android:drawableTop="@drawable/videocam_w_32x32"
+                android:layout_margin="2dp"
+                android:text="@string/action_video_shoot"
+                android:textSize="10sp"
+                android:padding="1dp"
+                style="?android:attr/buttonStyleSmall" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/mapactivity_btncameraswitch"
+                android:background="@drawable/sel_trans_button_color"
+                android:drawableTop="@drawable/camera_switch_gy_32x32"
+                android:layout_below="@+id/fpvactivity_btnVideo"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="2dp"
+                android:text="@string/action_cam_swap"
+                android:textSize="10sp"
+                android:padding="0dp" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fpvactivity_btnRotate"
+                android:layout_below="@+id/mapactivity_btncameraswitch"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:background="@drawable/sel_trans_button_color"
+                android:drawableTop="@drawable/rotate_gy_32x32"
+                android:layout_margin="2dp"
+                android:textSize="10sp"
+                android:text="@string/action_cam_rotate"
+                android:padding="1dp" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fpvactivity_btnMode"
+                android:background="@drawable/sel_trans_button_color"
+                android:drawableTop="@drawable/flightcontrol_gr_32x32"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="2dp"
+                android:text="@string/action_fcb_mode"
+                android:textSize="10sp"
+                android:padding="0dp"
+                android:layout_below="@+id/mapactivity_btnMapEdit" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/mapactivity_btnMapType"
+                android:background="@drawable/sel_trans_button_color"
+                android:drawableTop="@drawable/earth_bg_32x32"
+                android:layout_below="@+id/mapactivity_btncameraswitch"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="2dp"
+                android:text="@string/action_map"
+                android:textSize="10sp"
+                android:padding="0dp" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fpvactivity_btnSOS"
+                android:background="@drawable/sel_trans_button_color"
+                android:drawableTop="@drawable/sos_gy_32x32"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="2dp"
+                android:text="@string/action_sos"
+                android:textSize="10sp"
+                android:padding="0dp"
+                android:layout_below="@+id/fpvactivity_btnMode" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <rcmobile.FPV.activities.remote.RemoteControlWidget
+        android:id="@+id/remotecontrolactivity_remotecontrolwidget"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="40dp"
+        android:keepScreenOn="true"
+        android:layout_alignParentBottom="true"
+        android:weightSum="1"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="false"
+        android:layout_toRightOf="@+id/fpvactivity_left_buttons" />
+
+
+    <SlidingDrawer
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:content="@+id/fpvactivity_Sliding"
+        android:handle="@+id/fpvactivity_slidingButton"
+        android:id="@+id/fpvactivity_slidingDrawer"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="false"
+        android:allowSingleTap="true"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:animateOnClick="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/fpvactivity_slidingButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/map_activity_buttonslider"
+            android:drawableTop="@drawable/drone_rad_gy_32x32"
+            android:background="@drawable/trans_button_drawer_shape"
+            android:padding="1dp"
+            android:textSize="12sp"
+            android:alpha="0.8" />
+
+        <rcmobile.FPV.widgets.sliding.SlidingAndruavUnitList
+            android:id="@+id/fpvactivity_Sliding"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="100"
+            android:alpha="0.9"
+            android:background="#eeeeee"
+            android:padding="5dp">
+
+         </rcmobile.FPV.widgets.sliding.SlidingAndruavUnitList>
+
+
+    </SlidingDrawer>
+</RelativeLayout>

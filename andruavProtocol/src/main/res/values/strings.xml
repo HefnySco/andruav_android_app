@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="andruav_no_fcb">No FCB available.</string>
+    <string name="andruav_noti_disconnect"> Disconnected ! </string>
+    <string name="andruav_noti_connect"> Connected </string>
+    <string name="andruav_noti_reconnect"> Reconnected </string>
+
+
+    <!-- Notification errors -->
+    <string name="andruav_error_camertakeimage">"Cannot take images or save image.</string>
+    <string name="andruav_error_cameraopen">Cannot START Camera.</string>
+    <string name="andruav_error_nocamera">Camera is not found on this device.</string>
+    <string name="andruav_error_usberror">Drone USB telemetry has been disconnected</string>
+    <string name="andruav_error_dronekitconnection">Drone telemetry has been disconnected</string>
+    <string name="andruav_error_lowbattery">Low Battery</string>
+    <string name="andruav_error_dronekitconnection_res">Drone telemetry has been restored</string>
+    <string name="andruav_error_bluetootherror">Drone BLUE TOOTH telemetry has been disconnected</string>
+    <string name="andruav_error_telemetryprotocol_undef">Cannot identify telemetry protocol.</string>
+
+    <string name="andruav_error_autopilot_cannot_do">Command Not Supported</string>
+    <string name="andruav_error_autopilot_cannot_do_arm">Drone cannot do ARM</string>
+    <string name="andruav_error_autopilot_cannot_do_disarm">Drone cannot do DISARM</string>
+    <string name="andruav_error_autopilot_cannot_do_triggercamera">Drone cannot do trigger camera</string>
+    <string name="andruav_error_autopilot_cannot_do_gimbal">Drone cannot do gimbal control</string>
+    <string name="andruav_error_autopilot_cannot_do_mission">Drone cannot do mission actions</string>
+    <string name="andruav_error_autopilot_cannot_do_mission_write">Drone cannot do mission write    actions</string>
+    <string name="andruav_error_autopilot_cannot_do_land">Drone cannot do land</string>
+    <string name="andruav_error_autopilot_cannot_do_surface">Drone cannot do surface</string>
+    <string name="andruav_error_autopilot_cannot_do_yaw">Drone cannot do change yaw</string>
+    <string name="andruav_error_autopilot_cannot_do_servo">Servo command Failed.</string>
+    <string name="andruav_error_autopilot_cannot_do_followme">Drone cannot do follow me</string>
+    <string name="andruav_error_autopilot_cannot_do_takeoff">Drone cannot do TakeOff</string>
+    <string name="andruav_error_autopilot_cannot_do_loiter">Drone cannot do Loiter</string>
+    <string name="andruav_error_autopilot_cannot_do_rtl">Drone cannot do RTL</string>
+    <string name="andruav_error_autopilot_cannot_do_smart_rtl">Drone cannot do Smart RTL</string>
+    <string name="andruav_error_autopilot_cannot_do_guided">Drone cannot do Guided mode</string>
+    <string name="andruav_error_autopilot_cannot_do_manual">Drone cannot do Manual mode</string>
+    <string name="andruav_error_autopilot_cannot_do_circle">Circle mode not Supported</string>
+
+    <string name="andruav_error_autopilot_cannot_do_pos_hold">Drone cannot do Position Hold</string>
+    <string name="andruav_error_autopilot_cannot_do_alt_hold">Drone cannot do ALT_HOLD</string>
+    <string name="andruav_error_autopilot_cannot_do_auto">Drone cannot do auto</string>
+    <string name="andruav_error_autopilot_cannot_do_fbwa">Drone cannot do fly by wire</string>
+    <string name="andruav_error_autopilot_cannot_do_cruise">Drone cannot do cruise</string>
+    <string name="andruav_error_autopilot_cannot_do_brake">Drone cannot do brake</string>
+    <string name="andruav_error_autopilot_cannot_do_hold">Drone cannot do hold</string>
+
+
+
+    <string name="andruav_error_geofence_safe">Geo Fence Safe</string>
+    <string name="andruav_error_geofence_unsafe">Geo Fence Violation</string>
+
+    <string name="gen_rc_releazed">RC Released. You can use TX to control</string>
+    <string name="gen_rc_freezed">RC Freezed. no TX control.</string>
+    <string name="gen_rc_centered">RC Centered. no control.</string>
+    <string name="gen_rc_joystick">RC under control by GCS joystick</string>
+
+
+    <string name="andruav_module_added">Andruav Module Added</string>
+
+</resources>

@@ -1,0 +1,26 @@
+apply plugin: 'java'
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+sourceSets {
+    main {
+        java.srcDirs = ['src']
+    }
+
+    test {
+        java.srcDirs = ['test']
+    }
+}
+
+jar {
+   // destinationDir (new File("${rootDir}/ClientLib/libs"))
+}
+
+dependencies {
+    implementation 'org.json:json:20200518'
+}
+
+dependencies {
+
+    testImplementation 'junit:junit:4.12'
+}

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".activities.fcb.FCB_TCPShasha"
+    android:fillViewport="true">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fcb_Title"
+            android:id="@+id/fcbactivity_serialsocket_txtTitle"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"
+            android:background="@color/btn_TXT_BLUE"
+            android:textColor="@color/btn_TXT_WHITE"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginRight="3dp" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fcb_Title_ServerSection"
+            android:textStyle="bold"
+            android:id="@+id/fcbactivity_serialsocket_txttitle_2"
+            android:textColor="@color/btn_TXT_BLUE"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="3dp"
+            android:gravity="center_horizontal"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="8dp"
+            android:layout_below="@+id/fcbactivity_serialsocket_txtTitle" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:id="@+id/fcbactivity_serialsocket_edtip"
+            android:layout_alignParentEnd="false"
+            android:textColor="@color/btn_TXT_GREY_DARK"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/sel_edit_text"
+            android:hint="Mobile IP"
+            android:enabled="false"
+            android:layout_toRightOf="@+id/fcbactivity_serialsocket_txtip"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="3dp"
+            android:inputType="text"
+            android:focusable="false"
+            android:layout_below="@+id/fcbactivity_serialsocket_txtTitle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/fcb_IP"
+            android:id="@+id/fcbactivity_serialsocket_txtip"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/btn_TXT_BLUE_DARKEST"
+            android:gravity="center_horizontal"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="0dp"
+            android:layout_alignLeft="@+id/fcbactivity_serialsocket_txttitle_2"
+            android:layout_alignTop="@+id/fcbactivity_serialsocket_edtip" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fcb_Port"
+            android:id="@+id/fcbactivity_serialsocket_txtport"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/btn_TXT_BLUE_DARKEST"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@+id/fcbactivity_serialsocket_edtport"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="3dp" />
+
+        <EditText
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/fcbactivity_serialsocket_edtport"
+            android:layout_below="@+id/fcbactivity_serialsocket_edtip"
+            android:layout_alignParentEnd="false"
+            android:textColor="@color/btn_TXT_GREY_DARK"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/sel_edit_text"
+            android:hint="9891"
+            android:enabled="true"
+            android:layout_alignLeft="@+id/fcbactivity_serialsocket_edtip"
+            android:layout_alignBaseline="@+id/fcbactivity_serialsocket_btnSerialSocket" />
+
+        <Button
+            android:id="@+id/fcbactivity_serialsocket_btnSerialSocket"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gen_off"
+            android:background="@drawable/sel_button_color"
+            android:layout_below="@+id/fcbactivity_serialsocket_edtip"
+            android:layout_alignRight="@+id/fcbactivity_serialsocket_edtip"
+            android:layout_marginTop="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/fcbactivity_serialsocket_txtStatus"
+            android:layout_below="@+id/fcbactivity_serialsocket_btnSerialSocket"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textView3"
+            android:text="Select a telemetry from below list"
+            android:textColor="@color/btn_TXT_BLUE_DARKEST"
+            android:textStyle="bold"
+            android:layout_below="@+id/fcbactivity_serialsocket_txtStatus"
+            android:layout_centerHorizontal="true"
+            android:layout_alignLeft="@+id/fcbactivity_serialsocket_txtport"
+            android:layout_marginLeft="6dp" />
+
+        <ListView
+            android:id="@+id/fcbactivity_serialsocket_lstTelemetryUnits"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/edit_text_roundededge"
+            android:layout_below="@+id/textView3"
+            android:layout_alignParentLeft="true"
+            android:layout_toStartOf="@+id/fcbactivity_serialsocket_txtStatus"
+            android:layout_toLeftOf="@+id/fcbactivity_serialsocket_txtStatus" />
+
+        <ScrollView android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:id="@+id/scrollView"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="false"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="3dp"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="false"
+            android:layout_alignTop="@+id/fcbactivity_serialsocket_lstTelemetryUnits"
+            android:layout_toRightOf="@+id/fcbactivity_serialsocket_lstTelemetryUnits"
+            android:layout_marginTop="-4dp"
+            android:paddingTop="0dp">
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fcbactivity_serialsocket_edtlog"
+                android:enabled="true"
+                android:focusable="true"
+                android:background="@drawable/edit_text_roundededge"
+                android:inputType="textMultiLine"
+                android:editable="false"
+                android:scrollbars="vertical"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="3dp"
+                android:gravity="left|top"
+                android:hint="detailed log ..."
+                android:height="200dp"
+                />
+        </ScrollView>
+
+    </RelativeLayout>
+</ScrollView>

@@ -1,0 +1,53 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.main.MainScreen" >
+    <item
+        android:id="@+id/action_main_wsconnect"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:title="@string/action_connect"
+        android:icon="@drawable/connect_w_32x32"/>
+    <item
+        android:id="@+id/mi_main_GCS"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:title="@string/action_signout"
+        android:icon="@drawable/gcs_gr_32x32"/>
+    <item
+        android:id="@+id/mi_main_signout"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:title="@string/action_signout"
+        android:icon="@drawable/signout_w_32x32"/>
+    <item android:id="@+id/mi_remotesettings"
+        android:title="@string/actionremote_settings"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:icon="@drawable/joystick_w_32x32"/>
+    <item android:id="@+id/mi_main_Settings_gcs"
+        android:title="@string/action_settings_gcs"
+        android:orderInCategory="100"
+        android:showAsAction="never"/>
+    <item android:id="@+id/mi_main_Settings_drone"
+        android:title="@string/action_settings_drone"
+        android:orderInCategory="100"
+        android:showAsAction="never"/>
+    <item android:id="@+id/mi_main_About"
+        android:title="@string/gen_about"
+        android:orderInCategory="100"
+        android:showAsAction="never"/>
+    <item android:id="@+id/mi_main_Exit"
+        android:title="@string/action_exit"
+        android:orderInCategory="100"
+        android:showAsAction="never"/>
+    <item android:id="@+id/mi_main_ResetFactory"
+        android:title="@string/gen_FactoryReset"
+        android:orderInCategory="100"
+        android:showAsAction="never"/>
+    <item android:id="@+id/mi_main_Help"
+        android:title="@string/gen_help"
+        android:orderInCategory="100"
+        android:showAsAction="never"/>
+
+</menu>

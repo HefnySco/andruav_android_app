@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:text="@string/smartdlg_Title"
+        android:id="@+id/textView8"
+        android:textStyle="bold"
+        android:textColor="@color/btn_TXT_WHITE"
+        android:background="@color/btn_TXT_BLUE"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_alignParentTop="true" />
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/smartdlg_Optimization"
+        android:id="@+id/smartdlg_txt01"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView8"
+        android:layout_marginTop="10dp" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/smartdlg_lbSmartTelemetry"
+
+        android:spinnerMode="dialog"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:gravity="start"
+        android:layout_alignTop="@+id/smartdlg_txt01"
+        android:layout_toEndOf="@+id/smartdlg_txt01"
+        android:layout_toRightOf="@+id/smartdlg_txt01" />
+
+
+</RelativeLayout>

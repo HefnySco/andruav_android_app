@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:padding="3dp">
+
+
+    <TextView
+        android:id="@+id/mdlgfcbctrl_txt_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="3dp"
+        android:background="@color/btn_TXT_BLUE"
+        android:gravity="center_horizontal"
+        android:text="@string/modedlg_Title"
+        android:textColor="@color/btn_TXT_WHITE"
+        android:textStyle="bold" />
+
+
+    <HorizontalScrollView
+        android:id="@+id/fpvactivity_mode_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mdlgfcbctrl_txt_title"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:background="@color/background"
+        android:fillViewport="false"
+        android:padding="1dp"
+        android:scrollbars="horizontal|vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/mdlgfcbctrl_btn_arm"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sel_fcb_ctrl_buttons_red"
+                android:padding="1dp"
+                android:text="@string/action_fcbctrl_arm"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/mdlgfcbctrl_btn_climb"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/sel_fcb_ctrl_buttons_red"
+                android:padding="1dp"
+                android:text="@string/action_fcbctrl_climb"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/mdlgfcbctrl_btn_land"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/sel_fcb_ctrl_buttons_green"
+                android:padding="1dp"
+                android:text="@string/action_fcbctrl_land"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/mdlgfcbctrl_btn_manual"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/sel_fcb_ctrl_buttons_blue"
+                android:padding="1dp"
+                android:text="@string/action_fcbctrl_manual"
+                android:textSize="10sp" />
+
+
+            <Button
+                android:id="@+id/mdlgfcbctrl_btn_FBWA"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/sel_fcb_ctrl_buttons_blue"
+                android:padding="1dp"
+                android:text="@string/action_fcbctrl_fbwa"
+                android:textSize="10sp" />
+
+
+            <Button
+                android:id="@+id/mdlgfcbctrl_btn_guided"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/sel_fcb_ctrl_buttons_blue"
+                android:padding="1dp"
+                android:text="@string/action_fcbctrl_guided"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/mdlgfcbctrl_btn_brake"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/sel_fcb_ctrl_buttons_blue"
+                android:padding="1dp"
+                android:text="@string/action_fcbctrl_brake"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/mdlgfcbctrl_btn_hold"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/sel_fcb_ctrl_buttons_blue"
+                android:padding="1dp"
+                android:text="@string/action_fcbctrl_hold"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/mdlgfcbctrl_btn_loiter"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/sel_fcb_ctrl_buttons_blue"
+                android:padding="1dp"
+                android:text="@string/action_fcbctrl_loiter"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/mdlgfcbctrl_btn_auto"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/sel_fcb_ctrl_buttons_blue"
+                android:padding="1dp"
+                android:text="@string/action_fcbctrl_auto"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/mdlgfcbctrl_btn_rtl"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/sel_fcb_ctrl_buttons_blue"
+                android:padding="1dp"
+                android:text="@string/action_fcbctrl_rtl"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/mdlgfcbctrl_btn_smart_rtl"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/sel_fcb_ctrl_buttons_blue"
+                android:padding="1dp"
+                android:text="@string/action_fcbctrl_smart_rtl"
+                android:textSize="10sp" />
+
+            <Button
+                android:id="@+id/mdlgfcbctrl_btn_cruise"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/sel_fcb_ctrl_buttons_blue"
+                android:padding="1dp"
+                android:text="@string/action_fcbctrl_cruise"
+                android:textSize="10sp" />
+
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/mdlgcam_text02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fpvactivity_mode_buttons"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:text="@string/action_fcbctrl_alt"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST" />
+
+    <com.vi.swipenumberpicker.SwipeNumberPicker
+        android:id="@+id/action_fcbctrl_cardwheel_alt"
+        style="@style/generalNumberSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mdlgcam_text02"
+        android:layout_centerVertical="false"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="1dp"
+        android:layout_marginLeft="1dp"
+        app:snp_arrowColor="@color/btn_TXT_GREYLIGHT"
+        app:snp_backgroundColor="@color/btn_TXT_BLUE_DARKEST"
+        app:snp_max="1000"
+        app:snp_min="0"
+        app:snp_numberColor="@color/btn_TXT_GREYLIGHT"
+        app:snp_value="0" />
+
+    <TextView
+        android:id="@+id/mdlgcam_text03"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fpvactivity_mode_buttons"
+        android:layout_alignTop="@+id/mdlgcam_text02"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:text="@string/action_fcbctrl_diameter"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST" />
+
+    <com.vi.swipenumberpicker.SwipeNumberPicker
+        android:id="@+id/action_fcbctrl_cardwheel_diameter"
+        style="@style/generalNumberSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mdlgcam_text02"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="false"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="1dp"
+        android:layout_marginRight="1dp"
+        app:snp_arrowColor="@color/btn_TXT_GREYLIGHT"
+        app:snp_backgroundColor="@color/btn_TXT_BLUE_DARKEST"
+        app:snp_max="1000"
+        app:snp_min="0"
+        app:snp_numberColor="@color/btn_TXT_GREYLIGHT"
+        app:snp_value="0" />
+</RelativeLayout>

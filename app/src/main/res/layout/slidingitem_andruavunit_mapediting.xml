@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:padding="2dp"
+    android:clickable="true"
+    android:background="@drawable/trans_rect_item_shape">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Button"
+        android:id="@+id/slidingitem_andruavunit_btnUnit"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/sel_drawer_button_color"
+        android:drawableRight="@drawable/hand_gy_32x32"
+        android:layout_margin="2dp"
+        android:textSize="14sp"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/slidingitem_andruavunit_mapplanning_btnHome" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/slidingitem_andruavunit_mapplanning_btnHome"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/home_b_24x24"
+        android:layout_alignParentRight="false"
+        android:layout_alignTop="@+id/slidingitem_andruavunit_btnUnit"
+        android:layout_alignParentBottom="false"
+        android:layout_marginLeft="2dp"
+        android:text="home"
+        android:layout_marginBottom="2dp"
+        android:textSize="10sp"
+        android:singleLine="false"
+        android:layout_toLeftOf="@+id/slidingitem_andruavunit_mapplanning_btnLoad" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/slidingitem_andruavunit_mapplanning_btnLoad"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/download_b_32x32"
+        android:layout_alignParentBottom="false"
+        android:layout_alignTop="@+id/slidingitem_andruavunit_btnUnit"
+        android:layout_marginLeft="2dp"
+        android:layout_alignParentRight="false"
+        android:text="load"
+        android:layout_marginBottom="2dp"
+        android:layout_marginRight="2dp"
+        android:textSize="10sp"
+        android:layout_toLeftOf="@+id/slidingitem_andruavunit_mapplanning_btnSave" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/slidingitem_andruavunit_mapplanning_btnSave"
+        android:drawableTop="@drawable/upload_b_32x32"
+        android:layout_alignParentBottom="false"
+        android:layout_alignTop="@+id/slidingitem_andruavunit_btnUnit"
+        android:layout_marginLeft="2dp"
+        android:layout_alignParentRight="false"
+        android:text="save"
+        android:layout_marginBottom="2dp"
+        android:textSize="10sp"
+        android:singleLine="false"
+        android:elegantTextHeight="false"
+        android:background="@drawable/sel_trans_button_color"
+        android:layout_toLeftOf="@+id/slidingitem_andruavunit_mapplanning_btnFollow" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/slidingitem_andruavunit_mapplanning_btnFollow"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/following_enabled_32x32"
+        android:layout_alignParentBottom="false"
+        android:layout_alignTop="@+id/slidingitem_andruavunit_btnUnit"
+        android:layout_marginLeft="2dp"
+        android:layout_alignParentRight="false"
+        android:text="follow"
+        android:layout_marginBottom="2dp"
+        android:textSize="10sp"
+        android:singleLine="false"
+        android:layout_toLeftOf="@+id/slidingitem_andruavunit_mapplanning_btnClear" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/slidingitem_andruavunit_mapplanning_btnClear"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/delete_32x32"
+        android:layout_alignParentBottom="false"
+        android:layout_alignTop="@+id/slidingitem_andruavunit_btnUnit"
+        android:layout_marginLeft="2dp"
+        android:layout_alignParentRight="true"
+        android:text="clear"
+        android:layout_marginBottom="2dp"
+        android:textSize="10sp"
+        android:singleLine="false" />
+
+</RelativeLayout>

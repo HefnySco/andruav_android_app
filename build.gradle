@@ -1,0 +1,65 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+
+
+ext {
+
+    VARIABLE = 1
+    play_services_version = '17.0.0'
+    android_build_sdk_version = 29
+    android_build_tools_version = '29.0.2'
+    android_build_target_sdk_version = 29
+    android_build_min_sdk_version = 16
+}
+
+
+def computeVersionCode(int versionMajor, int versionMinor, int versionPatch, int versionBuild = 0){
+    return versionMajor * 100000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+}
+
+def generateVersionName(String versionPrefix, int versionMajor, int versionMinor, int versionPatch, String versionSuffix = ""){
+    def versionName = "${versionPrefix}${versionMajor}.${versionMinor}.${versionPatch}"
+
+    if(versionSuffix != null && !versionSuffix.isEmpty() && versionSuffix != "release"){
+        versionName += "-${versionSuffix}"
+    }
+
+    return versionName
+}
+
+def generateVersionNameSuffix(int versionBuild, String releaseType, boolean includeHash = false){
+    def versionNameSuffix = "${releaseType}.${versionBuild}"
+    if(includeHash){
+        versionNameSuffix += " (${getGitShortHash()})"
+    }
+    return versionNameSuffix
+}
+
+
+static def releaseTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+}
+
+
+
+
+
+buildscript {
+    repositories {
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.0.0'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        google()
+    }
+}

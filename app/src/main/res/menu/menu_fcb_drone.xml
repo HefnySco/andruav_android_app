@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/mi_fcb_dualband"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:title="@string/action_dualband"
+        android:icon="@drawable/dual_band_inactive2_72x72"/>
+
+    <item
+        android:id="@+id/mi_fcb_drone_connect"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:title="@string/action_connect"
+        android:icon="@drawable/connect_w_32x32"/>
+    <item
+        android:id="@+id/mi_fcb_autofcbconnect"
+        android:title="@string/pref_gr_fcb_autofcbconnect"
+        android:orderInCategory="100"
+        android:checkable="true"
+        android:showAsAction="never"/>
+
+    <item android:id="@+id/mi_fcb_smarttelemetry"
+        android:title="@string/pref_gr_fcb_enableSmartTelemetry"
+        android:orderInCategory="101"
+        android:showAsAction="never"/>
+
+    <item android:id="@+id/mi_fcb_Help"
+        android:title="@string/gen_help"
+        android:orderInCategory="101"
+        android:showAsAction="never"/>
+</menu>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="wrap_content"
+    android:alpha="0.9"
+    android:paddingBottom="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="YAW"
+        android:id="@+id/widget_channel_config_txtChannelName"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentEnd="false"
+        android:layout_marginTop="2dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="false" />
+
+    <com.appyvet.rangebar.RangeBar
+        xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/widget_channel_config_range"
+        android:layout_width="match_parent"
+        custom:tickStart="5"
+        custom:tickInterval="1"
+        custom:tickEnd="10"
+        android:layout_height="72dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_below="@+id/widget_channel_config_txtChannelName"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/btn_TXT_WHITE2" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reverse"
+        android:id="@+id/widget_channel_config_chkReverse"
+        android:layout_alignParentRight="false"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST"
+        android:layout_marginLeft="3dp"
+        android:layout_below="@+id/widget_channel_config_range"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_alignParentLeft="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Return to Center"
+        android:id="@+id/widget_channel_config_chkRTC"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentRight="false"
+        android:layout_marginRight="3dp"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST"
+        android:layout_below="@+id/widget_channel_config_chkReverse"
+        android:layout_alignLeft="@+id/widget_channel_config_chkReverse" />
+
+    <EditText
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:id="@+id/widget_channel_config_edtDualRate"
+        android:background="@drawable/sel_edit_text"
+        android:autoText="false"
+        android:hint="D/R %"
+        android:textColor="@color/btn_TXT_GREY_DARK"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/widget_channel_config_chkReverse"
+        android:layout_marginRight="5dp" />
+</RelativeLayout>

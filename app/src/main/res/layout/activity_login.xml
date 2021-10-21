@@ -1,0 +1,156 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingRight="6dp">
+
+        <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login_Title"
+        android:id="@+id/login_txtTitle"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:background="@color/btn_TXT_BLUE"
+        android:textColor="@color/btn_TXT_WHITE"
+        android:layout_alignParentTop="true"
+            android:layout_marginBottom="5dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/login_access_code"
+        android:id="@+id/login_txtAccessCode"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/login_txtTitle"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="3dp"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST" />
+
+        <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:ems="10"
+        android:id="@+id/login_edtAccessCode"
+        android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/sel_edit_text"
+            android:autoText="false"
+            android:layout_below="@+id/login_txtAccessCode"
+            android:layout_marginTop="3dp"
+            android:hint="access code received by email"
+             />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Auto Login"
+            android:id="@+id/login_chkAutoStart"
+            android:layout_above="@+id/login_txtRegister"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/login_edtAccessCode"
+            android:textColor="@color/btn_TXT_BLUE_DARKEST" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_login"
+            android:id="@+id/login_btnSaveAccessCode"
+            android:layout_below="@+id/login_edtAccessCode"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/sel_button_color"
+            android:drawableLeft="@drawable/login2_w_32x32"
+            android:layout_alignRight="@+id/login_edtAccessCode"
+            />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_register_Title"
+            android:id="@+id/login_txtRegister"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"
+            android:background="@color/btn_TXT_BLUE"
+            android:textColor="@color/btn_TXT_WHITE"
+            android:layout_alignParentTop="false"
+            android:layout_marginBottom="5dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:layout_below="@+id/login_btnSaveAccessCode"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textAutoComplete|textEmailAddress"
+            android:ems="10"
+            android:id="@+id/login_edtEmail"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/sel_edit_text"
+            android:layout_below="@+id/login_txtEmail"
+            android:layout_marginTop="3dp"
+            android:hint="your registration email" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/login_email"
+            android:id="@+id/login_txtEmail"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/login_txtRegister"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="3dp"
+           android:textColor="@color/btn_TXT_BLUE_DARKEST" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/action_register"
+            android:id="@+id/login_btnRegister"
+            android:layout_below="@+id/login_edtEmail"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/sel_button_color"
+            android:drawableLeft="@drawable/register_w_32x32"
+            android:layout_alignRight="@+id/login_edtEmail" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/action_regenerate"
+            android:id="@+id/login_btnRegenerateAccessKey"
+            android:background="@drawable/sel_button_color"
+            android:drawableLeft="@drawable/register_w_32x32"
+            android:layout_alignParentBottom="false"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/login_edtEmail"
+            android:layout_marginTop="5dp"
+            android:layout_alignLeft="@+id/login_edtEmail" />
+
+    </RelativeLayout></ScrollView>

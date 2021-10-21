@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+     tools:context="rcmobile.FPV.activities.fpv.drone.FPVDroneRTCWebCamActivity">
+
+
+    <org.webrtc.SurfaceViewRenderer
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/fpvactivity_rtc_glviewsurface"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="false" />
+
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fpvactivity_btn_ZeroTilt"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/angle_w_32x32"
+        android:layout_margin="2dp"
+        android:textSize="10sp"
+        android:text="@string/action_imu_zero"
+        android:padding="1dp"
+        android:layout_alignParentTop="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fpvactivity_btn_CameraSwitch"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/camera_switch_w_32x32"
+        android:layout_margin="2dp"
+        android:textSize="10sp"
+        android:text="@string/action_cam_swap"
+        android:padding="1dp"
+        android:layout_below="@+id/fpvactivity_btn_ZeroTilt" />
+
+    <TextView
+        android:text="@string/action_video_on"
+        android:id="@+id/fpvactivity_txtVideoStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/btn_TXT_ERROR"
+        android:textStyle="normal|bold" />
+
+
+</RelativeLayout>

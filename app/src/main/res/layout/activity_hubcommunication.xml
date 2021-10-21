@@ -1,0 +1,259 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="rcmobile.FPV.activities.HUBCommunication">
+
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="6dp">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/websocket_Title"
+                android:id="@+id/login_txtAccessCode"
+                android:layout_marginBottom="5dp"
+                android:layout_centerHorizontal="true"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:background="@color/btn_TXT_BLUE"
+                android:textColor="@color/btn_TXT_WHITE"
+                android:layout_marginRight="3dp" />
+
+            <TextView
+                style="@style/generalLabelTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/websocket_IP"
+                android:id="@+id/txtServer"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/login_txtAccessCode" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/hubactivity_edtWSIP"
+                android:editable="true"
+                android:inputType="text"
+                android:text=""
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentStart="false"
+                android:layout_toRightOf="@+id/txtServer"
+                android:layout_alignTop="@+id/txtServer"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/sel_edit_text"
+                android:textColor="@color/btn_TXT_GREY_DARK"
+                android:layout_marginRight="3dp"
+                android:hint="andruav.com - default"
+                android:enabled="false"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentLeft="false" />
+
+            <TextView
+                style="@style/generalLabelTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/websocket_Port"
+                android:id="@+id/txtPort"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/txtServer"
+                android:layout_alignTop="@+id/hubactivity_edtWSPort" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Andruav.com"
+                android:id="@+id/hubactivity_chkLocalServer"
+                android:layout_toEndOf="@+id/hubactivity_edtWSPort"
+                android:layout_alignParentEnd="false"
+                android:layout_alignTop="@+id/txtPort"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/hubactivity_edtWSPort" />
+
+            <EditText
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/hubactivity_edtWSPort"
+                android:layout_below="@+id/hubactivity_edtWSIP"
+                android:layout_alignParentEnd="false"
+                android:layout_alignLeft="@+id/hubactivity_edtWSIP"
+                android:textColor="@color/btn_TXT_GREY_DARK"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/sel_edit_text"
+                android:hint="9000"
+                android:enabled="false"
+                android:layout_alignParentRight="false" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:id="@+id/fpvactivity_imgSnapShot"
+                android:layout_below="@+id/hubactivity_edtWSPort"
+                android:background="@color/btn_TXT_BLUE"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:contentDescription="separator"
+                />
+
+            <TextView
+                style="@style/generalLabelTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hub_activity_vehicleType"
+                android:id="@+id/hubactivity_txtVehicleType"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/fpvactivity_imgSnapShot" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/hubactivity_spinVehicleType"
+                android:layout_toRightOf="@+id/hubactivity_chkEncryption"
+                android:layout_toEndOf="@+id/hubactivity_chkEncryption"
+                android:layout_alignTop="@+id/hubactivity_txtVehicleType"
+                android:layout_alignLeft="@+id/hubactivity_edtWSIP"
+                android:spinnerMode="dialog" />
+
+            <TextView
+                style="@style/generalLabelTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/websocket_UserName"
+                android:id="@+id/txtWSUserName"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_alignParentLeft="true"
+                android:layout_alignTop="@+id/hubactivity_edtWSUserName" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:ems="10"
+                android:id="@+id/hubactivity_edtWSUserName"
+                android:layout_below="@+id/hubactivity_spinVehicleType"
+                android:layout_alignParentEnd="false"
+                android:layout_alignLeft="@+id/hubactivity_edtWSIP"
+                android:background="@drawable/sel_edit_text"
+                android:textColor="@color/btn_TXT_GREY_DARK"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="3dp"
+                android:hint="@string/hub_activity_usernameHint"
+                android:layout_alignParentRight="false" />
+
+            <TextView
+                style="@style/generalLabelTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/websocket_GroupName"
+                android:id="@+id/txtWSGroupName"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/hubactivity_edtWSUserName" />
+
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/hubactivity_spinGroupNo"
+                android:layout_alignStart="@+id/hubactivity_chkLocalServer"
+                android:layout_alignTop="@+id/txtWSGroupName"
+                android:layout_alignLeft="@+id/hubactivity_edtWSUserName"
+                android:spinnerMode="dialog" />
+
+            <TextView
+                style="@style/generalLabelTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/websocket_Description"
+                android:id="@+id/hubactivity_txtDescription"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/hubactivity_spinGroupNo" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/hubactivity_edtDescription"
+                android:inputType="text"
+                android:background="@drawable/sel_edit_text"
+                android:textColor="@color/btn_TXT_GREY_DARK"
+                android:layout_below="@+id/hubactivity_txtDescription"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="3dp"
+                android:hint="@string/hub_activity_briefHint"
+                android:layout_toEndOf="@+id/txtWSUserName"
+                android:layout_alignLeft="@+id/login_txtAccessCode"
+                android:layout_toRightOf="@+id/txtWSUserName" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:id="@+id/imageView2"
+                android:background="@color/btn_TXT_BLUE"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@+id/hubactivity_edtDescription" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/websocket_CipherKey"
+                android:id="@+id/hubactivity_chkEncryption"
+                android:layout_toEndOf="@+id/txtWSUserName"
+                android:textColor="@color/btn_TXT_BLUE_DARKEST"
+                android:checked="false"
+                android:layout_below="@+id/imageView2"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_toRightOf="@+id/txtWSUserName" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/hubactivity_edtEncryptionKey"
+                android:inputType="text"
+                android:background="@drawable/sel_edit_text"
+                android:textColor="@color/btn_TXT_GREY_DARK"
+                android:layout_below="@+id/hubactivity_chkEncryption"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="3dp"
+                android:hint=" 18 character key"
+                android:layout_marginLeft="3dp"
+                android:maxLength="18"
+                android:layout_toEndOf="@+id/txtWSUserName"
+                android:layout_alignLeft="@+id/login_txtAccessCode"
+                android:layout_toRightOf="@+id/txtWSUserName" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:id="@+id/hubactivity_imageView3"
+                android:background="@color/btn_TXT_BLUE"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@+id/hubactivity_edtEncryptionKey" />
+
+            <ScrollView android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/hubactivity_imageView3"
+                android:id="@+id/scrollView">
+
+            </ScrollView>
+
+        </RelativeLayout>
+
+</ScrollView>

@@ -1,0 +1,251 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
+    android:layout_height="fill_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="rcmobile.FPV.activities.remote.RemoteChannelsSettingFragment"
+    android:layout_alignParentRight="false"
+    android:layout_alignParentTop="false"
+    android:layout_alignParentBottom="false">
+
+<RelativeLayout  android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:layout_gravity="left|top"
+    android:layout_marginRight="3dp"
+    android:paddingRight="6dp">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/remote_tracking_fragement_X_Section"
+        android:id="@+id/remote_tracking_fragement_X_Section_section"
+        android:layout_marginBottom="20dp"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:background="@color/btn_TXT_BLUE"
+        android:textColor="@color/btn_TXT_WHITE"
+        android:layout_marginRight="3dp" />
+
+
+    <TextView
+        style="@style/generalLabelTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/remote_tracking_fragement_X_P"
+        android:id="@+id/remote_tracking_fragement_X_P"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="false"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/remote_tracking_fragement_X_Section_section" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/remote_tracking_fragement_edt_X_P"
+        android:background="@drawable/sel_edit_text"
+        android:textColor="@color/btn_TXT_GREY_DARK"
+        android:layout_marginTop="3dp"
+        android:layout_marginRight="3dp"
+        android:hint="@string/remote_tracking_fragement_X_P_hint"
+        android:layout_centerVertical="false"
+        android:layout_centerInParent="false"
+        android:layout_alignBaseline="@+id/remote_tracking_fragement_X_P"
+        android:layout_toEndOf="@+id/remote_tracking_fragement_X_P"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/remote_tracking_fragement_X_P"
+        android:numeric="integer"
+        android:phoneNumber="true"
+        android:inputType="phone" />
+
+    <TextView
+        style="@style/generalLabelTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/remote_tracking_fragement_X_I"
+        android:id="@+id/remote_tracking_fragement_X_I"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="25dp"
+        android:layout_below="@+id/remote_tracking_fragement_X_P" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/remote_tracking_fragement_edt_X_I"
+        android:background="@drawable/sel_edit_text"
+        android:textColor="@color/btn_TXT_GREY_DARK"
+        android:layout_marginTop="3dp"
+        android:layout_marginRight="3dp"
+        android:hint="@string/remote_tracking_fragement_X_I_hint"
+        android:layout_centerVertical="false"
+        android:layout_centerInParent="false"
+        android:layout_alignBaseline="@+id/remote_tracking_fragement_X_I"
+        android:layout_toEndOf="@+id/remote_tracking_fragement_X_I"
+        android:layout_alignParentRight="true"
+        android:layout_alignStart="@+id/remote_tracking_fragement_edt_X_P"
+        android:layout_toRightOf="@+id/remote_tracking_fragement_X_I"
+        android:layout_alignLeft="@+id/remote_tracking_fragement_edt_X_P"
+        android:inputType="phone" />
+
+
+    <TextView
+        style="@style/generalLabelTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/remote_tracking_fragement_X_D"
+        android:id="@+id/remote_tracking_fragement_X_D"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="25dp"
+        android:layout_below="@+id/remote_tracking_fragement_X_I" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/remote_tracking_fragement_edt_X_D"
+        android:background="@drawable/sel_edit_text"
+        android:textColor="@color/btn_TXT_GREY_DARK"
+        android:layout_marginTop="3dp"
+        android:layout_marginRight="3dp"
+        android:hint="@string/remote_tracking_fragement_X_D_hint"
+        android:layout_centerVertical="false"
+        android:layout_centerInParent="false"
+        android:layout_alignBaseline="@+id/remote_tracking_fragement_X_D"
+        android:layout_toEndOf="@+id/remote_tracking_fragement_X_I"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/remote_tracking_fragement_X_D"
+        android:layout_alignRight="@+id/remote_tracking_fragement_X_D"
+        android:layout_alignStart="@+id/remote_tracking_fragement_edt_X_P"
+        android:layout_alignLeft="@+id/remote_tracking_fragement_edt_X_P"
+        android:inputType="phone" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/remote_tracking_fragement_Y_Section"
+        android:id="@+id/remote_tracking_fragement_Y_Section_section"
+        android:layout_marginBottom="20dp"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:background="@color/btn_TXT_BLUE"
+        android:textColor="@color/btn_TXT_WHITE"
+        android:layout_marginRight="3dp"
+        android:layout_below="@+id/remote_tracking_fragement_X_D"
+        android:layout_marginTop="30dp" />
+
+
+    <TextView
+        style="@style/generalLabelTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/remote_tracking_fragement_Y_P"
+        android:id="@+id/remote_tracking_fragement_Y_P"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="false"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/remote_tracking_fragement_Y_Section_section" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/remote_tracking_fragement_edt_Y_P"
+        android:background="@drawable/sel_edit_text"
+        android:textColor="@color/btn_TXT_GREY_DARK"
+        android:layout_marginTop="3dp"
+        android:layout_marginRight="3dp"
+        android:hint="@string/remote_tracking_fragement_Y_P_hint"
+        android:layout_centerVertical="false"
+        android:layout_centerInParent="false"
+        android:layout_alignBaseline="@+id/remote_tracking_fragement_Y_P"
+        android:layout_toEndOf="@+id/remote_tracking_fragement_Y_P"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/remote_tracking_fragement_Y_P"
+        android:inputType="phone" />
+
+    <TextView
+        style="@style/generalLabelTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/remote_tracking_fragement_Y_I"
+        android:id="@+id/remote_tracking_fragement_Y_I"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="25dp"
+        android:layout_below="@+id/remote_tracking_fragement_Y_P" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/remote_tracking_fragement_edt_Y_I"
+        android:background="@drawable/sel_edit_text"
+        android:textColor="@color/btn_TXT_GREY_DARK"
+        android:layout_marginTop="3dp"
+        android:layout_marginRight="3dp"
+        android:hint="@string/remote_tracking_fragement_Y_I_hint"
+        android:layout_centerVertical="false"
+        android:layout_centerInParent="false"
+        android:layout_alignBaseline="@+id/remote_tracking_fragement_Y_I"
+        android:layout_toEndOf="@+id/remote_tracking_fragement_Y_I"
+        android:layout_alignParentRight="true"
+        android:layout_alignStart="@+id/remote_tracking_fragement_edt_Y_P"
+        android:layout_toRightOf="@+id/remote_tracking_fragement_Y_I"
+        android:layout_alignLeft="@+id/remote_tracking_fragement_edt_Y_P"
+        android:inputType="phone" />
+
+
+    <TextView
+        style="@style/generalLabelTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/remote_tracking_fragement_Y_D"
+        android:id="@+id/remote_tracking_fragement_Y_D"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="25dp"
+        android:layout_below="@+id/remote_tracking_fragement_Y_I" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/remote_tracking_fragement_edt_Y_D"
+        android:background="@drawable/sel_edit_text"
+        android:textColor="@color/btn_TXT_GREY_DARK"
+        android:layout_marginTop="3dp"
+        android:layout_marginRight="3dp"
+        android:hint="@string/remote_tracking_fragement_Y_D_hint"
+        android:layout_centerVertical="false"
+        android:layout_centerInParent="false"
+        android:layout_alignBaseline="@+id/remote_tracking_fragement_Y_D"
+        android:layout_toEndOf="@+id/remote_tracking_fragement_Y_I"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/remote_tracking_fragement_Y_D"
+        android:layout_alignRight="@+id/remote_tracking_fragement_Y_D"
+        android:layout_alignStart="@+id/remote_tracking_fragement_edt_Y_P"
+        android:layout_alignLeft="@+id/remote_tracking_fragement_edt_Y_P"
+        android:inputType="phone" />
+
+
+</RelativeLayout>
+
+    </ScrollView>

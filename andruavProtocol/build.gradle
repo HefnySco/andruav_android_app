@@ -1,0 +1,48 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion android_build_sdk_version
+    buildToolsVersion android_build_tools_version
+    defaultConfig {
+        minSdkVersion android_build_min_sdk_version
+        targetSdkVersion android_build_target_sdk_version
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            jniDebuggable false
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            jniDebuggable false
+            testCoverageEnabled = false
+            renderscriptDebuggable true
+            zipAlignEnabled true
+        }
+    }
+    flavorDimensions "audience"
+
+
+    productFlavors {
+        PUBLIC_
+                {
+                    dimension "audience"
+                    buildConfigField "String", "BuidType" , "\"PUBLIC_\""
+                }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    api 'androidx.appcompat:appcompat:1.0.0'
+    // needed for SimpleArrayMap
+    api 'org.java-websocket:Java-WebSocket:1.3.8'
+    api files('libs/autoBahn/jackson-mapper-asl-1.9.7.jar')
+    api files('libs/autoBahn/autobahn-0.5.0.jar')
+    androidTestImplementation 'junit:junit:4.12'
+}

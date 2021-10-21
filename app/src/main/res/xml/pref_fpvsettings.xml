@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <ListPreference
+        android:title="@string/pref_gr_unitmetric"
+        android:key="measure_units"
+        android:entries="@array/pref_gr_unitmetric_unitTypes"
+        android:entryValues="@array/pref_gr_unitmetric_unitTypesValues"
+        android:summary="@string/pref_gr_unitmetric_summary"
+        />
+
+    <ListPreference
+        android:title="@string/pref_gr_fpv_screenorientation"
+        android:key="fpvROT"
+        android:summary="@string/pref_gr_fpv_screenorientation_summary"
+        android:entries="@array/pref_gr_fpv_screenorientation"
+        android:entryValues="@array/pref_gr_fpv_screenorientation_value" />
+
+
+    <ListPreference
+        android:title="@string/pref_gr_fpv_videocamerarotation"
+        android:key="pref_RTCCAMrotated"
+        android:summary="@string/pref_gr_fpv_videocameraselect_summary"
+        android:entries="@array/pref_gr_fpv_videocameraselect"
+        android:entryValues="@array/pref_gr_fpv_videocamerarotation_value" />
+
+
+
+   <CheckBoxPreference
+        android:title="@string/pref_gr_fpv_useExternalCamera"
+        android:key="pref_externalCAM"
+        android:summary="@string/pref_gr_fpv_useExternalCamera_summary"
+        android:defaultValue="false"
+        />
+
+    <CheckBoxPreference
+        android:title="@string/pref_gr_fpv_onlylocal_stunserver"
+        android:key="pref_stunserver_only"
+        android:summary="@string/pref_gr_fpv_onlylocal_stunserver_summary"
+        android:defaultValue="false"
+        />
+    <EditTextPreference
+        android:title="@string/pref_gr_fpv_stunserver"
+        android:key="pref_stunserver"
+        android:summary="@string/pref_gr_fpv_stunserver_summary"
+
+        />
+
+    <CheckBoxPreference
+        android:title="@string/pref_gr_fpv_useExternalRTCCamera"
+        android:key="pref_externalRTCCAM"
+        android:summary="@string/pref_gr_fpv_useExternalRTCCamera_summary"
+        android:defaultValue="false"
+        />
+
+    <CheckBoxPreference
+        android:title="@string/pref_gr_fpv_useUDPCamera"
+        android:key="pref_udpCAM"
+        android:summary="@string/pref_gr_fpv_useUDPCamera_summary"
+        android:defaultValue="true"
+        />
+
+
+</PreferenceScreen>

@@ -1,0 +1,5 @@
+#Dictionary for produard Obfuscation
+AndruavCore_TicoObject
+AndruavCore_WirelessSignalCompute
+AndruavCore_RemoteIPCControl
+AndruavCore_PassGeneratorKey

@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activities.fcb.drone.FCB_AndruavShashaL2"
+    tools:showIn="@layout/activity_fcb_drone">
+
+
+<RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingRight="6dp"
+    android:paddingTop="10dp">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fcb_Title_BlueToothSection"
+        android:id="@+id/textView6"
+        android:textStyle="bold"
+        android:textColor="@color/btn_TXT_WHITE"
+        android:gravity="center_horizontal"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="true"
+        android:layout_marginRight="3dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentTop="true"
+        android:background="@color/btn_TXT_BLUE"
+        android:layout_alignParentRight="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Device ID"
+        android:id="@+id/fcbdroneactivity_txtBTID"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST"
+        android:layout_below="@+id/textView6"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+         android:ems="10"
+        android:id="@+id/fcbdroneactivity_edtBTID"
+        android:textColor="@color/btn_TXT_GREY_DARK"
+        android:layout_alignTop="@+id/fcbdroneactivity_txtBTID"
+        android:layout_toRightOf="@+id/fcbdroneactivity_txtBTID"
+        android:layout_marginLeft="5dp"
+        android:editable="false"
+        android:hint="click here" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Scan Bluetooth"
+        android:id="@+id/fcbdroneactivity_txtBTSelect"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_marginLeft="4dp"
+        android:layout_below="@+id/fcbdroneactivity_edtBTID"
+        android:layout_alignLeft="@+id/fcbdroneactivity_edtBTID" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="TCP Settings"
+        android:id="@+id/textView8"
+        android:textStyle="bold"
+        android:textColor="@color/btn_TXT_WHITE"
+        android:gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_below="@+id/fcbdroneactivity_edtBTID"
+        android:background="@color/btn_TXT_BLUE" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/websocket_IP"
+        android:id="@+id/fcbdroneactivity_txtTCPServerIP"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/textView8"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:ems="10"
+        android:id="@+id/fcbdroneactivity_edtTCPServerIP"
+        android:background="@drawable/sel_edit_text"
+        android:textColor="@color/btn_TXT_GREY_DARK"
+        android:hint="@string/hub_activity_usernameHint"
+        android:layout_alignParentLeft="false"
+        android:layout_alignTop="@+id/fcbdroneactivity_txtTCPServerIP"
+        android:layout_toRightOf="@+id/fcbdroneactivity_txtTCPServerIP"
+        android:layout_marginRight="3dp"
+        android:layout_marginLeft="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Port"
+        android:id="@+id/fcbdroneactivity_txtTCPPort"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/fcbdroneactivity_edtTCPServerIP"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="text|number"
+        android:ems="10"
+        android:id="@+id/fcbdroneactivity_edtTCPPort"
+        android:background="@drawable/sel_edit_text"
+        android:textColor="@color/btn_TXT_GREY_DARK"
+        android:hint="@string/hub_activity_usernameHint"
+        android:layout_alignParentLeft="false"
+        android:layout_alignTop="@+id/fcbdroneactivity_txtTCPPort"
+        android:layout_marginRight="3dp"
+        android:layout_alignLeft="@+id/fcbdroneactivity_edtTCPServerIP" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="UDP Settings"
+        android:id="@+id/textView11"
+        android:textStyle="bold"
+        android:textColor="@color/btn_TXT_WHITE"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="25dp"
+        android:layout_below="@+id/fcbdroneactivity_edtTCPPort"
+        android:layout_centerHorizontal="true"
+        android:background="@color/btn_TXT_BLUE" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fcbdroneactivity_txtLocalIP"
+        android:text="Local IP"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST"
+        android:layout_below="@+id/textView11"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="13dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/fcbdroneactivity_edtLocalIP"
+        android:background="@drawable/sel_edit_text"
+        android:textColor="@color/btn_TXT_GREY_DARK"
+        android:hint="@string/fcbdroneactivity_edtLocalIP"
+        android:layout_alignParentLeft="false"
+        android:layout_alignLeft="@+id/fcbdroneactivity_edtTCPPort"
+        android:layout_alignTop="@+id/fcbdroneactivity_txtLocalIP"
+        android:inputType="number"
+        android:editable="false"
+        android:enabled="true"
+        android:focusable="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="UDP Port"
+        android:id="@+id/fcbdroneactivity_txtUDPPort"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST"
+        android:layout_below="@+id/fcbdroneactivity_edtLocalIP"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="13dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/fcbdroneactivity_edtUDPPort"
+        android:background="@drawable/sel_edit_text"
+        android:textColor="@color/btn_TXT_GREY_DARK"
+        android:hint="@string/fcbdroneactivity_edtUDPPort"
+        android:layout_alignParentLeft="false"
+        android:layout_alignLeft="@+id/fcbdroneactivity_edtTCPPort"
+        android:layout_alignTop="@+id/fcbdroneactivity_txtUDPPort"
+        android:inputType="number" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="USB Settings"
+        android:id="@+id/textView9"
+        android:textStyle="bold"
+        android:textColor="@color/btn_TXT_WHITE"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/fcbdroneactivity_edtUDPPort"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:background="@color/btn_TXT_BLUE" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fcbdrone_usbbaudrate"
+        android:id="@+id/fcbdronactivity_txtUSBBaudRate"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/textView9"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fcbdroneactivity_lbUSBBaudRate"
+        android:layout_alignTop="@+id/fcbdronactivity_txtUSBBaudRate"
+        android:layout_alignLeft="@+id/fcbdroneactivity_edtUDPPort"
+        android:layout_alignRight="@+id/fcbdroneactivity_edtUDPPort"
+        android:spinnerMode="dialog" />
+
+    <TextView
+        android:id="@+id/textViewsysID"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fcbdroneactivity_lbUSBBaudRate"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:background="@color/btn_TXT_BLUE"
+        android:gravity="center_horizontal"
+        android:text="Mav Vehicle ID"
+        android:textColor="@color/btn_TXT_WHITE"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/fcbdroneactivity_txtSysID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewsysID"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="13dp"
+        android:layout_marginLeft="13dp"
+        android:layout_marginTop="14dp"
+        android:text="ID"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST" />
+
+    <EditText
+        android:id="@+id/fcbdroneactivity_edtSysID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewsysID"
+        android:layout_alignTop="@id/fcbdroneactivity_txtSysID"
+        android:layout_marginStart="36dp"
+        android:layout_marginLeft="36dp"
+        android:layout_toEndOf="@+id/fcbdroneactivity_txtSysID"
+        android:layout_toRightOf="@+id/fcbdroneactivity_txtSysID"
+        android:background="@drawable/sel_edit_text"
+        android:clickable="false"
+        android:ems="10"
+        android:enabled="true"
+        android:focusable="false"
+        android:inputType="number"
+        android:textColor="@color/btn_TXT_GREY_DARK" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="ConnectionType"
+        android:id="@+id/textView13"
+        android:textStyle="bold"
+        android:textColor="@color/btn_TXT_WHITE"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/fcbdroneactivity_edtSysID"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:background="@color/btn_TXT_BLUE" />
+
+    <RadioGroup
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+        android:layout_below="@+id/textView13"
+        android:id="@+id/fcbdroneactivity_rgConnections"
+        android:layout_marginTop="10dp">
+
+        <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fcbdrone_bt"
+        android:id="@+id/fcbdroneactivity_dbBT"
+        android:layout_below="@+id/textView13" />
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fcbdrone_usb"
+        android:id="@+id/fcbdroneactivity_rbUSB" />
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fcbdrone_tcp"
+        android:id="@+id/fcbdroneactivity_rbTCP" />
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fcbdrone_udp"
+        android:id="@+id/fcbdroneactivity_rbUDP" />
+
+    </RadioGroup>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fcbdroneactivity_rgProtocols"
+        android:layout_alignTop="@+id/fcbdroneactivity_rgConnections"
+        android:layout_alignParentRight="true">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fcbdrone_3dr"
+            android:id="@+id/fcbdroneactivity_rb3DR"
+            android:textColor="@color/btn_TXT_BLUE_DARKEST" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fcbdrone_native"
+            android:id="@+id/fcbdroneactivity_rbNative" />
+
+    </RadioGroup>
+
+    <ListView
+        android:id="@+id/fcbdroneactivity_bluetoothList"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/edit_text_roundededge"
+        android:layout_alignTop="@+id/fcbdroneactivity_txtTCPServerIP"
+        android:visibility="invisible" />
+
+
+</RelativeLayout>
+</ScrollView>

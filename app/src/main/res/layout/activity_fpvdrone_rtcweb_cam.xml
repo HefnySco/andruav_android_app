@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+     tools:context="rcmobile.FPV.activities.fpv.drone.FPVDroneRTCWebCamActivity">
+
+
+    <org.webrtc.SurfaceViewRenderer
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/fpvactivity_rtc_glviewsurface"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentEnd="false"
+        />
+    <view
+        class="rcmobile.FPV.widgets.flightControlWidgets.NEWSWidget"
+        android:layout_width="fill_parent"
+        android:layout_height="25dp"
+        android:id="@+id/NEWSWidget"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_centerHorizontal="true"
+        android:visibility="visible"
+        android:layout_margin="0dp" />
+
+    <rcmobile.FPV.widgets.flightControlWidgets.AndruavUnitInfoWidget
+        android:id="@+id/fpvactivity_widget_andruavinfo"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_telem_height"
+        android:keepScreenOn="true"
+        android:layout_alignParentBottom="false"
+        android:weightSum="1"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentRight="false"
+        android:layout_toRightOf="@+id/fpvactivity_btn_CameraSwitch"
+        android:layout_toEndOf="@+id/fpvactivity_btn_CameraSwitch"
+        android:layout_below="@+id/NEWSWidget"
+        android:layout_margin="5dp" />
+
+    <rcmobile.FPV.widgets.flightControlWidgets.AttitudeWidget
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/fpvactivity_widget_attitude"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/fpvactivity_widget_andruavinfo"
+        android:alpha="0.8" />
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fpvactivity_btn_ZeroTilt"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/angle_w_32x32"
+        android:layout_margin="2dp"
+        android:textSize="10sp"
+        android:text="@string/action_imu_zero"
+        android:padding="1dp"
+        android:layout_below="@+id/NEWSWidget" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fpvactivity_btn_CameraSwitch"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/camera_switch_w_32x32"
+        android:layout_margin="2dp"
+        android:textSize="10sp"
+        android:text="@string/action_cam_swap"
+        android:padding="1dp"
+        android:layout_below="@+id/fpvactivity_btn_ZeroTilt" />
+
+
+
+    <TextView
+        android:text="@string/action_video_on"
+        android:id="@+id/fpvactivity_txtVideoStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/btn_TXT_ERROR"
+        android:textStyle="normal|bold" />
+
+
+</RelativeLayout>

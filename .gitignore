@@ -1,0 +1,80 @@
+*.aar
+*.ap_
+*.bin
+*.zip
+*.apk
+*.dex
+*.log
+*.class
+*.iml
+
+bin/
+gen/
+out/
+build/
+.gradle
+
+local.properties
+
+# IntelliJ
+*.iml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/assetWizardSettings.xml
+.idea/dictionaries
+.idea/libraries
+.idea/caches
+.idea/modules.xml
+# Comment next line if keeping position of elements in Navigation Editor is relevant for you
+.idea/navEditor.xml
+
+# External native build folder generated in Android Studio 2.2 and later
+.externalNativeBuild
+.cxx/
+
+
+# Google Services (e.g. APIs or Firebase)
+# google-services.json
+
+# Freeline
+freeline.py
+freeline/
+freeline_project_description.json
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/readme.md
+
+# Version control
+vcs.xml
+
+# lint
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/
+# lint/reports/
+
+# Android Profiling
+*.hprof
+
+
+/KMZ/*.kmz
+/KMZ/*.jpg
+/KMZ/*.kml
+/Mapping.ods
+/captures/SystemInfo_*.txt
+.DS_Store
+
+.idea
+/ClientLib/build/
+/rangebar-release/build/
+
+Thumbs.db
+*.7z
+Image\Library/Thumbs.db:encryptable
+

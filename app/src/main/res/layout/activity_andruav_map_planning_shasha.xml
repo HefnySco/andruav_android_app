@@ -1,0 +1,145 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        class="rcmobile.FPV.activities.map.AndruavMapEditorWidget"
+        tools:layout="@layout/fragment_editor_mission_takeoff" />
+
+
+
+
+
+    <android.gesture.GestureOverlayView
+        android:id="@+id/mapactivity_gesture_map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:eventsInterceptionEnabled="false"
+        android:fadeEnabled="false"
+        android:gestureColor="@android:color/white"
+        android:gestureStrokeLengthThreshold="0.1"
+        android:gestureStrokeType="single"
+        android:layout_alignLeft="@+id/map"
+        android:layout_alignTop="@+id/map"
+        android:layout_alignBottom="@+id/map"
+        android:layout_alignRight="@+id/map">
+    </android.gesture.GestureOverlayView>
+
+        <fragment
+            android:id="@+id/mapactivity_mission"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            class="rcmobile.FPV.activities.map.AndruavMapEditorWidget"
+            tools:layout="@layout/fragment_editor_mission_takeoff"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fpvactivity_btnBack"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/back_r_32x32"
+        android:layout_margin="2dp"
+        android:text="@string/action_back"
+        android:textSize="10dp"
+        android:padding="1dp"
+        style="?android:attr/buttonStyleSmall" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fpvactivity_btnClear"
+        android:layout_below="@+id/fpvactivity_btnBack"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/delete_32x32"
+        android:layout_margin="2dp"
+        android:textSize="10dp"
+        android:text="@string/action_clear"
+        android:padding="1dp" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mapactivity_btnFreeHand"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/handfree_bg_32x32"
+        android:layout_below="@+id/fpvactivity_btnClear"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="2dp"
+        android:text="@string/action_map"
+        android:textSize="10dp"
+        android:padding="0dp" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mapactivity_btnMapType"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/earth_bg_32x32"
+        android:layout_below="@+id/mapactivity_btnFreeHand"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="2dp"
+        android:text="@string/action_map"
+        android:textSize="10dp"
+        android:padding="0dp" />
+
+
+    <SlidingDrawer
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:content="@+id/fpvactivity_Sliding"
+        android:handle="@+id/fpvactivity_slidingButton"
+        android:id="@+id/fpvactivity_slidingDrawer"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="false"
+        android:allowSingleTap="true"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:animateOnClick="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/fpvactivity_btnTakePhoto"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/fpvactivity_slidingButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/map_activity_buttonslider"
+            android:drawableTop="@drawable/drone_rad_gy_32x32"
+            android:background="@drawable/trans_button_drawer_shape"
+            android:padding="1dp"
+            android:textSize="12sp"
+            android:alpha="0.8" />
+
+        <rcmobile.FPV.widgets.sliding.SlidingAndruavUnitList
+            android:id="@+id/fpvactivity_Sliding"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="100"
+            android:alpha="0.9"
+            android:background="#eeeeee"
+            android:padding="5dp">
+
+        </rcmobile.FPV.widgets.sliding.SlidingAndruavUnitList>
+
+
+    </SlidingDrawer>
+</RelativeLayout>

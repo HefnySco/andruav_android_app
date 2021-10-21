@@ -1,0 +1,118 @@
+<ScrollView
+     android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/scrollView"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1.0"
+        android:orientation="vertical"
+        android:padding="5dp">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1.0"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="IMU"
+                android:id="@+id/btnIMU"
+                android:layout_weight="0.50"
+                android:layout_margin="2dp"
+                android:background="@drawable/sel_big_button_color"
+                android:textColor="@color/btn_TXT_COLOR"
+                android:drawableLeft="@drawable/gyro_w" />
+
+            <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="FPV"
+                    android:id="@+id/btnFPV"
+                    android:clickable="false"
+                    android:layout_weight="0.50"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/sel_big_button_color"
+                    android:textColor="@color/btn_TXT_COLOR"
+                    android:drawableLeft="@drawable/fpv_w" />
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1.0"
+        android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/gen_commserver"
+                    android:id="@+id/btnCommServer"
+                    android:layout_weight="0.50"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/sel_big_button_color"
+                    android:textColor="@color/btn_TXT_COLOR"
+                    android:drawableLeft="@drawable/com_w"
+                />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/gen_map"
+                    android:id="@+id/btnMap"
+                    android:layout_weight="0.50"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/sel_big_button_color"
+                    android:textColor="@color/btn_TXT_COLOR"
+                    android:drawableLeft="@drawable/earth_w" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1.0"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/gen_flightcontrolboard"
+                android:id="@+id/btnFCB"
+                android:layout_weight="0.50"
+                android:layout_margin="2dp"
+                android:background="@drawable/sel_big_button_color"
+                android:textColor="@color/btn_TXT_COLOR"
+                android:drawableLeft="@drawable/connection_w"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/gen_statistics"
+                android:id="@+id/btnData"
+                android:layout_weight="0.50"
+                android:layout_margin="2dp"
+                android:background="@drawable/sel_big_button_color"
+                android:textColor="@color/btn_TXT_COLOR"
+                android:drawableLeft="@drawable/statistics2_w"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/mainactivity_txtAccessCode"
+            android:layout_gravity="bottom"
+            android:layout_weight="0.50"
+            android:hint="access code"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp" />
+
+    </LinearLayout>
+    </ScrollView>
+

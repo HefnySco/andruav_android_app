@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    tools:layout_margin="10dp"
+    android:layout_height="120dp">
+
+    <TableRow
+
+        android:layout_height="55dp"
+        android:gravity="center_vertical">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minWidth="90dp"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/widgetandruavinfo_mobilebat"
+
+                style="@style/widgetandnruavinfoText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:drawableStart="@drawable/battery_gr_32x32"
+                android:drawableLeft="@drawable/battery_gr_32x32"
+                android:text="@string/empty_content"
+                tools:text="v" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="@dimen/info_bar_flight_mode_width"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minWidth="90dp"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/widgetandruavinfo_fcb"
+
+                style="@style/widgetandnruavinfoText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:drawableStart="@drawable/speed_gr_32x32"
+                android:drawableLeft="@drawable/speed_gr_32x32"
+                android:linksClickable="false"
+                android:text="@string/empty_content"
+                tools:text="m/s" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minWidth="90dp"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/widgetandruavinfo_name"
+
+                style="@style/widgetandnruavinfoText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:drawableStart="@drawable/plane_gr_32x32"
+                android:drawableLeft="@drawable/plane_gr_32x32"
+                android:text="@string/empty_content"
+                tools:text="unit" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minWidth="90dp"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/widgetandruavinfo_name2"
+
+                style="@style/widgetandnruavinfoText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:text="@string/empty_void"
+                tools:text="unit" />
+        </FrameLayout>
+    </TableRow>
+
+    <TableRow
+
+        android:layout_height="62dp"
+        android:gravity="center_vertical">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="61dp"
+            android:layout_weight="1"
+            android:minWidth="90dp"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/widgetandruavinfo_fcbbat"
+
+                style="@style/widgetandnruavinfoText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawableStart="@drawable/battery_gr_32x32"
+                android:drawableLeft="@drawable/battery_gr_32x32"
+                android:text="@string/empty_content"
+                tools:text="1000 m" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="104dp"
+            android:layout_height="61dp"
+            android:layout_weight="1"
+            android:minWidth="90dp"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/widgetandruavinfo_altitude"
+
+                style="@style/widgetandnruavinfoText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:drawableStart="@drawable/height_gr_32x32"
+                android:drawableLeft="@drawable/height_gr_32x32"
+                android:text="@string/empty_content"
+                tools:text="amp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minWidth="90dp"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/widgetandruavinfo_gps"
+
+                style="@style/widgetandnruavinfoText"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_gravity="center|left"
+                android:drawableStart="@drawable/gps_gr_32x32"
+                android:drawableLeft="@drawable/gps_gr_32x32"
+                android:minWidth="90dp"
+                android:minHeight="50dp"
+                android:text="@string/empty_content"
+                tools:text="3D" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minWidth="90dp"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/widgetandruavinfo_gps2"
+
+                style="@style/widgetandnruavinfoText"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_gravity="center|left"
+                android:minWidth="90dp"
+                android:minHeight="50dp"
+                android:text="@string/empty_void"
+                tools:text="3D" />
+        </FrameLayout>
+    </TableRow>
+
+</TableLayout>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string name="title_activity_andruav_map_planning_shasha">AndruavMapPlanningShasha</string>
+    <string name="title_activity_google_screen">GoogleScreen</string>
+    <string name="title_activity_purchase">PurchaseActivity</string>
+</resources>

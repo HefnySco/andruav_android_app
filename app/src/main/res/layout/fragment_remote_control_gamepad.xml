@@ -1,0 +1,180 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.Remote.RemoteControlGamePadTestFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView3">
+    <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="calibrate"
+            android:id="@+id/gamepad_valuebar_btn_calibrate"
+            android:layout_marginTop="10dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:id="@+id/gamepad_valuebar_btn_next"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/gamepad_valuebar_btn_calibrate" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="THR"
+            android:id="@+id/gamepad_txt_channelname1"
+            android:layout_below="@+id/gamepad_valuebar_btn_calibrate"
+            style="@style/GamePadChannelNames"
+            android:layout_marginTop="10dp" />
+
+        <rcmobile.android.valueBar.ValueBar
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/gamepad_valuebar_channel1"
+            style="@style/GamePadValueBar"
+            android:layout_alignTop="@+id/gamepad_txt_channelname1"
+            android:layout_toRightOf="@+id/gamepad_txt_channelname1" />
+
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="AIL"
+            android:id="@+id/gamepad_txt_channelname2"
+            android:layout_alignTop="@+id/gamepad_valuebar_channel2"
+            style="@style/GamePadChannelNames"/>
+
+        <rcmobile.android.valueBar.ValueBar
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/gamepad_valuebar_channel2"
+            android:layout_below="@+id/gamepad_valuebar_channel1"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/gamepad_txt_channelname2"
+            style="@style/GamePadValueBar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:id="@+id/gamepad_txt_channelname3"
+            android:layout_alignTop="@+id/gamepad_valuebar_channel3"
+            style="@style/GamePadChannelNames"/>
+
+        <rcmobile.android.valueBar.ValueBar
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/gamepad_valuebar_channel3"
+            android:layout_below="@+id/gamepad_valuebar_channel2"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/gamepad_txt_channelname3"
+            style="@style/GamePadValueBar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:id="@+id/gamepad_txt_channelname4"
+            android:layout_alignTop="@+id/gamepad_valuebar_channel4"
+            style="@style/GamePadChannelNames"/>
+
+        <rcmobile.android.valueBar.ValueBar
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/gamepad_valuebar_channel4"
+            android:layout_below="@+id/gamepad_valuebar_channel3"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/gamepad_txt_channelname4"
+            style="@style/GamePadValueBar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:id="@+id/gamepad_txt_channelname5"
+            android:layout_alignTop="@+id/gamepad_valuebar_channel5"
+            style="@style/GamePadChannelNames"/>
+
+        <rcmobile.android.valueBar.ValueBar
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/gamepad_valuebar_channel5"
+            android:layout_below="@+id/gamepad_valuebar_channel4"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/gamepad_txt_channelname5"
+            style="@style/GamePadValueBar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:id="@+id/gamepad_txt_channelname6"
+            android:layout_alignTop="@+id/gamepad_valuebar_channel6"
+            style="@style/GamePadChannelNames"/>
+
+        <rcmobile.android.valueBar.ValueBar
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/gamepad_valuebar_channel6"
+            android:layout_below="@+id/gamepad_valuebar_channel5"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/gamepad_txt_channelname6"
+            style="@style/GamePadValueBar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:id="@+id/gamepad_txt_channelname7"
+            android:layout_alignTop="@+id/gamepad_valuebar_channel7"
+            style="@style/GamePadChannelNames"/>
+
+        <rcmobile.android.valueBar.ValueBar
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/gamepad_valuebar_channel7"
+            android:layout_below="@+id/gamepad_valuebar_channel6"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/gamepad_txt_channelname7"
+            style="@style/GamePadValueBar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:id="@+id/gamepad_txt_channelname8"
+            android:layout_alignTop="@+id/gamepad_valuebar_channel8"
+            style="@style/GamePadChannelNames"/>
+
+        <rcmobile.android.valueBar.ValueBar
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/gamepad_valuebar_channel8"
+            android:layout_below="@+id/gamepad_valuebar_channel7"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/gamepad_txt_channelname8"
+            style="@style/GamePadValueBar" />
+
+
+    </RelativeLayout>
+
+    </ScrollView>
+
+</FrameLayout>

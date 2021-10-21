@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        style="@style/generalLabelTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/gen_altitude"
+        android:id="@+id/cardwheel_attribute_name"
+        android:textAllCaps="false"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="20dp" />
+
+    <com.vi.swipenumberpicker.SwipeNumberPicker
+        style="@style/generalNumberSpinner"
+        android:id="@+id/cardwheel_attribute_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:snp_numberColor="@color/btn_TXT_GREYLIGHT"
+        app:snp_arrowColor="@color/btn_TXT_GREYLIGHT"
+        app:snp_backgroundColor="@color/btn_TXT_BLUE_DARKEST"
+        app:snp_max="9000"
+        app:snp_min="0"
+        app:snp_value="20"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center_horizontal" />
+</LinearLayout>

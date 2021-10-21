@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+    <ListPreference
+        android:title="@string/pref_gr_unitmetric"
+        android:key="frOdcS6H9DA"
+        android:entries="@array/pref_gr_unitmetric_unitTypes"
+        android:entryValues="@array/pref_gr_unitmetric_unitTypesValues"
+        android:summary="@string/pref_gr_unitmetric_summary"
+        />
+
+</PreferenceScreen>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/scrollView"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1.0"
+        android:baselineAligned="false">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:text="@string/firstlogin_activity_btn_DRONE"
+            android:id="@+id/firstactivity_btnDroneMode"
+            android:background="@drawable/sel_bigtrans_button_color"
+            android:textColor="@color/btn_TXT_BLUE"
+            android:drawableLeft="@drawable/plane_b_32x32"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp"
+            android:layout_height="48dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="@string/firstlogin_activity_btn_GCS"
+            android:id="@+id/firstactivity_btnGCSMode"
+            android:background="@drawable/sel_bigtrans_button_color"
+            android:textColor="@color/btn_TXT_BLUE"
+            android:drawableLeft="@drawable/gcs_32x32"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gen_noagain"
+            android:id="@+id/firstactivity_chkNoAgain"
+            android:textColor="@color/btn_TXT_BLUE"
+            android:layout_marginTop="10dp"
+            android:textSize="10sp" />
+    </LinearLayout>
+</ScrollView>

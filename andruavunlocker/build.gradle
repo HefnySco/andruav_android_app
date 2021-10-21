@@ -1,0 +1,59 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 27
+
+
+
+    signingConfigs {
+        config {
+            keyAlias 'rcmobilestuff.security'
+            keyPassword 'rcmobilestuffMonth15'
+            //storeFile file('D:/My DropBox/Dropbox/Keys/rcmobile.FPV.Activities.jks')
+            storeFile file('/home/mhefny/Documents/Keys/AndruavUnlocker/andruavunlocker.keystore')
+            storePassword 'andruavUnlockerMonth15'
+        }
+    }
+
+    defaultConfig {
+        applicationId "rcmobilestuff.security"
+        minSdkVersion 16
+        targetSdkVersion android_build_target_sdk_version
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.config
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug
+                {
+                    signingConfig signingConfigs.config
+                }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'de.greenrobot:eventbus:2.4.0'
+    testImplementation 'junit:junit:4.12'
+}
+
+
+dependencies {
+    //implementation 'com.android.billingclient:billing:1.2'
+}

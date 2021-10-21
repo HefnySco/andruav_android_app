@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <ListPreference
+        android:title="@string/pref_gr_fcb_enableSmartTelemetry"
+        android:key="Hdl8aR1dQUy"
+        android:summary="@string/pref_gr_fcb_enableSmartTelemetry_summary"
+        android:entries="@array/pref_gr_fcb_smarttelemetrylevel"
+        android:entryValues="@array/pref_gr_fcb_smarttelemetrylevelt_value" />
+
+
+
+</PreferenceScreen>

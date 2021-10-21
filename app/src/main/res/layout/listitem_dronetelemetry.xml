@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/listitem_dronetelemetry_txtDrone"
+            android:layout_column="0"
+            android:layout_toRightOf="@+id/listitem_dronetelemetry_tglSelected"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@+id/listitem_dronetelemetry_tglSelected"
+            android:layout_marginTop="15dp" />
+
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ssa"
+            android:id="@+id/listitem_dronetelemetry_tglSelected"
+            android:layout_column="2"
+            android:layout_alignParentRight="true"
+            android:singleLine="false"
+            android:textOff="@string/action_select"
+            android:textOn="@string/action_active" />
+
+
+</RelativeLayout>

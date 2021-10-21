@@ -1,0 +1,63 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion android_build_sdk_version
+    buildToolsVersion android_build_tools_version
+    defaultConfig {
+        minSdkVersion android_build_min_sdk_version
+        targetSdkVersion android_build_target_sdk_version
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            buildConfigField "boolean", "IS_DEBUG", "false"
+            minifyEnabled true
+            jniDebuggable false
+            zipAlignEnabled true
+            renderscriptDebuggable false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+        }
+        debug {
+            buildConfigField "boolean", "IS_DEBUG", "true"
+            minifyEnabled false
+            jniDebuggable false
+            testCoverageEnabled = false
+            renderscriptDebuggable true
+            zipAlignEnabled true
+        }
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+
+    flavorDimensions "audience"
+
+
+    productFlavors {
+        PUBLIC_
+                {
+                    dimension "audience"
+                    buildConfigField "String", "BuidType" , "\"PUBLIC_\""
+                }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    api project(':andruavProtocol')
+    api project(':webrtc')
+    api 'de.greenrobot:greendao:2.1.0'
+    api 'com.squareup.okhttp3:okhttp:3.3.1'
+    //api 'org.webrtc:google-webrtc:1.0.30039'
+    api 'de.greenrobot:eventbus:2.4.0'
+}
+

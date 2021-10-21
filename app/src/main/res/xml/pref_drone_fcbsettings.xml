@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:title="@string/pref_gr_fcb_enableSmartTelemetry"
+        android:key="Hdl8aR1dQUy"
+        android:summary="@string/pref_gr_fcb_enableSmartTelemetry_summary"
+        android:entries="@array/pref_gr_fcb_smarttelemetrylevel"
+        android:entryValues="@array/pref_gr_fcb_smarttelemetrylevelt_value" />
+
+    <CheckBoxPreference
+        android:title="@string/pref_gr_fcb_autofcbconnect"
+        android:key="skiuLMsCOCFVqQ"
+        android:summary="@string/pref_gr_fcb_autofcbconnect_summary"
+        android:defaultValue="false"
+        />
+    <CheckBoxPreference
+        android:title="@string/pref_gr_fcb_autostart"
+        android:key="vyqtl51lG0OWxf64b1j37g"
+        android:summary="@string/pref_gr_fcb_autostart_summary"
+        android:defaultValue="false"
+        />
+    <CheckBoxPreference
+        android:title="@string/pref_gr_fcb_ignore_mobsensors"
+        android:key="mePMWRUHZFwA"
+        android:summary="@string/pref_gr_fcb_ignore_mobsensors_summary"
+        android:defaultValue="false"
+        />
+    <CheckBoxPreference
+        android:title="@string/pref_gr_fcb_gps_injection"
+        android:key="LNScs17Oks"
+        android:summary="@string/pref_gr_fcb_gps_injection_summary"
+        android:defaultValue="false"
+        />
+
+
+
+</PreferenceScreen>

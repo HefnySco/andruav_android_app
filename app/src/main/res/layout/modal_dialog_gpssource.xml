@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="3dp">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:text="@string/gpsdlg_Title"
+        android:id="@+id/mdlggps_txt_title"
+        android:textStyle="bold"
+        android:textColor="@color/btn_TXT_WHITE"
+        android:background="@color/btn_TXT_BLUE"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="3dp" />
+
+
+    <RadioButton
+        android:text="@string/gen_GPS_auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mdlggps_auto"
+        android:checked="false"
+        android:layout_below="@+id/mdlggps_txt_title" />
+
+    <RadioButton
+        android:text="@string/gen_GPS_mobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mdlggps_mobile"
+        android:layout_below="@+id/mdlggps_auto" />
+
+    <RadioButton
+        android:text="@string/gen_GPS_fcb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mdlggps_fcb"
+        android:layout_below="@+id/mdlggps_mobile" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:text="Comment"
+        style="@style/commentText"
+        android:ems="10"
+        android:id="@+id/mdlggps_desc"
+        android:layout_below="@+id/mdlggps_fcb"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginBottom="3dp"
+        android:typeface="sans" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/mdlggps_btn_apply"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/gps_fix_32x32"
+        android:text="@string/action_apply"
+        android:textSize="10dp"
+        android:padding="1dp"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_marginRight="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/mdlggps_auto" />
+
+</RelativeLayout>

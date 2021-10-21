@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_gr_uavos_module_type_array">
+        <item name="m">Main</item>
+        <item name="n">Camera</item>
+        <item name="o">FCB</item>
+    </string-array>
+    <string-array name="pref_gr_uavos_module_type_array_value">
+        <item name="m">"comm"</item>
+        <item name="n">"camera"</item>
+        <item name="o">"fcb"</item>
+    </string-array>
+</resources>

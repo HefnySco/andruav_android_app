@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AndruavMiddleLibrary</string>
+
+    <string name="action_scan">Scan</string>
+
+
+    <!-- COLORS -->
+
+    <string name="str_TXT_BLUE">#75A4D3</string>
+    <string name="str_TXT_BLUE_DARKER">#75A4D3</string>
+    <string name="str_TXT_BLUE_DARKEST">#3671AB</string>
+    <string name="str_TXT_VIOLET">#7584D3</string>
+    <string name="str_TXT_GREEN">#75D375</string>
+    <!-- used brown as the key-->
+    <string name="str_TXT_GREEN_DARKER">#36AB36</string>
+    <string name="str_TXT_GREE_DARKESTN">#1D5E1D</string>
+    <string name="str_TXT_MAGENTA">#D375D3</string>
+    <string name="str_TXT_BROWN">#D3A475</string>
+    <string name="str_TXT_ERROR">#F75050</string>
+    <string name="str_TXT_WARNING">#D3D375</string>
+    <string name="str_TXT_GREY_DARK">#3E3E3E</string>
+    <string name="str_TXT_GREY">#AEAEAE</string>
+    <string name="str_TXT_GREYLIGHT">#DEDEDE</string>
+    <string name="str_TXT_WHITE">#FFFFFF</string>
+    <string name="str_TX_HANDLER">#f79090</string>
+    <string name="str_GOOGLEPLUS_RED">#dd4b39</string>
+
+    <string name="str_TXT_GREEN_HUD_LAND">#36AB36</string>
+    <string name="str_TXT_GREEN_HUD_SKY">#3671AB</string>
+
+
+    <!-- END OF COLORS -->
+
+    <string name="title_activity_my">RCStuff FPV</string>
+    <string name="hello_world">Started</string>
+    <string name="facebook_app_id">Started</string>
+    <string name="empty_content" translatable="false">--</string>
+    <string name="empty_void" translatable="false"> </string>
+    <!-- Preference & Factory Default Values -->
+    <string name="pref_description">andruav unit</string>
+    <string name="pref_groupname">1</string>
+    <string name="pref_username">Andruav1</string>
+    <string name="pref_ws_URL">Andruav.com</string>
+    <string name="pref_gr_fcb">FCB &amp; Telemetry</string>
+    <string name="pref_gr_uavos">Module &amp; Types</string>
+    <string name="pref_gr_recovery">Safety &amp; Recovery</string>
+    <string name="pref_gr_recovery_fm_chk">Flight Mode Fail Safe</string>
+    <string name="pref_gr_recovery_fm_chk_summary">In case of losing Internet connection activate RTL or Loiter after 60 seconds.</string>
+    <string name="pref_gr_recovery_flash_chk">Flash Screen</string>
+    <string name="pref_gr_recovery_flash_chk_summary">change screen color in red and blue to visually locate drone.</string>
+    <string name="pref_gr_recovery_siren_chk">Lost Siren</string>
+    <string name="pref_gr_recovery_siren_chk_summary">play a siren in high volume to locate drone when lost.</string>
+    <string name="pref_gr_recovery_chk">SMS my location</string>
+    <string name="pref_gr_recovery_chk_summary">sends SMS to a mobile number with GPS longitude and latitude when network connection is lost.</string>
+    <string name="pref_gr_recovery_chk_rc_block">Enable RC Block</string>
+    <string name="pref_gr_recovery_chk_rc_block_summary">vehicle accepts Blocking command to mute all control from GCSs.</string>
+    <string name="pref_gr_recovery_edt_rcCh_blk_trigger">RC Block TX Channel</string>
+    <string name="pref_gr_recovery_edt_rcCh_blk_trigger_summary">Channel number that triggers GCS block. Choose a value from 1 to 8.</string>
+    <string name="pref_gr_recovery_edt_blk_battery_min">Battery min %</string>
+    <string name="pref_gr_recovery_edt_blk_battery_min_summary">Minimum board or mobile battery percentage to activate Fail Safe.</string>
+    <string name="pref_gr_recovery_edt_blk_trigger_min">RC Block Channel PMW min</string>
+    <string name="pref_gr_recovery_edt_blk_trigger_min_summary">Minimum PMW signal to activate blocking. A typical value is 1650, above which the block mode will be active.</string>
+    <string name="pref_gr_recovery_txt">SMS to Mobile No:</string>
+    <string name="pref_feedback_support">Feedback &amp;  Support</string>
+    <string name="pref_gr_help_analytics">Enable Analytics</string>
+    <string name="pref_gr_help_analytics_summary">Enabling this option helps to develop better updates and better user experience. ONLY anonymous data is sent.</string>
+    <string name="pref_gr_help_debug">Enable Logging</string>
+    <string name="pref_gr_help_debug_summary">Logging Errors, sign-in/out durations. No emails,images,gps or any private data is logged.</string>
+    <string name="pref_gr_help_web">Visit www.Andruav.com</string>
+    <string name="pref_gr_help_weburl">http://www.Andruav.com</string>
+    <string name="pref_gr_general_settings">General Settings</string>
+    <string name="pref_gr_advanced_settings">Advanced &amp;  Settings</string>
+    <string name="pref_gr_fpv_settings">FPV &amp;  Settings</string>
+    <string name="pref_gr_fpv_onlylocal_stunserver">Local STUN Server Only</string>
+    <string name="pref_gr_fpv_onlylocal_stunserver_summary">Donot connect to external STUN Servers</string>
+    <string name="pref_gr_fpv_stunserver">STUN Server</string>
+    <string name="pref_gr_fpv_stunserver_summary">e.g. stun:192.168.1.42:3478</string>
+    <string name="pref_gr_fpv_videoframerate">Video Frames Rate</string>
+    <string name="pref_gr_fpv_videoframerate_summary">(Drone Mode) video frame rate per MINUTE default is 200</string>
+    <string name="pref_gr_fpv_videocameraselect">Front/Back Camera</string>
+    <string name="pref_gr_fpv_videocameraselect_summary">Select which camera to stream from.</string>
+    <string name="pref_gr_fpv_videocamerarotation">Video Camera Rotation Angle</string>
+    <string name="pref_gr_fpv_videocamerarotation_summary">Rotate displayed video in FPV screen.</string>
+    <string name="pref_gr_fpv_screenorientation">FPV Screen Orientation</string>
+    <string name="pref_gr_fpv_screenorientation_summary">FPV screen can be portrait or landscap.</string>
+    <string name="pref_gr_fpv_videoimagesize">Video Image Size</string>
+    <string name="pref_gr_fpv_videoimagesize_summary">Note: Try low first. Higher could make slow video rate</string>
+    <string name="pref_gr_fpv_videocamem_hd">Stream in HD</string>
+    <string name="pref_gr_fpv_videocamemirrored_hd_summary">Note: Prefer streaming in HD if network allows.</string>
+    <string name="pref_gr_fpv_imagecapturesize">Captured Image Size</string>
+    <string name="pref_gr_fpv_imagecapturesize_summary">Note: Should be higher or equal to Video Image Size.</string>
+    <string name="pref_gr_fpv_useInternalCamera">Use Camera for GCS</string>
+    <string name="pref_gr_fpv_useInternalCamera_summary">Allow GCS to be used to capture image and track them in KML file. This is single mode use..</string>
+    <string name="pref_gr_fpv_useExternalCamera">Use External Video Streamer</string>
+    <string name="pref_gr_fpv_useExternalCamera_summary">Allows Drone to send video stream from another application.</string>
+    <string name="pref_gr_fpv_useExternalRTCCamera">Enable Video Streaming Plus</string>
+    <string name="pref_gr_fpv_useExternalRTCCamera_summary">Much smoother video quality on Lan and via Internet.</string>
+    <string name="pref_gr_fpv_videocamemirrored">Video Image Mirrored</string>
+    <string name="pref_gr_fpv_videocamemirrored_summary">Mirror video image captured by drone</string>
+    <string name="pref_gr_fpv_useUDPCamera">Use Direct LAN Communication</string>
+    <string name="pref_gr_fpv_useUDPCamera_summary">Accelerate video and reduce Internet traffic by sending Video frame directly to CGS on the same LAN</string>
+    <string name="pref_gr_adv_enableGroupName">Enable Multiple Groups</string>
+    <string name="pref_gr_adv_enableGroupName_summary">Different groups cannot see each other even with the same Access Code</string>
+    <string name="pref_gr_fcb_enableSmartTelemetry">Smart Telemetry</string>
+    <string name="pref_gr_fcb_enableSmartTelemetry_summary">Smart telemetry enables passive telemetry to use much less bandwidth.</string>
+    <string name="pref_gr_fcb_autostart">Auto Start App</string>
+    <string name="pref_gr_fcb_autostart_summary">Start Andruav automatically when Mobile restarts. DRONE MODE ONLY</string>
+    <string name="pref_gr_fcb_autofcbconnect">Auto Connect FCB</string>
+    <string name="pref_gr_fcb_autofcbconnect_summary">Automatically connect to FCB board once Andruav Started.</string>
+    <string name="pref_gr_fcb_ignore_mobsensors">Ignore Mobile Sensors</string>
+    <string name="pref_gr_fcb_ignore_mobsensors_summary">Never use IMU or GPS from Mobile even if FCB is offline.</string>
+    <string name="pref_gr_fcb_gps_injection">GPS Injection</string>
+    <string name="pref_gr_fcb_gps_injection_summary">Inject mobile GPS into FCB.</string>
+    <string name="pref_gr_unitmetric">Units</string>
+    <string name="pref_gr_unitmetric_summary">Use Metric or Imperial System</string>
+    <string name="pref_gr_uavos_module_type">Module Type</string>
+    <string name="pref_gr_uavos_module_type_summary">Select what type of drone device this is.</string>
+    <string name="pref_gr_uavos_module_comm_ip">Comm Module IP</string>
+    <string name="pref_gr_uavos_module_comm_ip_summary">Comm Module IP used by other types modules</string>
+    <string name="pref_gr_uavos_module_comm_ip_discover">Auto Comm Detection</string>
+    <string name="pref_gr_uavos_module_comm_ip_discover_summary">Detect Comm Module IP automatically</string>
+
+    <integer name="pref_ws_Port">9210</integer>
+    <integer name="pref_hub_Port">5760</integer>
+    <!-- ACTIONS -->
+    <string name="action_waypoint_waypoints_received">Mission received</string>
+    <string name="action_waypoint_reached_charging">Reached waypoint </string>
+    <string name="action_waypoint_reached_going">going to waypoint </string>
+    <string name="action_bat_charging">Charging</string>
+    <string name="action_select">Select</string>
+    <string name="action_active">Active</string>
+    <string name="action_go">Go</string>
+    <string name="action_none">None</string>
+    <string name="action_apply">apply</string>
+    <string name="action_share">share</string>
+    <string name="action_map">map</string>
+    <string name="action_mapedit">edit</string>
+    <string name="action_back">back</string>
+    <string name="action_clear">clear</string>
+    <string name="action_sos_sms">SMS</string>
+    <string name="action_sos_whistle">Whistle</string>
+    <string name="action_sos_flash">Flash</string>
+    <string name="action_fcbctrl_alt">alt. m</string>
+    <string name="action_fcbctrl_diameter">rad. m</string>
+    <string name="action_fcbctrl_arm">ARM</string>
+    <string name="action_fcbctrl_climb">Climb</string>
+    <string name="action_fcbctrl_land">Land</string>
+    <string name="action_fcbctrl_track">Track</string>
+    <string name="action_fcbctrl_cruise">Cruise</string>
+    <string name="action_fcbctrl_fbwa">FBWA</string>
+    <string name="action_fcbctrl_manual">Manual</string>
+    <string name="action_fcbctrl_auto">Auto</string>
+    <string name="action_fcbctrl_guided">Guided</string>
+    <string name="action_fcbctrl_loiter">Loiter</string>
+    <string name="action_fcbctrl_brake">Brake</string>
+    <string name="action_fcbctrl_hold">Hold</string>
+    <string name="action_fcbctrl_rtl">RTL</string>
+    <string name="action_fcbctrl_smart_rtl">S-RTL</string>
+    <string name="action_fcbctrl_yaw">YAW</string>
+    <string name="action_fcbctrl_speed">GS</string>
+    <string name="action_cam_img_interval">Shooting Intervals</string>
+    <string name="action_cam_img_total">Total Images</string>
+    <string name="action_cam_swap">swap</string>
+    <string name="action_cam_shoot">shoot</string>
+    <string name="action_imu_zero">zero</string>
+    <string name="action_video_shoot">video</string>
+    <string name="action_cam_rotate">rotate</string>
+    <string name="action_cam_localrec">loc rec</string>
+    <string name="action_engaged">Engaged</string>
+    <string name="action_disengaged">Disengaged</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_settings_drone">Settings as Drone</string>
+    <string name="action_settings_gcs">Settings as GCS</string>
+    <string name="action_reset">Reset</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_connect">Connect</string>
+    <string name="action_dualband">Dual Connection</string>
+    <string name="action_load">Load</string>
+    <string name="action_done">Done</string>
+    <string name="action_res_tel">Restoring Telemetry</string>
+    <string name="action_saved">Saved</string>
+    <string name="action_save">Save</string>
+    <string name="action_login">Login</string>
+    <string name="action_signout">sign out</string>
+    <string name="action_regenerate">Regenerate</string>
+    <string name="action_calibrate">Calibrate</string>
+    <string name="action_zeroTilt">Zero Tilt</string>
+    <string name="action_init">Initialization…</string>
+    <string name="action_register">Register</string>
+    <string name="action_savebeforeexit">Do you want to save changes?</string>
+    <string name="action_sysrestart">System will restart.</string>
+    <string name="action_exit">Exit</string>
+    <string name="action_drone_added">Drone added</string>
+    <string name="action_record_video_start_local">Start Recording Incomming Video</string>
+    <string name="action_record_video_stop_local">Stop Recording Incomming Video</string>
+    <string name="action_gcs_added">Ground Station added</string>
+    <string name="action_find">Find</string>
+    <string name="action_list">List</string>
+    <string name="action_usb_permission">You need to approve USB permission and retry</string>
+    <string name="action_fcb_mode">CTRL</string>
+    <string name="action_sos">SOS</string>
+    <string name="action_track">track</string>
+    <string name="action_video_mirror">mirror</string>
+    <string name="action_video_err">Video Error</string>
+    <string name="action_video_on">Video on</string>
+    <string name="action_video_off">Video off</string>
+    <string name="action_video_con">Connecting to Video</string>
+    <string name="action_video_rx">Receiving Video</string>
+    <string name="actionremote_settings">RC Settings</string>
+    <string name="actionremote_engage">Engage Remote</string>
+    <!-- Email -->
+    <string name="email_title">"Send your Question via"</string>
+    <string name="email_subject">Andruav Question</string>
+    <string name="email_subject2">Andruav Permission Explanation</string>
+    <string name="email_to">rcmobilestuff@gmail.com</string>
+    <string name="email_body">Description:</string>
+    <string name="email_body2">Please explain why do you need these particular [  ,   ,   ,    ] permissions?</string>
+
+    <!-- Words & SENTENCES -->
+    <string name="gen_altitude">Altitude</string>
+    <string name="gen_delay">Delay</string>
+    <string name="gen_noagain">Dont show this again</string>
+    <string name="gen_about">About</string>
+    <string name="gen_CGS">CGS </string>
+
+
+    <string name="gen_GPS_auto">Auto GPS</string>
+    <string name="gen_GPS_mobile">Mobile Only</string>
+    <string name="gen_GPS_fcb">GPS FCB Only</string>
+    <string name="gen_GPS_auto_short">A-GPS</string>
+    <string name="gen_GPS_mobile_short">M-GPS</string>
+    <string name="gen_GPS_fcb_short">F-GPS</string>
+
+    <string name="gen_GPS_auto_desc">Select available GPS source with higher priority to FCB.</string>
+    <string name="gen_GPS_mobile_desc">Only Mobile GPS is used, if there is no GPS on mobile there will be no GPS data.</string>
+    <string name="gen_GPS_fcb_desc">Only GPS data from FCB is used unless there is no FCB board.</string>
+
+
+    <string name="gen_step1">Step 1: </string>
+    <string name="gen_step2">Step 2: </string>
+    <string name="gen_step3">Step 3: </string>
+    <string name="gen_step4">Step 4: </string>
+    <string name="gen_on">On</string>
+    <string name="gen_off">Off</string>
+    <string name="gen_map">Map</string>
+    <string name="gen_security">Security</string>
+    <string name="gen_flightcontrolboard">FCB</string>
+    <string name="gen_statistics">Data</string>
+    <string name="gen_must_exit">You must restart now to take effect.</string>
+    <string name="gen_exit">Do you want to exit?</string>
+    <string name="gen_regenerate">You will get a new Access Code via email only, and the current one will be invalid. You need to copy and paste the new Access Code in all other Andruav mobiles.</string>
+    <string name="gen_front">Front</string>
+    <string name="gen_left">Left</string>
+    <string name="gen_down">Down</string>
+    <string name="gen_right">Right</string>
+    <string name="gen_help">Ask for Help</string>
+    <string name="gen_ws_registered">Name Registered.</string>
+    <string name="gen_accesscodevalid">Validated Access Code</string>
+    <string name="gen_error">Error</string>
+    <string name="gen_warrning">Warrning</string>
+    <string name="gen_connection">Connection</string>
+    <string name="gen_connected">Connected</string>
+    <string name="gen_connectionlost">Connection Lost!</string>
+    <string name="gen_connectiondisconnected">Disconnected</string>
+    <string name="gen_commserver">Com</string>
+    <string name="gen_speak_droneactivated">Drone Mode activated</string>
+    <string name="gen_speak_GCSactivated">Ground Station Mode Activated</string>
+    <string name="gen_speak_connecting">Connecting to Server</string>
+    <string name="gen_FactoryReset">Factory Reset</string>
+    <string name="gen_hostfound">Host Found</string>
+    <string name="gen_bluetooth_enabled">Bluetooth has been enabled</string>
+    <string name="gen_bluetooth_disabled">Bluetooth has been disabled</string>
+    <string name="gen_udp_disabled">UDP has been disabled</string>
+    <string name="gen_bluetooth_connected">Bluetooth Connected</string>
+    <string name="gen_bluetooth_searching">Bluetooth Connected</string>
+    <string name="gen_bluetooth_disconnected">Searching for Devices</string>
+    <string name="gen_usb_connected">USB Connected</string>
+    <string name="gen_conn_disconnected">Disconnected from Board</string>
+    <string name="gen_usb_disconnected">USB Disconnected</string>
+    <string name="gen_bluetooth_connecting">Connecting</string>
+    <string name="gen_bluetooth_disconnecting">Disconnecting</string>
+    <string name="gen_serialsocket_started">Telemetry socket started.</string>
+    <string name="gen_serialsocket_stopped">Telemetry socket stopped.</string>
+    <string name="gen_serialsocket_no_wifi">You need wifi access. Enable Tethering in case you use 3G/4G connection.</string>
+    <string name="gen_serialsocket_client_connected">Client socket connected</string>
+    <string name="gen_serialsocket_client_disconnected">Client socket disconnected</string>
+    <string name="err_per_bad_mode">Access Code Permission does not allow this mode.</string>
+    <string name="err_old_app_version">Cannot start an old Andruav version. Please update.</string>
+    <string name="err_invalid_portnum">Invalid port number.</string>
+    <string name="err_config_drone">Cannot be a drone mode andruav. no GPS or Compass</string>
+    <string name="err_security">Missing Permissions. Please grant permissions.</string>
+    <string name="err_no_wifi">No wifi connection exists</string>
+    <string name="err_invalid_unitname">Invalid Unit Name</string>
+    <string name="err_nullValue">Empty Value</string>
+    <string name="err_accountNotFound">Account Not Found</string>
+    <string name="err_hostnotfound">Could not connect to server.\nCheck your registration.</string>
+    <string name="err_ws_replicatedid">Choose another Name or Group, or you can use "Enforce Name" option.</string>
+    <string name="err_ws_cmd_ping">Ping Error!</string>
+    <string name="err_ws_encrypted_16">Encryption length key should be 16 Characters</string>
+    <string name="err_server_unreachable">Cannot Access Andruav.com Authentication Server</string>
+    <string name="err_no_internet">No Internet Access!</string>
+    <string name="err_no_internet_dji">You need to have Internet access to activate DJI library.</string>
+    <string name="err_loginfailed">Login Failed</string>
+    <string name="err_no_bluetooth">Your device does not support Bluetooth</string>
+    <string name="err_bluetooth_cannotconnect">Blue tooth cannot connect to selected device</string>
+    <string name="err_serialsocket_no_remote_telemetry">No Drone telemetry selected</string>
+    <string name="err_webrtc_drone_compatibility">You enabled Video Stream Plus. Please give wait to connect to camera. In case you have problems please use settings to select normal video streaming.</string>
+    <string name="err_webrtc_drone_notenabled">Drone has [Video Stream Pro] enabled. But this option is disabled on this GCS. \nyou need to enable it to receive video from that drone.</string>
+    <string name="err_protocol_doesnt_suppport_telemetry">Drone need to use native connection to enable telemetry</string>
+    <string name="err_remote_min_max">MaximFum should be higher than minimum</string>
+    <string name="err_remote_max_toohigh">Maximum should not exceed 2000</string>
+    <string name="err_remote_min_toolow">Minimum should not be under 800</string>
+    <string name="err_remote_min_max_range">Min and max range are too small</string>
+    <string name="err_remote_range_adjusted">Min Max range has been readjusted for you check them in RED and save again.</string>
+    <string name="err_feature_multitouch">Multitouch is not supported</string>
+    <string name="err_ipcam_notinstalled">IP Webcam not installed</string>
+    <string name="err_novideo_signal">NO Video</string>
+    <string name="err_novideo_record_badversion">Cannot Record Video, Android Device version is older than Jelly Beans</string>
+    <string name="err_3dr_mobileversion">Android OS Android 4.0 or higher is required for 3DR Service connection</string>
+    <string name="err_dji_mobileversion">Android OS Android 4.2 or higher is required for DJI connection</string>
+    <string name="err_rtc_nostunserver">No Stun server for Video Streaming is defined.</string>
+    <string name="conf_factoryReset">Are you sure you want to Reset all settings ?</string>
+    <string name="conf_Refresh">Are you sure you want to Restore defaults ?</string>
+    <string name="conf_engage_remote">Enabling OnScreen Remote will stop your TX. Proceed ?</string>
+    <string name="separator">separator</string>
+    <!-- Menu Items [non actions] -->
+    <string name="mi_main_drone">Drone</string>
+    <string name="mi_main_GCS">GCS</string>
+
+    <!-- Titles & Labels -->
+    <string name="imu_calibration">IMPORTANT\nPut the mobile on a flat horizontal surface and press OK.</string>
+    <string name="imu_tilt">Put the mobile in the final position in the plane then press tilt.</string>
+    <string name="websocket_Title">Connection</string>
+    <string name="websocket_IP">Server IP</string>
+    <string name="websocket_Port">Port</string>
+    <string name="websocket_UserName">Unit ID</string>
+    <string name="websocket_GroupName">Group No.</string>
+    <string name="websocket_Description">Description</string>
+    <string name="websocket_Encryptiom">Encryption Key</string>
+    <string name="websocket_CipherKey">Cipher Key</string>
+    <string name="smartdlg_Title">Smart Telemetry</string>
+    <string name="smartdlg_Optimization">Optimization Level</string>
+    <string name="camdlg_Title">Camera Settings</string>
+    <string name="gpsdlg_Title">GPS Source</string>
+    <string name="modedlg_Title">Flight Modes</string>
+    <string name="mdlgsos_Title">Drone SOS</string>
+    <string name="droneflytopointdlg_Title">Fly &amp; Follow</string>
+
+
+    <string name="websocket_Ping">Ping</string>
+    <string name="login_Title">Access Code</string>
+    <string name="login_register_Title">Account Registration</string>
+    <string name="login_email">Email</string>
+    <string name="login_login">Join</string>
+    <string name="login_access_code">Access Code</string>
+    <string name="login_first_section">Create Account</string>
+    <string name="login_action_accontexist">Account already registered.\r\nUse access code direclty.\r\nPress OK to send access code to your email.</string>
+    <string name="login_second_section">Already have Accesscode</string>
+    <string name="login_third_section">Regenerate new access code</string>
+    <string name="login_action_chkemail">Check your mail inbox for access code.</string>
+    <string name="login_action_registered">Registered Successfully</string>
+    <string name="login_action_joined">Joined Successfully</string>
+    <string name="login_action_badaccesscode">incorrect access code</string>
+    <string name="login_action_unreachable">cannot reach internet server</string>
+    <string name="main_action_hide">hide</string>
+    <string name="fcb_Title">Telemetry HUB</string>
+    <string name="fcb_Title_ServerSection">GCS IP Server</string>
+    <string name="fcb_Title_BlueToothSection">Blutooth - USB Settings</string>
+    <string name="fcb_IP">HUB IP</string>
+    <string name="fcb_Port">Port</string>
+    <string name="fcb_usb">USB</string>
+
+    <!-- ACTIVITIES FCB Drone-->
+    <string name="fcbdrone_bt">Bluetooth</string>
+    <string name="fcbdrone_usb">USB</string>
+    <string name="fcbdrone_tcp">TCP</string>
+    <string name="fcbdrone_udp">UDP</string>
+    <string name="fcbdrone_native">Native</string>
+    <string name="fcbdrone_3dr">Dronekit</string>
+    <string name="fcbdrone_dji">DJI</string>
+    <string name="fcbdrone_usbbaudrate">Speed</string>
+
+    <!-- ACTIVITIES TITLE -->
+    <string name="title_activity_main">Andruav</string>
+    <string name="title_activity_camera">Camera</string>
+    <string name="title_activity_fpv">FPV Activity</string>
+    <string name="title_activity_hubcommunication">Comm Server</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_imu">IMU Activity</string>
+    <string name="title_activity_login">Login Activity</string>
+    <string name="title_activity_data">Data Activity</string>
+    <string name="title_activity_fcb">FCB Activity</string>
+    <string name="title_activity_usb">USBActivity</string>
+    <string name="title_activity_remotecontrol">Remote Control</string>
+
+    <!-- Especially for Andruav Message Error-->
+    <string name="andruav_error_connection_notsupported">This type of connection is not supported.</string>
+    <string name="title_activity_remote_control">Remote Control</string>
+    <string name="title_activity_remote_control_setting">RC Settings</string>
+    <string name="title_activity_remote_control_setting_activity_tab">
+        RC Settings
+    </string>
+
+    <!-- Telemetry Protocol Message -->
+    <string name="andruav_error_telemetryprotocol_multiwii">Multiwii telemetry has been detected.</string>
+    <string name="andruav_error_telemetryprotocol_mavlink">Mavlink telemetry has been detected.</string>
+
+
+    <string name="title_activity_remote_control_setting_activity_tab_section1">Channels Setting</string>
+    <string name="title_activity_remote_control_setting_activity_tab_section2">Tracking Settings</string>
+    <string name="title_activity_remote_control_setting_activity_tab_section3">Test</string>
+
+    <string name="title_activity_remote_control_setting_GCS_activity_tab_section1">TX Mode</string>
+    <string name="title_activity_remote_control_setting_GCS_activity_tab_section2">Test</string>
+    <string name="title_activity_remote_control_setting_GCS_activity_tab_section3">JoyStick</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_data_activity_fragment">DataActivityFragment</string>
+
+
+    <string name="title_data_activity_tab_section1">Network</string>
+    <string name="title_data_activity_tab_section2">Social</string>
+    <string name="title_data_activity_tab_section3">Others</string>
+    <string name="gen_lang_arabic">عربى</string>
+    <string name="gen_lang_english">English</string>
+
+    <!-- SOS Activity -->
+    <string name="title_activity_data_activity_flash">DataActivityFragment</string>
+
+    <!-- Main Activity -->
+    <string name="main_activity_btn_FPV">FPV</string>
+    <string name="main_activity_btn_IMU">IMU</string>
+    <string name="main_activity_btn_COM">COM</string>
+    <string name="main_activity_btn_MAP">MAP</string>
+    <string name="main_activity_btn_FCB">FCB</string>
+    <string name="main_activity_btn_DATA">Data</string>
+
+    <!--Remote Tracking -->
+    <string name="remote_tracking_fragement_X_Section">Horizontal PID</string>
+    <string name="remote_tracking_fragement_X_P">X - P</string>
+    <string name="remote_tracking_fragement_X_P_hint">values from 0 - 100</string>
+    <string name="remote_tracking_fragement_X_I">X - I</string>
+    <string name="remote_tracking_fragement_X_I_hint">values from 0 - 50</string>
+    <string name="remote_tracking_fragement_X_D">X - D</string>
+    <string name="remote_tracking_fragement_X_D_hint">values from 0 - 10</string>
+
+    <string name="remote_tracking_fragement_Y_Section">Vertical PID</string>
+    <string name="remote_tracking_fragement_Y_P">Y - P</string>
+    <string name="remote_tracking_fragement_Y_P_hint">values from 0 - 100</string>
+    <string name="remote_tracking_fragement_Y_I">Y - I</string>
+    <string name="remote_tracking_fragement_Y_I_hint">values from 0 - 50</string>
+    <string name="remote_tracking_fragement_Y_D">Y - D</string>
+    <string name="remote_tracking_fragement_Y_D_hint">values from 0 - 10</string>
+
+    <!--HUB Activity -->
+    <string name="hub_activity_usernameHint">name of your plane or GCS</string>
+    <string name="hub_activity_groupnameHint">Common name between planes &amp; GCSs</string>
+    <string name="hub_activity_briefHint">Hint</string>
+    <string name="hub_activity_server_title">AndruavServer</string>
+    <string name="hub_activity_server_hint">You should have AndruavServer app installed and running on a Wifi Android.</string>
+    <string name="hub_activity_vehicleType">Type</string>
+
+    <string name="map_activity_buttonslider">FPV</string>
+    <string name="title_activity_social">SocialActivity</string>
+
+    <!--FirstLoginActivity-->
+    <string name="firstlogin_activity_btn_DRONE">Drone</string>
+    <string name="firstlogin_activity_btn_GCS">Ground</string>
+    <string name="title_activity_main_launcher">MainLauncherActivity</string>
+    <string name="title_activity_fcb__drone">FCB Connection</string>
+
+    <!--MAPActivity-->
+    <string name="map_exit_withoutsave">Do you want to exit Map-Editor ?</string>
+
+
+
+    <!-- Mission Fragments-->
+    <string name="mission_waypoint_title">Waypoint</string>
+
+
+    <!--FCB Acvitiy -->
+    <string name="fcbdroneactivity_edtLocalIP">Wifi IP of this device</string>
+    <string name="fcbdroneactivity_edtUDPPort">UDP port of drone</string>
+
+
+
+</resources>

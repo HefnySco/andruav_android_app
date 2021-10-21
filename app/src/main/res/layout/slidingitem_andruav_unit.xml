@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:padding="2dp"
+    android:clickable="true"
+    android:background="@drawable/trans_rect_item_shape">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Button"
+        android:id="@+id/slidingitem_andruavunit_btnUnit"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/sel_drawer_button_color"
+        android:drawableRight="@drawable/hand_gy_32x32"
+        android:layout_margin="2dp"
+        android:textSize="10sp"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/slidingitem_andruavunit_btnMode"
+        android:elevation="0dp"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST" />
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/slidingitem_andruavunit_btnMode"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/flightcontrol_w_32x32"
+        android:layout_alignParentRight="false"
+        android:layout_alignTop="@+id/slidingitem_andruavunit_btnUnit"
+        android:layout_alignParentBottom="false"
+        android:layout_marginLeft="2dp"
+        android:text="@string/action_fcb_mode"
+        android:layout_marginBottom="2dp"
+        android:textSize="8sp"
+        android:singleLine="false"
+        android:layout_toLeftOf="@+id/slidingitem_andruavunit_btnRemote" />
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/slidingitem_andruavunit_btnRemote"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/remote_gy_32x32"
+        android:layout_alignParentBottom="false"
+        android:layout_alignTop="@+id/slidingitem_andruavunit_btnUnit"
+        android:layout_marginLeft="2dp"
+        android:layout_alignParentRight="false"
+        android:text="RC"
+        android:layout_marginBottom="2dp"
+        android:layout_marginRight="2dp"
+        android:textSize="8sp"
+        android:layout_toLeftOf="@+id/slidingitem_andruavunit_btnVideoStream" />
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/slidingitem_andruavunit_btnVideoStream"
+        android:drawableTop="@drawable/videocam_gr_32x32"
+        android:layout_alignParentBottom="false"
+        android:layout_alignTop="@+id/slidingitem_andruavunit_btnUnit"
+        android:layout_marginLeft="2dp"
+        android:layout_alignParentRight="false"
+        android:text="fpv"
+        android:layout_marginBottom="2dp"
+        android:textSize="8sp"
+        android:singleLine="false"
+        android:elegantTextHeight="false"
+        android:background="@drawable/sel_trans_button_color"
+        android:visibility="invisible"
+        android:layout_toLeftOf="@+id/slidingitem_andruavunit_btnVideo" />
+
+    <Button
+        android:layout_height="wrap_content"
+        android:id="@+id/slidingitem_andruavunit_btnVideo"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/video_recording_disabled_32x32"
+        android:layout_alignParentBottom="false"
+        android:layout_alignTop="@+id/slidingitem_andruavunit_btnUnit"
+        android:layout_marginLeft="2dp"
+        android:layout_alignParentRight="false"
+        android:text="rec"
+        android:layout_marginBottom="2dp"
+        android:textSize="8sp"
+        android:singleLine="false"
+        android:layout_toLeftOf="@+id/slidingitem_andruavunit_btnCamera"
+        android:layout_width="40dp" />
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/slidingitem_andruavunit_btnCamera"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/camera_gy_32x32"
+        android:layout_alignParentBottom="false"
+        android:layout_alignTop="@+id/slidingitem_andruavunit_btnUnit"
+        android:layout_marginLeft="2dp"
+        android:layout_alignParentRight="true"
+        android:text="shoot"
+        android:layout_marginBottom="2dp"
+        android:textSize="8sp"
+        android:singleLine="false" />
+
+</RelativeLayout>

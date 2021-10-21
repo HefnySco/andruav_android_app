@@ -1,0 +1,48 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+
+
+    defaultConfig {
+        compileSdkVersion android_build_sdk_version
+        buildToolsVersion android_build_tools_version
+        minSdkVersion android_build_min_sdk_version
+        targetSdkVersion android_build_target_sdk_version
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets.main {
+        jniLibs.srcDir 'libs'
+        java.srcDirs = [
+                "src/main/java/webrtc/sdk/android/api",
+                "src/main/java/webrtc/sdk/android/src/java",
+                "src/main/java/webrtc/rtc_base/java/src",
+                "src/main/java/webrtc/modules/audio_device/android/java/src",
+                "src/main/java/custom/src"
+        ]
+    }
+
+    compileOptions {
+        targetCompatibility = 1.8
+        sourceCompatibility = 1.8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //implementation 'org.jetbrains:annotations:15.0'
+
+    implementation 'com.intellij:annotations:12.0@jar'
+    implementation 'androidx.annotation:annotation:1.1.0'
+}
