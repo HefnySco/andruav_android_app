@@ -27,9 +27,9 @@ android {
         applicationId 'rcmobile.FPV'
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
-        versionName '4.00.17'
+        versionName '5.00.00'
         signingConfig signingConfigs.config
-        versionCode 40017
+        versionCode 50000
         multiDexEnabled true
 
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -115,7 +115,7 @@ android {
         PUBLIC_
                 {
                     dimension "audience"
-                    resValue "string", "app_name", "Andruav"
+                    resValue "string", "app_name", "Andruav-AP"
                     buildConfigField "String", "BuidType" , "\"PUBLIC_\""
                     sourceSets {
                         main {

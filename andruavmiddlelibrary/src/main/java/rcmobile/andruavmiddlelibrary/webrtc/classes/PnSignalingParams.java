@@ -148,10 +148,7 @@ import rcmobile.andruavmiddlelibrary.preference.Preference;
 //            iceServers.add(new PeerConnection.IceServer("turn:numb.viagenie.ca", "rcMobilestuff@gmail.com", "andruav_turn"));
 
             // Extra Defaults - 19 STUN servers + 4 initial = 23 severs (+2 padding) = Array cap 25
-            iceServers.add(new PeerConnection.IceServer("stun:158.69.195.164:33479"));
-            iceServers.add(new PeerConnection.IceServer("turn:158.69.195.164:33479","andruav","1234"));
-            iceServers.add(new PeerConnection.IceServer("stun:stun1.l.google.com:19302"));
-            iceServers.add(new PeerConnection.IceServer("stun:stun2.l.google.com:19302"));
+            iceServers.add(new PeerConnection.IceServer("turn:104.131.188.164:3478","andruav_ap","1234"));
             iceServers.add(new PeerConnection.IceServer("stun:stun3.l.google.com:19302"));
             //iceServers.add(new PeerConnection.IceServer("stun:stun4.l.google.com:19302"));
 //            iceServers.add(new PeerConnection.IceServer("stun:23.21.150.121"));

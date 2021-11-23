@@ -382,7 +382,7 @@
     <string name="fcbdrone_usbbaudrate">Speed</string>
 
     <!-- ACTIVITIES TITLE -->
-    <string name="title_activity_main">Andruav</string>
+    <string name="title_activity_main">Andruav-AP</string>
     <string name="title_activity_camera">Camera</string>
     <string name="title_activity_fpv">FPV Activity</string>
     <string name="title_activity_hubcommunication">Comm Server</string>

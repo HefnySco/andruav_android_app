@@ -44,7 +44,7 @@ public class LoginClient {
     private final static OkHttpClient mclientHTTP = new OkHttpClient();
 
     private  final static String  pageNameDebug = "https://192.168.1.144:19408";  //"https://192.168.1.139:19408"; //"https://192.168.2.42:19108/?";
-    private  final static String  pageNameRelease = "https://andruav.com:19408";
+    private  final static String  pageNameRelease = "https://104.131.188.164:19408";
     private final static String  WEBMOFTA7Local = "KEY=000000000000-0000-0000-0000-000000000000";
 
     public final static int ERR_SUCCESS                 = 0;
