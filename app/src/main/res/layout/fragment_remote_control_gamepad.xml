@@ -38,7 +38,7 @@
             style="@style/GamePadChannelNames"
             android:layout_marginTop="10dp" />
 
-        <rcmobile.android.valueBar.ValueBar
+        <ap.android.valueBar.ValueBar
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:id="@+id/gamepad_valuebar_channel1"
@@ -55,7 +55,7 @@
             android:layout_alignTop="@+id/gamepad_valuebar_channel2"
             style="@style/GamePadChannelNames"/>
 
-        <rcmobile.android.valueBar.ValueBar
+        <ap.android.valueBar.ValueBar
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:id="@+id/gamepad_valuebar_channel2"
@@ -73,7 +73,7 @@
             android:layout_alignTop="@+id/gamepad_valuebar_channel3"
             style="@style/GamePadChannelNames"/>
 
-        <rcmobile.android.valueBar.ValueBar
+        <ap.android.valueBar.ValueBar
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:id="@+id/gamepad_valuebar_channel3"
@@ -91,7 +91,7 @@
             android:layout_alignTop="@+id/gamepad_valuebar_channel4"
             style="@style/GamePadChannelNames"/>
 
-        <rcmobile.android.valueBar.ValueBar
+        <ap.android.valueBar.ValueBar
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:id="@+id/gamepad_valuebar_channel4"
@@ -109,7 +109,7 @@
             android:layout_alignTop="@+id/gamepad_valuebar_channel5"
             style="@style/GamePadChannelNames"/>
 
-        <rcmobile.android.valueBar.ValueBar
+        <ap.android.valueBar.ValueBar
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:id="@+id/gamepad_valuebar_channel5"
@@ -127,7 +127,7 @@
             android:layout_alignTop="@+id/gamepad_valuebar_channel6"
             style="@style/GamePadChannelNames"/>
 
-        <rcmobile.android.valueBar.ValueBar
+        <ap.android.valueBar.ValueBar
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:id="@+id/gamepad_valuebar_channel6"
@@ -145,7 +145,7 @@
             android:layout_alignTop="@+id/gamepad_valuebar_channel7"
             style="@style/GamePadChannelNames"/>
 
-        <rcmobile.android.valueBar.ValueBar
+        <ap.android.valueBar.ValueBar
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:id="@+id/gamepad_valuebar_channel7"
@@ -163,7 +163,7 @@
             android:layout_alignTop="@+id/gamepad_valuebar_channel8"
             style="@style/GamePadChannelNames"/>
 
-        <rcmobile.android.valueBar.ValueBar
+        <ap.android.valueBar.ValueBar
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:id="@+id/gamepad_valuebar_channel8"

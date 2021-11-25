@@ -7,7 +7,7 @@
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        class="rcmobile.FPV.activities.map.AndruavMapEditorWidget"
+        class="ap.andruav_ap.activities.map.AndruavMapEditorWidget"
         tools:layout="@layout/fragment_editor_mission_takeoff" />
 
 
@@ -34,7 +34,7 @@
             android:id="@+id/mapactivity_mission"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            class="rcmobile.FPV.activities.map.AndruavMapEditorWidget"
+            class="ap.andruav_ap.activities.map.AndruavMapEditorWidget"
             tools:layout="@layout/fragment_editor_mission_takeoff"
             android:layout_alignParentRight="true"
             android:layout_marginRight="5dp"
@@ -128,7 +128,7 @@
             android:textSize="12sp"
             android:alpha="0.8" />
 
-        <rcmobile.FPV.widgets.sliding.SlidingAndruavUnitList
+        <ap.andruav_ap.widgets.sliding.SlidingAndruavUnitList
             android:id="@+id/fpvactivity_Sliding"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -138,7 +138,7 @@
             android:background="#eeeeee"
             android:padding="5dp">
 
-        </rcmobile.FPV.widgets.sliding.SlidingAndruavUnitList>
+        </ap.andruav_ap.widgets.sliding.SlidingAndruavUnitList>
 
 
     </SlidingDrawer>

@@ -76,8 +76,8 @@
 
 
 
--keep class rcmobile.andruavmiddlelibrary.com.logenteries.**        {*;}
--keep class rcmobile.andruavmiddlelibrary.com.nanoHTTP.**           {*;}
+-keep class ap.andruavmiddlelibrary.com.logenteries.**        {*;}
+-keep class ap.andruavmiddlelibrary.com.nanoHTTP.**           {*;}
 
 # https://github.com/PrashamTrivedi/ProguardSnips/blob/master/proguardsnips/proguard/proguard-eventbus.pro
 -keepclassmembers class ** {

@@ -45,13 +45,13 @@
         android:background="#eeeeee"
         android:layout_below="@+id/mdlgflytopoint_btn_apply">
 
-   <rcmobile.FPV.widgets.flytopoint_sliding.DroneFlyToPointUnitList
+   <ap.andruav_ap.widgets.flytopoint_sliding.DroneFlyToPointUnitList
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:id="@+id/mdlgflytopoint_lst_units"
        android:orientation="vertical"
        android:layout_margin="3dp">
 
-   </rcmobile.FPV.widgets.flytopoint_sliding.DroneFlyToPointUnitList>
+   </ap.andruav_ap.widgets.flytopoint_sliding.DroneFlyToPointUnitList>
     </ScrollView>
 </RelativeLayout>

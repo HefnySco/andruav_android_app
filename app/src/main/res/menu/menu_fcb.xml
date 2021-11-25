@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="rcmobile.FPV.activities.fcb.FCBActivity">
+    tools:context="ap.andruav_ap.activities.fcb.FCBActivity">
 
     <item android:id="@+id/mi_fcb_smarttelemetry"
         android:title="@string/pref_gr_fcb_enableSmartTelemetry"

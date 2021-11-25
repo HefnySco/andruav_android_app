@@ -4,7 +4,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="rcmobile.FPV.activities.remote.RemoteControlSettingActivity">
+    tools:context="ap.andruav_ap.activities.remote.RemoteControlSettingActivity">
 
     <TextView
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
         android:layout_alignParentEnd="false"
         android:layout_alignParentRight="false"/>
 
-    <rcmobile.FPV.widgets.ChannelSettingsWidget
+    <ap.andruav_ap.widgets.ChannelSettingsWidget
     android:id="@+id/remotecontrolsettingsactivity_remotechannel_Throttle"
     android:layout_gravity="center_horizontal"
     android:layout_width="wrap_content"
@@ -35,7 +35,7 @@
     android:layout_alignParentLeft="false"
         android:layout_below="@+id/textView4"
         android:paddingTop="5dp" />
-    <rcmobile.FPV.widgets.ChannelSettingsWidget
+    <ap.andruav_ap.widgets.ChannelSettingsWidget
         android:id="@+id/remotecontrolsettingsactivity_remotechannel_YAW"
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
         android:layout_alignParentLeft="false"
         android:layout_below="@+id/remotecontrolsettingsactivity_remotechannel_Throttle"
         android:paddingTop="5dp" />
-    <rcmobile.FPV.widgets.ChannelSettingsWidget
+    <ap.andruav_ap.widgets.ChannelSettingsWidget
         android:id="@+id/remotecontrolsettingsactivity_remotechannel_Roll"
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
         android:layout_alignParentLeft="false"
         android:layout_below="@+id/remotecontrolsettingsactivity_remotechannel_YAW"
         android:paddingTop="5dp" />
-    <rcmobile.FPV.widgets.ChannelSettingsWidget
+    <ap.andruav_ap.widgets.ChannelSettingsWidget
         android:id="@+id/remotecontrolsettingsactivity_remotechannel_Pitch"
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"

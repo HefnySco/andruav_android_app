@@ -6,17 +6,17 @@
         android:id="@+id/map"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        class="rcmobile.FPV.activities.map.AndruavMapWidget"
+        class="ap.andruav_ap.activities.map.AndruavMapWidget"
         android:layout_toRightOf="@+id/fpvactivity_left_buttons" />
 
-    <rcmobile.FPV.widgets.camera.AndruavRTCVideoDecorderWidget
+    <ap.andruav_ap.widgets.camera.AndruavRTCVideoDecorderWidget
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/fpvactivity_widget_andruav_rtc_video_decoder" />
 
 
 
-    <rcmobile.FPV.widgets.flightControlWidgets.AndruavUnitInfoWidget
+    <ap.andruav_ap.widgets.flightControlWidgets.AndruavUnitInfoWidget
         android:id="@+id/fpvactivity_widget_andruavinfo"
         android:layout_gravity="center_horizontal"
         android:layout_width="match_parent"
@@ -33,7 +33,7 @@
         android:layout_alignParentStart="false"
         android:layout_alignParentRight="false"
         android:layout_toRightOf="@+id/fpvactivity_left_buttons" />
-    <rcmobile.FPV.widgets.flightControlWidgets.AttitudeWidget
+    <ap.andruav_ap.widgets.flightControlWidgets.AttitudeWidget
         android:id="@+id/fpvactivity_widget_attitude"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/fpvactivity_widget_andruavinfo"
@@ -41,7 +41,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp" />
 
-    <rcmobile.FPV.widgets.camera.AndruavImageView
+    <ap.andruav_ap.widgets.camera.AndruavImageView
         android:id="@+id/fpvactivity_imgSnapShot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -173,7 +173,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <rcmobile.FPV.activities.remote.RemoteControlWidget
+    <ap.andruav_ap.activities.remote.RemoteControlWidget
         android:id="@+id/remotecontrolactivity_remotecontrolwidget"
         android:layout_gravity="center_horizontal"
         android:layout_width="match_parent"
@@ -218,7 +218,7 @@
             android:textSize="12sp"
             android:alpha="0.8" />
 
-        <rcmobile.FPV.widgets.sliding.SlidingAndruavUnitList
+        <ap.andruav_ap.widgets.sliding.SlidingAndruavUnitList
             android:id="@+id/fpvactivity_Sliding"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -228,7 +228,7 @@
             android:background="#eeeeee"
             android:padding="5dp">
 
-         </rcmobile.FPV.widgets.sliding.SlidingAndruavUnitList>
+         </ap.andruav_ap.widgets.sliding.SlidingAndruavUnitList>
 
 
     </SlidingDrawer>

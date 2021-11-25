@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <rcmobile.FPV.widgets.flightControlWidgets.AttitudeIndicatorView
+    <ap.andruav_ap.widgets.flightControlWidgets.AttitudeIndicatorView
         android:id="@+id/widget_attitude_indicator"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />

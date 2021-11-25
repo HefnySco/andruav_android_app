@@ -1,5 +1,5 @@
 <menu xmlns:tools="http://schemas.android.com/tools"
-    tools:context="rcmobile.FPV.activities.camera.CameraView">
+    tools:context="ap.andruav_ap.activities.camera.CameraView">
 
 
 </menu>

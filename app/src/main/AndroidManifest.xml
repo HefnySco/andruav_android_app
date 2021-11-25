@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="rcmobile.FPV"
+    package="ap.andruav_ap"
     android:installLocation="auto">
 
     <supports-screens
@@ -88,12 +88,11 @@
     <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
     <!-- <uses-permission android:name="android.permission.WAKE_LOCK" /> -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="com.android.vending.BILLING" />
     <!-- upgrade to Android 9-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:name=".App"
+        android:name="ap.andruav_ap.App"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_logo2"
@@ -120,7 +119,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".MainActivityBuilder"
+            android:name="ap.andruav_ap.MainActivityBuilder"
             android:launchMode="singleTask"
             android:noHistory="true">
             <intent-filter>
@@ -139,115 +138,115 @@
                 android:resource="@xml/accessory_filter" />
         </activity>
         <activity
-            android:name=".activities.main.ModuleScreen"
+            android:name="ap.andruav_ap.activities.main.ModuleScreen"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_main"
             android:launchMode="singleTask"> <!-- http://www.intridea.com/blog/2011/6/16/android-understanding-activity-launchmode -->
         </activity>
         <activity
-            android:name=".activities.main.MainScreen"
+            android:name="ap.andruav_ap.activities.main.MainScreen"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_main"
             android:launchMode="singleTask"> <!-- http://www.intridea.com/blog/2011/6/16/android-understanding-activity-launchmode -->
         </activity>
         <activity
-            android:name=".activities.fpv.drone.FPVModuleRTCWebCamActivity"
+            android:name="ap.andruav_ap.activities.fpv.drone.FPVModuleRTCWebCamActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_fpv"
             android:launchMode="singleTask" />
         <activity
-            android:name=".activities.fpv.drone.FPVDroneRTCWebCamActivity"
+            android:name="ap.andruav_ap.activities.fpv.drone.FPVDroneRTCWebCamActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_fpv"
             android:launchMode="singleTask" />
         <activity
-            android:name=".activities.HUBCommunication"
+            android:name="ap.andruav_ap.activities.HUBCommunication"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_hubcommunication"
             android:launchMode="singleTask" />
         <activity
-            android:name=".activities.map.AndruavMapsShasha"
+            android:name="ap.andruav_ap.activities.map.AndruavMapsShasha"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_maps"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.drone.IMUShasha"
+            android:name="ap.andruav_ap.activities.drone.IMUShasha"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_imu"
             android:launchMode="singleTask" />
         <activity
-            android:name=".activities.settings.SettingsGCS"
+            android:name="ap.andruav_ap.activities.settings.SettingsGCS"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_settings"
             android:launchMode="singleTask" />
         <activity
-            android:name=".activities.settings.SettingsDrone"
+            android:name="ap.andruav_ap.activities.settings.SettingsDrone"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_settings"
             android:launchMode="singleTask" />
         <activity
-            android:name=".activities.fcb.FCB_TCPShasha"
+            android:name="ap.andruav_ap.activities.fcb.FCB_TCPShasha"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_fcb"
             android:launchMode="singleTask" />
         <activity
-            android:name=".activities.remote.RemoteControlActivity"
+            android:name="ap.andruav_ap.activities.remote.RemoteControlActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_remote_control"
             android:launchMode="singleTask" />
         <activity
-            android:name=".activities.remote.RemoteControlSettingActivityTab"
+            android:name="ap.andruav_ap.activities.remote.RemoteControlSettingActivityTab"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_remote_control_setting_activity_tab"
             android:launchMode="singleTask" />
         <activity
-            android:name=".activities.remote.RemoteControlSettingGCSActivityTab"
+            android:name="ap.andruav_ap.activities.remote.RemoteControlSettingGCSActivityTab"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_remote_control_setting_activity_tab"
             android:launchMode="singleTask" />
         <activity
-            android:name=".activities.data.DataShashaTab"
+            android:name="ap.andruav_ap.activities.data.DataShashaTab"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_data_activity_fragment"
             android:launchMode="singleTask" />
         <activity
-            android:name=".activities.drone.FlashActivity"
+            android:name="ap.andruav_ap.activities.drone.FlashActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_data_activity_flash"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.main.FirstScreen"
+            android:name="ap.andruav_ap.activities.main.FirstScreen"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTask"
             android:noHistory="true" />
-        <activity android:name=".activities.main.MainGCSActivity" />
-        <activity android:name=".activities.login.drone.MainDroneActiviy" />
+        <activity android:name="ap.andruav_ap.activities.main.MainGCSActivity" />
+        <activity android:name="ap.andruav_ap.activities.login.drone.MainDroneActiviy" />
         <activity
-            android:name=".activities.login.drone.MainDroneActiviy$DroneLoginShasha"
+            android:name="ap.andruav_ap.activities.login.drone.MainDroneActiviy$DroneLoginShasha"
             android:launchMode="singleTask"
             android:noHistory="true" />
         <activity
-            android:name=".activities.login.GCSLoginShasha"
+            android:name="ap.andruav_ap.activities.login.GCSLoginShasha"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTask"
             android:noHistory="true" />
         <activity
-            android:name=".activities.fcb.drone.FCB_AndruavShashaL2"
+            android:name="ap.andruav_ap.activities.fcb.drone.FCB_AndruavShashaL2"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_fcb__drone"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service
-            android:name="rcmobile.sensors.SensorService"
+            android:name="ap.sensors.SensorService"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:enabled="true"
             android:exported="false" />
 
         <receiver
-            android:name=".broadcastReceiver.BOOT_Receiver"
+            android:name="ap.andruav_ap.broadcastReceiver.BOOT_Receiver"
             android:enabled="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>

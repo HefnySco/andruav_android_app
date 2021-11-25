@@ -1,4 +1,4 @@
 <menu xmlns:tools="http://schemas.android.com/tools"
-    tools:context="rcmobile.FPV.activities.fpv.FPVActivity">
+    tools:context="ap.andruav_ap.activities.fpv.FPVActivity">
 
 </menu>

@@ -8,11 +8,11 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="rcmobile.FPV.activities.drone.FlashActivity">
+    tools:context="ap.andruav_ap.activities.drone.FlashActivity">
 
     <view
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        class="rcmobile.FPV.widgets.AlarmWidget"
+        class="ap.andruav_ap.widgets.AlarmWidget"
         android:id="@+id/activity_flash_widget_alarm" />
 </RelativeLayout>

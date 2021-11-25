@@ -47,13 +47,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <rcmobile.FPV.widgets.CardWheelWidget
+        <ap.andruav_ap.widgets.CardWheelWidget
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/mission_waypoint_altitude"
             android:layout_marginTop="5dp" />
 
-        <rcmobile.FPV.widgets.CardWheelWidget
+        <ap.andruav_ap.widgets.CardWheelWidget
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/mission_waypoint_timetostay"
