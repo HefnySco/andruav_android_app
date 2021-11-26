@@ -243,23 +243,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(msg));
     }
 
-    // msg_gps_inject_data m_msg_gps_inject_data = null;
-
-
-    //   public void repeatGPS()
-//   {
-//       if (m_msg_gps_inject_data != null) {
-//           ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(m_msg_gps_inject_data));
-//       }
-//
-//       handler.postDelayed(new Runnable() {
-//           @Override
-//           public void run() {
-//               repeatGPS ();
-//           }
-//       },100);
-//
-//   }
     public void do_InjectGPS_NMEA (final String nmea)
     {
 
@@ -279,8 +262,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
 
    }
-
-
 
     /***
      *
@@ -363,9 +344,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(msg));
 
     }
-
-
-
 
     /***
     * Data is received from Serial Socket This data could be from the server on the same andruav
@@ -473,8 +451,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         return mControlTower;
     }
 
-
-
     protected void connectToDrone ()
     {
         try {
@@ -492,7 +468,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
                 case Preference.FCB_COM_USB:
                     if (!DeviceManagerFacade.hasUSBHost()) return; // should not happen
                     selectedConnectionType = ConnectionType.TYPE_USB;
-
                     connectionParams = ConnectionParameter.newUsbConnection(Constants.baudRateItemsValue[Preference.getFCBUSBBaudRateSelector(null)], null);
                     break;
                 case Preference.FCB_COM_BT:
@@ -539,8 +514,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
      */
     protected  void onDroneEvent_StateConnected (final Bundle extras)
     {
-
-
         AndruavSettings.andruavWe7daBase.setTelemetry_protocol(TelemetryProtocol.TelemetryProtocol_DroneKit_Telemetry);
         //lo7Ta7akom_droneKit = (Lo7Ta7akom_DroneKit) AndruavSettings.andruavWe7daBase.FCBoard;
 

@@ -216,7 +216,6 @@ try {
             rangeBar.setConnectingLineColor(context.getResources().getColor(R.color.btn_TXT_BLUE_DARKEST));
             rangeBar.setSelectorColor(context.getResources().getColor(R.color.btn_TXT_GREEN_DARKER));
             rangeBar.setPinColor(context.getResources().getColor(R.color.btn_TXT_GREEN));
-            //rangeBar.setPinTextColor(context.getResources().getColor(R.color.btn_TXT_GREEN));
             rangeBar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
                 @Override
                 public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {

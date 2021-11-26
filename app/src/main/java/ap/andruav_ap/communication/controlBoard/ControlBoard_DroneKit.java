@@ -1260,8 +1260,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
                 }else {
                 mAndruavUnitBase.hasGimbal(false);
          }
-
-
     }
 
 

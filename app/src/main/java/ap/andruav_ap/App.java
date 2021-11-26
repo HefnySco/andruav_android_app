@@ -436,7 +436,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         if (KMLFile == null) {
             KMLFile = new KMLFileHandler();
-            KMLFile.openKMZ(Preference.getWebServerGroupName(null) + " " + Preference.getWebServerUserName(null));
+            KMLFile.openKMZ("Trip" + Preference.getWebServerGroupName(null) + " " + Preference.getWebServerUserName(null));
         }
         shutdown = false;
     }

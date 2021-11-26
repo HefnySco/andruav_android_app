@@ -7,6 +7,7 @@
 *.log
 *.class
 *.iml
+!/rangebar-release/rangebar-release.aar
 
 bin/
 gen/

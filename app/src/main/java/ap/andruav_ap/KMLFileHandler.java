@@ -34,6 +34,7 @@ import ap.andruavmiddlelibrary.database.GenericDataRow;
 //import rcmobile.sensors.SensorEvents.Event_IMU;
 
 /**
+ * Creates Trip information. A folder for each login. It creates a KML file and a folder for photoe and another one for videos.
  * Created by M.Hefny on 01-Nov-14.
  */
 public class KMLFileHandler {

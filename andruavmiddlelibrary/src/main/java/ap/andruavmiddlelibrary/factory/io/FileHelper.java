@@ -80,18 +80,14 @@ public class FileHelper {
      */
     public static File GetFolder(final String subFolder,final String rootPath) {
         Boolean externalStorageWriteable = false;
-        Boolean externalStorageAvailable= false;
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
             // TODO: handle if storage is not available
             if (Environment.MEDIA_MOUNTED.equals(state)) {
-                externalStorageAvailable = true;
                 externalStorageWriteable = true;
             } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-                externalStorageAvailable = true;
                 externalStorageWriteable = false;
             } else {
-                externalStorageAvailable = false;
                 externalStorageWriteable = false;
             }
         }
@@ -101,7 +97,7 @@ public class FileHelper {
         {  // get Folder relative to ExternalStorageDirectory root.
             if (externalStorageWriteable)
             {
-                root = new File(Environment.getExternalStorageDirectory().toString() , subFolder);
+                root = new File(Environment.getExternalStorageDirectory() , subFolder);
             }
             else {
                 File docsFolder = null;
