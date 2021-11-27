@@ -219,8 +219,8 @@ public class TelemetryDroneProtocolParser  extends TelemetryProtocolParser{
 
 
         final ControlBoard_DroneKit controlBoard_droneKit =(ControlBoard_DroneKit) AndruavSettings.andruavWe7daBase.FCBoard;
-        /***
-         * We forward FCB back to board-class so that board-class must be synched with the FCB.
+        /**
+         We forward FCB back to board-class so that board-class must be synched with the FCB.
          */
         controlBoard_droneKit.Execute(event_FCBData.mavLinkPacket, true);
 

@@ -1,10 +1,10 @@
 package com.andruav.uavos.modules;
 
-/**
- *
- *
- * Author: Mohammad S. Hefny
- * Date Jan 2020
+/*
+
+
+  Author: Mohammad S. Hefny
+  Date Jan 2020
  */
 
 import static com.andruav.uavos.modules.UAVOSConstants.UAVOS_MODULE_TYPE_CAMERA;

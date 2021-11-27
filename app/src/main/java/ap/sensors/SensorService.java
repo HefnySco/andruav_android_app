@@ -30,10 +30,10 @@ import ap.andruavmiddlelibrary.sensors.Sensor_GPS;
 import ap.andruavmiddlelibrary.sensors.Sensor_Gyro;
 import ap.andruavmiddlelibrary.sensors.Sensor_Mag;
 
-import com.andruav.event.droneReport_7adath._7adath_Battery_Ready;
-import com.andruav.event.droneReport_7adath._7adath_GPS_Ready;
+import com.andruav.event.droneReport_Event.Event_Battery_Ready;
+import com.andruav.event.droneReport_Event.Event_GPS_Ready;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_IMU_CMD;
-import com.andruav.event.droneReport_7adath._7adath_IMU_Ready;
+import com.andruav.event.droneReport_Event.Event_IMU_Ready;
 
 public class SensorService extends Service {
 
@@ -60,9 +60,9 @@ public class SensorService extends Service {
     private CompassCalculation mCompassCalculation;
    // Event_IMU Latestevent_IMU = new Event_IMU();
 
-    final _7adath_GPS_Ready a7adath_gps_ready = new _7adath_GPS_Ready(AndruavSettings.andruavWe7daBase);
-    final _7adath_IMU_Ready a7adath_imu_ready = new _7adath_IMU_Ready(AndruavSettings.andruavWe7daBase);
-    final _7adath_Battery_Ready a7adath_battery_ready = new _7adath_Battery_Ready(AndruavSettings.andruavWe7daBase);
+    final Event_GPS_Ready a7adath_gps_ready = new Event_GPS_Ready(AndruavSettings.andruavWe7daBase);
+    final Event_IMU_Ready a7adath_imu_ready = new Event_IMU_Ready(AndruavSettings.andruavWe7daBase);
+    final Event_Battery_Ready a7adath_battery_ready = new Event_Battery_Ready(AndruavSettings.andruavWe7daBase);
 
     /////////// EOF Attributes
 

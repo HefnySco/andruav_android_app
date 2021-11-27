@@ -9,7 +9,7 @@ ext {
     android_build_sdk_version = 30
     android_build_tools_version = '30.0.0'
     android_build_target_sdk_version = 30
-    android_build_min_sdk_version = 16
+    android_build_min_sdk_version = 19
 }
 
 

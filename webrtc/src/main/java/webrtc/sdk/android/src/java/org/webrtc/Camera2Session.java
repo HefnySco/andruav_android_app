@@ -45,7 +45,7 @@ class Camera2Session implements CameraSession {
   private static final Histogram camera2ResolutionHistogram = Histogram.createEnumeration(
       "WebRTC.Android.Camera2.Resolution", CameraEnumerationAndroid.COMMON_RESOLUTIONS.size());
 
-  private static enum SessionState { RUNNING, STOPPED }
+  private enum SessionState { RUNNING, STOPPED }
 
   private final Handler cameraThreadHandler;
   private final CreateSessionCallback callback;

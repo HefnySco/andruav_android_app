@@ -27,9 +27,9 @@ android {
         applicationId 'arudpilot.andruav'
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
-        versionName '5.00.03'
+        versionName '5.00.04'
         signingConfig signingConfigs.config
-        versionCode 50003
+        versionCode 50004
         multiDexEnabled true
 
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -147,22 +147,15 @@ dependencies {
     implementation 'com.androidplot:androidplot-core:0.6.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
-    //implementation "com.google.firebase:firebase-appindexing:10.2.1"
     implementation "com.google.android.gms:play-services-plus:${play_services_version}"
     implementation "com.google.android.gms:play-services-maps:${play_services_version}"
     implementation 'org.usb4java:usb4java:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.github.supervital:swipenumberpicker:1.0.3'
     implementation project(':rangebar-release')
-    //['android', 'core'].each { String a -> implementation group: 'org.boofcv', name: a, version: '0.26' }
 }
 
-dependencies {
-    // compile 'com.android.support:support-annotations:23.2.1'
-    // androidTestCompile "com.android.support.test:runner:0.5"
-    // androidTestCompile "com.android.support.test:rules:0.5"
-    //  androidTestCompile "com.android.support.test.espresso:espresso-core:2.2.2"
-}
+
 
 
 

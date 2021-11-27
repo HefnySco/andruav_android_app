@@ -90,7 +90,7 @@ public class PeerConnection {
   }
 
   /** Java version of PeerConnectionObserver. */
-  public static interface Observer {
+  public interface Observer {
     /** Triggered when the SignalingState changes. */
     @CalledByNative("Observer") void onSignalingChange(SignalingState newState);
 
@@ -144,7 +144,7 @@ public class PeerConnection {
      * will be receiving media from a remote endpoint. This is only called if UNIFIED_PLAN
      * semantics are specified. The transceiver will be disposed automatically.
      */
-    @CalledByNative("Observer") default void onTrack(RtpTransceiver transceiver){};
+    @CalledByNative("Observer") default void onTrack(RtpTransceiver transceiver){}
   }
 
   /** Java version of PeerConnectionInterface.IceServer. */
@@ -381,7 +381,7 @@ public class PeerConnection {
     ADAPTER_TYPE_ANY(1 << 5);
 
     public final Integer bitMask;
-    private AdapterType(Integer bitMask) {
+    AdapterType(Integer bitMask) {
       this.bitMask = bitMask;
     }
     private static final Map<Integer, AdapterType> BY_BITMASK = new HashMap<>();
@@ -858,9 +858,9 @@ public class PeerConnection {
     String getTurnLoggingId() {
       return turnLoggingId;
     }
-  };
+  }
 
-  private final List<MediaStream> localStreams = new ArrayList<>();
+    private final List<MediaStream> localStreams = new ArrayList<>();
   private final long nativePeerConnection;
   private List<RtpSender> senders = new ArrayList<>();
   private List<RtpReceiver> receivers = new ArrayList<>();

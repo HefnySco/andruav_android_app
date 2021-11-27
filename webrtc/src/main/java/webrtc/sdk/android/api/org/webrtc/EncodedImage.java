@@ -27,7 +27,7 @@ public class EncodedImage implements RefCounted {
 
     private final int nativeIndex;
 
-    private FrameType(int nativeIndex) {
+    FrameType(int nativeIndex) {
       this.nativeIndex = nativeIndex;
     }
 

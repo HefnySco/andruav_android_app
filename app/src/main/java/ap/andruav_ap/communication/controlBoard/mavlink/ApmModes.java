@@ -1,7 +1,7 @@
 package ap.andruav_ap.communication.controlBoard.mavlink;
 
-/**
- * Created by mhefny on 11/28/15.
+/*
+  Created by mhefny on 11/28/15.
  */
 
 import com.mavlink.enums.MAV_TYPE;

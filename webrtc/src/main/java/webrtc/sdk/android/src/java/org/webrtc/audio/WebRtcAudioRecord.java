@@ -559,9 +559,9 @@ class WebRtcAudioRecord {
     }
     // Schedule call to logRecordingConfigurations() from executor thread after fixed delay.
     future = executor.schedule(callable, CHECK_REC_STATUS_DELAY_MS, TimeUnit.MILLISECONDS);
-  };
+  }
 
-  @TargetApi(Build.VERSION_CODES.N)
+    @TargetApi(Build.VERSION_CODES.N)
   private static boolean logActiveRecordingConfigs(
       int session, List<AudioRecordingConfiguration> configs) {
     assertTrue(!configs.isEmpty());

@@ -4,7 +4,7 @@ import androidx.collection.SimpleArrayMap;
 
 import com.andruav.AndruavEngine;
 import com.andruav.andruavUnit.AndruavUnitBase;
-import com.andruav.event.droneReport_7adath._7adath_GeoFence_Hit;
+import com.andruav.event.droneReport_Event.Event_GeoFence_Hit;
 
 /**
  * Created by mhefny on 7/2/16.
@@ -30,7 +30,7 @@ public class GeoFenceBase {
     /***
      * Array of Andruav units that has ths fence attached to them.
      */
-    public SimpleArrayMap<String,_7adath_GeoFence_Hit> mAndruavUnits  = new SimpleArrayMap<String, _7adath_GeoFence_Hit>();
+    public SimpleArrayMap<String, Event_GeoFence_Hit> mAndruavUnits  = new SimpleArrayMap<String, Event_GeoFence_Hit>();
 
     protected int _isInside = NOT_TESTED;
 
@@ -74,7 +74,7 @@ public class GeoFenceBase {
 
     public boolean inZone (final AndruavUnitBase andruavUnitBase)
     {
-        final _7adath_GeoFence_Hit a7adath_geoFence_hit = mAndruavUnits.get(andruavUnitBase.PartyID);
+        final Event_GeoFence_Hit a7adath_geoFence_hit = mAndruavUnits.get(andruavUnitBase.PartyID);
 
         if (a7adath_geoFence_hit ==null) return false;
 
@@ -91,7 +91,7 @@ public class GeoFenceBase {
      *
      * @param lat
      * @param lng
-     * @param fireEvent if <b>true</b> then fire event {@link _7adath_GeoFence_Hit} if there is change in state.
+     * @param fireEvent if <b>true</b> then fire event {@link Event_GeoFence_Hit} if there is change in state.
      * @return a distance that is either Double.NaN or less than {@link #maxDistance}
      */
     public double testPoint(final AndruavUnitBase andruavUnitBase, final double lat, final double lng, boolean fireEvent) {
@@ -102,7 +102,7 @@ public class GeoFenceBase {
     public boolean isViolatingGeoFence (final AndruavUnitBase andruavUnitBase)
     {
 
-        _7adath_GeoFence_Hit a7adath_geoFence_hit = mAndruavUnits.get(andruavUnitBase.PartyID);
+        Event_GeoFence_Hit a7adath_geoFence_hit = mAndruavUnits.get(andruavUnitBase.PartyID);
 
         if (a7adath_geoFence_hit == null) return false;
 
@@ -120,7 +120,7 @@ public class GeoFenceBase {
      * @param andruavUnitBase
      * @param a7adath_geoFence_hit
      */
-    public void setisInsideRemote(final AndruavUnitBase andruavUnitBase, final _7adath_GeoFence_Hit a7adath_geoFence_hit)
+    public void setisInsideRemote(final AndruavUnitBase andruavUnitBase, final Event_GeoFence_Hit a7adath_geoFence_hit)
     {
         if (andruavUnitBase != null)
         {
@@ -129,13 +129,13 @@ public class GeoFenceBase {
                 throw new IllegalAccessError();
             }
         }
-        _7adath_GeoFence_Hit geoFence_hit = this.mAndruavUnits.get(andruavUnitBase.PartyID);
+        Event_GeoFence_Hit geoFence_hit = this.mAndruavUnits.get(andruavUnitBase.PartyID);
         if (geoFence_hit == null)
         {
 
             // in racing condition
             // GCS is open just after a HIT is sent and after a Drone-Fence subscribtion is sent.
-            geoFence_hit = new _7adath_GeoFence_Hit(andruavUnitBase,this.fenceName);
+            geoFence_hit = new Event_GeoFence_Hit(andruavUnitBase,this.fenceName);
             this.mAndruavUnits.put(andruavUnitBase.PartyID, geoFence_hit);
 
         }
@@ -160,13 +160,13 @@ public class GeoFenceBase {
                 throw new IllegalAccessError();
             }
         }
-        _7adath_GeoFence_Hit geoFence_hit = this.mAndruavUnits.get(andruavUnitBase.PartyID);
+        Event_GeoFence_Hit geoFence_hit = this.mAndruavUnits.get(andruavUnitBase.PartyID);
         if (geoFence_hit == null)
         {
 
             // in racing condition
             // GCS is open just after a HIT is sent and after a Drone-Fence subscribtion is sent.
-            geoFence_hit = new _7adath_GeoFence_Hit(andruavUnitBase,this.fenceName);
+            geoFence_hit = new Event_GeoFence_Hit(andruavUnitBase,this.fenceName);
             this.mAndruavUnits.put(andruavUnitBase.PartyID, geoFence_hit);
             geoFence_hit.hasValue          = false;
             geoFence_hit.shouldKeepOutside = this.shouldKeepOutside;
@@ -175,7 +175,7 @@ public class GeoFenceBase {
     }
 
 
-    protected void fireEvent (final _7adath_GeoFence_Hit a7adath_geoFence_hit)
+    protected void fireEvent (final Event_GeoFence_Hit a7adath_geoFence_hit)
     {
         AndruavEngine.getEventBus().post(a7adath_geoFence_hit);
     }

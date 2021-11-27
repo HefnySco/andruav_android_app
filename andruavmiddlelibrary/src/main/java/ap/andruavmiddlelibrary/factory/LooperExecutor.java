@@ -1,8 +1,8 @@
 package ap.andruavmiddlelibrary.factory;
 
-/**
- * Created by mhefny on 10/31/16.
- *  FROM: https://github.com/nubomedia-vtt/webrtcpeer-android.git
+/*
+  Created by mhefny on 10/31/16.
+   FROM: https://github.com/nubomedia-vtt/webrtcpeer-android.git
  */
 
 import android.os.Handler;

@@ -143,4 +143,4 @@ public class RtpSender {
   private static native String nativeGetId(long rtpSender);
 
   private static native void nativeSetFrameEncryptor(long rtpSender, long nativeFrameEncryptor);
-};
+}

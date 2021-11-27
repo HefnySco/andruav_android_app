@@ -62,19 +62,19 @@ public class MediaVideoEncoder extends MediaEncoder {
 	{
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-			if (Build.MODEL.toUpperCase().equals("BLA-L29")) {
+			if (Build.MODEL.equalsIgnoreCase("BLA-L29")) {
 				// Huuwei 10  Pro
 				VIDEO_FORMAT = MOBILE_MATE10_STYLE;
-			} else if (Build.MODEL.toUpperCase().equals("SM-G900F")) {
+			} else if (Build.MODEL.equalsIgnoreCase("SM-G900F")) {
 				VIDEO_FORMAT = MOBILE_S5_STYLE;
 			} else if (Build.MODEL.toUpperCase().startsWith("SM-G900")) //SM-G900H another S5
 			{
 				VIDEO_FORMAT = MOBILE_S5_STYLE;
-			} else if (Build.MODEL.toUpperCase().equals("HUAWEI NXT-L29")) {
+			} else if (Build.MODEL.equalsIgnoreCase("HUAWEI NXT-L29")) {
 				VIDEO_FORMAT = MOBILE_MATE8_STYLE;
-			} else if (Build.MODEL.toUpperCase().equals("CPH1911")) {
+			} else if (Build.MODEL.equalsIgnoreCase("CPH1911")) {
 				VIDEO_FORMAT = MOBILE_OPPO_F11_STYLE;
-			} else if (Build.MODEL.toUpperCase().equals("RNE-L21")) {
+			} else if (Build.MODEL.equalsIgnoreCase("RNE-L21")) {
 				// Huuwei 10  light
 				VIDEO_FORMAT = MOBILE_MATE8_STYLE;
 			}

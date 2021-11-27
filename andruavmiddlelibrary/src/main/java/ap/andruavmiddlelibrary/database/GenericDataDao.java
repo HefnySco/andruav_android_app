@@ -51,7 +51,7 @@ public class GenericDataDao extends AbstractDao<GenericDataRow, Long> {
     @Override
     protected GenericDataRow readEntity(Cursor cursor, int offset) {
         GenericDataRow entity = new GenericDataRow( //
-                cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+                cursor.isNull(offset ) ? null : cursor.getLong(offset), // id
                 cursor.getLong(offset + 1), // type
                 cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // data
         );
@@ -60,12 +60,12 @@ public class GenericDataDao extends AbstractDao<GenericDataRow, Long> {
 
     @Override
     protected Long readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+        return cursor.isNull(offset) ? null : cursor.getLong(offset);
     }
 
     @Override
     protected void readEntity(Cursor cursor, GenericDataRow entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setId(cursor.isNull(offset) ? null : cursor.getLong(offset));
         entity.setType(cursor.getLong(offset + 1));
         entity.setData(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
 

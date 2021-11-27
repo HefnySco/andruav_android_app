@@ -275,7 +275,7 @@ public class GuidedPoint extends DroneVariable implements OnDroneListener<MavLin
 
             case IDLE:
                 state = GuidedStates.ACTIVE;
-                /** FALL THROUGH **/
+                /* FALL THROUGH **/
 
             case ACTIVE:
                 altitude = alt;
@@ -291,7 +291,7 @@ public class GuidedPoint extends DroneVariable implements OnDroneListener<MavLin
 
             case IDLE:
                 state = GuidedStates.ACTIVE;
-                /** FALL THROUGH **/
+                /* FALL THROUGH **/
             case ACTIVE:
                 this.coord = coord;
                 sendGuidedPoint();
@@ -306,7 +306,7 @@ public class GuidedPoint extends DroneVariable implements OnDroneListener<MavLin
 
             case IDLE:
                 state = GuidedStates.ACTIVE;
-                /** FALL THROUGH **/
+                /* FALL THROUGH **/
             case ACTIVE:
                 this.coord = coord;
                 sendGuidedPointAndVelocity(xVel, yVel, zVel);

@@ -1,7 +1,7 @@
 package ap.andruav_ap;
 
-/**
- * Created by M.Hefny on 07-Oct-14.
+/*
+  Created by M.Hefny on 07-Oct-14.
  */
 /*  MultiWii EZ-ActivityMosa3ed
     Copyright (C) <2012>  Bartosz Szczygiel (eziosoft)
@@ -89,8 +89,8 @@ public  class Notification implements INotification{
     }
 
 
-    /**
-     * Send simple notification using the NotificationCompat API.
+    /*
+      Send simple notification using the NotificationCompat API.
      http://javatechig.com/android/android-notification-example-using-notificationcompat
     public void sendNotification(View view) {
 

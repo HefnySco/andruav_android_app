@@ -234,9 +234,6 @@ public class Andruav_Parser {
                 break;
 
             case AndruavMessage_WayPoints.TYPE_AndruavMessage_WayPoints:
-                andruavMessageBase = new AndruavMessage_WayPoints();
-                break;
-
             case AndruavMessage_ExternalCommand_WayPoints.TYPE_AndruavResala_ExternalCommand_WayPoints:
                 andruavMessageBase = new AndruavMessage_WayPoints();
                 break;

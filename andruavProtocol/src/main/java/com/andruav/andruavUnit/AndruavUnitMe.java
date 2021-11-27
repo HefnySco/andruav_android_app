@@ -42,12 +42,7 @@ public class AndruavUnitMe extends AndruavUnitBase {
             if ((!this.IsCGS) )
             {
 
-                if (this.FCBoard != null)
-                {
-
-                }
-
-                 AndruavEngine.getLo7etTa7akomMasna3().getFlightControlBoard(this);
+                AndruavEngine.getLo7etTa7akomMasna3().getFlightControlBoard(this);
 
             }
         }

@@ -27,10 +27,10 @@ public class Adapter_BluetoothList extends BaseAdapter {
 
     public Adapter_BluetoothList(Activity a, OnCustomClickListener clickListener) {
         super();
-        /********** Take passed values **********/
+        /********* Take passed values **********/
         activity = a;
         callback=clickListener;
-        /***********  Layout inflator to call external xml layout () ***********/
+        /**********  Layout inflator to call external xml layout () ***********/
         inflater = ( LayoutInflater )activity.
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -105,16 +105,16 @@ public class Adapter_BluetoothList extends BaseAdapter {
 
         if(convertView==null){
 
-            /****** Inflate tabitem.xml file for each row ( Defined below ) *******/
+            /***** Inflate tabitem.xml file for each row ( Defined below ) *******/
             vi = inflater.inflate(R.layout.listitem_bluetoothitem, null);
 
-            /****** View Holder Object to contain tabitem.xml file elements ******/
+            /***** View Holder Object to contain tabitem.xml file elements ******/
 
             holder = new ViewHolder();
             holder.txtBTName = vi.findViewById(R.id.bluetoothitem_txtName);
             holder.txtBTMac = vi.findViewById(R.id.bluetoothitem_txtMac);
 
-            /************  Set holder with LayoutInflater ************/
+            /***********  Set holder with LayoutInflater ************/
             vi.setTag( holder );
         }
         else
@@ -127,13 +127,13 @@ public class Adapter_BluetoothList extends BaseAdapter {
         }
         else
         {
-            /***** Get each Model object from Arraylist ********/
+            /**** Get each Model object from Arraylist ********/
            tempValues = data.get( position );
             holder.txtBTName.setText(tempValues.deviceName);
             holder.txtBTMac.setText(tempValues.deviceMAC);
             vi.setOnClickListener(new CustomOnClickListener(callback, position));
 
-            /************  Set Model values in Holder elements ***********/
+            /***********  Set Model values in Holder elements ***********/
         }
         return vi;
     }
@@ -147,7 +147,7 @@ public class Adapter_BluetoothList extends BaseAdapter {
     }
 
 
-    public class CustomOnClickListener implements View.OnClickListener {
+    public static class CustomOnClickListener implements View.OnClickListener {
         private final int position;
         private final OnCustomClickListener callback;
 

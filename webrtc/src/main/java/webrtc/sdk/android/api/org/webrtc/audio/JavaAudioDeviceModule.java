@@ -222,14 +222,14 @@ public class JavaAudioDeviceModule implements AudioDeviceModule {
     AUDIO_RECORD_START_STATE_MISMATCH,
   }
 
-  public static interface AudioRecordErrorCallback {
+  public interface AudioRecordErrorCallback {
     void onWebRtcAudioRecordInitError(String errorMessage);
     void onWebRtcAudioRecordStartError(AudioRecordStartErrorCode errorCode, String errorMessage);
     void onWebRtcAudioRecordError(String errorMessage);
   }
 
   /** Called when audio recording starts and stops. */
-  public static interface AudioRecordStateCallback {
+  public interface AudioRecordStateCallback {
     void onWebRtcAudioRecordStart();
     void onWebRtcAudioRecordStop();
   }
@@ -272,7 +272,7 @@ public class JavaAudioDeviceModule implements AudioDeviceModule {
   }
 
   /** Called when new audio samples are ready. This should only be set for debug purposes */
-  public static interface SamplesReadyCallback {
+  public interface SamplesReadyCallback {
     void onWebRtcAudioRecordSamplesReady(AudioSamples samples);
   }
 
@@ -283,14 +283,14 @@ public class JavaAudioDeviceModule implements AudioDeviceModule {
     AUDIO_TRACK_START_STATE_MISMATCH,
   }
 
-  public static interface AudioTrackErrorCallback {
+  public interface AudioTrackErrorCallback {
     void onWebRtcAudioTrackInitError(String errorMessage);
     void onWebRtcAudioTrackStartError(AudioTrackStartErrorCode errorCode, String errorMessage);
     void onWebRtcAudioTrackError(String errorMessage);
   }
 
   /** Called when audio playout starts and stops. */
-  public static interface AudioTrackStateCallback {
+  public interface AudioTrackStateCallback {
     void onWebRtcAudioTrackStart();
     void onWebRtcAudioTrackStop();
   }

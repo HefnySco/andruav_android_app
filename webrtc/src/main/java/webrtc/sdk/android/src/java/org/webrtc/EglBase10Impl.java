@@ -72,10 +72,10 @@ class EglBase10Impl implements EglBase10 {
 
   @Override
   public void createSurface(Surface surface) {
-    /**
-     * We have to wrap Surface in a SurfaceHolder because for some reason eglCreateWindowSurface
-     * couldn't actually take a Surface object until API 17. Older versions fortunately just call
-     * SurfaceHolder.getSurface(), so we'll do that. No other methods are relevant.
+    /*
+      We have to wrap Surface in a SurfaceHolder because for some reason eglCreateWindowSurface
+      couldn't actually take a Surface object until API 17. Older versions fortunately just call
+      SurfaceHolder.getSurface(), so we'll do that. No other methods are relevant.
      */
     class FakeSurfaceHolder implements SurfaceHolder {
       private final Surface surface;
@@ -196,14 +196,14 @@ class EglBase10Impl implements EglBase10 {
 
   @Override
   public int surfaceWidth() {
-    final int widthArray[] = new int[1];
+    final int[] widthArray = new int[1];
     egl.eglQuerySurface(eglDisplay, eglSurface, EGL10.EGL_WIDTH, widthArray);
     return widthArray[0];
   }
 
   @Override
   public int surfaceHeight() {
-    final int heightArray[] = new int[1];
+    final int[] heightArray = new int[1];
     egl.eglQuerySurface(eglDisplay, eglSurface, EGL10.EGL_HEIGHT, heightArray);
     return heightArray[0];
   }

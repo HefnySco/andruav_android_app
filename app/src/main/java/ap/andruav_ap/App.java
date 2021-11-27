@@ -49,7 +49,7 @@ import com.andruav.andruavUnit.AndruavUnitMe;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.Constants;
 import com.andruav.TelemetryProtocol;
-import com.andruav.event.droneReport_7adath._7adath_FCB_Changed;
+import com.andruav.event.droneReport_Event.Event_FCB_Changed;
 import com.andruav.interfaces.IEventBus;
 import com.andruav.interfaces.INotification;
 import com.andruav.interfaces.IPreference;
@@ -93,7 +93,6 @@ import com.andruav.util.RandomString;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -103,7 +102,6 @@ import ap.andruavmiddlelibrary.log.ExceptionHTTPLogger;
 import ap.andruavmiddlelibrary.log.ExceptionHandler;
 import ap.andruavmiddlelibrary.factory.communication.NetInfoAdapter;
 import ap.sensors.SensorService;
-import ap.andruavmiddlelibrary.com.droneWebClient.WebClient;
 import ap.andruavmiddlelibrary.database.DaoManager;
 
 import static com.andruav.uavos.modules.UAVOSConstants.UAVOS_MODULE_TYPE_CAMERA;
@@ -195,7 +193,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         mhandle.sendMessageDelayed(msg, 0);
     }
 
-    public void onEvent (final _7adath_FCB_Changed a7adath_fcb_changed)
+    public void onEvent (final Event_FCB_Changed a7adath_fcb_changed)
     {
         final Message msg = mhandle.obtainMessage();
         msg.obj = a7adath_fcb_changed;
@@ -296,9 +294,9 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                 else if (msg.obj instanceof  _7adath_ConnectionQuality) {
                     AndruavDroneFacade.sendCommSignalStatus(null, true);
                 }
-                else if (msg.obj instanceof _7adath_FCB_Changed) {
+                else if (msg.obj instanceof Event_FCB_Changed) {
                     // Restore Old Telemetry
-                    final _7adath_FCB_Changed adath_fcb_changed = (_7adath_FCB_Changed) msg.obj;
+                    final Event_FCB_Changed adath_fcb_changed = (Event_FCB_Changed) msg.obj;
                     final AndruavUnitBase andruavWe7da = adath_fcb_changed.andruavUnitBase;
                     if ((andruavWe7da.FCBoard!= null)  && (AndruavSettings.remoteTelemetryAndruavWe7da != null) && andruavWe7da.IsMe()) {   // it is already connected to me
 
@@ -867,7 +865,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         }
     };
 
-    WebClient webClient;
     private void getAppVersion() {
 
         PackageManager manager = this.getPackageManager();
@@ -904,15 +901,11 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
             Preference.setAppVersion(null,App.versionName);
 
 
-           webClient = new WebClient();
-           webClient.start();
 
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             App.versionName = "0.0.0";
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

@@ -3,11 +3,8 @@ package com.andruav;
 import android.location.Location;
 
 import com.andruav.andruavUnit.AndruavUnitBase;
-import com.andruav.event.droneReport_7adath._7adath_TRK_Target_Lost;
-import com.andruav.event.droneReport_7adath._7adath_TRK_Target_TrackedAt;
 import com.andruav.sensors.AndruavIMU;
 import com.andruav.controlBoard.shared.geoFence.GeoFenceManager;
-import com.andruav.protocol.BuildConfig;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_IMU;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_IMUStatistics;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_ServoOutput;
@@ -19,7 +16,6 @@ import com.andruav.protocol.commands.textMessages.AndruavMessage_GPS;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_NAV_INFO;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_POW;
 import com.andruav.uavos.modules.UAVOSHelper;
-import com.andruav.util.AndruavLatLngAlt;
 import com.andruav.util.GPSHelper;
 
 import org.json.JSONArray;
@@ -41,7 +37,7 @@ public class AndruavDroneFacade extends AndruavFacadeBase {
     private final static  long monIMUStatisticsTimeDuration             = 20000;
     private final static  long monSignalTimeDuration                    = 10000;
 
-    private static  long monTRKEventTime =0;
+    private static final long monTRKEventTime =0;
     private static  long monNAVEventTime =0;
     private static  long monIMUEventTime =0;
     private static  long monBATTEventTime=0;
@@ -79,7 +75,7 @@ public class AndruavDroneFacade extends AndruavFacadeBase {
 
         final long now = System.currentTimeMillis();
 
-        boolean GPSDistanceAlert = false;
+        boolean GPSDistanceAlert;
         boolean GPSTrackingDistanceAlert = false;
         if (mOldLocation!= null) {
             final double distance = GPSHelper.calculateDistance(mLastLocation, mOldLocation);

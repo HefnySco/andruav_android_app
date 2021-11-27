@@ -57,9 +57,7 @@ public class MediaCodecVideoDecoder {
       if (!codecA.name.equalsIgnoreCase(codecB.name)) {
         return false;
       }
-      return codecA.name.equalsIgnoreCase("H264")
-          ? H264Utils.isSameH264Profile(codecA.params, codecB.params)
-          : true;
+      return !codecA.name.equalsIgnoreCase("H264") || H264Utils.isSameH264Profile(codecA.params, codecB.params);
     }
 
     private static boolean isCodecSupported(
@@ -157,7 +155,7 @@ public class MediaCodecVideoDecoder {
   @Nullable private static MediaCodecVideoDecoderErrorCallback errorCallback;
   private static int codecErrors;
   // List of disabled codec types - can be set from application.
-  private static Set<String> hwDecoderDisabledTypes = new HashSet<String>();
+  private static final Set<String> hwDecoderDisabledTypes = new HashSet<String>();
   @Nullable private static EglBase eglBase;
 
   @Nullable private Thread mediaCodecThread;
@@ -232,7 +230,7 @@ public class MediaCodecVideoDecoder {
   // MediaCodec error handler - invoked when critical error happens which may prevent
   // further use of media codec API. Now it means that one of media codec instances
   // is hanging and can no longer be used in the next call.
-  public static interface MediaCodecVideoDecoderErrorCallback {
+  public interface MediaCodecVideoDecoderErrorCallback {
     void onMediaCodecVideoDecoderCriticalError(int codecErrors);
   }
 
@@ -312,13 +310,10 @@ public class MediaCodecVideoDecoder {
       return true;
     }
     // Support H.264 HP decoding on MediaTek chips for Android O_MR1 and above
-    if (PeerConnectionFactory.fieldTrialsFindFullName("WebRTC-MediaTekH264").equals("Enabled")
-        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1
-        && findDecoder(H264_MIME_TYPE, new String[] {supportedMediaTekH264HighProfileHwCodecPrefix})
-            != null) {
-      return true;
-    }
-    return false;
+    return PeerConnectionFactory.fieldTrialsFindFullName("WebRTC-MediaTekH264").equals("Enabled")
+            && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1
+            && findDecoder(H264_MIME_TYPE, new String[]{supportedMediaTekH264HighProfileHwCodecPrefix})
+            != null;
   }
 
   public static void printStackTrace() {
@@ -973,7 +968,7 @@ public class MediaCodecVideoDecoder {
   // MediaCodec.CodecException upon codec error.
   @CalledByNativeUnchecked
   private void returnDecodedOutputBuffer(int index)
-      throws IllegalStateException, MediaCodec.CodecException {
+      throws IllegalStateException {
     checkOnMediaCodecThread();
     if (useSurface()) {
       throw new IllegalStateException("returnDecodedOutputBuffer() called for surface decoding.");

@@ -21,7 +21,7 @@ public class PlatformSoftwareVideoDecoderFactory extends MediaCodecVideoDecoderF
    */
   private static final Predicate<MediaCodecInfo> defaultAllowedPredicate =
       new Predicate<MediaCodecInfo>() {
-        private String[] prefixWhitelist =
+        private final String[] prefixWhitelist =
             Arrays.copyOf(MediaCodecUtils.SOFTWARE_IMPLEMENTATION_PREFIXES,
                 MediaCodecUtils.SOFTWARE_IMPLEMENTATION_PREFIXES.length);
 

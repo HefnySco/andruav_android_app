@@ -100,7 +100,7 @@ public class VideoFrame implements RefCounted {
 
       private final int glTarget;
 
-      private Type(final int glTarget) {
+      Type(final int glTarget) {
         this.glTarget = glTarget;
       }
 

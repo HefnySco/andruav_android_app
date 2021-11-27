@@ -41,7 +41,7 @@ import com.andruav.AndruavSettings;
 import com.andruav.Constants;
 import com.andruav.FeatureSwitch;
 import com.andruav.TelemetryProtocol;
-import com.andruav.event.droneReport_7adath._7adath_FCB_Changed;
+import com.andruav.event.droneReport_Event.Event_FCB_Changed;
 
 import ap.andruav_ap.widgets.SmartOptimization_Dlg;
 import ap.andruavmiddlelibrary.factory.communication.NetInfoAdapter;
@@ -98,7 +98,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
     }
 
 
-    public void onEvent (final _7adath_FCB_Changed adath_fcb_changed)
+    public void onEvent (final Event_FCB_Changed adath_fcb_changed)
     {
         if (!adath_fcb_changed.andruavUnitBase.IsMe()) return;
         Message msg = new Message();
@@ -185,8 +185,8 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         }
 
 
-        /***
-         * Updates connection method and ActivityMosa3ed
+        /**
+         Updates connection method and ActivityMosa3ed
          */
         View.OnClickListener genericClickListener = new View.OnClickListener() {
             @Override
@@ -245,9 +245,9 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         mhandle = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                if (msg.obj instanceof _7adath_FCB_Changed)
+                if (msg.obj instanceof Event_FCB_Changed)
                 {
-                    _7adath_FCB_Changed adath_fcb_changed = (_7adath_FCB_Changed) msg.obj;
+                    Event_FCB_Changed adath_fcb_changed = (Event_FCB_Changed) msg.obj;
                     if ((adath_fcb_changed.andruavUnitBase == null) || (!adath_fcb_changed.andruavUnitBase.IsMe()))
                     {
                         return ;

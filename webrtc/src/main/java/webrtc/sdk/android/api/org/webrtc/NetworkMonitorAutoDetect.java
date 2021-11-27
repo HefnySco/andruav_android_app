@@ -46,7 +46,7 @@ import java.util.List;
  * ACCESS_NETWORK_STATE permission.
  */
 public class NetworkMonitorAutoDetect extends BroadcastReceiver {
-  public static enum ConnectionType {
+  public enum ConnectionType {
     CONNECTION_UNKNOWN,
     CONNECTION_ETHERNET,
     CONNECTION_WIFI,
@@ -112,9 +112,9 @@ public class NetworkMonitorAutoDetect extends BroadcastReceiver {
     private String getName() {
       return name;
     }
-  };
+  }
 
-  static class NetworkState {
+    static class NetworkState {
     private final boolean connected;
     // Defined from ConnectivityManager.TYPE_XXX for non-mobile; for mobile, it is
     // further divided into 2G, 3G, or 4G from the subtype.
@@ -637,13 +637,13 @@ public class NetworkMonitorAutoDetect extends BroadcastReceiver {
   /**
    * Observer interface by which observer is notified of network changes.
    */
-  public static interface Observer {
+  public interface Observer {
     /**
      * Called when default network changes.
      */
-    public void onConnectionTypeChanged(ConnectionType newConnectionType);
-    public void onNetworkConnect(NetworkInformation networkInfo);
-    public void onNetworkDisconnect(long networkHandle);
+    void onConnectionTypeChanged(ConnectionType newConnectionType);
+    void onNetworkConnect(NetworkInformation networkInfo);
+    void onNetworkDisconnect(long networkHandle);
   }
 
   /**

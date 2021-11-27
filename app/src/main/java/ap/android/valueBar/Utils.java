@@ -1,7 +1,7 @@
 package ap.android.valueBar;
 
-/**
- * Created by mhefny on 5/27/16.
+/*
+  Created by mhefny on 5/27/16.
  */
 
 import android.content.res.Resources;

@@ -71,7 +71,7 @@ import ap.andruavmiddlelibrary.factory.util.DialogHelper;
 
 import com.andruav.AndruavEngine;
 import com.andruav.andruavUnit.AndruavUnitBase;
-import com.andruav.event.droneReport_7adath._7adath_GCSBlockedChanged;
+import com.andruav.event.droneReport_Event.Event_GCSBlockedChanged;
 import com.andruav.protocol.commands.textMessages.Andruav_2MR;
 
 import com.andruav.AndruavSettings;
@@ -142,7 +142,7 @@ public class MainScreen extends BaseAndruavShasha {
 
 
 
-    public void onEvent (final _7adath_GCSBlockedChanged a7adath_gcsBlockedChanged)
+    public void onEvent (final Event_GCSBlockedChanged a7adath_gcsBlockedChanged)
     {
 
         Message msg = new Message();
@@ -230,7 +230,7 @@ public class MainScreen extends BaseAndruavShasha {
                 {
                     updateFCBButton();
                 }
-                else if (msg.obj instanceof _7adath_GCSBlockedChanged)
+                else if (msg.obj instanceof Event_GCSBlockedChanged)
                 {
                     updateFCBButton();
                 }
@@ -478,13 +478,13 @@ public class MainScreen extends BaseAndruavShasha {
                     {  // No telemetry initialized and I am a GCS
                         App.telemetryProtocolParser = new TelemetryGCSProtocolParser();
                     }else
-                    if ((App.telemetryProtocolParser != null) && (App.telemetryProtocolParser instanceof TelemetryDroneProtocolParser )) {
+                    if (App.telemetryProtocolParser instanceof TelemetryDroneProtocolParser) {
                         // seems user changed mode from Drone to GCS
                         App.telemetryProtocolParser.shutDown(); // close drone oarser instance.
                         App.telemetryProtocolParser = null;
                     }
                 } else {
-                    if ((App.telemetryProtocolParser != null) && (App.telemetryProtocolParser instanceof TelemetryGCSProtocolParser))
+                    if ((App.telemetryProtocolParser instanceof TelemetryGCSProtocolParser))
                     {
                         App.telemetryProtocolParser.shutDown();
                         App.telemetryProtocolParser = null;

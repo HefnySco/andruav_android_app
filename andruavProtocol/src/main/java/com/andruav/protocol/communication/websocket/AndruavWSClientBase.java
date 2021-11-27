@@ -12,20 +12,17 @@ import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.AndruavTaskManager;
 import com.andruav.event.Event_Remote_ChannelsCMD;
-import com.andruav.event.droneReport_7adath._7adath_Battery_Ready;
-import com.andruav.event.droneReport_7adath._7adath_GPS_Ready;
-import com.andruav.event.droneReport_7adath._7adath_GeoFence_Hit;
-import com.andruav.event.droneReport_7adath._7adath_HomeLocation_Ready;
-import com.andruav.event.droneReport_7adath._7adath_IMU_Ready;
-import com.andruav.event.droneReport_7adath._7adath_RemoteControlSettingsReceived;
-import com.andruav.event.droneReport_7adath._7adath_Signalling;
-import com.andruav.event.droneReport_7adath._7adath_TRK_Target_Lost;
-import com.andruav.event.droneReport_7adath._7adath_TRK_Target_Ready;
-import com.andruav.event.droneReport_7adath._7adath_TRK_Target_Stop;
-import com.andruav.event.droneReport_7adath._7adath_TargetLocation_Ready;
-import com.andruav.event.droneReport_7adath._7adath_WayPointsRecieved;
-import com.andruav.event.droneReport_7adath._7adath_WayPointsUpdated;
-import com.andruav.event.droneReport_7adath._7adath_CameraZoom;
+import com.andruav.event.droneReport_Event.Event_Battery_Ready;
+import com.andruav.event.droneReport_Event.Event_GPS_Ready;
+import com.andruav.event.droneReport_Event.Event_GeoFence_Hit;
+import com.andruav.event.droneReport_Event.Event_HomeLocation_Ready;
+import com.andruav.event.droneReport_Event.Event_IMU_Ready;
+import com.andruav.event.droneReport_Event.Event_RemoteControlSettingsReceived;
+import com.andruav.event.droneReport_Event.Event_Signalling;
+import com.andruav.event.droneReport_Event.Event_TargetLocation_Ready;
+import com.andruav.event.droneReport_Event.Event_WayPointsRecieved;
+import com.andruav.event.droneReport_Event.Event_WayPointsUpdated;
+import com.andruav.event.droneReport_Event.Event_CameraZoom;
 import com.andruav.event.fcb_7adath._7adath_FCB_RemoteControlSettings;
 import com.andruav.event.fpv7adath._7adath_FPV_CMD;
 import com.andruav.event.networkEvent.EventSocketState;
@@ -643,7 +640,7 @@ public abstract class AndruavWSClientBase {
                 andruav_2MR.processed = true;
                 final AndruavUnitBase andruavUnit = AndruavEngine.getAndruavWe7daMapBase().updateNAV(andruav_2MR);
                 if (andruavUnit != null) {
-                    AndruavEngine.getEventBus().post(new _7adath_IMU_Ready(andruavUnit)); // inform all that a data is ready
+                    AndruavEngine.getEventBus().post(new Event_IMU_Ready(andruavUnit)); // inform all that a data is ready
                 }
 
                 andruav_2MR.processed = true;
@@ -734,13 +731,13 @@ public abstract class AndruavWSClientBase {
                     //final GeoFenceCompositBase geoFenceMapBase = andruavWe7daBase.getGeoFenceMapBase().get(andruavResala_geoFenceHit.fenceName);
                     final GeoFenceBase geoFenceMapBase = GeoFenceManager.getGeoFence(andruavMessage_geoFenceHit.fenceName);
 
-                    final _7adath_GeoFence_Hit a7adath_geoFence_hit = new _7adath_GeoFence_Hit(andruavUnitBase, andruavMessage_geoFenceHit.fenceName, andruavMessage_geoFenceHit.inZone, andruavMessage_geoFenceHit.distance, andruavMessage_geoFenceHit.shouldKeepOutside);
+                    final Event_GeoFence_Hit a7adath_geoFence_hit = new Event_GeoFence_Hit(andruavUnitBase, andruavMessage_geoFenceHit.fenceName, andruavMessage_geoFenceHit.inZone, andruavMessage_geoFenceHit.distance, andruavMessage_geoFenceHit.shouldKeepOutside);
                     if (geoFenceMapBase != null) {
                         geoFenceMapBase.setisInsideRemote(andruavUnitBase, a7adath_geoFence_hit);
                     } else { // TODO: IMPORTANT sendMessageToModule ask for loading track
 
                     }
-                    AndruavEngine.getEventBus().post(new _7adath_GeoFence_Hit(andruavUnitBase, andruavMessage_geoFenceHit.fenceName, andruavMessage_geoFenceHit.inZone, andruavMessage_geoFenceHit.distance, andruavMessage_geoFenceHit.shouldKeepOutside));
+                    AndruavEngine.getEventBus().post(new Event_GeoFence_Hit(andruavUnitBase, andruavMessage_geoFenceHit.fenceName, andruavMessage_geoFenceHit.inZone, andruavMessage_geoFenceHit.distance, andruavMessage_geoFenceHit.shouldKeepOutside));
                 }
             }
             break;
@@ -753,7 +750,7 @@ public abstract class AndruavWSClientBase {
                 final AndruavUnitBase andruavUnit = AndruavEngine.getAndruavWe7daMapBase().updateGPS(andruav_2MR);
 
                 if (andruavUnit != null) {
-                    AndruavEngine.getEventBus().post(new _7adath_GPS_Ready(andruavUnit)); // inform all that a data is ready
+                    AndruavEngine.getEventBus().post(new Event_GPS_Ready(andruavUnit)); // inform all that a data is ready
                 }
             }
             break;
@@ -782,7 +779,7 @@ public abstract class AndruavWSClientBase {
 
                 if (andruavUnit != null) // cannot set my home location remotely
                 {
-                    AndruavEngine.getEventBus().post(new _7adath_HomeLocation_Ready(andruavUnit)); // inform all that a data is ready
+                    AndruavEngine.getEventBus().post(new Event_HomeLocation_Ready(andruavUnit)); // inform all that a data is ready
                 }
             }
             break;
@@ -794,7 +791,7 @@ public abstract class AndruavWSClientBase {
                 final AndruavUnitBase andruavUnit = AndruavEngine.getAndruavWe7daMapBase().updateTargetLocation(andruav_2MR);
 
                 if (andruavUnit != null) {
-                    AndruavEngine.getEventBus().post(new _7adath_TargetLocation_Ready(andruavUnit)); // inform all that a data is ready
+                    AndruavEngine.getEventBus().post(new Event_TargetLocation_Ready(andruavUnit)); // inform all that a data is ready
                 }
             }
             break;
@@ -805,7 +802,7 @@ public abstract class AndruavWSClientBase {
                 andruav_2MR.processed = true;
                 final AndruavUnitBase andruavUnit = AndruavEngine.getAndruavWe7daMapBase().updatePOW(andruav_2MR);
                 if (andruavUnit != null) {
-                    AndruavEngine.getEventBus().post(new _7adath_Battery_Ready(andruavUnit)); // inform all that a data is ready
+                    AndruavEngine.getEventBus().post(new Event_Battery_Ready(andruavUnit)); // inform all that a data is ready
                 }
             }
             break;
@@ -905,7 +902,7 @@ public abstract class AndruavWSClientBase {
 
                     if (cameraModule.BuiltInModule) {
                         // This is a local camera for this Andruav Device
-                        _7adath_CameraZoom adath_cameraZoom = new _7adath_CameraZoom(andruavMessage_cameraZoom);
+                        Event_CameraZoom adath_cameraZoom = new Event_CameraZoom(andruavMessage_cameraZoom);
                         AndruavEngine.getEventBus().post(adath_cameraZoom);
                     } else {
                         // This is a camera module connected to Andruav Device
@@ -929,7 +926,7 @@ public abstract class AndruavWSClientBase {
 
                     if (AndruavSettings.andruavWe7daBase.getIsCGS())
                     {
-                        _7adath_Signalling a7adath_signalling = new _7adath_Signalling(andruavMessage_signaling.getJsonResala(), andruavWe7da);
+                        Event_Signalling a7adath_signalling = new Event_Signalling(andruavMessage_signaling.getJsonResala(), andruavWe7da);
                         AndruavEngine.getEventBus().post(a7adath_signalling);
 
                         return ;
@@ -945,7 +942,7 @@ public abstract class AndruavWSClientBase {
 
                         if (cameraModule.BuiltInModule) {
                             // This is a local camera for this Andruav Device
-                            _7adath_Signalling a7adath_signalling = new _7adath_Signalling(andruavMessage_signaling.getJsonResala(), andruavWe7da);
+                            Event_Signalling a7adath_signalling = new Event_Signalling(andruavMessage_signaling.getJsonResala(), andruavWe7da);
                             AndruavEngine.getEventBus().post(a7adath_signalling);
                         } else {
                             // This is a camera module connected to Andruav Device
@@ -1001,7 +998,7 @@ public abstract class AndruavWSClientBase {
                     break;
                 }
                 (AndruavEngine.getAndruavWe7daMapBase()).refreshWayPoints(andruavWe7da, ((AndruavMessage_WayPoints) andruav_2MR.andruavMessageBase));
-                AndruavEngine.getEventBus().post(new _7adath_WayPointsRecieved(andruavWe7da));
+                AndruavEngine.getEventBus().post(new Event_WayPointsRecieved(andruavWe7da));
             }
             break;
 
@@ -1279,7 +1276,7 @@ public abstract class AndruavWSClientBase {
                 andruav_2MR.processed = true;
                 final AndruavUnitBase andruavUnit = AndruavEngine.getAndruavWe7daMapBase().updateIMU(andruav_2MR);
                 if (andruavUnit != null) {
-                    AndruavEngine.getEventBus().post(new _7adath_IMU_Ready(andruavUnit)); // inform all that a data is ready
+                    AndruavEngine.getEventBus().post(new Event_IMU_Ready(andruavUnit)); // inform all that a data is ready
                 }
 
                 andruav_2MR.processed = true;
@@ -1318,7 +1315,7 @@ public abstract class AndruavWSClientBase {
                     break;
                 }
                 (AndruavEngine.getAndruavWe7daMapBase()).refreshWayPoints(andruavWe7da, ((AndruavResalaBinary_WayPoints) andruav_2MR.andruavResalaBinaryBase));
-                AndruavEngine.getEventBus().post(new _7adath_WayPointsRecieved(andruavWe7da));
+                AndruavEngine.getEventBus().post(new Event_WayPointsRecieved(andruavWe7da));
             }
             break;
 
@@ -1340,7 +1337,7 @@ public abstract class AndruavWSClientBase {
                     }
                     //BUG: This is a bad logic
                     AndruavEngine.getAndruavWe7daMapBase().updateWayPoints(andruavWe7da,((AndruavResalaBinary_WayPointsUpdates)andruav_2MR.andruavResalaBinaryBase));
-                    AndruavEngine.getEventBus().post(new _7adath_WayPointsUpdated(andruavWe7da, ((AndruavResalaBinary_WayPointsUpdates) andruav_2MR.andruavResalaBinaryBase).getWayPoints()));
+                    AndruavEngine.getEventBus().post(new Event_WayPointsUpdated(andruavWe7da, ((AndruavResalaBinary_WayPointsUpdates) andruav_2MR.andruavResalaBinaryBase).getWayPoints()));
 
                 }
             }
@@ -1363,7 +1360,7 @@ public abstract class AndruavWSClientBase {
 
                 andruavWe7da.setRTC(((AndruavResalaBinary_RemoteControlSettings)andruav_2MR.andruavResalaBinaryBase).getRTC());
                 if (andruavWe7da != null) {
-                    AndruavEngine.getEventBus().post(new _7adath_RemoteControlSettingsReceived(andruavWe7da));
+                    AndruavEngine.getEventBus().post(new Event_RemoteControlSettingsReceived(andruavWe7da));
                 }
             }
             break;

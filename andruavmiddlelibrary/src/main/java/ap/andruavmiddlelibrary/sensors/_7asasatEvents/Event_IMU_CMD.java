@@ -1,7 +1,7 @@
 package ap.andruavmiddlelibrary.sensors._7asasatEvents;
 
-/**
- * Created by M.Hefny on 24-Oct-14.
+/*
+  Created by M.Hefny on 24-Oct-14.
  */
 
 /***

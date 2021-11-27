@@ -84,7 +84,6 @@ public class AndruavEngine {
      * This represents {@link AndruavUDPServerBase} or updated version of it.
      */
     private static AndruavUDPBase andruavAndruavUDPServerBase;
-    private static UDPServerBase andruavTelemetryUDPServer;
 
     public static IPreference getPreference() {
         return mPreference;

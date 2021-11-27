@@ -15,8 +15,8 @@ import com.andruav.sensors.AndruavIMU;
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.R;
 
-import com.andruav.event.droneReport_7adath._7adath_GPS_Ready;
-import com.andruav.event.droneReport_7adath._7adath_IMU_Ready;
+import com.andruav.event.droneReport_Event.Event_GPS_Ready;
+import com.andruav.event.droneReport_Event.Event_IMU_Ready;
 
 /**
  * Created by mhefny on 2/4/16.
@@ -46,7 +46,7 @@ public class AttitudeWidget extends RelativeLayout {
      * Local IMU events
      * @param a7adath_imu_ready
      */
-    public void onEvent (final _7adath_IMU_Ready a7adath_imu_ready)
+    public void onEvent (final Event_IMU_Ready a7adath_imu_ready)
     {
         // This is local IMU so return if local Unit is not selected
         if ((mAndruavUnit==null) || (!mAndruavUnit.Equals(a7adath_imu_ready.mAndruavWe7da)))
@@ -61,7 +61,7 @@ public class AttitudeWidget extends RelativeLayout {
 
 
 
-    public void onEvent (final _7adath_GPS_Ready a7adath_gps_ready)
+    public void onEvent (final Event_GPS_Ready a7adath_gps_ready)
     {
         // This is local IMU so return if local Unit is not selected
         if ((mAndruavUnit==null) || (!mAndruavUnit.Equals(a7adath_gps_ready.mAndruavWe7da)))
@@ -102,7 +102,7 @@ public class AttitudeWidget extends RelativeLayout {
                 super.handleMessage(msg);
 
 
-                if (msg.obj instanceof _7adath_IMU_Ready) {
+                if (msg.obj instanceof Event_IMU_Ready) {
                     updateAttitude();
                     return;
                 }
@@ -177,7 +177,7 @@ public class AttitudeWidget extends RelativeLayout {
         final AndruavIMU andruavIMU = mAndruavUnit.getActiveIMU();
 
 
-        attitudeIndicatorView.setAttitude((float) andruavIMU.R, (float) andruavIMU.P, (float) andruavIMU.Y, mAndruavUnit.useFCBIMU(),mAndruavUnit.isInCVTrackingMode());
+        attitudeIndicatorView.setAttitude((float) andruavIMU.R, (float) andruavIMU.P, (float) andruavIMU.Y, mAndruavUnit.useFCBIMU(), false);
 
     }
 

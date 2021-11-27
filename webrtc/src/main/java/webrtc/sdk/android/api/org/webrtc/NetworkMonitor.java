@@ -31,7 +31,7 @@ public class NetworkMonitor {
    * Alerted when the connection type of the network changes. The alert is fired on the UI thread.
    */
   public interface NetworkObserver {
-    public void onConnectionTypeChanged(NetworkMonitorAutoDetect.ConnectionType connectionType);
+    void onConnectionTypeChanged(NetworkMonitorAutoDetect.ConnectionType connectionType);
   }
 
   private static final String TAG = "NetworkMonitor";

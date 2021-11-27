@@ -19,16 +19,16 @@ import android.view.View;
  */
 public class RendererCommon {
   /** Interface for reporting rendering events. */
-  public static interface RendererEvents {
+  public interface RendererEvents {
     /**
      * Callback fired once first frame is rendered.
      */
-    public void onFirstFrameRendered();
+    void onFirstFrameRendered();
 
     /**
      * Callback fired when rendered frame resolution or rotation has changed.
      */
-    public void onFrameResolutionChanged(int videoWidth, int videoHeight, int rotation);
+    void onFrameResolutionChanged(int videoWidth, int videoHeight, int rotation);
   }
 
   /**
@@ -37,7 +37,7 @@ public class RendererCommon {
    * input can either be an OES texture, RGB texture, or YUV textures in I420 format. The function
    * release() must be called manually to free the resources held by this object.
    */
-  public static interface GlDrawer {
+  public interface GlDrawer {
     /**
      * Functions for drawing frames with different sources. The rendering surface target is
      * implied by the current EGL context of the calling thread and requires no explicit argument.
@@ -124,10 +124,10 @@ public class RendererCommon {
   // SCALE_ASPECT_BALANCED - Compromise between FIT and FILL. Video frame will fill as much as
   // possible of the view while maintaining aspect ratio, under the constraint that at least
   // |BALANCED_VISIBLE_FRACTION| of the frame content will be shown.
-  public static enum ScalingType { SCALE_ASPECT_FIT, SCALE_ASPECT_FILL, SCALE_ASPECT_BALANCED }
+  public enum ScalingType { SCALE_ASPECT_FIT, SCALE_ASPECT_FILL, SCALE_ASPECT_BALANCED }
   // The minimum fraction of the frame content that will be shown for |SCALE_ASPECT_BALANCED|.
   // This limits excessive cropping when adjusting display size.
-  private static float BALANCED_VISIBLE_FRACTION = 0.5625f;
+  private static final float BALANCED_VISIBLE_FRACTION = 0.5625f;
 
   /**
    * Returns layout transformation matrix that applies an optional mirror effect and compensates
@@ -147,7 +147,7 @@ public class RendererCommon {
     if (mirror) {
       scaleX *= -1;
     }
-    final float matrix[] = new float[16];
+    final float[] matrix = new float[16];
     Matrix.setIdentityM(matrix, 0);
     Matrix.scaleM(matrix, 0, scaleX, scaleY, 1);
     adjustOrigin(matrix);

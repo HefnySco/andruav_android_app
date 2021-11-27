@@ -13,10 +13,10 @@ import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitShadow;
-import com.andruav.event.droneReport_7adath._7adath_GeoFence_Ready;
-import com.andruav.event.droneReport_7adath._7adath_HomeLocation_Ready;
-import com.andruav.event.droneReport_7adath._7adath_WayPointReached;
-import com.andruav.event.droneReport_7adath._7adath_WayPointsRecieved;
+import com.andruav.event.droneReport_Event.Event_GeoFence_Ready;
+import com.andruav.event.droneReport_Event.Event_HomeLocation_Ready;
+import com.andruav.event.droneReport_Event.Event_WayPointReached;
+import com.andruav.event.droneReport_Event.Event_WayPointsRecieved;
 import com.andruav.sensors.AndruavIMU;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
 import com.andruav.controlBoard.shared.geoFence.GeoFencePointNodeCylinder;
@@ -545,12 +545,10 @@ public class AndruavMapBaseWidget extends SupportMapFragment {
                     {
                         case MissionBase.Report_NAV_ItemExecuting:
                             icon = R.drawable.location_bg_32x32;
-                            speak = R.string.action_waypoint_reached_going;
 
                             break;
                         case MissionBase.Report_NAV_ItemReached:
                             icon = R.drawable.location_gy_32x32;
-                            speak = R.string.action_waypoint_reached_charging;
                             break;
                         case MissionBase.Report_NAV_Unknown:
                         default:
@@ -594,7 +592,7 @@ public class AndruavMapBaseWidget extends SupportMapFragment {
 
 
 
-    protected void handleWayPointReached (final _7adath_WayPointReached a7adath_wayPointReached)
+    protected void handleWayPointReached (final Event_WayPointReached a7adath_wayPointReached)
     {
         if ((andruavUnit_selected != null) && (andruavUnit_selected.Equals(a7adath_wayPointReached.mAndruavWe7da))) {
             // this is the current selected one.
@@ -641,7 +639,7 @@ public class AndruavMapBaseWidget extends SupportMapFragment {
     }
 
 
-    protected void handleWayPointReceieved (final _7adath_WayPointsRecieved a7adath_wayPointsRecieved)
+    protected void handleWayPointReceieved (final Event_WayPointsRecieved a7adath_wayPointsRecieved)
     {
         if ((andruavUnit_selected != null) && (andruavUnit_selected.Equals(a7adath_wayPointsRecieved.mAndruavWe7da))) {
             // this is the current selected one.
@@ -652,7 +650,7 @@ public class AndruavMapBaseWidget extends SupportMapFragment {
 
 
 
-    protected void handleHomeLocationUpdated (final _7adath_HomeLocation_Ready a7adath_homeLocation_ready)
+    protected void handleHomeLocationUpdated (final Event_HomeLocation_Ready a7adath_homeLocation_ready)
     {
         if ((andruavUnit_selected != null) && (andruavUnit_selected.Equals(a7adath_homeLocation_ready.mAndruavWe7da))) {
             // this is the current selected one.
@@ -664,7 +662,7 @@ public class AndruavMapBaseWidget extends SupportMapFragment {
 
     /***
      * same fence can be attached to different drones, so by default @param forceUpdate is false.
-     * <br> it is true when calling this function from a a {@link _7adath_GeoFence_Ready}
+     * <br> it is true when calling this function from a a {@link Event_GeoFence_Ready}
      * @param forceUpdate
      */
     protected void showGeoFence (final boolean forceUpdate)

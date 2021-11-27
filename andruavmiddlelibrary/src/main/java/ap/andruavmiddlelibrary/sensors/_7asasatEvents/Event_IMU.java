@@ -44,8 +44,8 @@ public class Event_IMU {
     public Boolean iA;   //isAccSupported
     public Boolean iG;   //isGyroSupported
     public Boolean iM;  // isMagSupported
-    /**
-     * smoothedValues: are values with complementary filter and calibrated
+    /*
+      smoothedValues: are values with complementary filter and calibrated
      */
     /**
      * ACCsmoothedValues

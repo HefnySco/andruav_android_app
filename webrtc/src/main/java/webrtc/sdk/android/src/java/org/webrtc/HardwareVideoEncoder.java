@@ -358,6 +358,7 @@ class HardwareVideoEncoder implements VideoEncoder {
     for (EncodedImage.FrameType frameType : encodeInfo.frameTypes) {
       if (frameType == EncodedImage.FrameType.VideoFrameKey) {
         requestedKeyFrame = true;
+        break;
       }
     }
 

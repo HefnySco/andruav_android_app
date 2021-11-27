@@ -3,16 +3,16 @@ package ap.andruav_ap.communication.controlBoard;
 import com.mavlink.MAVLinkPacket;
 import com.mavlink.Parser;
 import com.andruav.AndruavSettings;
-import com.andruav.event.droneReport_7adath._7adath_SERVO_Outputs_Ready;
+import com.andruav.event.droneReport_Event.Event_SERVO_Outputs_Ready;
 import com.andruav.andruavUnit.AndruavUnitBase;
-import com.andruav.event.droneReport_7adath._7adath_HomeLocation_Ready;
-import com.andruav.event.droneReport_7adath._7adath_NAV_INFO_Ready;
+import com.andruav.event.droneReport_Event.Event_HomeLocation_Ready;
+import com.andruav.event.droneReport_Event.Event_NAV_INFO_Ready;
 import com.andruav.controlBoard.ControlBoardBase;
 
 
-import com.andruav.event.droneReport_7adath._7adath_Battery_Ready;
-import com.andruav.event.droneReport_7adath._7adath_GPS_Ready;
-import com.andruav.event.droneReport_7adath._7adath_IMU_Ready;
+import com.andruav.event.droneReport_Event.Event_Battery_Ready;
+import com.andruav.event.droneReport_Event.Event_GPS_Ready;
+import com.andruav.event.droneReport_Event.Event_IMU_Ready;
 import com.andruav.util.CustomCircularBuffer;
 
 /**
@@ -20,12 +20,12 @@ import com.andruav.util.CustomCircularBuffer;
  */
 public class ControlBoard_MavlinkBase extends ControlBoardBase {
 
-    final protected _7adath_HomeLocation_Ready a7adath_homeLocation_ready = new _7adath_HomeLocation_Ready(AndruavSettings.andruavWe7daBase);
-    final protected _7adath_GPS_Ready a7adath_gps_ready = new _7adath_GPS_Ready(AndruavSettings.andruavWe7daBase);
-    final protected _7adath_IMU_Ready a7adath_imu_ready = new _7adath_IMU_Ready(AndruavSettings.andruavWe7daBase);
-    final protected _7adath_Battery_Ready a7adath_battery_ready = new _7adath_Battery_Ready(AndruavSettings.andruavWe7daBase);
-    final protected _7adath_NAV_INFO_Ready a7adath_nav_info_ready = new _7adath_NAV_INFO_Ready(AndruavSettings.andruavWe7daBase);
-    final protected _7adath_SERVO_Outputs_Ready a7adath_servo_output_ready = new _7adath_SERVO_Outputs_Ready(AndruavSettings.andruavWe7daBase);
+    final protected Event_HomeLocation_Ready a7adath_homeLocation_ready = new Event_HomeLocation_Ready(AndruavSettings.andruavWe7daBase);
+    final protected Event_GPS_Ready a7adath_gps_ready = new Event_GPS_Ready(AndruavSettings.andruavWe7daBase);
+    final protected Event_IMU_Ready a7adath_imu_ready = new Event_IMU_Ready(AndruavSettings.andruavWe7daBase);
+    final protected Event_Battery_Ready a7adath_battery_ready = new Event_Battery_Ready(AndruavSettings.andruavWe7daBase);
+    final protected Event_NAV_INFO_Ready a7adath_nav_info_ready = new Event_NAV_INFO_Ready(AndruavSettings.andruavWe7daBase);
+    final protected Event_SERVO_Outputs_Ready a7adath_servo_output_ready = new Event_SERVO_Outputs_Ready(AndruavSettings.andruavWe7daBase);
 
 
 

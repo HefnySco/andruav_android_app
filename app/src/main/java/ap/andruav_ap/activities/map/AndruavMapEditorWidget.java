@@ -6,12 +6,12 @@ import android.os.Message;
 import androidx.collection.SimpleArrayMap;
 
 import com.andruav.andruavUnit.AndruavUnitBase;
-import com.andruav.event.droneReport_7adath._7adath_GPS_Ready;
-import com.andruav.event.droneReport_7adath._7adath_GeoFence_Hit;
-import com.andruav.event.droneReport_7adath._7adath_GeoFence_Ready;
-import com.andruav.event.droneReport_7adath._7adath_HomeLocation_Ready;
-import com.andruav.event.droneReport_7adath._7adath_WayPointReached;
-import com.andruav.event.droneReport_7adath._7adath_WayPointsRecieved;
+import com.andruav.event.droneReport_Event.Event_GPS_Ready;
+import com.andruav.event.droneReport_Event.Event_GeoFence_Hit;
+import com.andruav.event.droneReport_Event.Event_GeoFence_Ready;
+import com.andruav.event.droneReport_Event.Event_HomeLocation_Ready;
+import com.andruav.event.droneReport_Event.Event_WayPointReached;
+import com.andruav.event.droneReport_Event.Event_WayPointsRecieved;
 import com.andruav.controlBoard.shared.missions.MissionBase;
 import com.andruav.controlBoard.shared.missions.MohemmaMapBase;
 import com.andruav.controlBoard.shared.missions.WayPointStep;
@@ -58,7 +58,7 @@ public class AndruavMapEditorWidget extends AndruavMapBaseWidget implements IPat
      * A new GeoFencePoint data has been received either from Me as a Drone or from Another Drone.
      * @param a7adath_geoFence_ready
      */
-    public void onEvent (final _7adath_GeoFence_Ready a7adath_geoFence_ready)
+    public void onEvent (final Event_GeoFence_Ready a7adath_geoFence_ready)
     {
 
         Message msg = new Message();
@@ -70,7 +70,7 @@ public class AndruavMapEditorWidget extends AndruavMapBaseWidget implements IPat
      * A new Geo Fence HIT (either in or out) from a fence has been recieved.
      * @param a7adath_geoFence_hit
      */
-    public void onEvent (final _7adath_GeoFence_Hit a7adath_geoFence_hit)
+    public void onEvent (final Event_GeoFence_Hit a7adath_geoFence_hit)
     {
         Message msg = new Message();
         msg.obj = a7adath_geoFence_hit;
@@ -78,7 +78,7 @@ public class AndruavMapEditorWidget extends AndruavMapBaseWidget implements IPat
     }
 
 
-    public void onEvent(final _7adath_WayPointReached a7adath_wayPointReached) {
+    public void onEvent(final Event_WayPointReached a7adath_wayPointReached) {
 
         final Message msg = mhandle.obtainMessage();
         msg.obj = a7adath_wayPointReached;
@@ -87,7 +87,7 @@ public class AndruavMapEditorWidget extends AndruavMapBaseWidget implements IPat
 
     }
 
-    public void onEvent(final _7adath_WayPointsRecieved a7adath_wayPointsRecieved) {
+    public void onEvent(final Event_WayPointsRecieved a7adath_wayPointsRecieved) {
 
         final Message msg = mhandle.obtainMessage();
         msg.obj = a7adath_wayPointsRecieved;
@@ -97,7 +97,7 @@ public class AndruavMapEditorWidget extends AndruavMapBaseWidget implements IPat
     }
 
 
-    public void onEvent(final _7adath_GPS_Ready a7adath_gps_ready) {
+    public void onEvent(final Event_GPS_Ready a7adath_gps_ready) {
 
         final Message msg = mhandle.obtainMessage();
         msg.obj = a7adath_gps_ready;
@@ -105,7 +105,7 @@ public class AndruavMapEditorWidget extends AndruavMapBaseWidget implements IPat
 
     }
 
-    public void onEvent(final _7adath_HomeLocation_Ready a7adath_homeLocation_ready) {
+    public void onEvent(final Event_HomeLocation_Ready a7adath_homeLocation_ready) {
 
         final Message msg = mhandle.obtainMessage();
 
@@ -127,9 +127,9 @@ public class AndruavMapEditorWidget extends AndruavMapBaseWidget implements IPat
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                if (msg.obj instanceof _7adath_GPS_Ready) {
+                if (msg.obj instanceof Event_GPS_Ready) {
                     // sent from TYPE_AndruavMessage_GPS Event
-                    _7adath_GPS_Ready a7adath_gps_ready = (_7adath_GPS_Ready) (msg.obj);
+                    Event_GPS_Ready a7adath_gps_ready = (Event_GPS_Ready) (msg.obj);
                     final AndruavUnitBase andruavUnit = a7adath_gps_ready.mAndruavWe7da;
 
                     MarkerAndruav markerAndruav = markerPlans.get(andruavUnit.PartyID);
@@ -185,24 +185,24 @@ public class AndruavMapEditorWidget extends AndruavMapBaseWidget implements IPat
                             }
                         }
                     }
-                } else if (msg.obj instanceof _7adath_WayPointReached) {
-                    _7adath_WayPointReached a7adath_wayPointReached = (_7adath_WayPointReached) msg.obj;
+                } else if (msg.obj instanceof Event_WayPointReached) {
+                    Event_WayPointReached a7adath_wayPointReached = (Event_WayPointReached) msg.obj;
                     handleWayPointReached(a7adath_wayPointReached);
 
-                } else if (msg.obj instanceof _7adath_HomeLocation_Ready) {
-                    _7adath_HomeLocation_Ready a7adath_homeLocation_ready = (_7adath_HomeLocation_Ready) msg.obj;
+                } else if (msg.obj instanceof Event_HomeLocation_Ready) {
+                    Event_HomeLocation_Ready a7adath_homeLocation_ready = (Event_HomeLocation_Ready) msg.obj;
                     handleHomeLocationUpdated(a7adath_homeLocation_ready);
 
-                } else if (msg.obj instanceof _7adath_WayPointsRecieved) {
-                    _7adath_WayPointsRecieved a7adath_wayPointsRecieved = (_7adath_WayPointsRecieved) msg.obj;
+                } else if (msg.obj instanceof Event_WayPointsRecieved) {
+                    Event_WayPointsRecieved a7adath_wayPointsRecieved = (Event_WayPointsRecieved) msg.obj;
                     handleWayPointReceieved(a7adath_wayPointsRecieved);
 
-                } else if (msg.obj instanceof _7adath_GeoFence_Ready) {
+                } else if (msg.obj instanceof Event_GeoFence_Ready) {
                     // Draw Geo Fence
-                    final _7adath_GeoFence_Ready a7adath_geoFence_ready = (_7adath_GeoFence_Ready) msg.obj;
+                    final Event_GeoFence_Ready a7adath_geoFence_ready = (Event_GeoFence_Ready) msg.obj;
                     showGeoFence (a7adath_geoFence_ready.fenceName,true);
 
-                } else if (msg.obj instanceof _7adath_GeoFence_Hit)
+                } else if (msg.obj instanceof Event_GeoFence_Hit)
                 {
 
                 }

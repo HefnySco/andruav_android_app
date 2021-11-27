@@ -91,10 +91,7 @@ public class TTS implements TextToSpeech.OnInitListener {
                     Log.d(AndruavEngine.getPreference().TAG(), "polish");
                 }
 
-                if (result == TextToSpeech.LANG_MISSING_DATA
-                        || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    //Log.e(AndruavMo7arek.getPreference().TAG(), "This Language is not supported");
-                }
+                //Log.e(AndruavMo7arek.getPreference().TAG(), "This Language is not supported");
 
                 TTSinit = true;
 

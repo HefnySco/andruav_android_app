@@ -286,7 +286,7 @@ public class NetInfoAdapter {
                 return TELEPHONE_275G;
 
 
-            /**
+            /*
              From this link https://en.wikipedia.org/wiki/Evolution-Data_Optimized ..NETWORK_TYPE_EVDO_0 & NETWORK_TYPE_EVDO_A
              EV-DO is an evolution of the CDMA2000 (IS-2000) standard that supports high data rates.
 

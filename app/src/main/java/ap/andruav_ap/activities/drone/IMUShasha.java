@@ -31,7 +31,7 @@ import ap.andruavmiddlelibrary.preference.Preference;
 import ap.andruav_ap.R;
 import ap.andruavmiddlelibrary.factory.util.GMail;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_IMU_CMD;
-import com.andruav.event.droneReport_7adath._7adath_IMU_Ready;
+import com.andruav.event.droneReport_Event.Event_IMU_Ready;
 import ap.andruavmiddlelibrary.sensors.Sensor_Accelerometer;
 import ap.andruavmiddlelibrary.sensors.Sensor_Gyro;
 import ap.andruavmiddlelibrary.sensors.Sensor_Mag;
@@ -60,7 +60,7 @@ public class IMUShasha extends BaseAndruavShasha {
 
     //////////BUS EVENT
 
-    public void onEvent (final _7adath_IMU_Ready a7adath_imu_ready) {
+    public void onEvent (final Event_IMU_Ready a7adath_imu_ready) {
         AndruavIMU event_IMU = AndruavSettings.andruavWe7daBase.LastEvent_IMU;
         htmlText = "<font color=#1D5E1D>Raw Sensor Data:</font><br>";
         if (event_IMU.iA) {

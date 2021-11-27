@@ -53,9 +53,8 @@ public class CameraInfoLoader {
     }
 
     public List<String> getCameraInfoList() {
-        ArrayList<String> avaliableCameras = new ArrayList<String>();
         List<String> cameraInfoListFromStorage = getCameraInfoListFromStorage();
-        avaliableCameras.addAll(cameraInfoListFromStorage);
+        ArrayList<String> avaliableCameras = new ArrayList<String>(cameraInfoListFromStorage);
         List<String> cameraInfoListFromAssets = getCameraInfoListFromAssets();
         avaliableCameras.addAll(cameraInfoListFromAssets);
         return avaliableCameras;

@@ -90,14 +90,14 @@ public class WebRtcAudioTrack {
   }
 
   @Deprecated
-  public static interface WebRtcAudioTrackErrorCallback {
+  public interface WebRtcAudioTrackErrorCallback {
     void onWebRtcAudioTrackInitError(String errorMessage);
     void onWebRtcAudioTrackStartError(String errorMessage);
     void onWebRtcAudioTrackError(String errorMessage);
   }
 
   // TODO(henrika): upgrade all clients to use this new interface instead.
-  public static interface ErrorCallback {
+  public interface ErrorCallback {
     void onWebRtcAudioTrackInitError(String errorMessage);
     void onWebRtcAudioTrackStartError(AudioTrackStartErrorCode errorCode, String errorMessage);
     void onWebRtcAudioTrackError(String errorMessage);

@@ -27,7 +27,7 @@ import ap.andruavmiddlelibrary.eventClasses.fpvEvent.Event_FPV_Image;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
 import ap.andruavmiddlelibrary.factory.io.FileHelper;
 import ap.andruavmiddlelibrary.factory.util.Image_Helper;
-import com.andruav.event.droneReport_7adath._7adath_IMU_Ready;
+import com.andruav.event.droneReport_Event.Event_IMU_Ready;
 import ap.andruavmiddlelibrary.database.DaoManager;
 import ap.andruavmiddlelibrary.database.GenericDataDao;
 import ap.andruavmiddlelibrary.database.GenericDataRow;
@@ -82,7 +82,7 @@ public class KMLFileHandler {
      * Local IMU events
      * @param event_IMU
      */
-    public void onEvent (final _7adath_IMU_Ready event_IMU)
+    public void onEvent (final Event_IMU_Ready event_IMU)
     {
 
         if (stopKML || (!mclearToWrite)) return ;
@@ -136,7 +136,7 @@ public class KMLFileHandler {
                 super.handleMessage(msg);
                 if (mkillMe) return;
 
-                if (msg.obj instanceof _7adath_IMU_Ready)
+                if (msg.obj instanceof Event_IMU_Ready)
                 {
                     final AndruavIMU event_imu = AndruavSettings.andruavWe7daBase.getActiveIMU();
 

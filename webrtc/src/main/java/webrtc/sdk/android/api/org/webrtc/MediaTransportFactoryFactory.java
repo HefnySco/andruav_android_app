@@ -18,5 +18,5 @@ public interface MediaTransportFactoryFactory {
    * Dynamically allocates a webrtc::MediaTransportFactory instance and returns a pointer to it.
    * The caller takes ownership of the object.
    */
-  public long createNativeMediaTransportFactory();
+  long createNativeMediaTransportFactory();
 }

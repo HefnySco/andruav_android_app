@@ -21,12 +21,10 @@ import android.widget.TextView;
 import com.andruav.AndruavFacade;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
-import com.andruav.event.droneReport_7adath._7adath_CameraZoom;
-import com.andruav.event.droneReport_7adath._7adath_Vehicle_Flying_Changed;
-import com.andruav.event.droneReport_7adath._7adath_Vehicle_Mode_Changed;
+import com.andruav.event.droneReport_Event.Event_CameraZoom;
+import com.andruav.event.droneReport_Event.Event_Vehicle_Flying_Changed;
+import com.andruav.event.droneReport_Event.Event_Vehicle_Mode_Changed;
 import com.andruav.andruavUnit.AndruavUnitBase;
-import com.andruav.event.droneReport_7adath._7adath_TRK_Target_Ready;
-import com.andruav.event.droneReport_7adath._7adath_TRK_Target_Stop;
 import com.andruav.event.fpv7adath._7adath_FPV_CMD;
 import com.andruav.FeatureSwitch;
 import com.andruav.andruavUnit.AndruavUnitSystem;
@@ -151,7 +149,7 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
     private CameraRecorder mcameraRecorder;
 
 
-    public void onEvent (final _7adath_CameraZoom adath_cameraZoom)
+    public void onEvent (final Event_CameraZoom adath_cameraZoom)
     {
         final Message msg = mHandle.obtainMessage();
         msg.obj = adath_cameraZoom;
@@ -202,7 +200,7 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
     }
 
 
-    public void onEvent (final _7adath_Vehicle_Mode_Changed adath_vehicle_mode_changed)
+    public void onEvent (final Event_Vehicle_Mode_Changed adath_vehicle_mode_changed)
     {
 
         if (!adath_vehicle_mode_changed.mAndruavWe7da.IsMe()) return ;
@@ -214,7 +212,7 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
     }
 
 
-    public void onEvent (final _7adath_Vehicle_Flying_Changed adath_vehicle_flying_changed)
+    public void onEvent (final Event_Vehicle_Flying_Changed adath_vehicle_flying_changed)
     {
 
         if (!adath_vehicle_flying_changed.mAndruavWe7da.IsMe()) return ;
@@ -225,22 +223,6 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
         mHandle.sendMessageDelayed(msg,0);
     }
 
-
-    public void onEvent (final _7adath_TRK_Target_Stop a7adath_trk_target_stop)
-    {
-
-        final Message msg = mHandle.obtainMessage();
-        msg.obj = a7adath_trk_target_stop;
-        mHandle.sendMessageDelayed(msg,0);
-    }
-
-    public void onEvent (final _7adath_TRK_Target_Ready a7adath_trk_target_ready)
-    {
-
-        final Message msg = mHandle.obtainMessage();
-        msg.obj = a7adath_trk_target_ready;
-        mHandle.sendMessageDelayed(msg,0);
-    }
 
     public void onEvent(final _7adath_FPV_CMD a7adath_fpv_CMD) {
 
@@ -277,9 +259,9 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
 
-                if (msg.obj instanceof  _7adath_CameraZoom)
+                if (msg.obj instanceof Event_CameraZoom)
                 {
-                    _7adath_CameraZoom adath_cameraZoom = (_7adath_CameraZoom) msg.obj;
+                    Event_CameraZoom adath_cameraZoom = (Event_CameraZoom) msg.obj;
                     if (adath_cameraZoom.ZoomValue == Double.MAX_VALUE)
                     {
                         float zoom = mPeerConnectionManager.getZoom();
@@ -313,9 +295,9 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
                     }
                 }
 
-                else if (msg.obj instanceof _7adath_Vehicle_Mode_Changed)
+                else if (msg.obj instanceof Event_Vehicle_Mode_Changed)
                 {
-                    final _7adath_Vehicle_Mode_Changed mode = (_7adath_Vehicle_Mode_Changed)msg.obj;
+                    final Event_Vehicle_Mode_Changed mode = (Event_Vehicle_Mode_Changed)msg.obj;
                     switch (mode.mAndruavWe7da.getFlightModeFromBoard())
                     {
                         case FlightMode.CONST_FLIGHT_CONTROL_RTL:
@@ -327,23 +309,10 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
                     }
 
 
-                }else if (msg.obj instanceof _7adath_Vehicle_Flying_Changed)
+                }else if (msg.obj instanceof Event_Vehicle_Flying_Changed)
                 {
                     takeSSingleImage(new AndruavUnitSystem());
 
-                }
-                else if (msg.obj instanceof _7adath_TRK_Target_Stop)
-                {
-                    final _7adath_TRK_Target_Stop a7adath_trk_target_stop = (_7adath_TRK_Target_Stop) msg.obj;
-
-                    mTLDmode = TLDmode_OFF;
-                    AndruavSettings.andruavWe7daBase.isInCVTrackingMode(false);
-                }
-                else if (msg.obj instanceof _7adath_TRK_Target_Ready)
-                {
-                    final _7adath_TRK_Target_Ready a7adath_trk_target_ready = (_7adath_TRK_Target_Ready) msg.obj;
-
-                    mTLDmode = TLDmode_WAITING_FOR_TARGET;
                 }
                 else if (msg.obj instanceof _7adath_FPV_CMD) {
                     _7adath_FPV_CMD a7adath_FPV_CMD = (_7adath_FPV_CMD) msg.obj;
@@ -859,7 +828,7 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
                     stream.flush();
 
 
-                    AndruavFacade.sendImage(pout, false, AndruavSettings.andruavWe7daBase.getAvailableLocation(), mSendBackTo);
+                    AndruavFacade.sendImage(pout, AndruavSettings.andruavWe7daBase.getAvailableLocation(), mSendBackTo);
                     if (mSaveImageLocally) {
                         final Bitmap bitmap2 = Image_Helper.createBMPfromJPG(pout);
                         Bitmap rotatedBmp = Image_Helper.rotateImage(bitmap2, bitmap2.getWidth(), bitmap2.getHeight(), Preference.getFPVActivityRotation(null));

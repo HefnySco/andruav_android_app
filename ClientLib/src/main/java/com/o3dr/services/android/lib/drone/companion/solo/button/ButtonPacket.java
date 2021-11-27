@@ -57,14 +57,14 @@ public class ButtonPacket implements Parcelable {
     public final byte[] toBytes(){
         byteBuffer.clear();
 
-        /**
-         * Message format
-         * Byte    Size    Description
-         *  0       8       Timestamp, since epoch
-         *  8       1       Button ID
-         *  9       1       Button event
-         *  10      2       Buttons-pressed mask
-         *  12 (packet length)
+        /*
+          Message format
+          Byte    Size    Description
+           0       8       Timestamp, since epoch
+           8       1       Button ID
+           9       1       Button event
+           10      2       Buttons-pressed mask
+           12 (packet length)
          */
         byteBuffer.putDouble(timestamp);
         byteBuffer.put(buttonId);
@@ -96,14 +96,14 @@ public class ButtonPacket implements Parcelable {
 
         final ByteOrder originalOrder = packetBuffer.order();
 
-        /**
-         * Message format
-         * Byte    Size    Description
-         *  0       8       Timestamp, usec since epoch
-         *  8       1       Button ID
-         *  9       1       Button event
-         *  10      2       Buttons-pressed mask
-         *  12 (packet length)
+        /*
+          Message format
+          Byte    Size    Description
+           0       8       Timestamp, usec since epoch
+           8       1       Button ID
+           9       1       Button event
+           10      2       Buttons-pressed mask
+           12 (packet length)
          */
         try {
             packetBuffer.order(ButtonPacket.BYTE_ORDER);

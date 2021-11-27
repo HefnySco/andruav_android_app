@@ -59,7 +59,7 @@ public class Camera extends DroneVariable {
 	}
 
 	public void updateMountOrientation(msg_mount_status msg_mount_status) {
-		gimbal_pitch = 90 - msg_mount_status.pointing_a / 100;
+		gimbal_pitch = 90 - msg_mount_status.pointing_a / 100.0f;
 	}
 
 }

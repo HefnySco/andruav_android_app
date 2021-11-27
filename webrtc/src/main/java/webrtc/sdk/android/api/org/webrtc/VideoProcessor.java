@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
  * on to another object. This object is also allowed to observe capturer start/stop.
  */
 public interface VideoProcessor extends CapturerObserver {
-  public static class FrameAdaptationParameters {
+  class FrameAdaptationParameters {
     public final int cropX;
     public final int cropY;
     public final int cropWidth;
@@ -62,8 +62,8 @@ public interface VideoProcessor extends CapturerObserver {
    * Applies the frame adaptation parameters to a frame. Returns null if the frame is meant to be
    * dropped. Returns a new frame. The caller is responsible for releasing the returned frame.
    */
-  public static @Nullable VideoFrame applyFrameAdaptationParameters(
-      VideoFrame frame, FrameAdaptationParameters parameters) {
+  static @Nullable VideoFrame applyFrameAdaptationParameters(
+          VideoFrame frame, FrameAdaptationParameters parameters) {
     if (parameters.drop) {
       return null;
     }

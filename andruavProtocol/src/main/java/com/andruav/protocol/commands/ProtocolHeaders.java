@@ -59,10 +59,10 @@ final public  class ProtocolHeaders {
     public static final String Message = "ms";
 
     // Values for CMD_TYPE
-    /***
-     * Communication Command
-     * <br>example:
-     * <br>{@link #CMD_COMM_INDIVIDUAL}, {@link #CMD_COMM_GROUP} , {@link #CMD_COMM_GLOBAL} , {@link #CMD_COMM_ACCOUNT}
+    /**
+     Communication Command
+     <br>example:
+     <br>{@link #CMD_COMM_INDIVIDUAL}, {@link #CMD_COMM_GROUP} , {@link #CMD_COMM_GLOBAL} , {@link #CMD_COMM_ACCOUNT}
      */
      //public static final String CMD_TYPE_COMM = "c";
     /***

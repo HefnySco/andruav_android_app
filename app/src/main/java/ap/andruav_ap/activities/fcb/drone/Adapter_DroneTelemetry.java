@@ -34,7 +34,7 @@ public class Adapter_DroneTelemetry extends BaseAdapter{
         /********** Take passed values **********/
         activity = a;
         callback=clickListener;
-        /***********  Layout inflator to call external xml layout () ***********/
+        /**********  Layout inflator to call external xml layout () ***********/
         inflater = ( LayoutInflater )activity.
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -107,15 +107,15 @@ public class Adapter_DroneTelemetry extends BaseAdapter{
 
         if(convertView==null){
 
-            /****** Inflate tabitem.xml file for each row ( Defined below ) *******/
+            /***** Inflate tabitem.xml file for each row ( Defined below ) *******/
             vi = inflater.inflate(R.layout.listitem_dronetelemetry, null);
 
-            /****** View Holder Object to contain tabitem.xml file elements ******/
+            /***** View Holder Object to contain tabitem.xml file elements ******/
 
             holder = new ViewHolder();
             holder.txtUnitName = vi.findViewById(R.id.listitem_dronetelemetry_txtDrone);
             holder.btnSelected = vi.findViewById(R.id.listitem_dronetelemetry_tglSelected);
-           /************  Set holder with LayoutInflater ************/
+            /***********  Set holder with LayoutInflater ************/
             vi.setTag( holder );
         }
         else
@@ -128,16 +128,16 @@ public class Adapter_DroneTelemetry extends BaseAdapter{
         }
         else
         {
-            /***** Get each Model object from Arraylist ********/
+            /**** Get each Model object from Arraylist ********/
             tempValues = data.get( position );
 
-            /************  Set Model values in Holder elements ***********/
+            /***********  Set Model values in Holder elements ***********/
 
             holder.txtUnitName.setText( tempValues.getDroneUnitID() );
             holder.btnSelected.setChecked(false);
             holder.btnSelected.setOnClickListener(new CustomOnClickListener(callback,position));
 
-            /******** Set Item Click Listner for LayoutInflater for each row *******/
+            /******* Set Item Click Listner for LayoutInflater for each row *******/
 
             vi.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -24,7 +24,7 @@ import de.greenrobot.event.EventBus;
 import ap.andruav_ap.App;
 import ap.andruav_ap.R;
 import ap.andruavmiddlelibrary.preference.Preference;
-import com.andruav.event.droneReport_7adath._7adath_IMU_Ready;
+import com.andruav.event.droneReport_Event.Event_IMU_Ready;
 
 
 /**
@@ -83,7 +83,7 @@ public class HUDView extends View {
     private int measureUnit = Constants.Preferred_UNIT_METRIC_SYSTEM;
 
 
-    public void onEvent (final _7adath_IMU_Ready a7adath_imu_ready)
+    public void onEvent (final Event_IMU_Ready a7adath_imu_ready)
     {
         // This is local IMU so return if local Unit is not selected
         if ((mAndruavUnit==null) || (!mAndruavUnit.Equals(a7adath_imu_ready.mAndruavWe7da)))
@@ -550,7 +550,7 @@ public class HUDView extends View {
                 super.handleMessage(msg);
 
 
-                if (msg.obj instanceof _7adath_IMU_Ready) {
+                if (msg.obj instanceof Event_IMU_Ready) {
                     newFlightData();
                     return;
                 }

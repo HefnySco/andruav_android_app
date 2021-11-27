@@ -33,13 +33,13 @@ class GlGenericDrawer implements RendererCommon.GlDrawer {
    * The different shader types representing different input sources. YUV here represents three
    * separate Y, U, V textures.
    */
-  public static enum ShaderType { OES, RGB, YUV }
+  public enum ShaderType { OES, RGB, YUV }
 
   /**
    * The shader callbacks is used to customize behavior for a GlDrawer. It provides a hook to set
    * uniform variables in the shader before a frame is drawn.
    */
-  public static interface ShaderCallbacks {
+  public interface ShaderCallbacks {
     /**
      * This callback is called when a new shader has been compiled and created. It will be called
      * for the first frame as well as when the shader type is changed. This callback can be used to

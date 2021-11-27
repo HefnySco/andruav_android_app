@@ -137,14 +137,14 @@ class EglBase14Impl implements EglBase14 {
 
   @Override
   public int surfaceWidth() {
-    final int widthArray[] = new int[1];
+    final int[] widthArray = new int[1];
     EGL14.eglQuerySurface(eglDisplay, eglSurface, EGL14.EGL_WIDTH, widthArray, 0);
     return widthArray[0];
   }
 
   @Override
   public int surfaceHeight() {
-    final int heightArray[] = new int[1];
+    final int[] heightArray = new int[1];
     EGL14.eglQuerySurface(eglDisplay, eglSurface, EGL14.EGL_HEIGHT, heightArray, 0);
     return heightArray[0];
   }

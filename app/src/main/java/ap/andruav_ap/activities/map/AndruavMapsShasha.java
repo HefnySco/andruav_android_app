@@ -25,7 +25,7 @@ import android.widget.TextView;
 
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
-import com.andruav.event.droneReport_7adath._7adath_FCB_Changed;
+import com.andruav.event.droneReport_Event.Event_FCB_Changed;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitShadow;
 import com.andruav.Constants;
@@ -132,7 +132,7 @@ public class AndruavMapsShasha extends BaseAndruavShasha implements AndruavRTCVi
 
 
 
-    public void onEvent (final _7adath_FCB_Changed a7adath_fcb_changed)
+    public void onEvent (final Event_FCB_Changed a7adath_fcb_changed)
     {
         final Message msg = mhandle.obtainMessage();
         msg.obj = a7adath_fcb_changed;
@@ -275,9 +275,9 @@ long lastframecount =0;
                             break;
                     }
                 }
-                else if (msg.obj instanceof _7adath_FCB_Changed)
+                else if (msg.obj instanceof Event_FCB_Changed)
                 {
-                    final _7adath_FCB_Changed adath_fcb_changed = (_7adath_FCB_Changed) msg.obj;
+                    final Event_FCB_Changed adath_fcb_changed = (Event_FCB_Changed) msg.obj;
                     if
                     ( (msupportmapfragment.andruavUnit_selected != null)
                     && (adath_fcb_changed.andruavUnitBase.PartyID.equals(msupportmapfragment.andruavUnit_selected.PartyID))

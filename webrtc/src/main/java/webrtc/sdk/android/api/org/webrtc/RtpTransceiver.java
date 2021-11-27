@@ -42,7 +42,7 @@ public class RtpTransceiver {
 
     private final int nativeIndex;
 
-    private RtpTransceiverDirection(int nativeIndex) {
+    RtpTransceiverDirection(int nativeIndex) {
       this.nativeIndex = nativeIndex;
     }
 
@@ -110,8 +110,8 @@ public class RtpTransceiver {
   }
 
   private long nativeRtpTransceiver;
-  private RtpSender cachedSender;
-  private RtpReceiver cachedReceiver;
+  private final RtpSender cachedSender;
+  private final RtpReceiver cachedReceiver;
 
   @CalledByNative
   protected RtpTransceiver(long nativeRtpTransceiver) {

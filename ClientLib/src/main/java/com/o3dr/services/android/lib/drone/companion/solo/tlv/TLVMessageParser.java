@@ -313,7 +313,7 @@ public class TLVMessageParser {
                         break;
                     }
 
-                    /************************ Site Scan tlv packets **************/
+                    /*********************** Site Scan tlv packets **************/
                     case TYPE_SOLO_INSPECT_START:{
                         packet = new SoloInspectStart(packetBuffer);
                         break;

@@ -16,7 +16,7 @@ package org.webrtc;
  */
 public interface VideoDecoder {
   /** Settings passed to the decoder by WebRTC. */
-  public class Settings {
+  class Settings {
     public final int numberOfCores;
     public final int width;
     public final int height;
@@ -30,7 +30,7 @@ public interface VideoDecoder {
   }
 
   /** Additional info for decoding. */
-  public class DecodeInfo {
+  class DecodeInfo {
     public final boolean isMissingFrames;
     public final long renderTimeMs;
 
@@ -40,7 +40,7 @@ public interface VideoDecoder {
     }
   }
 
-  public interface Callback {
+  interface Callback {
     /**
      * Call to return a decoded frame. Can be called on any thread.
      *

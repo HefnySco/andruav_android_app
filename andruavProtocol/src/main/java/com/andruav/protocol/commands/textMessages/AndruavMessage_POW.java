@@ -84,7 +84,7 @@ public class AndruavMessage_POW extends AndruavMessageBase {
             PlugStatus = "na";
         }
 
-        Charging = PlugStatus.toLowerCase().equals("charging");
+        Charging = PlugStatus.equalsIgnoreCase("charging");
 
         if (json_receive_data.has("FV")) {
             hasFCBPowerInfo = true;

@@ -27,10 +27,6 @@
 # project.properties file.
 
 
--keep public class com.google.vending.licensing.ILicensingService
--keep public class com.android.vending.licensing.ILicensingService
-
-
 #http://omgitsmgp.com/2013/09/09/a-conservative-guide-to-proguard-for-android/
 -keepclassmembers enum * {
     public static **[] values();

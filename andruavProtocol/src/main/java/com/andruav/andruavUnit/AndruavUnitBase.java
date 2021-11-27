@@ -8,18 +8,16 @@ import com.andruav.AndruavFacade;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.Constants;
-import com.andruav.FeatureSwitch;
 import com.andruav.TelemetryProtocol;
-import com.andruav.event.droneReport_7adath._7adath_Emergency_Changed;
-import com.andruav.event.droneReport_7adath._7adath_FCB_Changed;
-import com.andruav.event.droneReport_7adath._7adath_GCSBlockedChanged;
-import com.andruav.event.droneReport_7adath._7adath_GPS_Ready;
-import com.andruav.event.droneReport_7adath._7adath_TRK_OnOff_Changed;
-import com.andruav.event.droneReport_7adath._7adath_TargetLocation_Ready;
-import com.andruav.event.droneReport_7adath._7adath_UnitShutDown;
-import com.andruav.event.droneReport_7adath._7adath_Vehicle_ARM_Changed;
-import com.andruav.event.droneReport_7adath._7adath_Vehicle_Flying_Changed;
-import com.andruav.event.droneReport_7adath._7adath_Vehicle_Mode_Changed;
+import com.andruav.event.droneReport_Event.Event_Emergency_Changed;
+import com.andruav.event.droneReport_Event.Event_FCB_Changed;
+import com.andruav.event.droneReport_Event.Event_GCSBlockedChanged;
+import com.andruav.event.droneReport_Event.Event_GPS_Ready;
+import com.andruav.event.droneReport_Event.Event_TargetLocation_Ready;
+import com.andruav.event.droneReport_Event.Event_UnitShutDown;
+import com.andruav.event.droneReport_Event.Event_Vehicle_ARM_Changed;
+import com.andruav.event.droneReport_Event.Event_Vehicle_Flying_Changed;
+import com.andruav.event.droneReport_Event.Event_Vehicle_Mode_Changed;
 import com.andruav.event.fcb_7adath._7adath_FCB_RemoteControlSettings;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_SensorsStatus;
 import com.andruav.sensors.AndruavGimbal;
@@ -31,7 +29,6 @@ import com.andruav.controlBoard.shared.common.FlightMode;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
 import com.andruav.controlBoard.shared.missions.MohemmaMapBase;
 import com.andruav.notification.PanicFacade;
-import com.andruav.protocol.BuildConfig;
 import com.andruav.protocol.R;
 import com.andruav.sensors.AndruavBattery;
 import com.andruav.sensors.AndruavIMU;
@@ -46,7 +43,7 @@ public class AndruavUnitBase {
 
     private final boolean mIsMe;
 
-   /** ActivityMosa3ed Related Attributes **/
+    /* ActivityMosa3ed Related Attributes **/
 
     /** MAP **/
     public int homeIconIndex =-1;
@@ -203,7 +200,7 @@ public class AndruavUnitBase {
 
             isFlashing = value;
 
-            AndruavEngine.getEventBus().post(new _7adath_Emergency_Changed(this));
+            AndruavEngine.getEventBus().post(new Event_Emergency_Changed(this));
 
             return;
         }
@@ -232,7 +229,7 @@ public class AndruavUnitBase {
         {
             isWhisling = value;
 
-            AndruavEngine.getEventBus().post(new _7adath_Emergency_Changed(this));
+            AndruavEngine.getEventBus().post(new Event_Emergency_Changed(this));
 
             return;
         }
@@ -260,7 +257,7 @@ public class AndruavUnitBase {
         {
             isEmergencyChangeFlightModeFaileSafe = value;
 
-            AndruavEngine.getEventBus().post(new _7adath_Emergency_Changed(this));
+            AndruavEngine.getEventBus().post(new Event_Emergency_Changed(this));
 
             return;
         }
@@ -293,7 +290,7 @@ public class AndruavUnitBase {
             AndruavFacade.broadcastID();
 
             if (IsMe()) {
-                AndruavEngine.getEventBus().post(new _7adath_GPS_Ready(this)); // inform all that a data is ready
+                AndruavEngine.getEventBus().post(new Event_GPS_Ready(this)); // inform all that a data is ready
                 PanicFacade.gpsModeChanged(this);
             }
         }
@@ -503,7 +500,7 @@ public class AndruavUnitBase {
                 }
             }
 
-            AndruavEngine.getEventBus().post(new _7adath_UnitShutDown(this));
+            AndruavEngine.getEventBus().post(new Event_UnitShutDown(this));
         }
 
     }
@@ -544,40 +541,6 @@ public class AndruavUnitBase {
     public AndruavLatLngAlt getGpsTargetLocation() {
         return gpsTargetLocation;
     }
-
-    /***
-     * Drone is Tracking an object.
-     * This is an indicator not a turn OnOff switch.
-     */
-
-
-    private boolean isInCVTrackingMode   = false;
-
-    public boolean isInCVTrackingMode ()
-    {
-        return isInCVTrackingMode;
-    }
-
-    public void isInCVTrackingMode (final boolean value)
-    {
-        boolean bChanged = (isInCVTrackingMode != value);
-        if (this.IsMe())
-        {
-            // This is Me ...
-            if (bChanged)
-            {
-                AndruavFacade.broadcastID();
-            }
-        }
-        else
-        {
-            if (bChanged) {
-                AndruavEngine.getEventBus().post(new _7adath_TRK_OnOff_Changed(this));
-            }
-        }
-        isInCVTrackingMode = value;
-    }
-
 
     /***
      * This value is updated from the board not from {@link ControlBoardBase#do_Mode(int, IControlBoard_Callback)}}
@@ -710,7 +673,7 @@ public class AndruavUnitBase {
 
     /***
      * Changing in this property leads to change in {@link AndruavUnitBase#telemetry_protocol}.
-     * Event {@link _7adath_FCB_Changed} is sent from {@link AndruavUnitBase#telemetry_protocol}.
+     * Event {@link Event_FCB_Changed} is sent from {@link AndruavUnitBase#telemetry_protocol}.
      * @param enable
      */
     public void useFCBIMU (boolean enable)
@@ -771,7 +734,7 @@ public class AndruavUnitBase {
                 AndruavFacade.broadcastID();
             }
 
-            AndruavEngine.getEventBus().post(new _7adath_Vehicle_Flying_Changed(this));
+            AndruavEngine.getEventBus().post(new Event_Vehicle_Flying_Changed(this));
 
         }
 
@@ -793,7 +756,7 @@ public class AndruavUnitBase {
             {
                 AndruavFacade.broadcastID();
             }
-            AndruavEngine.getEventBus().post(new _7adath_Vehicle_Mode_Changed(this));
+            AndruavEngine.getEventBus().post(new Event_Vehicle_Mode_Changed(this));
 
         }
 
@@ -840,7 +803,7 @@ public class AndruavUnitBase {
             {
                 AndruavFacade.broadcastID();
             }
-            AndruavEngine.getEventBus().post(new _7adath_GCSBlockedChanged(this));
+            AndruavEngine.getEventBus().post(new Event_GCSBlockedChanged(this));
         }
 
 
@@ -865,7 +828,7 @@ public class AndruavUnitBase {
 
                 AndruavFacade.broadcastID();
             }
-            AndruavEngine.getEventBus().post(new _7adath_Vehicle_ARM_Changed(this));
+            AndruavEngine.getEventBus().post(new Event_Vehicle_ARM_Changed(this));
         }
 
 
@@ -1170,7 +1133,7 @@ public class AndruavUnitBase {
             Telemetry_protocol_changed (_telemetry_protocol);
 
             // should be last after every other settings so event read correct status of AndruavWe7da not intermidiate one.
-            AndruavEngine.getEventBus().post(new _7adath_FCB_Changed(this));
+            AndruavEngine.getEventBus().post(new Event_FCB_Changed(this));
         }
     }
 
@@ -1391,7 +1354,7 @@ public class AndruavUnitBase {
         }
         this.getGpsTargetLocation().update(this.FCBoard.getTarget_gps_lng(), this.FCBoard.getTarget_gps_lat(), this.FCBoard.getTarget_gps_alt());
 
-        AndruavEngine.getEventBus().post(new _7adath_TargetLocation_Ready(this)); // ToDo: this should be an internal trigger in Andruav Protocol Lib
+        AndruavEngine.getEventBus().post(new Event_TargetLocation_Ready(this)); // ToDo: this should be an internal trigger in Andruav Protocol Lib
 
     }
 

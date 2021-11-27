@@ -38,7 +38,7 @@ public class EglRenderer implements VideoSink {
   public interface FrameListener { void onFrame(Bitmap frame); }
 
   /** Callback for clients to be notified about errors encountered during rendering. */
-  public static interface ErrorCallback {
+  public interface ErrorCallback {
     /** Called if GLES20.GL_OUT_OF_MEMORY is encountered during rendering. */
     void onGlOutOfMemory();
   }

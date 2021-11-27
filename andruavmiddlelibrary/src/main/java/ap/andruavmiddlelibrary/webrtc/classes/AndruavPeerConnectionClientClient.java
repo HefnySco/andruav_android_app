@@ -6,7 +6,7 @@ import android.os.Message;
 
 import com.andruav.AndruavFacade;
 import com.andruav.AndruavSettings;
-import com.andruav.event.droneReport_7adath._7adath_Signalling;
+import com.andruav.event.droneReport_Event.Event_Signalling;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.webrtc.PeerConnectionFactory;
@@ -20,7 +20,7 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
 
 
 
-    public void onEvent (final _7adath_Signalling a7adath_signalling)
+    public void onEvent (final Event_Signalling a7adath_signalling)
     {
 
 
@@ -41,7 +41,7 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                final _7adath_Signalling a7adath_signalling = (_7adath_Signalling) msg.obj;
+                final Event_Signalling a7adath_signalling = (Event_Signalling) msg.obj;
                 final JSONObject jsonMessage = a7adath_signalling.jsonObject;
 
                 try {

@@ -15,16 +15,16 @@ import androidx.annotation.Nullable;
 /** Java wrapper for a C++ RtpReceiverInterface. */
 public class RtpReceiver {
   /** Java wrapper for a C++ RtpReceiverObserverInterface*/
-  public static interface Observer {
+  public interface Observer {
     // Called when the first audio or video packet is received.
     @CalledByNative("Observer")
-    public void onFirstPacketReceived(MediaStreamTrack.MediaType media_type);
+    void onFirstPacketReceived(MediaStreamTrack.MediaType media_type);
   }
 
   private long nativeRtpReceiver;
   private long nativeObserver;
 
-  @Nullable private MediaStreamTrack cachedTrack;
+  @Nullable private final MediaStreamTrack cachedTrack;
 
   @CalledByNative
   public RtpReceiver(long nativeRtpReceiver) {
@@ -88,4 +88,4 @@ public class RtpReceiver {
   private static native long nativeSetObserver(long rtpReceiver, Observer observer);
   private static native void nativeUnsetObserver(long rtpReceiver, long nativeObserver);
   private static native void nativeSetFrameDecryptor(long rtpReceiver, long nativeFrameDecryptor);
-};
+}

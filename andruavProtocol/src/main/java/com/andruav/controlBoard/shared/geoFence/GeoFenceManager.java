@@ -8,8 +8,8 @@ import com.andruav.AndruavFacade;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.andruavUnit.AndruavUnitBase;
-import com.andruav.event.droneReport_7adath._7adath_GeoFence_Hit;
-import com.andruav.event.droneReport_7adath._7adath_GeoFence_Ready;
+import com.andruav.event.droneReport_Event.Event_GeoFence_Hit;
+import com.andruav.event.droneReport_Event.Event_GeoFence_Ready;
 import com.andruav.controlBoard.shared.common.FlightMode;
 import com.andruav.notification.PanicFacade;
 
@@ -63,14 +63,14 @@ public class GeoFenceManager {
             geoFenceBase = geoFenceMapBase_new;
         }
 
-        final _7adath_GeoFence_Hit a7adath_geoFence_hit = geoFenceBase.mAndruavUnits.get(andruavUnitBase_new);
+        final Event_GeoFence_Hit a7adath_geoFence_hit = geoFenceBase.mAndruavUnits.get(andruavUnitBase_new);
         if (a7adath_geoFence_hit ==null) {
             // add unit to Fence
-            geoFenceBase.mAndruavUnits.put(andruavUnitBase_new.PartyID, new _7adath_GeoFence_Hit(andruavUnitBase_new,geoFenceMapBase_new.fenceName));
+            geoFenceBase.mAndruavUnits.put(andruavUnitBase_new.PartyID, new Event_GeoFence_Hit(andruavUnitBase_new,geoFenceMapBase_new.fenceName));
         }
 
         // Event that a Fence is Ready or a Drone is Attached to a Fence
-        AndruavEngine.getEventBus().post(new _7adath_GeoFence_Ready(andruavUnitBase_new, geoFenceMapBase_new.fenceName)); // inform all that a data is ready
+        AndruavEngine.getEventBus().post(new Event_GeoFence_Ready(andruavUnitBase_new, geoFenceMapBase_new.fenceName)); // inform all that a data is ready
 
     }
 
@@ -161,7 +161,7 @@ public class GeoFenceManager {
         geoFenceBase.setisInsideRemote(andruavUnitBase);
 
         // Event that a Fence is Ready or a Drone is Attached to a Fence
-        AndruavEngine.getEventBus().post(new _7adath_GeoFence_Ready(andruavUnitBase, geoFenceBase.fenceName)); // inform all that a data is ready
+        AndruavEngine.getEventBus().post(new Event_GeoFence_Ready(andruavUnitBase, geoFenceBase.fenceName)); // inform all that a data is ready
 
     }
 
@@ -247,7 +247,7 @@ public class GeoFenceManager {
 
     /***
      *  Updates Status of fences for this drone.
-     *  @return Event {@link _7adath_GeoFence_Hit} will be triggered in case of change status.
+     *  @return Event {@link Event_GeoFence_Hit} will be triggered in case of change status.
      */
     public static void updateGeoFenceHit (final AndruavUnitBase andruavUnitBase) {
         try {

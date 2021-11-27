@@ -18,9 +18,8 @@ import android.widget.TextView;
 import com.andruav.AndruavFCBControlFacade;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.Constants;
-import com.andruav.event.droneReport_7adath._7adath_TRK_OnOff_Changed;
-import com.andruav.event.droneReport_7adath._7adath_Vehicle_ARM_Changed;
-import com.andruav.event.droneReport_7adath._7adath_Vehicle_Mode_Changed;
+import com.andruav.event.droneReport_Event.Event_Vehicle_ARM_Changed;
+import com.andruav.event.droneReport_Event.Event_Vehicle_Mode_Changed;
 import com.andruav.controlBoard.shared.common.FlightMode;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
 import com.vi.swipenumberpicker.OnValueChangeListener;
@@ -62,7 +61,7 @@ public class FCBControl_Dlg extends DialogFragment {
     private final Handler mHandler;
     //////////BUS EVENT
 
-    public void onEvent(final _7adath_Vehicle_ARM_Changed a7adath_vehicle_arm_changed) {
+    public void onEvent(final Event_Vehicle_ARM_Changed a7adath_vehicle_arm_changed) {
         if ((andruavWe7da== null) || (!andruavWe7da.equals(a7adath_vehicle_arm_changed.mAndruavWe7da))) return ;
 
         final Message msg = mHandler.obtainMessage();
@@ -72,17 +71,7 @@ public class FCBControl_Dlg extends DialogFragment {
     }
 
 
-    public void onEvent (final _7adath_TRK_OnOff_Changed a7adath_trk_onOff_changed)
-    {
-        if ((andruavWe7da== null) || (!andruavWe7da.equals(a7adath_trk_onOff_changed.mAndruavWe7da))) return ;
-
-        final Message msg = mHandler.obtainMessage();
-        msg.obj = a7adath_trk_onOff_changed;
-
-        mHandler.sendMessage(msg);
-    }
-
-    public void onEvent(final _7adath_Vehicle_Mode_Changed a7adath_vehicle_mode_changed) {
+    public void onEvent(final Event_Vehicle_Mode_Changed a7adath_vehicle_mode_changed) {
         if ((andruavWe7da== null) || (!andruavWe7da.equals(a7adath_vehicle_mode_changed.mAndruavWe7da))) return ;
 
         final Message msg = mHandler.obtainMessage();

@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 
 import com.andruav.andruavUnit.AndruavUnitShadow;
-import com.andruav.event.droneReport_7adath._7adath_GCSBlockedChanged;
+import com.andruav.event.droneReport_Event.Event_GCSBlockedChanged;
 
 import de.greenrobot.event.EventBus;
 
@@ -41,7 +41,7 @@ public class ListUnitItemBase extends RelativeLayout {
 
 
 
-    public void onEvent(final _7adath_GCSBlockedChanged a7adath_gcsBlockedChanged) {
+    public void onEvent(final Event_GCSBlockedChanged a7adath_gcsBlockedChanged) {
 
         if ((mAndruavUnit == null) || (!mAndruavUnit.equals(a7adath_gcsBlockedChanged.andruavUnitBase))) return;
 

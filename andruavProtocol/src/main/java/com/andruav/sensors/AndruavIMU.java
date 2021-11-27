@@ -104,8 +104,8 @@ public class AndruavIMU {
     public  long     IdleDuration            = 0;
     public  long     IdleTotalDuration       = 0;
     private long     LastIdleTime            = 0;
-    /**
-     * smoothedValues: are values with complementary filter and calibrated
+    /*
+      smoothedValues: are values with complementary filter and calibrated
      */
     /**
      * ACCsmoothedValues

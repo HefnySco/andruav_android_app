@@ -1,7 +1,7 @@
 package ap.andruavmiddlelibrary.factory.util;
 
-/**
- * Created by M.Hefny on 14-Sep-14.
+/*
+  Created by M.Hefny on 14-Sep-14.
  */
 
 

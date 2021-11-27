@@ -17,7 +17,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.andruav.AndruavFacade;
 import com.andruav.andruavUnit.AndruavUnitBase;
-import com.andruav.event.droneReport_7adath._7adath_Emergency_Changed;
+import com.andruav.event.droneReport_Event.Event_Emergency_Changed;
 
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.R;
@@ -55,7 +55,7 @@ public class SOSControl_Dlg extends DialogFragment {
 
 
 
-    public void onEvent (_7adath_Emergency_Changed a7adath_emergency_changed)
+    public void onEvent (Event_Emergency_Changed a7adath_emergency_changed)
     {
         if ((andruavWe7da== null) || (!andruavWe7da.equals(a7adath_emergency_changed.mAndruavUnitBase))) return ;
 

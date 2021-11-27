@@ -1,8 +1,8 @@
 package ap.android.valueBar;
 
-/**
- * Created by mhefny on 5/27/16.
- * <br> copied from: https://github.com/PhilJay/ValueBar/blob/master/ValueBarLib/src/com/philjay/valuebar/ValueBar.java
+/*
+  Created by mhefny on 5/27/16.
+  <br> copied from: https://github.com/PhilJay/ValueBar/blob/master/ValueBarLib/src/com/philjay/valuebar/ValueBar.java
  */
 
 import android.animation.ObjectAnimator;

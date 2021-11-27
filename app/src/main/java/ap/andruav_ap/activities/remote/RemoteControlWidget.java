@@ -17,7 +17,7 @@ import com.andruav.AndruavEngine;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitShadow;
 import com.andruav.Constants;
-import com.andruav.event.droneReport_7adath._7adath_RemoteControlSettingsReceived;
+import com.andruav.event.droneReport_Event.Event_RemoteControlSettingsReceived;
 import com.andruav.controlBoard.ControlBoardBase;
 
 import de.greenrobot.event.EventBus;
@@ -72,7 +72,7 @@ public class RemoteControlWidget extends RelativeLayout implements JoystickMoved
     private RemoteControlWidget Me;
 
 
-    public void onEvent (final _7adath_RemoteControlSettingsReceived a7adath_remoteControlSettingsReceived)
+    public void onEvent (final Event_RemoteControlSettingsReceived a7adath_remoteControlSettingsReceived)
     {
         if ((mAndruavUnit == null) || (!mAndruavUnit.Equals(a7adath_remoteControlSettingsReceived.mAndruavWe7da))) {
             return;

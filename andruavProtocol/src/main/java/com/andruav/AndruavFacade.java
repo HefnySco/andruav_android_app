@@ -7,8 +7,8 @@ import com.andruav.event.fcb_7adath._7adath_FCB_RemoteControlSettings;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitMapBase;
 import com.andruav.andruavUnit.AndruavUnitShadow;
-import com.andruav.event.droneReport_7adath._7adath_GeoFence_Hit;
-import com.andruav.event.droneReport_7adath._7adath_TelemetryGCSRequest;
+import com.andruav.event.droneReport_Event.Event_GeoFence_Hit;
+import com.andruav.event.droneReport_Event.Event_TelemetryGCSRequest;
 import com.andruav.interfaces.INotification;
 import com.andruav.controlBoard.shared.missions.MohemmaMapBase;
 import com.andruav.controlBoard.shared.geoFence.GeoFenceBase;
@@ -321,7 +321,7 @@ public class AndruavFacade extends AndruavFacadeBase{
 
         }
 
-        SendTelemetry(_7adath_TelemetryGCSRequest.REQUEST_START,target,smartTelemetry_Level);
+        SendTelemetry(Event_TelemetryGCSRequest.REQUEST_START,target,smartTelemetry_Level);
     }
 
     /***
@@ -343,7 +343,7 @@ public class AndruavFacade extends AndruavFacadeBase{
             return;
         }
 
-        SendTelemetry(_7adath_TelemetryGCSRequest.REQUEST_RESUME,AndruavSettings.remoteTelemetryAndruavWe7da,smartTelemetryLevel);
+        SendTelemetry(Event_TelemetryGCSRequest.REQUEST_RESUME,AndruavSettings.remoteTelemetryAndruavWe7da,smartTelemetryLevel);
     }
 
     public static void StopTelemetry()
@@ -359,7 +359,7 @@ public class AndruavFacade extends AndruavFacadeBase{
             return;
         }
 
-        SendTelemetry(_7adath_TelemetryGCSRequest.REQUEST_END,AndruavSettings.remoteTelemetryAndruavWe7da, Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
+        SendTelemetry(Event_TelemetryGCSRequest.REQUEST_END,AndruavSettings.remoteTelemetryAndruavWe7da, Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
     }
 
 
@@ -376,7 +376,7 @@ public class AndruavFacade extends AndruavFacadeBase{
         andruavMessage_remoteExecute.RemoteCommandID = AndruavMessage_RemoteExecute.RemoteCommand_TELEMETRYCTRL;
         andruavMessage_remoteExecute.Variables.put("Act", String.valueOf(action));
 
-        if (action != _7adath_TelemetryGCSRequest.REQUEST_END)
+        if (action != Event_TelemetryGCSRequest.REQUEST_END)
         {
             AndruavSettings.remoteTelemetryAndruavWe7da = target;
 
@@ -397,14 +397,8 @@ public class AndruavFacade extends AndruavFacadeBase{
     }
 
 
-  /* public static void sendImage (final byte[] image,final Location imageLocation,final AndruavWe7daBase target)
-    {
-        AndruavMessage_IMG andruavMessage_img = new AndruavMessage_IMG();
-        andruavMessage_img.ImageLocation = imageLocation;
-        andruavMessage_img.setImage(image);
-        sendMessage(andruavMessage_img,target);
-    }
-   */
+
+
 
 
 
@@ -413,11 +407,10 @@ public class AndruavFacade extends AndruavFacadeBase{
      *  Possinle Contradiction {@link   }
      *
      * @param image
-     * @param isVideo
      * @param imageLocation
      * @param target
      */
-    public static void sendImage (final byte[] image,final boolean isVideo,final Location imageLocation,final AndruavUnitBase target)
+    public static void sendImage (final byte[] image,final Location imageLocation,final AndruavUnitBase target)
     {
         final AndruavResalaBinary_IMG andruavMessageBinary_img = new AndruavResalaBinary_IMG();
         andruavMessageBinary_img.ImageLocation = imageLocation;
@@ -819,7 +812,7 @@ public class AndruavFacade extends AndruavFacadeBase{
 
     /***
      * Sends fence info of geo-fences the drone is currently interacting with.
-     * when {@link _7adath_GeoFence_Hit#hasValue} is true
+     * when {@link Event_GeoFence_Hit#hasValue} is true
      * @param target
      */
     public static void sendMyGeoFenceHitStatus (final AndruavUnitBase target)
@@ -833,7 +826,7 @@ public class AndruavFacade extends AndruavFacadeBase{
             final GeoFenceBase geoLinearFenceMapBase = GeoFenceManager.valueAt(i);
 
 
-            final _7adath_GeoFence_Hit geoFence_hit = geoLinearFenceMapBase.mAndruavUnits.get(andruavUnitBase.PartyID);
+            final Event_GeoFence_Hit geoFence_hit = geoLinearFenceMapBase.mAndruavUnits.get(andruavUnitBase.PartyID);
 
             if (geoFence_hit.hasValue)
             {
@@ -847,7 +840,7 @@ public class AndruavFacade extends AndruavFacadeBase{
      * @param target
      * @param geoFence_hit
      */
-    public static void sendGeoFenceHit (final AndruavUnitBase target, final _7adath_GeoFence_Hit geoFence_hit)
+    public static void sendGeoFenceHit (final AndruavUnitBase target, final Event_GeoFence_Hit geoFence_hit)
     {
         if (!geoFence_hit.hasValue) return ; // this is true if fence status has been not updated
         AndruavMessage_GEOFenceHit andruavMessage_geoFenceHit = new AndruavMessage_GEOFenceHit();

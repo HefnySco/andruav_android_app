@@ -53,7 +53,7 @@ public class LogDao  extends AbstractDao<LogRow, Long> {
     @Override
     protected LogRow readEntity(Cursor cursor, int offset) {
         LogRow entity = new LogRow( //
-                cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+                cursor.isNull(offset) ? null : cursor.getLong(offset), // id
                 cursor.getString(offset + 1), // username
                 cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // tag
                 cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // error
@@ -63,12 +63,12 @@ public class LogDao  extends AbstractDao<LogRow, Long> {
 
     @Override
     protected Long readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+        return cursor.isNull(offset) ? null : cursor.getLong(offset);
     }
 
     @Override
     protected void readEntity(Cursor cursor, LogRow entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setId(cursor.isNull(offset) ? null : cursor.getLong(offset));
         entity.setUserName(cursor.getString(offset + 1));
         entity.setTag(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setError(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));

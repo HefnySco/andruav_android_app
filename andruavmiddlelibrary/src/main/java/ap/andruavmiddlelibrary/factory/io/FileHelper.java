@@ -92,7 +92,7 @@ public class FileHelper {
             }
         }
      //   externalStorageWriteable = false;
-        File root = null;
+        File root;
         if (rootPath==null)
         {  // get Folder relative to ExternalStorageDirectory root.
             if (externalStorageWriteable)
@@ -118,12 +118,7 @@ public class FileHelper {
                           root = new File(docsFolder, subFolder);
                 }
                 else {
-                          // http://stackoverflow.com/questions/28036876/how-to-save-files-in-external-storage-public-directory-documents-on-android-4-1
-                    docsFolder = new File(Environment.getExternalStorageDirectory() + "/Documents");
-                    //if ((docsFolder!=null) && (docsFolder.exists())) {
                         root = new File(Environment.getExternalStorageDirectory().toString(), subFolder);
-                    //}
-
                 }
 
 

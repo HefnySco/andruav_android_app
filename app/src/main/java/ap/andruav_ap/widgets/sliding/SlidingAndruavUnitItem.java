@@ -10,7 +10,7 @@ import android.widget.Button;
 
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitShadow;
-import com.andruav.event.droneReport_7adath._7adath_GCSBlockedChanged;
+import com.andruav.event.droneReport_Event.Event_GCSBlockedChanged;
 import com.andruav.TelemetryProtocol;
 
 import ap.andruav_ap.App;
@@ -353,7 +353,7 @@ public class SlidingAndruavUnitItem extends ListUnitItemBase {
     @Override
     protected void OnHandleMessage (final Message msg)
     {
-        if (msg.obj instanceof _7adath_GCSBlockedChanged)
+        if (msg.obj instanceof Event_GCSBlockedChanged)
         {
            setMainButton();
            setModeButton();

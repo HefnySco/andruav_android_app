@@ -58,10 +58,8 @@ public class TelemetryGCSProtocolParser extends TelemetryProtocolParser {
                 parseDroneKit(event_socketData);
 
             }
-            else
-            {
-                // BAD PROTOCOL I DONT KNOW WHAT TO DO ... GCS SHOULD KNOW FROM THE BEGINNNING THE DRONE PROTOCOL
-            }
+            // BAD PROTOCOL I DONT KNOW WHAT TO DO ... GCS SHOULD KNOW FROM THE BEGINNNING THE DRONE PROTOCOL
+
         } catch (Exception e) {
             if (exception_init_counter <= 0) return;
 
@@ -93,10 +91,8 @@ public class TelemetryGCSProtocolParser extends TelemetryProtocolParser {
             {
                 parseDroneKit(event_FCBData);
             }
-            else
-            {
-                // BAD PROTOCOL I DONT KNOW WHAT TO DO ... GCS SHOULD KNOW FROM THE BEGINNNING THE DRONE PROTOCOL
-            }
+            // BAD PROTOCOL I DONT KNOW WHAT TO DO ... GCS SHOULD KNOW FROM THE BEGINNNING THE DRONE PROTOCOL
+
         } catch (Exception e) {
             if (exception_init_counter <= 0) return;
 
@@ -135,11 +131,6 @@ public class TelemetryGCSProtocolParser extends TelemetryProtocolParser {
                 e.printStackTrace();
             }
 
-            if (tmpMavLinkPacket != null) {
-                // We have a ready packet HERE
-                if ((event_socketData.targetWe7da!=null) && (!event_socketData.targetWe7da.getIsShutdown())) {
-                }
-            }
         }
     }
 

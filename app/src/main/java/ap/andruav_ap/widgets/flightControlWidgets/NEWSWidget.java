@@ -17,8 +17,8 @@ import de.greenrobot.event.EventBus;
 import ap.andruavmiddlelibrary.factory.math.Angles;
 
 import com.andruav.andruavUnit.AndruavUnitBase;
-import com.andruav.event.droneReport_7adath._7adath_GPS_Ready;
-import com.andruav.event.droneReport_7adath._7adath_IMU_Ready;
+import com.andruav.event.droneReport_Event.Event_GPS_Ready;
+import com.andruav.event.droneReport_Event.Event_IMU_Ready;
 
 /**
  * Created by M.Hefny on 20-Sep-14.
@@ -45,7 +45,7 @@ public class NEWSWidget extends View {
 
 
 
-    public void onEvent (final _7adath_GPS_Ready event_GPS)
+    public void onEvent (final Event_GPS_Ready event_GPS)
     {
         // This is local IMU so return if local Unit is not selected
         if ((mAndruavUnit==null) || (!mAndruavUnit.Equals(event_GPS.mAndruavWe7da)))
@@ -58,7 +58,7 @@ public class NEWSWidget extends View {
         if (mhandle != null)  mhandle.sendMessageDelayed(msg,0);
     }
 
-    public void onEvent (final _7adath_IMU_Ready a7adath_imu_ready)
+    public void onEvent (final Event_IMU_Ready a7adath_imu_ready)
     {
         // This is local IMU so return if local Unit is not selected
         if ((mAndruavUnit==null) || (!mAndruavUnit.Equals(a7adath_imu_ready.mAndruavWe7da)))

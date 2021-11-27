@@ -1,6 +1,6 @@
-/***********************************************************
- * Author: Mohammad S. Hefny
- * Date: Feb 2020
+/**********************************************************
+ Author: Mohammad S. Hefny
+ Date: Feb 2020
  */
 package com.andruav.protocol.communication.uavos;
 

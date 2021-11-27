@@ -68,9 +68,7 @@ public class ModuleScreen extends BaseAndruavShasha {
         if (isInEditMode) return;
 
         mbtnFCB = findViewById(R.id.btnFCB);
-        if (AndruavEngine.getPreference().getModuleType().contains(ProtocolHeaders.UAVOS_CAMERA_MODULE_CLASS)) {
-
-        }
+        AndruavEngine.getPreference().getModuleType();
         mbtnFPV = findViewById(R.id.btnFPV);
         mbtnFPV.setOnClickListener(new View.OnClickListener() {
             @Override

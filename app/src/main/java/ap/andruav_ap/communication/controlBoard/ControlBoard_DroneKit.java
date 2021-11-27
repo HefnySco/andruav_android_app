@@ -9,7 +9,7 @@ import android.os.Message;
 import androidx.collection.SimpleArrayMap;
 
 import com.andruav.event.Event_Remote_ChannelsCMD;
-import com.andruav.event.droneReport_7adath._7adath_GPS_Ready;
+import com.andruav.event.droneReport_Event.Event_GPS_Ready;
 import com.andruav.sensors.AndruavIMU;
 import com.mavlink.MAVLinkPacket;
 import com.mavlink.common.msg_nav_controller_output;
@@ -21,7 +21,7 @@ import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.event.fcb_7adath._7adath_FCB_RemoteControlSettings;
 import com.andruav.andruavUnit.AndruavUnitBase;
-import com.andruav.event.droneReport_7adath._7adath_WayPointsRecieved;
+import com.andruav.event.droneReport_Event.Event_WayPointsRecieved;
 import com.andruav.sensors.AndruavGimbal;
 import com.andruav.controlBoard.shared.common.FlightMode;
 import com.andruav.notification.PanicFacade;
@@ -211,7 +211,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
     }
 
-    public void onEvent (final _7adath_GPS_Ready a7adath_gps_ready) throws JSONException {
+    public void onEvent (final Event_GPS_Ready a7adath_gps_ready) throws JSONException {
 
         try {
 
@@ -995,7 +995,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
         AndruavFacade.sendWayPoints(null);
         // to update my own interface
-        AndruavEngine.getEventBus().post(new _7adath_WayPointsRecieved(AndruavSettings.andruavWe7daBase));
+        AndruavEngine.getEventBus().post(new Event_WayPointsRecieved(AndruavSettings.andruavWe7daBase));
 
     }
 
@@ -1003,7 +1003,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
     public  void onDroneEvent_MissionUpdated ()
     {
-        //App.droneKitServer.doReadMission();
     }
 
 
@@ -1187,13 +1186,13 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     }
 
 
-
     /***
-     * called after retreiving parameters from FCB. the array contains all parameters
+     * called after retrieving parameters from FCB. the array contains all parameters
      * @param parametersByName all parameters with values.
      */
     public void  execute_ParseParameters (final SimpleArrayMap<String,msg_param_value> parametersByName)
     {
+
         if ( parametersByName.get("GPS_TYPE") != null) {
             mGPS1_Type = (int) parametersByName.get("GPS_TYPE").param_value;
             if (mGPS1_Type == GPS_TYPE_MAV)
@@ -1843,11 +1842,11 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
 
 
-    private boolean lastSelectionNavByVelocity = false;
+    private final boolean lastSelectionNavByVelocity = false;
     private static final int NavCalledTimeOut = 100;
     private double targetNavigationSpeed = 2;
-    private double nav_velocity=0;
-    private double nav_velocity_p=0;
+    private final double nav_velocity=0;
+    private final double nav_velocity_p=0;
     private final double nav_velocity_i=0;
     private final double nav_velocity_d=0;
 
@@ -1889,7 +1888,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
         int[] channels = new int[8];
 
         for (int i = 0; i < 8; ++i) {
-            channels[i] = 15+00;
+            channels[i] = 1500;
         }
         rc_command = true;
         rc_command_last = System.currentTimeMillis();

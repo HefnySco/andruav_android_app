@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
 
 public class AndruavVideoFileRenderer  implements VideoSink {
@@ -40,7 +41,7 @@ public class AndruavVideoFileRenderer  implements VideoSink {
             this.outputFrameSize = outputFileWidth * outputFileHeight * 3 / 2;
             this.outputFrameBuffer = ByteBuffer.allocateDirect(this.outputFrameSize);
             this.videoOutFile = new FileOutputStream(outputFile);
-            this.videoOutFile.write(("YUV4MPEG2 C420 W" + outputFileWidth + " H" + outputFileHeight + " Ip F"+ FPS +":1 A1:1\n").getBytes(Charset.forName("US-ASCII")));
+            this.videoOutFile.write(("YUV4MPEG2 C420 W" + outputFileWidth + " H" + outputFileHeight + " Ip F"+ FPS +":1 A1:1\n").getBytes(StandardCharsets.US_ASCII));
             this.renderThread = new HandlerThread("VideoFileRendererRenderThread");
             this.renderThread.start();
             this.renderThreadHandler = new Handler(this.renderThread.getLooper());
@@ -92,7 +93,7 @@ public class AndruavVideoFileRenderer  implements VideoSink {
             i420.release();
 
             try {
-                this.videoOutFile.write("FRAME\n".getBytes(Charset.forName("US-ASCII")));
+                this.videoOutFile.write("FRAME\n".getBytes(StandardCharsets.US_ASCII));
                 this.videoOutFile.write(this.outputFrameBuffer.array(), this.outputFrameBuffer.arrayOffset(), this.outputFrameSize);
             } catch (IOException var4) {
                 throw new RuntimeException("Error writing video to disk", var4);

@@ -22,8 +22,8 @@ import javax.microedition.khronos.egl.EGL10;
  */
 public interface EglBase {
   // EGL wrapper for an actual EGLContext.
-  public interface Context {
-    public final static long NO_CONTEXT = 0;
+  interface Context {
+    long NO_CONTEXT = 0;
 
     /**
      * Returns an EGL context that can be used by native code. Returns NO_CONTEXT if the method is
@@ -38,22 +38,22 @@ public interface EglBase {
   // thread has its own EGLContext, but in practice it deadlocks on some devices when doing this.
   // Therefore, synchronize on this global lock before calling dangerous EGL functions that might
   // deadlock. See https://bugs.chromium.org/p/webrtc/issues/detail?id=5702 for more info.
-  public static final Object lock = new Object();
+  Object lock = new Object();
 
   // These constants are taken from EGL14.EGL_OPENGL_ES2_BIT and EGL14.EGL_CONTEXT_CLIENT_VERSION.
   // https://android.googlesource.com/platform/frameworks/base/+/master/opengl/java/android/opengl/EGL14.java
   // This is similar to how GlSurfaceView does:
   // http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/5.1.1_r1/android/opengl/GLSurfaceView.java#760
-  public static final int EGL_OPENGL_ES2_BIT = 4;
-  public static final int EGL_OPENGL_ES3_BIT = 0x40;
+  int EGL_OPENGL_ES2_BIT = 4;
+  int EGL_OPENGL_ES3_BIT = 0x40;
   // Android-specific extension.
-  public static final int EGL_RECORDABLE_ANDROID = 0x3142;
+  int EGL_RECORDABLE_ANDROID = 0x3142;
 
-  public static ConfigBuilder configBuilder() {
+  static ConfigBuilder configBuilder() {
     return new ConfigBuilder();
   }
 
-  public static class ConfigBuilder {
+  class ConfigBuilder {
     private int openGlesVersion = 2;
     private boolean hasAlphaChannel;
     private boolean supportsPixelBuffer;
@@ -116,16 +116,16 @@ public interface EglBase {
     }
   }
 
-  public static final int[] CONFIG_PLAIN = configBuilder().createConfigAttributes();
-  public static final int[] CONFIG_RGBA =
+  int[] CONFIG_PLAIN = configBuilder().createConfigAttributes();
+  int[] CONFIG_RGBA =
       configBuilder().setHasAlphaChannel(true).createConfigAttributes();
-  public static final int[] CONFIG_PIXEL_BUFFER =
+  int[] CONFIG_PIXEL_BUFFER =
       configBuilder().setSupportsPixelBuffer(true).createConfigAttributes();
-  public static final int[] CONFIG_PIXEL_RGBA_BUFFER = configBuilder()
+  int[] CONFIG_PIXEL_RGBA_BUFFER = configBuilder()
                                                            .setHasAlphaChannel(true)
                                                            .setSupportsPixelBuffer(true)
                                                            .createConfigAttributes();
-  public static final int[] CONFIG_RECORDABLE =
+  int[] CONFIG_RECORDABLE =
       configBuilder().setIsRecordable(true).createConfigAttributes();
 
   static int getOpenGlesVersionFromConfig(int[] configAttributes) {
@@ -150,7 +150,7 @@ public interface EglBase {
    * If |sharedContext| is null, a root context is created. This function will try to create an EGL
    * 1.4 context if possible, and an EGL 1.0 context otherwise.
    */
-  public static EglBase create(@Nullable Context sharedContext, int[] configAttributes) {
+  static EglBase create(@Nullable Context sharedContext, int[] configAttributes) {
     if (sharedContext == null) {
       return EglBase14Impl.isEGL14Supported() ? createEgl14(configAttributes)
                                               : createEgl10(configAttributes);
@@ -166,7 +166,7 @@ public interface EglBase {
    * Helper function for creating a plain root context. This function will try to create an EGL 1.4
    * context if possible, and an EGL 1.0 context otherwise.
    */
-  public static EglBase create() {
+  static EglBase create() {
     return create(null /* shaderContext */, CONFIG_PLAIN);
   }
 
@@ -174,12 +174,12 @@ public interface EglBase {
    * Helper function for creating a plain context, sharing data with |sharedContext|. This function
    * will try to create an EGL 1.4 context if possible, and an EGL 1.0 context otherwise.
    */
-  public static EglBase create(Context sharedContext) {
+  static EglBase create(Context sharedContext) {
     return create(sharedContext, CONFIG_PLAIN);
   }
 
   /** Explicitly create a root EGl 1.0 context with the specified config attributes. */
-  public static EglBase10 createEgl10(int[] configAttributes) {
+  static EglBase10 createEgl10(int[] configAttributes) {
     return new EglBase10Impl(/* sharedContext= */ null, configAttributes);
   }
 
@@ -187,7 +187,7 @@ public interface EglBase {
    * Explicitly create a root EGl 1.0 context with the specified config attributes and shared
    * context.
    */
-  public static EglBase10 createEgl10(EglBase10.Context sharedContext, int[] configAttributes) {
+  static EglBase10 createEgl10(EglBase10.Context sharedContext, int[] configAttributes) {
     return new EglBase10Impl(
         sharedContext == null ? null : sharedContext.getRawContext(), configAttributes);
   }
@@ -196,13 +196,13 @@ public interface EglBase {
    * Explicitly create a root EGl 1.0 context with the specified config attributes
    * and shared context.
    */
-  public static EglBase10 createEgl10(
-      javax.microedition.khronos.egl.EGLContext sharedContext, int[] configAttributes) {
+  static EglBase10 createEgl10(
+          javax.microedition.khronos.egl.EGLContext sharedContext, int[] configAttributes) {
     return new EglBase10Impl(sharedContext, configAttributes);
   }
 
   /** Explicitly create a root EGl 1.4 context with the specified config attributes. */
-  public static EglBase14 createEgl14(int[] configAttributes) {
+  static EglBase14 createEgl14(int[] configAttributes) {
     return new EglBase14Impl(/* sharedContext= */ null, configAttributes);
   }
 
@@ -210,7 +210,7 @@ public interface EglBase {
    * Explicitly create a root EGl 1.4 context with the specified config attributes and shared
    * context.
    */
-  public static EglBase14 createEgl14(EglBase14.Context sharedContext, int[] configAttributes) {
+  static EglBase14 createEgl14(EglBase14.Context sharedContext, int[] configAttributes) {
     return new EglBase14Impl(
         sharedContext == null ? null : sharedContext.getRawContext(), configAttributes);
   }
@@ -219,8 +219,8 @@ public interface EglBase {
    * Explicitly create a root EGl 1.4 context with the specified config attributes
    * and shared context.
    */
-  public static EglBase14 createEgl14(
-      android.opengl.EGLContext sharedContext, int[] configAttributes) {
+  static EglBase14 createEgl14(
+          android.opengl.EGLContext sharedContext, int[] configAttributes) {
     return new EglBase14Impl(sharedContext, configAttributes);
   }
 

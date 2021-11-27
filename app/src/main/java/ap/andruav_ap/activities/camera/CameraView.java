@@ -77,7 +77,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
             mi=MemoryHelper.getMemoryAvailable();
             while ((mi!= null)&& (buffercount > 0))
             {
-                if (mi.threshold > 2 * bufferSize) {
+                if (mi.threshold > (long)(2 * bufferSize)) {
                     // multiple buffers to speed up.
                     buffer = new byte[bufferSize];
                     mcameraHW.addCallbackBuffer(buffer);

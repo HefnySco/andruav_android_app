@@ -24,8 +24,8 @@ import ap.andruavmiddlelibrary.preference.Preference;
 import org.webrtc.DefaultVideoEncoderFactory;
 import org.webrtc.VideoFrame;
 
-/**
- * Created by mhefny on 12/5/15.
+/*
+  Created by mhefny on 12/5/15.
  */
 /**
  * Created by mhefny on 12/5/15.

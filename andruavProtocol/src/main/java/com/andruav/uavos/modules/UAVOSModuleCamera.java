@@ -1,11 +1,11 @@
 package com.andruav.uavos.modules;
 
 
-/**
- *
- *
- * Author: Mohammad S. Hefny
- * Date Jan 2020
+/*
+
+
+  Author: Mohammad S. Hefny
+  Date Jan 2020
  */
 
 import org.json.JSONArray;

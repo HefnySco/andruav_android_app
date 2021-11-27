@@ -1,7 +1,7 @@
 package ap.android.gms;
 
-/**
- * Created by M.Hefny on 05-Oct-14.
+/*
+  Created by M.Hefny on 05-Oct-14.
  */
 
 import android.content.res.Resources;

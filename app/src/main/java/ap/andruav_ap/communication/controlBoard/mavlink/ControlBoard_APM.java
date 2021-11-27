@@ -12,7 +12,7 @@ import com.mavlink.enums.MAV_STATE;
 import com.mavlink.Parser;
 import com.andruav.AndruavEngine;
 import com.andruav.andruavUnit.AndruavUnitBase;
-import com.andruav.event.droneReport_7adath._7adath_Dummy;
+import com.andruav.event.droneReport_Event.Event_Dummy;
 import com.andruav.controlBoard.IControlBoard_Callback;
 
 import de.greenrobot.event.EventBus;
@@ -62,7 +62,7 @@ public class ControlBoard_APM extends ControlBoard_MavlinkBase {
 
 
 
-    public void onEvent (_7adath_Dummy a7adath_dummy)
+    public void onEvent (Event_Dummy a7adath_dummy)
     {
 
     }

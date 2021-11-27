@@ -1,7 +1,7 @@
 package com.andruav.controlBoard.shared.geoFence;
 
 import com.andruav.andruavUnit.AndruavUnitBase;
-import com.andruav.event.droneReport_7adath._7adath_GeoFence_Hit;
+import com.andruav.event.droneReport_Event.Event_GeoFence_Hit;
 import com.andruav.util.polygon.Point;
 import com.andruav.util.polygon.Polygon;
 
@@ -11,7 +11,7 @@ import com.andruav.util.polygon.Polygon;
 public class GeoPolygonFenceCompositBase extends GeoFenceCompositBase {
 
     /***
-     * sendMessageToModule Announcement {@link _7adath_GeoFence_Hit} when:
+     * sendMessageToModule Announcement {@link Event_GeoFence_Hit} when:
      * <br>1- a toggle in state happpened.
      * <br>2- if old state was {@link #NOT_TESTED} and the new one is {@link #INZONE} if {@link #shouldKeepOutside} is <b>true</b> because this is a violation.
      * <br>3- if old state was {@link #NOT_TESTED} and the new one is {@link #INZONE} or {@link #OUT_ZONE} if {@link #shouldKeepOutside} is <b>false</b> because you need to know if you obey or disobey the rules.
@@ -21,7 +21,7 @@ public class GeoPolygonFenceCompositBase extends GeoFenceCompositBase {
     @Override
     protected void set_isInside(final AndruavUnitBase andruavUnitBase, final boolean inside, final double distance)
     {
-        final _7adath_GeoFence_Hit a7adath_geoFence_hit = this.mAndruavUnits.get(andruavUnitBase.PartyID);
+        final Event_GeoFence_Hit a7adath_geoFence_hit = this.mAndruavUnits.get(andruavUnitBase.PartyID);
         if (a7adath_geoFence_hit == null) return ; //Should never happen
 
         a7adath_geoFence_hit.distance         = -1;
@@ -52,7 +52,7 @@ public class GeoPolygonFenceCompositBase extends GeoFenceCompositBase {
      * @see "https://github.com/sromku/polygon-contains-point"
      * @param lat
      * @param lng
-     * @param fireEvent if <b>true</b> then fire event {@link _7adath_GeoFence_Hit} if there is change in state.
+     * @param fireEvent if <b>true</b> then fire event {@link Event_GeoFence_Hit} if there is change in state.
      * @return a distance that is either Double.NaN or less than {@link #maxDistance}
      */
     @Override

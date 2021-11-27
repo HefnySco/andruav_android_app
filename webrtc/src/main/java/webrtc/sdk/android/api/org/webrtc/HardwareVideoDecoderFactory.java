@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class HardwareVideoDecoderFactory extends MediaCodecVideoDecoderFactory {
   private final static Predicate<MediaCodecInfo> defaultAllowedPredicate =
       new Predicate<MediaCodecInfo>() {
-        private String[] prefixBlacklist =
+        private final String[] prefixBlacklist =
             Arrays.copyOf(MediaCodecUtils.SOFTWARE_IMPLEMENTATION_PREFIXES,
                 MediaCodecUtils.SOFTWARE_IMPLEMENTATION_PREFIXES.length);
         @Override

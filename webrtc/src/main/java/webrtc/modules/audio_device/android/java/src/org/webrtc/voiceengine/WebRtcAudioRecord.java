@@ -52,7 +52,8 @@ public class WebRtcAudioRecord {
 
   private final long nativeAudioRecord;
 
-  private @Nullable WebRtcAudioEffects effects;
+  private @Nullable
+  final WebRtcAudioEffects effects;
 
   private ByteBuffer byteBuffer;
 
@@ -68,7 +69,7 @@ public class WebRtcAudioRecord {
     AUDIO_RECORD_START_STATE_MISMATCH,
   }
 
-  public static interface WebRtcAudioRecordErrorCallback {
+  public interface WebRtcAudioRecordErrorCallback {
     void onWebRtcAudioRecordInitError(String errorMessage);
     void onWebRtcAudioRecordStartError(AudioRecordStartErrorCode errorCode, String errorMessage);
     void onWebRtcAudioRecordError(String errorMessage);
@@ -120,7 +121,7 @@ public class WebRtcAudioRecord {
   }
 
   /** Called when new audio samples are ready. This should only be set for debug purposes */
-  public static interface WebRtcAudioRecordSamplesReadyCallback {
+  public interface WebRtcAudioRecordSamplesReadyCallback {
     void onWebRtcAudioRecordSamplesReady(AudioSamples samples);
   }
 

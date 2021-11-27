@@ -59,9 +59,7 @@ public class MediaCodecVideoEncoder {
       if (!codecA.name.equalsIgnoreCase(codecB.name)) {
         return false;
       }
-      return codecA.name.equalsIgnoreCase("H264")
-          ? H264Utils.isSameH264Profile(codecA.params, codecB.params)
-          : true;
+      return !codecA.name.equalsIgnoreCase("H264") || H264Utils.isSameH264Profile(codecA.params, codecB.params);
     }
 
     private static boolean isCodecSupported(
@@ -165,7 +163,7 @@ public class MediaCodecVideoEncoder {
   @Nullable private static MediaCodecVideoEncoderErrorCallback errorCallback;
   private static int codecErrors;
   // List of disabled codec types - can be set from application.
-  private static Set<String> hwEncoderDisabledTypes = new HashSet<String>();
+  private static final Set<String> hwEncoderDisabledTypes = new HashSet<String>();
   @Nullable private static EglBase staticEglBase;
 
   @Nullable private Thread mediaCodecThread;
@@ -199,7 +197,7 @@ public class MediaCodecVideoEncoder {
   }
 
   // Should be in sync with webrtc::H264::Profile.
-  public static enum H264Profile {
+  public enum H264Profile {
     CONSTRAINED_BASELINE(0),
     BASELINE(1),
     MAIN(2),
@@ -350,7 +348,7 @@ public class MediaCodecVideoEncoder {
   // MediaCodec error handler - invoked when critical error happens which may prevent
   // further use of media codec API. Now it means that one of media codec instances
   // is hanging and can no longer be used in the next call.
-  public static interface MediaCodecVideoEncoderErrorCallback {
+  public interface MediaCodecVideoEncoderErrorCallback {
     void onMediaCodecVideoEncoderCriticalError(int codecErrors);
   }
 

@@ -19,7 +19,7 @@ import java.util.Locale;
  */
 public class SessionDescription {
   /** Java-land enum version of SessionDescriptionInterface's type() string. */
-  public static enum Type {
+  public enum Type {
     OFFER,
     PRANSWER,
     ANSWER;

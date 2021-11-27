@@ -70,7 +70,7 @@ public class PeerConnectionClientBase {
             public void run() {
                 final PnPeer peer = peers.get(pid);
                 try {
-                    if (peer.getStatus()!=STATUS_DISCONNECTED) {
+                    if (!peer.getStatus().equals(STATUS_DISCONNECTED)) {
                         peer.pc.close();
                     }
                     peers.remove(pid);

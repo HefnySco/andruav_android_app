@@ -9,17 +9,17 @@ import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.Constants;
 import com.andruav.TelemetryProtocol;
-import com.andruav.event.droneReport_7adath._7adath_Battery_Ready;
-import com.andruav.event.droneReport_7adath._7adath_GPS_Ready;
-import com.andruav.event.droneReport_7adath._7adath_GeoFence_Hit;
-import com.andruav.event.droneReport_7adath._7adath_GeoFence_Ready;
-import com.andruav.event.droneReport_7adath._7adath_HomeLocation_Ready;
-import com.andruav.event.droneReport_7adath._7adath_IMU_Ready;
-import com.andruav.event.droneReport_7adath._7adath_NAV_INFO_Ready;
-import com.andruav.event.droneReport_7adath._7adath_SERVO_Outputs_Ready;
-import com.andruav.event.droneReport_7adath._7adath_TargetLocation_Ready;
-import com.andruav.event.droneReport_7adath._7adath_TelemetryGCSRequest;
-import com.andruav.event.droneReport_7adath._7adath_WayPointReached;
+import com.andruav.event.droneReport_Event.Event_Battery_Ready;
+import com.andruav.event.droneReport_Event.Event_GPS_Ready;
+import com.andruav.event.droneReport_Event.Event_GeoFence_Hit;
+import com.andruav.event.droneReport_Event.Event_GeoFence_Ready;
+import com.andruav.event.droneReport_Event.Event_HomeLocation_Ready;
+import com.andruav.event.droneReport_Event.Event_IMU_Ready;
+import com.andruav.event.droneReport_Event.Event_NAV_INFO_Ready;
+import com.andruav.event.droneReport_Event.Event_SERVO_Outputs_Ready;
+import com.andruav.event.droneReport_Event.Event_TargetLocation_Ready;
+import com.andruav.event.droneReport_Event.Event_TelemetryGCSRequest;
+import com.andruav.event.droneReport_Event.Event_WayPointReached;
 import com.andruav.event.fcb_7adath._7adath_FCB_2AMR;
 import com.andruav.event.fpv7adath._7adath_FPV_CMD;
 import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
@@ -96,7 +96,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
     }
 
-    public void onEvent (_7adath_GeoFence_Hit a7adath_geoFence_hit)
+    public void onEvent (Event_GeoFence_Hit a7adath_geoFence_hit)
     {
         if (a7adath_geoFence_hit.andruavUnitBase.IsMe()) {
             //NotificationFacade.cannotStartCamera();
@@ -117,7 +117,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
     }
 
 
-    public void onEvent (_7adath_GeoFence_Ready a7adath_geoFence_ready)
+    public void onEvent (Event_GeoFence_Ready a7adath_geoFence_ready)
     {
         final AndruavUnitBase andruavUnitBase = a7adath_geoFence_ready.andruavWe7da;
         if(andruavUnitBase.IsMe())
@@ -139,7 +139,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
 
 
-    public void onEvent (final _7adath_GPS_Ready a7adath_gps_ready)  {
+    public void onEvent (final Event_GPS_Ready a7adath_gps_ready)  {
         if (!a7adath_gps_ready.mAndruavWe7da.IsMe()) return ;
 
         if (getSocketState() != SOCKETSTATE_REGISTERED) {
@@ -150,7 +150,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
     }
 
 
-    public void onEvent (final _7adath_NAV_INFO_Ready a7adath_nav_info_ready)
+    public void onEvent (final Event_NAV_INFO_Ready a7adath_nav_info_ready)
     {
         if (getSocketState() != SOCKETSTATE_REGISTERED) {
             return;
@@ -169,7 +169,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
     long sendServoOutputInfo_sent_duration = 5000;
     long sendServoOutputInfo_sent_time = 0;
-    public void onEvent (final _7adath_SERVO_Outputs_Ready a7adath_servo_output_ready)
+    public void onEvent (final Event_SERVO_Outputs_Ready a7adath_servo_output_ready)
     {
         if (getSocketState() != SOCKETSTATE_REGISTERED) {
             return;
@@ -190,7 +190,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
 
 
-    public void onEvent (final _7adath_IMU_Ready a7adath_imu_ready) throws JSONException {
+    public void onEvent (final Event_IMU_Ready a7adath_imu_ready) throws JSONException {
 
         if (getSocketState() != SOCKETSTATE_REGISTERED) {
             return;
@@ -199,14 +199,14 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
         if (!a7adath_imu_ready.mAndruavWe7da.IsMe()) return ;
 
 
-        /***
-         * BUG
+        /**
+         BUG
 
          if (AndruavSettings.andruavWe7daBase.LastEvent_IMU.hasCurrentLocation()) {
          mLastLocation = AndruavSettings.andruavWe7daBase.LastEvent_IMU.getCurrentLocation(); // save if for emergency recovery
          }
 
-         ***/
+         */
 
         /*
         AndruavResala_NAV_INFO is sent instead when useFCBIMU is true
@@ -218,7 +218,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
     }
 
-    public void onEvent (final _7adath_Battery_Ready a7adath_battery_ready) {
+    public void onEvent (final Event_Battery_Ready a7adath_battery_ready) {
 
         if ((AndruavSettings.andruavWe7daBase.getIsCGS()) || (getSocketState()!= SOCKETSTATE_REGISTERED)) {
             return;
@@ -234,7 +234,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
 
 
-    public void onEvent (final _7adath_HomeLocation_Ready a7adath_homeLocation_ready) throws JSONException {
+    public void onEvent (final Event_HomeLocation_Ready a7adath_homeLocation_ready) throws JSONException {
         if (getSocketState() != SOCKETSTATE_REGISTERED) {
             return;
         }
@@ -246,7 +246,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
 
 
-    public void onEvent (final _7adath_TargetLocation_Ready a7adath_targetLocation_ready) throws JSONException {
+    public void onEvent (final Event_TargetLocation_Ready a7adath_targetLocation_ready) throws JSONException {
         if (getSocketState() != SOCKETSTATE_REGISTERED) {
             return;
         }
@@ -807,7 +807,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                     {
                         AndruavEngine.log().logException("apm_mission", ex);
                     }
-                    EventBus.getDefault().post(new _7adath_WayPointReached(andruavUnit, andruavMessage_droneReport.mParameter1)); // inform all that a data is ready
+                    EventBus.getDefault().post(new Event_WayPointReached(andruavUnit, andruavMessage_droneReport.mParameter1)); // inform all that a data is ready
 
 
                 }
@@ -1016,12 +1016,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                                 if (andruavResala_remoteExecute.Variables.containsKey("CH")
                                         && andruavResala_remoteExecute.Variables.get("CH").equals(AndruavSettings.andruavWe7daBase.PartyID))
                                 {
-                                    // the ACT command is for me...if ACT is True this command is not needed for WEBRTC
-                                    // but if false is can be used instead of Hangup.
-                                    /*a7adath_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_STREAMVIDEO);
-                                    a7adath_fpv_cmd.Requester = andruav_2MR.partyID;
-                                    a7adath_fpv_cmd.ACT = andruavResala_remoteExecute.getBooleanValue("Act");
-                                    EventBus.getDefault().post(a7adath_fpv_cmd);*/
+
                                     return ;
                                 }
                                 ((AndruavUDPServerBase) AndruavEngine.getAndruavUDP()).sendMessageToModule(andruav_2MR);
@@ -1073,10 +1068,10 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                         case AndruavMessage_RemoteExecute.RemoteCommand_TELEMETRYCTRL:
                             if (andruavUnit != null)  {
                                 final int request = andruavResala_remoteExecute.getIntValue("Act");
-                                if ( request == _7adath_TelemetryGCSRequest.REQUEST_END) {
+                                if ( request == Event_TelemetryGCSRequest.REQUEST_END) {
                                     if (AndruavSettings.mTelemetryRequests.contains(andruavUnit)) {
                                         AndruavSettings.mTelemetryRequests.remove(andruavUnit);
-                                        AndruavEngine.getEventBus().post(new _7adath_TelemetryGCSRequest(andruavUnit, _7adath_TelemetryGCSRequest.REQUEST_END ));
+                                        AndruavEngine.getEventBus().post(new Event_TelemetryGCSRequest(andruavUnit, Event_TelemetryGCSRequest.REQUEST_END ));
                                     }
                                 }
                                 else
@@ -1085,9 +1080,9 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                                         // add or resume both make sure they are added in our request list
                                         if (!AndruavSettings.mTelemetryRequests.contains(andruavUnit)) {
                                             AndruavSettings.mTelemetryRequests.add(andruavUnit);
-                                            AndruavEngine.getEventBus().post(new _7adath_TelemetryGCSRequest(andruavUnit, _7adath_TelemetryGCSRequest.REQUEST_START));
+                                            AndruavEngine.getEventBus().post(new Event_TelemetryGCSRequest(andruavUnit, Event_TelemetryGCSRequest.REQUEST_START));
                                         } else {
-                                            AndruavEngine.getEventBus().post(new _7adath_TelemetryGCSRequest(andruavUnit, request));
+                                            AndruavEngine.getEventBus().post(new Event_TelemetryGCSRequest(andruavUnit, request));
                                         }
 
                                         // Here Dont SEND ... That is why I replicated [AndruavMo7arek.getEventBus().post(new _7adath_TelemetryGCSRequest(andruavUnit,add ));]  instead of making a bool value

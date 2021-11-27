@@ -35,7 +35,7 @@ public class AndruavSettings {
      */
 
     public static boolean UnLockerExists = false;
-    /************************************************/
+    /***********************************************/
 
     /***
      * SID used for subscribing in Webservice.

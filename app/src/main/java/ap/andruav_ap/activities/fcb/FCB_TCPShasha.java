@@ -32,7 +32,7 @@ import ap.andruav_ap.activities.fcb.drone.ListItem_DroneTelemetry;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitShadow;
 import com.andruav.TelemetryProtocol;
-import com.andruav.event.droneReport_7adath._7adath_FCB_Changed;
+import com.andruav.event.droneReport_Event.Event_FCB_Changed;
 
 import ap.andruav_ap.communication.telemetry.SerialSocketServer.Event_SocketAction;
 import ap.andruav_ap.widgets.SmartOptimization_Dlg;
@@ -72,7 +72,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
 
 
 
-    public void onEvent (final _7adath_FCB_Changed a7adath_fcb_changed)
+    public void onEvent (final Event_FCB_Changed a7adath_fcb_changed)
     {
         if (!a7adath_fcb_changed.andruavUnitBase.IsMe()) return;
 
@@ -228,9 +228,9 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
 
                     }
                 }
-                else if (msg.obj instanceof _7adath_FCB_Changed)
+                else if (msg.obj instanceof Event_FCB_Changed)
                 {
-                    final _7adath_FCB_Changed adath_fcb_changed = (_7adath_FCB_Changed) msg.obj;
+                    final Event_FCB_Changed adath_fcb_changed = (Event_FCB_Changed) msg.obj;
                     final AndruavUnitShadow andruavWe7da = (AndruavUnitShadow) adath_fcb_changed.andruavUnitBase;
                     final int index = TelemetryUnitsAdapter.getPosition(andruavWe7da.UnitID);
                     boolean hasTelemetry = (andruavWe7da.getTelemetry_protocol() != TelemetryProtocol.TelemetryProtocol_No_Telemetry);

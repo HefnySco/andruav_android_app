@@ -19,11 +19,11 @@ import android.widget.TextView;
 import com.andruav.AndruavEngine;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.Constants;
-import com.andruav.event.droneReport_7adath._7adath_FCB_Changed;
-import com.andruav.event.droneReport_7adath._7adath_GCSBlockedChanged;
-import com.andruav.event.droneReport_7adath._7adath_UnitShutDown;
-import com.andruav.event.droneReport_7adath._7adath_Vehicle_Flying_Changed;
-import com.andruav.event.droneReport_7adath._7adath_Vehicle_Mode_Changed;
+import com.andruav.event.droneReport_Event.Event_FCB_Changed;
+import com.andruav.event.droneReport_Event.Event_GCSBlockedChanged;
+import com.andruav.event.droneReport_Event.Event_UnitShutDown;
+import com.andruav.event.droneReport_Event.Event_Vehicle_Flying_Changed;
+import com.andruav.event.droneReport_Event.Event_Vehicle_Mode_Changed;
 import com.andruav.controlBoard.shared.common.FlightMode;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
 import com.andruav.sensors.AndruavBattery;
@@ -35,9 +35,9 @@ import ap.andruav_ap.helpers.GUI;
 import ap.andruavmiddlelibrary.preference.Preference;
 import ap.andruavmiddlelibrary.factory.util.HtmlPro;
 import ap.andruavmiddlelibrary.factory.math.UnitConversion;
-import com.andruav.event.droneReport_7adath._7adath_Battery_Ready;
-import com.andruav.event.droneReport_7adath._7adath_GPS_Ready;
-import com.andruav.event.droneReport_7adath._7adath_IMU_Ready;
+import com.andruav.event.droneReport_Event.Event_Battery_Ready;
+import com.andruav.event.droneReport_Event.Event_GPS_Ready;
+import com.andruav.event.droneReport_Event.Event_IMU_Ready;
 
 /**
  * Created by mhefny on 1/13/16.
@@ -80,7 +80,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
     //////////BUS EVENT
 
 
-    public void onEvent (final _7adath_FCB_Changed a7adath_fcb_changed)
+    public void onEvent (final Event_FCB_Changed a7adath_fcb_changed)
     {
         if ((andruavWe7da == null) || (!andruavWe7da.Equals(a7adath_fcb_changed.andruavUnitBase)))
         {
@@ -92,7 +92,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
         if (mhandler != null)  mhandler.sendMessageDelayed(msg,0);
     }
 
-    public void onEvent (final _7adath_Vehicle_Flying_Changed a7adath_vehicle_flying_changed)
+    public void onEvent (final Event_Vehicle_Flying_Changed a7adath_vehicle_flying_changed)
     {
         if ((andruavWe7da == null) || (!andruavWe7da.Equals(a7adath_vehicle_flying_changed.mAndruavWe7da)))
         {
@@ -104,7 +104,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
         if (mhandler != null)  mhandler.sendMessageDelayed(msg,0);
     }
 
-    public void onEvent (final _7adath_Vehicle_Mode_Changed a7adath_vehicle_mode_changed)
+    public void onEvent (final Event_Vehicle_Mode_Changed a7adath_vehicle_mode_changed)
     {
         if ((andruavWe7da == null) || (!andruavWe7da.Equals(a7adath_vehicle_mode_changed.mAndruavWe7da)))
         {
@@ -117,7 +117,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
     }
 
 
-    public void onEvent (final _7adath_GCSBlockedChanged a7adath_gcsBlockedChanged)
+    public void onEvent (final Event_GCSBlockedChanged a7adath_gcsBlockedChanged)
     {
         if ((andruavWe7da == null) || (!andruavWe7da.Equals(a7adath_gcsBlockedChanged.andruavUnitBase)))
         {
@@ -133,7 +133,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
      * Local IMU events
      * @param a7adath_imu_ready
      */
-    public void onEvent (final _7adath_IMU_Ready a7adath_imu_ready)
+    public void onEvent (final Event_IMU_Ready a7adath_imu_ready)
     {
         // This is local IMU so return if local Unit is not selected
         if ((andruavWe7da ==null) || (!andruavWe7da.Equals(a7adath_imu_ready.mAndruavWe7da)))
@@ -147,7 +147,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
     }
 
 
-    public void onEvent (final _7adath_GPS_Ready a7adath_gps_ready)
+    public void onEvent (final Event_GPS_Ready a7adath_gps_ready)
     {
         // This is local IMU so return if local Unit is not selected
         if ((andruavWe7da ==null) || (!andruavWe7da.Equals(a7adath_gps_ready.mAndruavWe7da)))
@@ -164,7 +164,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
      * Local Battery Info
      * @param a7adath_battery_ready
      */
-    public void onEvent (final _7adath_Battery_Ready a7adath_battery_ready) {
+    public void onEvent (final Event_Battery_Ready a7adath_battery_ready) {
 
         // This is local IMU so return if local Unit is not selected
         if ((andruavWe7da ==null) || (!andruavWe7da.Equals(a7adath_battery_ready.mAndruavWe7da)))
@@ -178,7 +178,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
     }
 
 
-    public void onEvent (final _7adath_UnitShutDown a7adath_unitShutDown)
+    public void onEvent (final Event_UnitShutDown a7adath_unitShutDown)
     {
         if ((andruavWe7da ==null) || (!andruavWe7da.Equals(a7adath_unitShutDown.andruavUnitBase)))
         {
@@ -421,17 +421,17 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
         else {
             if (isFCB == true)
             {
-                text.append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append(String.format("%3.0f", andruavBattery.FCB_BatteryRemaining) + "% ").append(String.format("%2.2f", andruavBattery.FCB_BatteryVoltage / 1000.0) + "v").append("</b></font>");
+                text.append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append(String.format("%3.0f", andruavBattery.FCB_BatteryRemaining)).append("% ").append(String.format("%2.2f", andruavBattery.FCB_BatteryVoltage / 1000.0)).append("v").append("</b></font>");
                 double cur=andruavBattery.FCB_CurrentConsumed;
                 if (andruavBattery.FCB_CurrentConsumed==-1)
                 {
                     cur =0;
                 }
-                text.append("<br>").append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append(String.format("%2.2f", cur / 1000.0f ) + " Ah").append("</b></font>");
+                text.append("<br>").append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append(String.format("%2.2f", cur / 1000.0f)).append(" Ah").append("</b></font>");
 
             }
             else {
-                text.append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append(String.format("%3.0f", andruavBattery.BatteryLevel) + "% ").append(String.format("%2.2f", andruavBattery.Voltage / 1000.0) + "v").append("</b></font>");
+                text.append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append(String.format("%3.0f", andruavBattery.BatteryLevel)).append("% ").append(String.format("%2.2f", andruavBattery.Voltage / 1000.0)).append("v").append("</b></font>");
                 if (andruavBattery.Charging) {
                     text.append("<br>").append(GUI.getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), true, false)).append(App.context.getString(R.string.action_bat_charging));
                 }
@@ -663,7 +663,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
         if (andruavWe7da.IsFlying())
         {
             flyingTime = GUI.elapsed2( System.currentTimeMillis(),andruavWe7da.getFlyingStartTime());
-            textFCBMode.append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append(" Flying " + flyingTime + "</font>");
+            textFCBMode.append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append(" Flying ").append(flyingTime).append("</font>");
 
         }
         if (andruavWe7da.IsArmed())
@@ -747,49 +747,49 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
                 super.handleMessage(msg);
 
 
-                if (msg.obj instanceof _7adath_IMU_Ready) {
+                if (msg.obj instanceof Event_IMU_Ready) {
                     updateIMUStatus();
                     updateInfoStatus();
                     return;
                 }
 
-                if (msg.obj instanceof _7adath_GPS_Ready) {
+                if (msg.obj instanceof Event_GPS_Ready) {
                     updateGPSStatus();
                     return;
                 }
 
-                if (msg.obj instanceof _7adath_Battery_Ready) {
+                if (msg.obj instanceof Event_Battery_Ready) {
                     updateBatteryStatus();
                     return;
                 }
 
-                if (msg.obj instanceof _7adath_GCSBlockedChanged)
+                if (msg.obj instanceof Event_GCSBlockedChanged)
                 {
                     updateGCSBlockedStatus();
                     return;
                 }
 
-                if (msg.obj instanceof _7adath_UnitShutDown)
+                if (msg.obj instanceof Event_UnitShutDown)
                 {
                     updateInfoStatus();
                     return;
                 }
 
 
-                if (msg.obj instanceof _7adath_Vehicle_Mode_Changed)
+                if (msg.obj instanceof Event_Vehicle_Mode_Changed)
                 {
                     updateInfoStatus();
                     return;
                 }
 
-                if (msg.obj instanceof _7adath_Vehicle_Flying_Changed)
+                if (msg.obj instanceof Event_Vehicle_Flying_Changed)
                 {
                     updateInfoStatus();
                     return;
                 }
 
 
-                if (msg.obj instanceof _7adath_FCB_Changed)
+                if (msg.obj instanceof Event_FCB_Changed)
                 {
                     updateInfoStatus();
                     updateIMUStatus();

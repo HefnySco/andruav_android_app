@@ -196,7 +196,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
     }
 
     /***
-     *
+     * Injects GPS data from Mobile GPS. (EXPERIMENTAL)
      * @param timeStampe
      * @param timeWeekMS
      * @param timeWeek
@@ -243,6 +243,10 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(msg));
     }
 
+    /**
+     * Injects NMEA GPS from module GPS (EXPERIMENTAL)
+     * @param nmea
+     */
     public void do_InjectGPS_NMEA (final String nmea)
     {
 
@@ -259,8 +263,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         msg.len = (short) (b.length);
         //m_msg_gps_inject_data = msg;
         ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(msg));
-
-
    }
 
     /***

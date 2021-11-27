@@ -18,7 +18,7 @@ enum VideoCodecType {
 
   private final String mimeType;
 
-  private VideoCodecType(String mimeType) {
+  VideoCodecType(String mimeType) {
     this.mimeType = mimeType;
   }
 
