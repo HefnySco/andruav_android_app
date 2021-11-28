@@ -4,7 +4,7 @@ import com.andruav.AndruavEngine;
 import com.andruav.TelemetryProtocol;
 import com.andruav.controlBoard.shared.common.FlightMode;
 
-/**
+/*
  * Created by mhefny on 4/7/17.
  */
 
@@ -17,10 +17,6 @@ public class AndruavUnitShadow extends AndruavUnitBase {
         super (groupName,partyID,isGCS);
 
     }
-
-
-
-
 
 
     @Override
@@ -44,17 +40,6 @@ public class AndruavUnitShadow extends AndruavUnitBase {
     {
 
         disposeFCBBase();
-
-
-        if (telemetry_protocol != TelemetryProtocol.TelemetryProtocol_No_Telemetry)
-        {
-//            if ((!this.getIsCGS()) )
-//            {
-//                this.FCBoardShadow = AndruavMo7arek.getLo7etTa7akomMasna3().getFlightControlBoardShadow(this);
-//
-//            }
-        }
-
 
     }
 }

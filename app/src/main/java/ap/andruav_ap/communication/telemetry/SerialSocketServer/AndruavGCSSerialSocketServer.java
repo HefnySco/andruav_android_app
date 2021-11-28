@@ -59,6 +59,9 @@ public class AndruavGCSSerialSocketServer {
     }
 
 
+    /*
+    * Data is comming from Drone-FCB to GCS and we need to forard it to GCS App from here.
+    */
     public void onEvent (final Event_FCBData event_FCBData)
     {
 

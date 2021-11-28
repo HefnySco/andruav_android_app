@@ -100,10 +100,6 @@ public class AndruavUnitMapBase extends SimpleArrayMap<String, AndruavUnitBase> 
      * @return
      */
     public AndruavUnitBase put(final Andruav_2MR andruav2MR) {
-        return private_put(andruav2MR);
-    }
-
-    private AndruavUnitBase private_put(final Andruav_2MR andruav2MR) {
 
         boolean first = false;
 

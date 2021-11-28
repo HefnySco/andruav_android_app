@@ -40,6 +40,10 @@ public class DroneKitMavlinkObserver extends MavlinkObserver
         mDroneKitServer = droneKitServer;
     }
 
+    /**
+     * Called when a Mavlink is received from FCB.
+     * @param mavlinkMessageWrapper
+     */
     @Override
     public void onMavlinkMessageReceived(MavlinkMessageWrapper mavlinkMessageWrapper) {
 

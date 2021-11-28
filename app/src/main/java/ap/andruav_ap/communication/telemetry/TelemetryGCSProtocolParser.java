@@ -7,6 +7,7 @@ import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitShadow;
 import com.andruav.TelemetryProtocol;
 
+import ap.andruav_ap.App;
 import ap.andruav_ap.communication.telemetry.BlueTooth.Event_FCBData;
 import ap.andruav_ap.communication.telemetry.SerialSocketServer.AndruavGCSSerialSocketServer;
 import ap.andruav_ap.communication.telemetry.SerialSocketServer.Event_SocketData;
@@ -108,32 +109,6 @@ public class TelemetryGCSProtocolParser extends TelemetryProtocolParser {
      *
      * @param event_socketData
      */
-    protected void parseMavlink(Event_SocketData event_socketData) {
-
-        final int len = event_socketData.DataLength;
-        final byte[] data = event_socketData.Data;
-
-        for (int j = 0; j < len; j++) {
-
-            MAVLinkPacket tmpMavLinkPacket = null;
-            try {
-
-
-                tmpMavLinkPacket = parserMavlinkGCS.mavlink_parse_char(data[j] & 0x00ff);
-
-            }
-            catch ( java.lang.IndexOutOfBoundsException e)
-            {
-                tmpMavLinkPacket = null;
-             }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
     protected void parseDroneKit (Event_SocketData event_socketData) {
 
         final int len = event_socketData.DataLength;
@@ -161,52 +136,15 @@ public class TelemetryGCSProtocolParser extends TelemetryProtocolParser {
                 // We have a ready packet HERE
                 if ((event_socketData.targetWe7da!=null) && (!event_socketData.targetWe7da.getIsShutdown())) {
                     final AndruavUnitBase andruavWe7da = event_socketData.targetWe7da;
-
+                    //Do forward it.
+                    App.sendTelemetryfromGCS(tmpMavLinkPacket.encodePacket(), andruavWe7da);
                 }
             }
         }
     }
 
 
-    /***
-     * Data is comming from a Drone to me GCS
-     *
-     * @param event_FCBData
-     */
-    protected void parseMavlink(Event_FCBData event_FCBData) {
-
-        final int len = event_FCBData.DataLength;
-        final byte[] data = event_FCBData.Data;
-
-        for (int j = 0; j < len; j++) {
-
-
-            MAVLinkPacket tmpMavLinkPacket = null;
-            try {
-
-
-                tmpMavLinkPacket = parserMavlinkFCB.mavlink_parse_char(data[j] & 0x00ff);
-
-            }
-            catch ( java.lang.IndexOutOfBoundsException e)
-            {
-                e.printStackTrace();
-            }
-
-            if (tmpMavLinkPacket != null) {
-                // We have a ready packet HERE
-
-                if ((event_FCBData.senderWe7da!=null) && (event_FCBData.senderWe7da.Equals(AndruavSettings.remoteTelemetryAndruavWe7da))) {
-
-                    final AndruavUnitShadow andruavWe7da = (AndruavUnitShadow) event_FCBData.senderWe7da;
-                }
-            }
-        }
-    }
-
-
-
-    /***
+    /*
      * Data is comming from a Drone to me GCS
      *
      * @param event_FCBData
@@ -237,6 +175,14 @@ public class TelemetryGCSProtocolParser extends TelemetryProtocolParser {
                 if ((event_FCBData.senderWe7da!=null) && (event_FCBData.senderWe7da.Equals(AndruavSettings.remoteTelemetryAndruavWe7da))) {
 
                     final AndruavUnitShadow andruavWe7da = (AndruavUnitShadow) event_FCBData.senderWe7da;
+                    if (AndruavSettings.remoteTelemetryAndruavWe7da.getTelemetry_protocol() == TelemetryProtocol.TelemetryProtocol_DroneKit_Telemetry) {
+                            /***
+                             * Here data from FCB dont need to be synched with APM board-class as it is already synched in drone
+                             * and this class is a replication of the drone only.
+                             */
+
+                    }
+
                 }
             }
         }

@@ -127,59 +127,10 @@ public class TelemetryProtocolParser {
         mhandlerThread = new HandlerThread("WS_SendCMD");
         mhandlerThread.start(); //mhandlerThread.getLooper() will return nll if not started.
 
-
-
         // Note that sendGCSTelemetry & sendFCBTelemetry have different implementations
         // and meaning based on the iimplementer GCS or Drone
-        mhandler = new Handler(mhandlerThread.getLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                try {
-
-
-                    // Data from GCS
-                    if (msg.obj instanceof Event_SocketData) {
-                        Event_SocketData event_socketData = (Event_SocketData) msg.obj;
-
-
-                        sendGCSTelemetry(event_socketData);
-
-                        return;
-                    }
-
-                    // Data from FCB or Drone
-                    if (msg.obj instanceof Event_FCBData) {
-                        Event_FCBData event_FCBData = (Event_FCBData) msg.obj;
-                        sendFCBTelemetry(event_FCBData);
-
-
-                        return;
-                    }
-
-                } catch (Exception e) {
-                    //Log.e("WS", e.getMessage());
-                    if (exception_init_counter <= 0) return;
-                    exception_init_counter = exception_init_counter - 1;
-
-                    AndruavEngine.log().logException(AndruavSettings.AccessCode, "exception_tele_parser", e);
-
-                }
-            }
-        };
+        mhandler = new Handler(mhandlerThread.getLooper());
     }
-
-
-
-    protected AndruavUnitBase getAndruavUnit(String targetName) {
-
-        if ((AndruavSettings.andruavWe7daBase.getIsCGS())) {
-            return  AndruavEngine.getAndruavWe7daMapBase().get(targetName);
-        }
-
-        return  AndruavSettings.andruavWe7daBase;
-
-    }
-
 
 
     public void shutDown() {

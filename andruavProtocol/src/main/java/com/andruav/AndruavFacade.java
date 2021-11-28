@@ -256,7 +256,6 @@ public class AndruavFacade extends AndruavFacadeBase{
 
         final AndruavMessage_RemoteExecute andruavMessage_remoteExecute = new AndruavMessage_RemoteExecute();
         andruavMessage_remoteExecute.RemoteCommandID = AndruavMessage_RemoteExecute.RemoteCommand_STREAMVIDEORESUME;
-        //andruavMessage_remoteExecute.Variables.put("Act",String.valueOf(startVideo));
 
         sendMessage(andruavMessage_remoteExecute,andruavUnit, Boolean.FALSE);
     }
