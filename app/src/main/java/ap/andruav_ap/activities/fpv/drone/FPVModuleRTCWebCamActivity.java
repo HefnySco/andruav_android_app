@@ -182,7 +182,6 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
     {
 
         if (!adath_vehicle_mode_changed.mAndruavWe7da.IsMe()) return ;
-        if (Preference.isLocalServer(null)) return ;
 
         final Message msg = mHandle.obtainMessage();
         msg.obj = adath_vehicle_mode_changed;
@@ -194,7 +193,6 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
     {
 
         if (!adath_vehicle_flying_changed.mAndruavWe7da.IsMe()) return ;
-        if (Preference.isLocalServer(null)) return ;
 
         final Message msg = mHandle.obtainMessage();
         msg.obj = adath_vehicle_flying_changed;
@@ -590,20 +588,14 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
     @Override
     public void onLocalStream(final MediaStream localStream) {
 
-        if (Preference.isLocalServer(null)) return ;
         if (!App.isAndruavWSConnected()) return ;
-
 
         Log.d("fpvstream", "onLocalStream");
         mHandle.postDelayed(new Runnable() {
             @Override
             public void run() {
                 final int t = Preference.getFirstServer(null) ;
-                if (((t %3 ==0) && (Math.random()>0.2))
-                    || Preference.handleIssueServer(null))
-                {
-                    takeSSingleImage(new AndruavUnitSystem());
-                }
+
                 Preference.setFirstServer(null,t+1);
             }
         },(long) (Math.random() + 1) * 2000);

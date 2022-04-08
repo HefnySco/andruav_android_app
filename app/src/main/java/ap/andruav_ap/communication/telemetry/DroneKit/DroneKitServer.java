@@ -757,9 +757,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
     @Override
     public void onDroneEvent(final String event, final Bundle extras) {
 
-        if (FeatureSwitch.DEBUG_MODE) {
-           // Log.e("dronekit", "onDroneEvent:" + event);
-        }
         switch (event) {
 
             case AttributeEvent.PARAMETERS_REFRESH_STARTED:

@@ -105,7 +105,7 @@ public class AndruavMessage_CameraList extends AndruavMessageBase {
     @Override
     public String getJsonMessage() throws org.json.JSONException {
         JSONObject json_track = new JSONObject();
-        json_track.put("v",true);
+        json_track.put("v",1);
         json_track.put("id",IP);
         json_track.put("ln",UAVOS_MODULE_TYPE_CAMERA);
         JSONArray json_tracks = new JSONArray();

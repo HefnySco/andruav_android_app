@@ -258,15 +258,6 @@ public class HUDView extends View {
         drawRoll(canvas);
         canvas.restore();
         canvas.save();
-        //drawPitch(canvas);
-        //canvas.restore();
-        //canvas.save();
-        //drawRoll(canvas);
-        //canvas.restore();
-        //canvas.save();
-        //drawYaw(canvas);
-        //canvas.restore();
-        //canvas.save();
         drawText(canvas);
         canvas.restore();
         canvas.save();
@@ -423,81 +414,6 @@ public class HUDView extends View {
         }
     }
 
-    /*
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        this.width = width;
-        this.height = height;
-
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        renderer = new ScopeThread(getHolder(), this);
-        if(! renderer.isRunning()){
-            renderer.setRunning(true);
-            renderer.start();
-        }
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        boolean retry = true;
-        renderer.setRunning(false);
-        while (retry) {
-            try {
-                renderer.join();
-                renderer = null;
-                retry = false;
-            } catch (InterruptedException e) {
-                // we will try it again and again...
-            }
-        }
-    }*/
-
-/*
-    private class ScopeThread extends Thread {
-        private SurfaceHolder _surfaceHolder;
-        private HUDView scope;
-        private boolean running = false;
-
-        public ScopeThread(SurfaceHolder surfaceHolder, HUDView panel) {
-            _surfaceHolder = surfaceHolder;
-            scope = panel;
-        }
-
-        public boolean isRunning(){
-            return running;
-
-        }
-        public void setRunning(boolean run) {
-            running = run;
-
-        }
-
-        @Override
-        public void run() {
-            Canvas c;
-            while (running) {
-               c = null;
-                try {
-                    c = _surfaceHolder.lockCanvas(null);
-                    synchronized (_surfaceHolder) {
-                        scope.onDraw(c);
-                    }
-                } finally {
-                    // do this in a finally so that if an exception is thrown
-                    // during the above, we don't leave the Surface in an
-                    // inconsistent state
-                    if (c != null) {
-                        _surfaceHolder.unlockCanvasAndPost(c);
-                    }
-                }
-
-            }
-        }
-    }
-*/
 
     protected void newFlightData ()
     {

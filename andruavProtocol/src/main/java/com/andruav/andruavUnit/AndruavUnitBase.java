@@ -138,6 +138,7 @@ public class AndruavUnitBase {
     protected boolean isFlying  = false;
     protected boolean isArmed   = false;
 
+    private long mFlyingTimeTemp = 0;
     private long mFlyingLastStartTime = 0;
     /***
      * This value is updated when Flying is Over, i.e. it is Zero till landing.
@@ -715,28 +716,37 @@ public class AndruavUnitBase {
 
         isFlying = flying;
 
-        if (changed)
-        {
             if(IsMe())
             {
                 if (isFlying==true)
                 {
-                    mFlyingLastStartTime = System.currentTimeMillis();
+                    if (changed) {
+                        mFlyingTimeTemp = System.currentTimeMillis();
+                        mFlyingLastStartTime = 0;
+                        AndruavFacade.broadcastID();
+                    }else
+                    {
+                        mFlyingLastStartTime = ( System.currentTimeMillis() - mFlyingTimeTemp) ;
+                    }
                 }
                 else
                 {
-                    mFlyingTotalDuration = mFlyingTotalDuration + ( System.currentTimeMillis() - mFlyingLastStartTime);
-                    mFlyingLastStartTime =0;
+                    if (changed) {
+                        mFlyingLastStartTime = (System.currentTimeMillis() - mFlyingTimeTemp) ;
+                        mFlyingTotalDuration = mFlyingTotalDuration + mFlyingLastStartTime;
+                        mFlyingTimeTemp = 0;
+                        AndruavFacade.broadcastID();
+                    }
+
                 }
 
                 // sendMessageToModule Toggle Event
                 // AndruavMo7arek.log().log(AndruavSettings.AccessCode, "apm", "f ");
-                AndruavFacade.broadcastID();
+
             }
 
             AndruavEngine.getEventBus().post(new Event_Vehicle_Flying_Changed(this));
 
-        }
 
     }
 

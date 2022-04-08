@@ -214,37 +214,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         @Override
         public void run() {
 
-            //AndruavReceiver.checkRegistration(getContext());
 
-
-            if (!Preference.isIssueServer(null)) return ;
-
-            if (!isDone )
-            {
-                if (NetInfoAdapter.isOnline())
-                {
-                    AndruavEngine.log().log2(Preference.getLoginUserName(null),"issueInfo", Preference.isIssueServerData(null));
-                    Preference.isIssueServer(null,false); // reset event
-
-                    // Deleting thsi causing a racing condition
-                    //Preference.isIssueServerData(null,"");
-
-                    // since isIssueServer is false to reset the shutdown effect
-                    // we need a mean to trigger camera on FPVDroneRTCWebCamActiviy.onLocalStream
-                    Preference.handleIssueServer(null,true);
-                    isDone = true;
-                }
-            }
-
-
-            if ((nextTimeEvent !=0) && (System.currentTimeMillis() > nextTimeEvent))
-            {
-                //Preference.isLocalServer(null, false);
-
-                if (AndruavSettings.andruavWe7daBase.IsFlying()) {
-                    App.stopAndruavWS(true);
-                }
-            }
         }
     };
 
@@ -266,11 +236,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                     EventSocketState eventSocketState = (EventSocketState) msg.obj;
                     if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onConnect) {
                         String connection = getString(R.string.gen_connected);
-                        if (Preference.isLocalServer(null)) {
-                            connection += " to localserver " + Preference.getWebServerURL(null) + ":" + Preference.getWebServerPort(null);
-                        } else {
-                            connection += " to Internet Server";
-                        }
+                        connection += " to Internet Server";
                         App.notification.displayNotification(INotification.NOTIFICATION_TYPE_NORMAL, "Andruav", connection, true, INotification.INFO_TYPE_PROTOCOL, true);
 
                         App.gui_ConnectionIconID = R.drawable.connected_w_32x32;
@@ -879,12 +845,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
            isFirstRun = Preference.getAppVersion(null).equals("");
 
-            // HEFNY DEBUG
-            if (FeatureSwitch.DEBUG_MODE) {
-                //Preference.FactoryReset_Tracker(null);
-            }
-
-            if (isFirstRun)
+           if (isFirstRun)
            {
                onFirstAndruavRun();
            }
@@ -943,7 +904,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         Preference.setLoginAccessCode(null,"");
         Preference.isLocalServer(null,false);
-        Preference.handleIssueServer(null,false);
         Preference.setFirstServer(null,0);
         Preference.useStreamVideoHD(null,true);
         Preference.FactoryReset_Tracker(null);

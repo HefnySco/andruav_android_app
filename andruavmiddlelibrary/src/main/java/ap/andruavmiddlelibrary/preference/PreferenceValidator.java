@@ -22,6 +22,7 @@ public class PreferenceValidator {
         if (AndruavSettings.Account_SID.isEmpty()) return false;
         if (Preference.getWebServerUserName(null).isEmpty()) return false;
         if (Preference.getWebServerGroupName(null).isEmpty()) return false;
+        if (Preference.getAuthServerURL(null).isEmpty()) return false;
         return !Preference.getWebServerURL(null).isEmpty();
 
     }

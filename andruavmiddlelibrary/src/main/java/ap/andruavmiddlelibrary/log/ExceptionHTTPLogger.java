@@ -60,9 +60,6 @@ public class ExceptionHTTPLogger implements ILog {
         }
 
         public void run() {
-
-
-
             android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
 
             String query = null;
@@ -88,7 +85,7 @@ public class ExceptionHTTPLogger implements ILog {
 
 
 
-            if (!Preference.isIssueServer(null) && FeatureSwitch.Disable_LOG_In_Local_Server && Preference.isLocalServer(null) && !skipLocal)
+            if (FeatureSwitch.Disable_LOG_In_Local_Server && Preference.isLocalServer(null) && !skipLocal)
             {
                 return ;
             }

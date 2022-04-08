@@ -178,6 +178,25 @@ public class Preference {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "TtdipFnw", webserverGroupName);
     }
 
+    public static String getAuthServerURL(final android.content.ContextWrapper contextWrapper) {
+
+        AndruavEngine.getPreference().getContext().getString(R.string.pref_ws_URL);
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "afxrzG4B", AndruavEngine.getPreference().getContext().getString(R.string.pref_auth_URL));
+    }
+
+    public static void setAuthServerURL(final android.content.ContextWrapper contextWrapper, String webserverURL) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "afxrzG4B", webserverURL);
+    }
+
+
+    public static int getAuthServerPort(final android.content.ContextWrapper contextWrapper) {
+
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "ai8pfERTTONDQ", AndruavEngine.getPreference().getContext().getResources().getInteger(R.integer.pref_auth_Port));
+    }
+
+    public static void setAuthServerPort(final android.content.ContextWrapper contextWrapper, final int servicePort) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "ai8pfERTTONDQ", servicePort);
+    }
 
     /***
      * This function is not useful anymore as it is updated each time server connects to the authentication site.
@@ -186,9 +205,6 @@ public class Preference {
      * @return
      */
     public static String getWebServerURL(final android.content.ContextWrapper contextWrapper) {
-        if (FeatureSwitch.Disable_Local_Server) {
-            return AndruavEngine.getPreference().getContext().getString(R.string.pref_ws_URL);
-        }
         return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "wfxrzG4B", AndruavEngine.getPreference().getContext().getString(R.string.pref_ws_URL));
     }
 
@@ -247,16 +263,6 @@ public class Preference {
     }
 
 
-    public static boolean isIssueServer(final android.content.ContextWrapper contextWrapper) {
-        if (FeatureSwitch.Disable_Local_Server) return false;
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "Hbn5rk4A", false);
-    }
-
-    public static void isIssueServer(final android.content.ContextWrapper contextWrapper, final boolean bCalibrated) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "Hbn5rk4A", bCalibrated);
-    }
-
-
     public static int getFirstServer(final android.content.ContextWrapper contextWrapper) {
 
         return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "kZXCERTTONDQ",0);
@@ -267,34 +273,7 @@ public class Preference {
     }
 
 
-    public static boolean handleIssueServer(final android.content.ContextWrapper contextWrapper) {
-        if (FeatureSwitch.Disable_Local_Server) return false;
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "SHbn5rk4AG", false);
-    }
 
-    public static void handleIssueServer(final android.content.ContextWrapper contextWrapper, final boolean bCalibrated) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "SHbn5rk4AG", bCalibrated);
-    }
-
-    /***
-     * Stores data read in IssueServer Event
-     * @param contextWrapper
-     * @return
-     */
-    public static String isIssueServerData(final android.content.ContextWrapper contextWrapper)
-    {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "bwwTIjIkZ0g", "");
-    }
-
-    /***
-     * Gets data read in IssueServer Event
-     * @param contextWrapper
-     * @param partyid
-     */
-    public static void isIssueServerData(final android.content.ContextWrapper contextWrapper, String partyid)
-    {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT,contextWrapper,"bwwTIjIkZ0g",partyid);
-    }
 
 
     ///////////////////EOF WebSocket Preference
@@ -1145,13 +1124,12 @@ public class Preference {
     public static void FactoryReset_Connections(final android.content.ContextWrapper contextWrapper) {
         Preference.setWebServerGroupName(contextWrapper, AndruavEngine.getPreference().getContext().getString(R.string.pref_groupname));
         Preference.setWebServerUserName(contextWrapper, Build.MODEL);
+        Preference.setAuthServerURL(contextWrapper, AndruavEngine.getPreference().getContext().getString(R.string.pref_auth_URL));
+        Preference.setAuthServerPort(contextWrapper, AndruavEngine.getPreference().getContext().getResources().getInteger(R.integer.pref_auth_Port));
         Preference.setWebServerURL(contextWrapper, AndruavEngine.getPreference().getContext().getString(R.string.pref_ws_URL));
         Preference.setWebServerPort(contextWrapper, AndruavEngine.getPreference().getContext().getResources().getInteger(R.integer.pref_ws_Port));
         Preference.setFirstServer(null, 0);
-        Preference.handleIssueServer(null, false);
         Preference.isLocalServer(null, false);
-        Preference.isIssueServer(null, false);
-        Preference.isIssueServerData(null, "");
         Preference.isEnforceName(contextWrapper, true);
         Preference.isEncryptedWS(contextWrapper, false);
         Preference.setEncryptedWSKey(contextWrapper, "0123456789ABCDEF");

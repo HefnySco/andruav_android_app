@@ -493,80 +493,69 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
     protected void reconnect ()
     {
         super.reconnect();
-
-
-        if (Preference.isLocalServer(null)) {
-            //AndruavSettings.Account_SID = eventLoginClient.Parameters.get("sid");
-            //AndruavSettings.WebServerURL = eventLoginClient.Parameters.get("ip");
-            //AndruavSettings.WebServerPort = eventLoginClient.Parameters.get("port");
-
-            String websocketURL = "wss://" + LoginClient.getWSURL() + "&SID=" + AndruavSettings.Account_SID;
-            Me.connect(websocketURL);
-        } else {
-            try {
-                LoginClient.ValidateAccount(Preference.getLoginUserName(null), Preference.getLoginAccessCode(null), Preference.getWebServerGroupName(null), new ILoginClientCallback() {
-                    @Override
-                    public void onError() {
-                        if (merrorRecovery == Boolean.TRUE) {
-                            if (mhandler == null) return ; // should fix fatal issue.
+        try {
+            LoginClient.ValidateAccount(Preference.getLoginUserName(null), Preference.getLoginAccessCode(null), Preference.getWebServerGroupName(null), new ILoginClientCallback() {
+                @Override
+                public void onError() {
+                    if (merrorRecovery == Boolean.TRUE) {
+                        if (mhandler == null) return ; // should fix fatal issue.
                             mhandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (getSocketState() == SOCKETSTATE_REGISTERED) return ; // just an old retry
-                                    if (mkillMe) return;
+                            @Override
+                            public void run() {
+                                if (getSocketState() == SOCKETSTATE_REGISTERED) return ; // just an old retry
+                                if (mkillMe) return;
 
-                                    final Emergency emergency = (Emergency) AndruavEngine.getEmergency();
-                                    if (emergency != null) {
-                                        emergency.triggerEmergencyFlightModeFaileSafe(false);
-                                        emergency.sendSMS(false); // still cannot connect
-                                        emergency.triggerConnectionEmergency(false);
-                                    }
-                                    //BUG: if multiservers and server is down retries will focus on one server.... you should query the auth server.
-
-                                    reconnect();
+                                final Emergency emergency = (Emergency) AndruavEngine.getEmergency();
+                                if (emergency != null) {
+                                    emergency.triggerEmergencyFlightModeFaileSafe(false);
+                                    emergency.sendSMS(false); // still cannot connect
+                                    emergency.triggerConnectionEmergency(false);
                                 }
-                            }, 4000);
-                        }
-                    }
+                                //BUG: if multiservers and server is down retries will focus on one server.... you should query the auth server.
 
-                    @Override
-                    public void onSuccess(EventLoginClient eventLoginClient) {
-                        if (eventLoginClient.LastError == LoginClient.ERR_SUCCESS) {
-
-                            AndruavSettings.Account_SID = eventLoginClient.Parameters.get(LoginClient.CONST_SENDER_ID);
-                            AndruavSettings.WebServerURL = eventLoginClient.Parameters.get(LoginClient.CONST_COMM_SERVER_PUBLIC_HOST);
-                            AndruavSettings.WebServerPort = eventLoginClient.Parameters.get(LoginClient.CONST_COMM_SERVER_PORT);
-                            AndruavSettings.WEBMOFTA7 = eventLoginClient.Parameters.get(LoginClient.CONST_COMM_SERVER_LOGIN_TEMP_KEY);
-
-                            String websocketURL = "wss://" + LoginClient.getWSURL();
-                            Me.connect(websocketURL);
-                        } else {
-                            if (merrorRecovery == Boolean.TRUE) {
-                                mhandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (mkillMe) return;
-
-
-                                        //BUG: if multiservers and server is down retries will focus on one server.... you should query the auth server.
-                                        final Emergency emergency = (Emergency) AndruavEngine.getEmergency();
-                                        if (emergency != null) {
-                                            emergency.triggerEmergencyFlightModeFaileSafe(false);
-                                            emergency.sendSMS(false); // still cannot connect
-                                            emergency.triggerConnectionEmergency(true);
-                                        }
-                                        reconnect();
-                                    }
-                                }, 4000);
+                                reconnect();
                             }
+                        }, 4000);
+                    }
+                }
+
+                @Override
+                public void onSuccess(EventLoginClient eventLoginClient) {
+                    if (eventLoginClient.LastError == LoginClient.ERR_SUCCESS) {
+
+                        AndruavSettings.Account_SID = eventLoginClient.Parameters.get(LoginClient.CONST_SENDER_ID);
+                        AndruavSettings.WebServerURL = eventLoginClient.Parameters.get(LoginClient.CONST_COMM_SERVER_PUBLIC_HOST);
+                        AndruavSettings.WebServerPort = eventLoginClient.Parameters.get(LoginClient.CONST_COMM_SERVER_PORT);
+                        AndruavSettings.WEBMOFTA7 = eventLoginClient.Parameters.get(LoginClient.CONST_COMM_SERVER_LOGIN_TEMP_KEY);
+
+                        String websocketURL = "wss://" + LoginClient.getWSURL();
+                        Me.connect(websocketURL);
+                    } else {
+                        if (merrorRecovery == Boolean.TRUE) {
+                        mhandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                            if (mkillMe) return;
+
+
+                            //BUG: if multiservers and server is down retries will focus on one server.... you should query the auth server.
+                            final Emergency emergency = (Emergency) AndruavEngine.getEmergency();
+                            if (emergency != null) {
+                                emergency.triggerEmergencyFlightModeFaileSafe(false);
+                                emergency.sendSMS(false); // still cannot connect
+                                emergency.triggerConnectionEmergency(true);
+                            }
+
+                            reconnect();
+                            }
+                        }, 4000);
+                        }
                         }
                     }
                 });
             }catch(UnsupportedEncodingException e){
                 e.printStackTrace();
             }
-            // this.connect(null);
-        }
     }
 
 

@@ -38,24 +38,24 @@
                 android:layout_below="@+id/login_txtAccessCode" />
 
             <EditText
+                android:id="@+id/hubactivity_edtWSIP"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/hubactivity_edtWSIP"
+                android:layout_alignTop="@+id/txtServer"
+                android:layout_alignParentStart="false"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentRight="false"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="3dp"
+                android:layout_toRightOf="@+id/txtServer"
+                android:background="@drawable/sel_edit_text"
                 android:editable="true"
+                android:enabled="true"
+                android:hint="original shared server"
                 android:inputType="text"
                 android:text=""
-                android:layout_alignParentEnd="false"
-                android:layout_alignParentStart="false"
-                android:layout_toRightOf="@+id/txtServer"
-                android:layout_alignTop="@+id/txtServer"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/sel_edit_text"
-                android:textColor="@color/btn_TXT_GREY_DARK"
-                android:layout_marginRight="3dp"
-                android:hint="andruav.com - default"
-                android:enabled="false"
-                android:layout_alignParentRight="false"
-                android:layout_alignParentLeft="false" />
+                android:textColor="@color/btn_TXT_GREY_DARK" />
 
             <TextView
                 style="@style/generalLabelTitle"
@@ -69,31 +69,31 @@
                 android:layout_alignTop="@+id/hubactivity_edtWSPort" />
 
             <CheckBox
+                android:id="@+id/hubactivity_chkLocalServer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Andruav.com"
-                android:id="@+id/hubactivity_chkLocalServer"
-                android:layout_toEndOf="@+id/hubactivity_edtWSPort"
-                android:layout_alignParentEnd="false"
                 android:layout_alignTop="@+id/txtPort"
+                android:layout_alignParentEnd="false"
                 android:layout_alignParentRight="true"
-                android:layout_toRightOf="@+id/hubactivity_edtWSPort" />
+                android:layout_toEndOf="@+id/hubactivity_edtWSPort"
+                android:layout_toRightOf="@+id/hubactivity_edtWSPort"
+                android:text="Cloud.Ardupilot.org" />
 
             <EditText
+                android:id="@+id/hubactivity_edtWSPort"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:ems="10"
-                android:id="@+id/hubactivity_edtWSPort"
                 android:layout_below="@+id/hubactivity_edtWSIP"
-                android:layout_alignParentEnd="false"
                 android:layout_alignLeft="@+id/hubactivity_edtWSIP"
-                android:textColor="@color/btn_TXT_GREY_DARK"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentRight="false"
                 android:layout_marginTop="3dp"
                 android:background="@drawable/sel_edit_text"
-                android:hint="9000"
-                android:enabled="false"
-                android:layout_alignParentRight="false" />
+                android:ems="10"
+                android:enabled="true"
+                android:hint="19408"
+                android:inputType="number"
+                android:textColor="@color/btn_TXT_GREY_DARK" />
 
             <ImageView
                 android:layout_width="fill_parent"

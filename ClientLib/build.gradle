@@ -31,7 +31,6 @@ def versionCode = 3
 
 android {
     compileSdkVersion android_build_sdk_version
-    buildToolsVersion android_build_tools_version
 
     dexOptions {
         javaMaxHeapSize "4g"
@@ -61,9 +60,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    lintOptions {
-        abortOnError false
-    }
 
     testOptions {
         unitTests.returnDefaultValues = true
@@ -88,11 +84,13 @@ android {
         release {
         }
     }
+    lint {
+        abortOnError false
+    }
 
     testOptions {
         unitTests.returnDefaultValues = true
     }
-    buildToolsVersion android_build_tools_version
 }
 
 dependencies {

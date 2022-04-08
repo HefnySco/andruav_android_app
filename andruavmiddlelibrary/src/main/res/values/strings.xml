@@ -41,6 +41,7 @@
     <string name="pref_description">andruav unit</string>
     <string name="pref_groupname">1</string>
     <string name="pref_username">Andruav1</string>
+    <string name="pref_auth_URL">Cloud.Ardupilot.org</string>
     <string name="pref_ws_URL">Andruav.com</string>
     <string name="pref_gr_fcb">FCB &amp; Telemetry</string>
     <string name="pref_gr_uavos">Module &amp; Types</string>
@@ -121,6 +122,7 @@
     <string name="pref_gr_uavos_module_comm_ip_discover">Auto Comm Detection</string>
     <string name="pref_gr_uavos_module_comm_ip_discover_summary">Detect Comm Module IP automatically</string>
 
+    <integer name="pref_auth_Port">19408</integer>
     <integer name="pref_ws_Port">9210</integer>
     <integer name="pref_hub_Port">5760</integer>
     <!-- ACTIONS -->

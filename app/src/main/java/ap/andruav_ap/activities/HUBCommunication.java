@@ -52,23 +52,15 @@ public class HUBCommunication extends BaseAndruavShasha {
     private Spinner     mspinnerVehicleType;
     private Spinner     mspinnerGroupNo;
 
-    //private EditText    mtxtWebGroupName;
     private EditText    mtxtWebDescription;
-    //private TextView    mtxtWebLog;
-    private CheckBox mcheckAndruavServer;
-    //private CheckBox    mchkEnforceName;
+    private CheckBox    mcheckAndruavServer;
     private CheckBox    mchkEncryptWebServer;
     private TextView    mtxtEncryptionKey;
 
 
     private Menu mMenu;
-    //private MenuItem miConnect;
     private Handler mhandle;
-    private int mSelectedCOnnectionIcon;
     protected String text;
-    private final int MSG_TEXT = 1;
-    private final int MSG_ICON = 2;
-    private final int MSG_BOTH = 3;
 
 
     ////// EOF  Attributes
@@ -107,122 +99,7 @@ public class HUBCommunication extends BaseAndruavShasha {
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
 
-                /*
-                if (EventLoginClient.class.isInstance(msg.obj)) {   //Event Login Client Handling
 
-                    EventLoginClient eventLoginClient = (EventLoginClient) msg.obj;
-                    if (eventLoginClient.LastError == LoginClient.ERR_SUCCESS) {
-                        AndruavSettings.Account_SID = eventLoginClient.LastMessage;
-                        //mprogressDialog.setMessage(getString(R.string.gen_accesscodevalid));
-                        AndruavMo7arek.notification().Speak(getString(R.string.gen_accesscodevalid));
-                        startAndruavConnection();
-                    } else {
-                        Intent intent =LoginShashaFactory.getIntentLoginActivity(Me);
-                       // Intent intent = new Intent(getApplicationContext(), LoginShasha.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("MSG", (byte) LoginClient.ERR_ACCOUNT_NOT_FOUND);
-                        startActivity(intent);
-                    }
-
-                }   // EOF EventLoginClient
-                else*/
-
-
-                /*if (EventSocketState.class.isInstance(msg.obj)) {
-                    EventSocketState event_SocketState = (EventSocketState) msg.obj;
-                    if  (event_SocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onConnect) {
-                        miConnect.setIcon(R.drawable.connected_w_32x32);
-                    }
-
-                    if  (event_SocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onDisconnect)
-                    {
-                        mSelectedCOnnectionIcon = R.drawable.connect_w_32x32;
-                        miConnect.setIcon(R.drawable.connect_w_32x32);
-
-                    }
-
-                    if  (event_SocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.IRTCVideoDecoder_onError)
-                    {
-                        text = HtmlPro.AddLine("#F75050",event_SocketState.Message,true,true);
-                        miConnect.setIcon(R.drawable.connected_error_32x32);
-                        mtxtWebLog.append(Html.fromHtml(text));
-
-                    }
-
-                    if  (event_SocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onMessage)
-                    {
-                        // MenuItem mi = mMenu.findItem(R.id.action_main_wsconnect);
-                        // mi.setIcon(R.drawable.connected_color_32x32);
-                    }
-                } else
-                if (Andruav_2MR.class.isInstance(msg.obj)) {
-                    Andruav_2MR event_Andruav2MR = (Andruav_2MR) msg.obj;
-
-                    if (event_Andruav2MR.IsReceived == true)
-                    {
-                        if (event_Andruav2MR.MessageCmd.equals(AndruavWSClient_AutoBohn.CMD_SYS_CONNECTED))
-                        {
-                            if (event_Andruav2MR.IsErr == false)
-                            {
-                                text = "<br><font color=#75A4D3>" + getString(R.string.gen_hostfound) + "</font'>";
-                            }
-                            else
-                            {
-                                text ="<br><font color=#F75050>" + getString(R.string.err_hostnotfound) + "</font>";
-                            }
-
-
-                            mtxtWebLog.append(Html.fromHtml(text));
-
-                            return ;
-
-                        }
-
-
-                        if ((event_Andruav2MR.MessageCmd.equals(AndruavWSClient_AutoBohn.CMD_SYS_ADD)) || (event_Andruav2MR.MessageCmd.equals(AndruavWSClient_AutoBohn.CMD_SYS_ADD_ENFORCE)))
-                        {
-
-                            if (event_Andruav2MR.IsErr == false)
-                            {
-                                text = "<br>Group: <font color=#36AB36>" + event_Andruav2MR.GroupName + "</font> - unit: <font color=#75A4D3>" + event_Andruav2MR.PartyID + "</font>.";
-                                text +=  "<br><font color=#75A4D3>" + getString(R.string.gen_ws_registered) + "</font'>";
-                                miConnect.setIcon(R.drawable.connected_color_32x32);
-                                AndruavMo7arek.notification().Speak(getString(R.string.gen_connected));
-                                AndruavMo7arek.getAndruavWS().sendPing();
-                            }
-                            else
-                            {
-                                text = "<br>Group: <font color=#36AB36>" + event_Andruav2MR.GroupName + "</font> - unit-id: <font color=#75A4D3>" + event_Andruav2MR.PartyID + "</font>.";
-                                text +=  "<br><font color=#F75050>" + getString(R.string.err_ws_replicatedid) + "</font'>";
-                                AndruavMo7arek.notification().Speak(getString(R.string.err_ws_replicatedid));
-                                AndruavMo7arek.getAndruavWS().disconnect();
-                            }
-
-                            mtxtWebLog.append(Html.fromHtml(text));
-
-                            return ;
-                        }
-                        else
-                        if (event_Andruav2MR.MessageCmd.equals(AndruavWSClient_AutoBohn.CMD_SYS_PING))
-                        {
-                            if (event_Andruav2MR.IsErr == false) {
-
-                                text =  "<br><font color=#75A4D3>" + "msg duration: " + event_Andruav2MR.timeStamp + "ms" + "</font'>";
-                            }
-                            else
-                            {
-                                text = "<br><font color=F75050>" + getString(R.string.err_ws_cmd_ping) + "</font'>";
-                            }
-
-                            mtxtWebLog.append(Html.fromHtml(text));
-
-                            return ;
-                        }
-
-                    }
-
-
-                } */
             }
         };
     }
@@ -230,27 +107,15 @@ public class HUBCommunication extends BaseAndruavShasha {
 
     private void updateUI ()
     {
-        if (FeatureSwitch.Disable_Local_Server)
-        {
-            mtxtWebServerIP.setEnabled(false);
-            mtxtWebServerPort.setEnabled(false);
-            mcheckAndruavServer.setVisibility(View.INVISIBLE);
-            return ;
-        }
 
+        mtxtWebServerIP.setEnabled(!mcheckAndruavServer.isChecked());
+        mtxtWebServerPort.setEnabled(!mcheckAndruavServer.isChecked());
 
         if (mcheckAndruavServer.isChecked())
         {
-            mtxtWebServerIP.setEnabled(false);
-            mtxtWebServerPort.setEnabled(false);
+            mtxtWebServerIP.setText(AndruavEngine.getPreference().getContext().getResources().getString(R.string.pref_auth_URL));
+            mtxtWebServerPort.setText(String.valueOf(AndruavEngine.getPreference().getContext().getResources().getInteger(R.integer.pref_auth_Port)));
         }
-        else
-        {
-            mtxtWebServerIP.setEnabled(true);
-            mtxtWebServerPort.setEnabled(true);
-        }
-
-
     }
 
     private void initGUI ()
@@ -263,20 +128,14 @@ public class HUBCommunication extends BaseAndruavShasha {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 updateUI();
 
-                if (!b)
-                {
-                    DialogHelper.doModalDialog(Me,getString(R.string.hub_activity_server_title),getString(R.string.hub_activity_server_hint),null);
-                }
+
             }
         });
         mtxtWebUserName = findViewById(R.id.hubactivity_edtWSUserName);
-        //mtxtWebGroupName = (EditText) findViewById(R.id.hubactivity_edtWSGroupName);
-        //mtxtWebGroupName.setEnabled(Preference.enableGroupName(null));
         mspinnerVehicleType = findViewById(R.id.hubactivity_spinVehicleType);
 
         final ArrayAdapter vt = new ArrayAdapter(this, android.R.layout.simple_spinner_item, VehicleTypes.vechicleTypes);
         mspinnerVehicleType.setAdapter(vt);
-            //mspinnerVehicleType.setEnabled(Preference.enableGroupName(null));
 
 
         mspinnerGroupNo     = findViewById(R.id.hubactivity_spinGroupNo);
@@ -292,12 +151,11 @@ public class HUBCommunication extends BaseAndruavShasha {
 
 
         mtxtWebDescription = findViewById(R.id.hubactivity_edtDescription);
-       // mtxtWebLog = (TextView) findViewById(R.id.edtWSLog);
-        //mchkEnforceName = (CheckBox) findViewById(R.id.hubactivity_chkEnforceName);
         mchkEncryptWebServer = findViewById(R.id.hubactivity_chkEncryption);
         mtxtEncryptionKey= findViewById(R.id.hubactivity_edtEncryptionKey);
 
-
+        mtxtWebServerIP.setEnabled(!mcheckAndruavServer.isChecked());
+        mtxtWebServerPort.setEnabled(!mcheckAndruavServer.isChecked());
 
 
         UIHandler();
@@ -414,27 +272,15 @@ public class HUBCommunication extends BaseAndruavShasha {
             return ;
         }
 
-        //mtxtWebLog.clearComposingText();
-
-
-        if (Preference.isLocalServer(null))
-        {
-            // Connect Locally
-            AndruavSettings.Account_SID =  Preference.getLoginAccessCode(null);
-
-            startAndruavConnection();
-        }
-        else {
-            if (AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED)) {
+        if (AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED)) {
                 return; // I am already connected.
-            }
+        }
 
-            if (PreferenceValidator.isInvalidLoginCode())
-            {
-                LoginScreenFactory.startLoginActivity(Me);
-
-                return ;
-            }
+        if (PreferenceValidator.isInvalidLoginCode())
+        {
+            LoginScreenFactory.startLoginActivity(Me);
+            return ;
+        }
 
             try
             {
@@ -445,9 +291,7 @@ public class HUBCommunication extends BaseAndruavShasha {
                 AndruavEngine.log().logException("exception_log", e);
                 DialogHelper.doModalDialog(Me,getString(R.string.action_login),getString(R.string.err_loginfailed),null);
             }
-        }
 
-        //mtxtWebLog.setText(Html.fromHtml("<br><font color=#75A4D3>" + getString(R.string.gen_speak_connecting) + "</font'>"));
     }
 
     private void startAndruavConnection () {
@@ -491,9 +335,9 @@ public class HUBCommunication extends BaseAndruavShasha {
             return false;
         }
         // Do Save
-        Preference.setWebServerPort(null, Integer.parseInt(mtxtWebServerPort.getText().toString()));
+        Preference.setAuthServerPort(null, Integer.parseInt(mtxtWebServerPort.getText().toString()));
         String serverURL = mtxtWebServerIP.getText().toString();
-        Preference.setWebServerURL(null, serverURL);
+        Preference.setAuthServerURL(null, serverURL);
         Preference.setWebServerUserName(null, mtxtWebUserName.getText().toString().toLowerCase());
         if (!Preference.enableGroupName(null))
         {
@@ -529,8 +373,8 @@ public class HUBCommunication extends BaseAndruavShasha {
 
     private void readPreference ()
     {
-        mtxtWebServerPort.setText(String.valueOf(Preference.getWebServerPort(null)));
-        mtxtWebServerIP.setText(String.valueOf(Preference.getWebServerURL(null)));
+        mtxtWebServerPort.setText(String.valueOf(Preference.getAuthServerPort(null)));
+        mtxtWebServerIP.setText(String.valueOf(Preference.getAuthServerURL(null)));
         mtxtWebUserName.setText(String.valueOf(Preference.getWebServerUserName(null)));
         if (!Preference.enableGroupName(null))
         { // reset value

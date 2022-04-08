@@ -406,7 +406,7 @@ public class MainScreen extends BaseAndruavShasha {
         AndruavFacade.sendID((AndruavUnitBase)null); // guys I am here
         App.startSensorService();
 
-        LoginClient.AmanFunction();
+
 
         if (AndruavSettings.andruavWe7daBase.getIsCGS())
         {
@@ -505,42 +505,8 @@ public class MainScreen extends BaseAndruavShasha {
             public void onClick(View view) {
 
 
-                if (FeatureSwitch.DEBUG_MODE)
-                {
+                startActivity(new Intent(MainScreen.this, DataShashaTab.class));
 
-
-
-                    //AndruavMo7arek.log().log2(Preference.getLoginUserName(null),"test", " one ' '' two \"   ");
-
-                    /*
-
-
-
-                    final Location infoLoc = AndruavSettings.andruavWe7daBase.getAvailableLocation();
-                    String info =" ";
-                    if (infoLoc !=null  )
-                    {
-                        info = "g3-"+ String.valueOf(infoLoc.getLongitude() *  33) + "d2-" + String.valueOf(infoLoc.getLatitude() * 22) + "t:" + (new Date()).toString();
-
-                        final LogDao logDao = DaoManager.getLogDao();
-                        if (logDao!= null)
-                        {
-                            // could be null if crash before DaoManager.init() has been called
-                            if (FeatureSwitch.DEBUG_MODE) {
-                                Log.e("fpv", "Insert in Database");
-                            }
-                            logDao.insert(new LogRow(null, Preference.getLoginUserName(null), "issue", info));
-
-                        }
-                    }
-                    return;*/
-
-                    //startActivity(new Intent(MainShasha.this, PurchaseActivity.class));
-                }
-            else
-                {
-                    startActivity(new Intent(MainScreen.this, DataShashaTab.class));
-                }
 
             }
         });
@@ -666,23 +632,19 @@ public class MainScreen extends BaseAndruavShasha {
             }
 
 
-            if (Preference.isLocalServer(null)) {
-                // Connect Locally
-                AndruavSettings.andruavWe7daBase.setLocalPermissions();
-                AndruavSettings.Account_SID = Preference.getLoginAccessCode(null);
-                startAndruavConnection();
-            } else {
-                // Connect Globally
-                try {
+            // Connect Globally
+            try {
+                AndruavSettings.AuthIp = Preference.getAuthServerURL(null);
+                AndruavSettings.AuthPort =Preference.getAuthServerPort(null);
 
-                    LoginClient.ValidateAccount(Preference.getLoginUserName(null), Preference.getLoginAccessCode(null),Preference.getWebServerGroupName(null), null);
+                LoginClient.ValidateAccount(Preference.getLoginUserName(null), Preference.getLoginAccessCode(null),Preference.getWebServerGroupName(null), null);
 
-                    doProgressDialog();
-                } catch (UnsupportedEncodingException e) {
-                    AndruavEngine.log().logException("exception_log", e);
-                    DialogHelper.doModalDialog(this, getString(R.string.action_login), getString(R.string.err_loginfailed), null);
-                }
+                doProgressDialog();
+            } catch (UnsupportedEncodingException e) {
+                AndruavEngine.log().logException("exception_log", e);
+                DialogHelper.doModalDialog(this, getString(R.string.action_login), getString(R.string.err_loginfailed), null);
             }
+
             return;
         }
     }

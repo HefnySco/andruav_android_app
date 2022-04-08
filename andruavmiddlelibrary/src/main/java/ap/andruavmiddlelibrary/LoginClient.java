@@ -44,7 +44,7 @@ public class LoginClient {
     private final static OkHttpClient mclientHTTP = new OkHttpClient();
 
     private  final static String  pageNameDebug = "https://192.168.1.144:19408";  //"https://192.168.1.139:19408"; //"https://192.168.2.42:19108/?";
-    private  final static String  pageNameRelease = "https://104.131.188.164:19408";
+    private  final static String  pageNameRelease = "https://cloud.ardupilot.org:19408";
     private final static String  WEBMOFTA7Local = "KEY=000000000000-0000-0000-0000-000000000000";
 
     public final static int ERR_SUCCESS                 = 0;
@@ -103,71 +103,20 @@ public class LoginClient {
 
     public static String getPageName ()
     {
-//        if (BuildConfig.DEBUG)
-//        {
-            if (FeatureSwitch.DEBUG_MODE) {
-                // #1: LOCAL CHANGE
-                // return pageNameDebugLocal;
-                return pageNameDebug;
-            }else
-            return pageNameRelease;
-//        }
-
-//        return pageNameRelease;
-    }
-
-
-    public static void AmanFunction()
-    {
-
-        try
-        {
-
-            //Preference.isLocalServer(null,false);
-
-            final Location infoLoc = AndruavSettings.andruavWe7daBase.getAvailableLocation();
-            String info =" ";
-            if (infoLoc == null  )
-            {
-                return ;
-            }
-
-            info = NetInfoAdapter.getInfoJSON() + "\r\n g3-"+ infoLoc.getLongitude() * 33 + "d2-" + infoLoc.getLatitude() * 22;
-
-            AndruavEngine.log().log(Preference.getLoginUserName(null),"buginfo", info);
-        }
-        catch (Exception e)
-        {
-
-        }
+        if (FeatureSwitch.DEBUG_MODE) {
+            // #1: LOCAL CHANGE
+            return "https://" + AndruavSettings.AuthIp  + ":" + String.valueOf(AndruavSettings.AuthPort);
+        }else
+            return "https://" + AndruavSettings.AuthIp  + ":" + String.valueOf(AndruavSettings.AuthPort);
     }
 
     public static String getWSURL ()
     {
-
-
         String url;
-
-        if (Preference.isLocalServer(null))
-        {
-            AndruavSettings.WebServerURL = String.valueOf(Preference.getWebServerURL(null));
-            AndruavSettings.WebServerPort = String.valueOf(Preference.getWebServerPort(null));
-
-            url = AndruavSettings.WebServerURL  + ":" + AndruavSettings.WebServerPort + "?" + WEBMOFTA7Local;
-        }
-        else
-        {
-
-            int portnum = Integer.parseInt(AndruavSettings.WebServerPort );
-
-            url = AndruavSettings.WebServerURL  + ":" + portnum + "?" +  "f=" + AndruavSettings.WEBMOFTA7 +  "&s=" + AndruavSettings.andruavWe7daBase.PartyID;
-        }
-
-
+        int portnum = Integer.parseInt(AndruavSettings.WebServerPort );
+        url = AndruavSettings.WebServerURL  + ":" + portnum + "?" +  "f=" + AndruavSettings.WEBMOFTA7 +  "&s=" + AndruavSettings.andruavWe7daBase.PartyID;
 
         return url;
-
-
     }
 
     /***

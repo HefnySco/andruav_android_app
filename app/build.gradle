@@ -4,12 +4,6 @@ apply plugin: 'com.android.application'
 
 android {
 
-    lintOptions {
-        checkReleaseBuilds false
-        // Or, if you prefer, you can continue to check for errors in release builds,
-        // but continue the build even when errors are found:
-        abortOnError false
-    }
 
     signingConfigs {
         config {
@@ -21,15 +15,14 @@ android {
     }
 
     compileSdkVersion android_build_sdk_version
-    buildToolsVersion android_build_tools_version
 
     defaultConfig {
         applicationId 'arudpilot.andruav'
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
-        versionName '5.00.05'
+        versionName '5.00.07'
         signingConfig signingConfigs.config
-        versionCode 50005
+        versionCode 50007
         multiDexEnabled true
 
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -127,6 +120,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
     }
 }
 

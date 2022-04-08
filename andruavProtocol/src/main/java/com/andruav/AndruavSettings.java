@@ -96,8 +96,11 @@ public class AndruavSettings {
      */
     public static AndruavUnitShadow remoteTelemetryAndruavWe7da=null;
 
-    public static String WebServerURL = "www.andruav.com";
-    public static String WebServerPort = "9210";
+    public static String AuthIp = "cloud.ardupilot.org";
+    public static int AuthPort = 19408;
+
+    public static String WebServerURL = "cloud.ardupilot.org";
+    public static String WebServerPort = "19408";
     public static String WEBMOFTA7 = "000000000000-0000-0000-0000-000000000000";
 
 
