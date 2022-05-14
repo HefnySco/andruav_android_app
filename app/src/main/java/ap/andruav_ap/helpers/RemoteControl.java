@@ -155,7 +155,9 @@ public class RemoteControl {
     }
 
     /***
-     *
+     * Calculate signal received from WebClient [0,1000] to PWM
+     * Note that preference applied to channels 1,2,3,4 that will be remapped using RCMAP
+     * which will keep it valid if RCMAP is not default.
      * @param scalledChannels ranges from [0,1000]
      * @param ignoreDeadoBand
      * @return

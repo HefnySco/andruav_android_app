@@ -124,6 +124,12 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     private int mGPS1_Type = GPS_TYPE_NONE;
     private int mGPS2_Type = GPS_TYPE_NONE;
 
+    private int mRCMAP_ROLL = -1;
+    private int RCMAP_PITCH = -1;
+    private int RCMAP_THROTTLE = -1;
+    private int RCMAP_YAW = -1;
+
+    private boolean mParameteredRefreshedCompleted = false;
 
 
     /***
@@ -512,24 +518,56 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
             {
                 final msg_rc_channels_override msg = new msg_rc_channels_override();
 
-                msg.chan1_raw = (short) channels[0];                // Aileron
-                msg.chan2_raw = (short) channels[1];                // Elevator
-                msg.chan3_raw = (short) channels[2];                // Throttle
-                msg.chan4_raw = (short) channels[3];                // Rudder
-
-                if (allEightChannels)
+                if (mParameteredRefreshedCompleted)
                 {
-                    msg.chan5_raw = channels[4];
-                    msg.chan6_raw = channels[5];
-                    msg.chan7_raw = channels[6];
-                    msg.chan8_raw = channels[7];
+                    int[] rc_channels=new int[18];
+                    for (int i=0;i<18;++i)
+                    {
+                        rc_channels[i] = Short.MAX_VALUE ;
+                    }
+                    rc_channels[mRCMAP_ROLL-1]    = (short) channels[0];                // Aileron
+                    rc_channels[RCMAP_PITCH-1]    = (short) channels[1];               // Elevator
+                    rc_channels[RCMAP_THROTTLE-1] = (short) channels[2];                // Throttle
+                    rc_channels[RCMAP_YAW-1]      = (short) channels[3];                // Rudder
+
+                    msg.chan1_raw = (short) rc_channels[0];
+                    msg.chan2_raw = (short) rc_channels[1];
+                    msg.chan3_raw = (short) rc_channels[2];
+                    msg.chan4_raw = (short) rc_channels[3];
+                    msg.chan5_raw = (short) rc_channels[4];
+                    msg.chan6_raw = (short) rc_channels[5];
+                    msg.chan7_raw = (short) rc_channels[6];
+                    msg.chan8_raw = (short) rc_channels[7];
+                    msg.chan9_raw = (short) rc_channels[8];
+                    msg.chan10_raw = (short) rc_channels[9];
+                    msg.chan11_raw = (short) rc_channels[10];
+                    msg.chan12_raw = (short) rc_channels[11];
+                    msg.chan13_raw = (short) rc_channels[12];
+                    msg.chan14_raw = (short) rc_channels[13];
+                    msg.chan15_raw = (short) rc_channels[14];
+                    msg.chan16_raw = (short) rc_channels[15];
+                    msg.chan17_raw = (short) rc_channels[16];
+                    msg.chan18_raw = (short) rc_channels[17];
                 }
-                else {
-                    // POTENTIAL ISSUE ... channels 5 -8 are released here ... this could conflict wth Mission Planner
-                    msg.chan5_raw = 0; //(short) channels[4];
-                    msg.chan6_raw = 0; //(short) channels[5];
-                    msg.chan7_raw = 0; //(short) channels[6];
-                    msg.chan8_raw = 0; //(short) channels[7];
+                else
+                {
+                    msg.chan1_raw = (short) channels[0];                // Aileron
+                    msg.chan2_raw = (short) channels[1];                // Elevator
+                    msg.chan3_raw = (short) channels[2];                // Throttle
+                    msg.chan4_raw = (short) channels[3];                // Rudder
+
+                    if (allEightChannels) {
+                        msg.chan5_raw = channels[4];
+                        msg.chan6_raw = channels[5];
+                        msg.chan7_raw = channels[6];
+                        msg.chan8_raw = channels[7];
+                    } else {
+                        // POTENTIAL ISSUE ... channels 5 -8 are released here ... this could conflict wth Mission Planner
+                        msg.chan5_raw = 0; //(short) channels[4];
+                        msg.chan6_raw = 0; //(short) channels[5];
+                        msg.chan7_raw = 0; //(short) channels[6];
+                        msg.chan8_raw = 0; //(short) channels[7];
+                    }
                 }
 
                 final MavlinkMessageWrapper mavlinkMessageWrapper = new MavlinkMessageWrapper(msg);
@@ -553,7 +591,8 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
                         safeGuidedChannels[i] = channels[i];
                     }
                 }
-                App.droneKitServer.ctrl_guidedVelocityInLocalFrame((1500 - safeGuidedChannels[1]) / 100.0f,
+                App.droneKitServer.ctrl_guidedVelocityInLocalFrame(
+                        (safeGuidedChannels[1] - 1500) / 100.0f,
                         (safeGuidedChannels[0] - 1500) / 100.0f,
                         (1500 - safeGuidedChannels[2]) / 100.0f,
                         (safeGuidedChannels[3] - 1500) /500.0f,
@@ -1193,6 +1232,23 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     public void  execute_ParseParameters (final SimpleArrayMap<String,msg_param_value> parametersByName)
     {
 
+        if ( parametersByName.get("RCMAP_ROLL") != null) {
+            mRCMAP_ROLL = (int) parametersByName.get("RCMAP_ROLL").param_value;
+        }
+
+        if ( parametersByName.get("RCMAP_PITCH") != null) {
+            RCMAP_PITCH = (int) parametersByName.get("RCMAP_PITCH").param_value;
+        }
+
+        if ( parametersByName.get("RCMAP_THROTTLE") != null) {
+            RCMAP_THROTTLE = (int) parametersByName.get("RCMAP_THROTTLE").param_value;
+        }
+
+        if ( parametersByName.get("RCMAP_YAW") != null) {
+            RCMAP_YAW = (int) parametersByName.get("RCMAP_YAW").param_value;
+        }
+
+
         if ( parametersByName.get("GPS_TYPE") != null) {
             mGPS1_Type = (int) parametersByName.get("GPS_TYPE").param_value;
             if (mGPS1_Type == GPS_TYPE_MAV)
@@ -1259,6 +1315,8 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
                 }else {
                 mAndruavUnitBase.hasGimbal(false);
          }
+
+        mParameteredRefreshedCompleted = true;
     }
 
 
