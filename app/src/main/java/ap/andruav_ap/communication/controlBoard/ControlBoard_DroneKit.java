@@ -592,7 +592,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
                     }
                 }
                 App.droneKitServer.ctrl_guidedVelocityInLocalFrame(
-                        (safeGuidedChannels[1] - 1500) / 100.0f,
+                        (1500 - safeGuidedChannels[1]) / 100.0f,
                         (safeGuidedChannels[0] - 1500) / 100.0f,
                         (1500 - safeGuidedChannels[2]) / 100.0f,
                         (safeGuidedChannels[3] - 1500) /500.0f,

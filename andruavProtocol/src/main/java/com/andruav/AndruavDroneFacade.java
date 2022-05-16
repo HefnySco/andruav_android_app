@@ -204,21 +204,21 @@ public class AndruavDroneFacade extends AndruavFacadeBase {
 
 
 
-        if ((now - monIMUStatisticsEventTime) > monIMUStatisticsTimeDuration) {
-            monIMUStatisticsEventTime = now;
-
-            final AndruavResalaBinary_IMUStatistics andruavMessageBinary_imuStatistics = new AndruavResalaBinary_IMUStatistics();
-            final AndruavIMU andruavIMU = AndruavSettings.andruavWe7daBase.getActiveIMU();
-            andruavMessageBinary_imuStatistics.GroundAltitude_max = andruavIMU.GroundAltitude_max;
-            andruavMessageBinary_imuStatistics.GroundSpeed_max = andruavIMU.GroundSpeed_max;
-            andruavMessageBinary_imuStatistics.GroundSpeed_avg = andruavIMU.GroundSpeed_avg;
-            andruavMessageBinary_imuStatistics.IdleDuration = andruavIMU.IdleDuration;
-            andruavMessageBinary_imuStatistics.IdleTotalDuration = andruavIMU.IdleTotalDuration;
-
-            sendMessage(andruavMessageBinary_imuStatistics, null, Boolean.FALSE);
-            //broadcastMessageToGroup(andruavMessageBinary_imuStatistics, Boolean.FALSE); // time is alrdy included in location info
-
-        }
+//        if ((now - monIMUStatisticsEventTime) > monIMUStatisticsTimeDuration) {
+//            monIMUStatisticsEventTime = now;
+//
+//            final AndruavResalaBinary_IMUStatistics andruavMessageBinary_imuStatistics = new AndruavResalaBinary_IMUStatistics();
+//            final AndruavIMU andruavIMU = AndruavSettings.andruavWe7daBase.getActiveIMU();
+//            andruavMessageBinary_imuStatistics.GroundAltitude_max = andruavIMU.GroundAltitude_max;
+//            andruavMessageBinary_imuStatistics.GroundSpeed_max = andruavIMU.GroundSpeed_max;
+//            andruavMessageBinary_imuStatistics.GroundSpeed_avg = andruavIMU.GroundSpeed_avg;
+//            andruavMessageBinary_imuStatistics.IdleDuration = andruavIMU.IdleDuration;
+//            andruavMessageBinary_imuStatistics.IdleTotalDuration = andruavIMU.IdleTotalDuration;
+//
+//            sendMessage(andruavMessageBinary_imuStatistics, null, Boolean.FALSE);
+//            //broadcastMessageToGroup(andruavMessageBinary_imuStatistics, Boolean.FALSE); // time is alrdy included in location info
+//
+//        }
     }
 
     /***
