@@ -98,30 +98,33 @@ public final class UsbId {
     public static final int DEVICE_RADIOLINK_MINI = 0x0016;
 
 
-    public static final int VENDOR_ARDUPILOT_FUTURE = 0x16D0;
-    public static final int DEVICE_ARDUPILOT_FUTURE = 0x0E65;
+    public static final int VENDOR_ARDUPILOT_FUTURE  = 0x16D0;
+    public static final int DEVICE_ARDUPILOT_FUTURE  = 0x0E65;
 
 
-    public static final int VENDOR_CUBE_BOARD       = 0x16D0;
-    public static final int DEVICE_CubeBlack_PLUS   = 0x1101;
-    public static final int DEVICE_CubeBlack        = 0x1011;
-    public static final int DEVICE_CubeBlack_BOOT   = 0x1001;
-    public static final int DEVICE_CubeOrange       = 0x1016;
-    public static final int DEVICE_CubePurple       = 0x1015;
-    public static final int DEVICE_CubePurple_BOOT  = 0x1005;
-    public static final int DEVICE_CubeYellow       = 0x1012;
-    public static final int DEVICE_CubeYellow_BOOT  = 0x1002;
+    public static final int VENDOR_CUBE_BOARD        = 0x16D0;
+    public static final int VENDOR_CUBE_BOARD2       = 0x2DAE;
+    public static final int DEVICE_CubeBlack_PLUS    = 0x1101;
+    public static final int DEVICE_CubeBlack         = 0x1011;
+    public static final int DEVICE_CubeBlack_BOOT    = 0x1001;
+    public static final int DEVICE_CubeOrange        = 0x1016;
+    public static final int DEVICE_CubePurple        = 0x1015;
+    public static final int DEVICE_CubePurple_BOOT   = 0x1005;
+    public static final int DEVICE_CubeYellow        = 0x1012;
+    public static final int DEVICE_CubeYellow_BOOT   = 0x1002;
 
 
-    public static final int VENDOR_VRBrain_BOARD    = 0x27AC;
-    public static final int DEVICE_VRBrain_v51      = 0x1151;
-    public static final int DEVICE_VRBrain_v52      = 0x1152;
-    public static final int DEVICE_VRBrain_v54      = 0x1154;
-    public static final int DEVICE_VRCore_v10       = 0x1910;
-    public static final int DEVICE_VRUBrain_v51     = 0x1351;
 
-    public static final int VENDOR_Holybro_BOARD    = 0x3612;
-    public static final int DEVICE_Holybro_Durandal = 0x004B;
+    public static final int VENDOR_VRBrain_BOARD     = 0x27AC;
+    public static final int DEVICE_VRBrain_v51       = 0x1151;
+    public static final int DEVICE_VRBrain_v52       = 0x1152;
+    public static final int DEVICE_VRBrain_v54       = 0x1154;
+    public static final int DEVICE_VRCore_v10        = 0x1910;
+    public static final int DEVICE_VRUBrain_v51      = 0x1351;
+
+    public static final int VENDOR_Holybro_BOARD     = 0x3162;
+    public static final int DEVICE_Holybro_Durandal  = 0x004B;
+    public static final int DEVICE_Holybro_Pixhawk5X = 0x0051;
 
     // at www.linux-usb.org/usb.ids listed for NXP/LPC1768, but all processors supported by ARM mbed DAPLink firmware report these ids
     public static final int VENDOR_ARM = 0x0d28;

@@ -357,6 +357,19 @@ public class CdcAcmSerialDriver extends CommonUsbSerialDriver {
                         UsbId.DEVICE_CubeYellow_BOOT,
                 });
 
+        if (BuildConfig.DEBUG && !(supportedDevices.indexOfKey(Integer.valueOf(UsbId.VENDOR_CUBE_BOARD2)) < 0)) { throw new AssertionError(); }
+        supportedDevices.put(Integer.valueOf(UsbId.VENDOR_CUBE_BOARD2),
+                new int[] {
+                        UsbId.DEVICE_CubeBlack_PLUS,
+                        UsbId.DEVICE_CubeBlack,
+                        UsbId.DEVICE_CubeBlack_BOOT,
+                        UsbId.DEVICE_CubeOrange,
+                        UsbId.DEVICE_CubePurple,
+                        UsbId.DEVICE_CubePurple_BOOT,
+                        UsbId.DEVICE_CubeYellow,
+                        UsbId.DEVICE_CubeYellow_BOOT,
+                });
+
         if (BuildConfig.DEBUG && !(supportedDevices.indexOfKey(Integer.valueOf(UsbId.VENDOR_VRBrain_BOARD)) < 0)) { throw new AssertionError(); }
         supportedDevices.put(Integer.valueOf(UsbId.VENDOR_VRBrain_BOARD),
                 new int[] {
@@ -371,7 +384,9 @@ public class CdcAcmSerialDriver extends CommonUsbSerialDriver {
         supportedDevices.put(Integer.valueOf(UsbId.VENDOR_Holybro_BOARD),
                 new int[] {
                         UsbId.DEVICE_Holybro_Durandal,
+                        UsbId.DEVICE_Holybro_Pixhawk5X,
                 });
+
 
         return supportedDevices;
     }
