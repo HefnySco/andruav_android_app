@@ -80,6 +80,7 @@ public class DroneMavlinkHandler {
      */
     public static void execute_heartbeat_raw( msg_heartbeat msg_heartbeat)
     {
+        if (msg_heartbeat.sysid==255) return;
         final ControlBoard_DroneKit controlBoard_droneKit = (ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard;
 
         if (controlBoard_droneKit == null) return ;
