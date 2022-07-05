@@ -1,6 +1,7 @@
 package ap.andruav_ap.communication.controlBoard.mavlink;
 
 import com.mavlink.MAVLinkPacket;
+import com.mavlink.common.msg_attitude;
 import com.mavlink.common.msg_heartbeat;
 import com.mavlink.messages.MAVLinkMessage;
 import com.mavlink.ardupilotmega.msg_mount_status;
@@ -59,6 +60,10 @@ public class DroneKitMavlinkObserver extends MavlinkObserver
 
                 case msg_rc_channels_raw.MAVLINK_MSG_ID_RC_CHANNELS_RAW:
                     DroneMavlinkHandler.execute_rc_channel_raw((msg_rc_channels_raw) mavLinkMessage);
+                    break;
+
+                case msg_attitude.MAVLINK_MSG_ID_ATTITUDE:
+                    DroneMavlinkHandler.execute_attitude((msg_attitude) mavLinkMessage);
                     break;
 
                 case msg_nav_controller_output.MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT:

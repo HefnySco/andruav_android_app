@@ -1,6 +1,7 @@
 package ap.andruav_ap.communication.controlBoard.mavlink;
 
 import com.mavlink.ardupilotmega.msg_mount_status;
+import com.mavlink.common.msg_attitude;
 import com.mavlink.common.msg_heartbeat;
 import com.mavlink.common.msg_nav_controller_output;
 import com.mavlink.common.msg_rc_channels_raw;
@@ -51,6 +52,16 @@ public class DroneMavlinkHandler {
         controlBoard_droneKit.execute_ServoOutputMessage(msg_servo_output_raw);
     }
 
+    public static void execute_attitude (msg_attitude msg_attitude)
+    {
+        final ControlBoard_DroneKit controlBoard_droneKit = (ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard;
+
+        if (controlBoard_droneKit == null) return ;
+
+
+        controlBoard_droneKit.execute_msg_attitude(msg_attitude);
+
+    }
     public static void execute_NavController (msg_nav_controller_output msg_nav_controller_output)
     {
         final ControlBoard_DroneKit controlBoard_droneKit = (ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard;

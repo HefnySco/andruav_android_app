@@ -12,6 +12,7 @@ import com.andruav.event.Event_Remote_ChannelsCMD;
 import com.andruav.event.droneReport_Event.Event_GPS_Ready;
 import com.andruav.sensors.AndruavIMU;
 import com.mavlink.MAVLinkPacket;
+import com.mavlink.common.msg_attitude;
 import com.mavlink.common.msg_nav_controller_output;
 import com.mavlink.common.msg_param_value;
 import com.mavlink.common.msg_rc_channels_override;
@@ -125,9 +126,9 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     private int mGPS2_Type = GPS_TYPE_NONE;
 
     private int mRCMAP_ROLL = -1;
-    private int RCMAP_PITCH = -1;
-    private int RCMAP_THROTTLE = -1;
-    private int RCMAP_YAW = -1;
+    private int mRCMAP_PITCH = -1;
+    private int mRCMAP_THROTTLE = -1;
+    private int mRCMAP_YAW = -1;
 
     private boolean mParameteredRefreshedCompleted = false;
 
@@ -526,9 +527,9 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
                         rc_channels[i] = Short.MAX_VALUE ;
                     }
                     rc_channels[mRCMAP_ROLL-1]    = (short) channels[0];                // Aileron
-                    rc_channels[RCMAP_PITCH-1]    = (short) channels[1];               // Elevator
-                    rc_channels[RCMAP_THROTTLE-1] = (short) channels[2];                // Throttle
-                    rc_channels[RCMAP_YAW-1]      = (short) channels[3];                // Rudder
+                    rc_channels[mRCMAP_PITCH-1]    = (short) channels[1];               // Elevator
+                    rc_channels[mRCMAP_THROTTLE-1] = (short) channels[2];                // Throttle
+                    rc_channels[mRCMAP_YAW-1]      = (short) channels[3];                // Rudder
 
                     msg.chan1_raw = (short) rc_channels[0];
                     msg.chan2_raw = (short) rc_channels[1];
@@ -1206,13 +1207,18 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     }
 
 
+    public void  execute_msg_attitude(msg_attitude msg_attitude)
+    {
+        nav_pitch = msg_attitude.pitch * Angles.RADIANS_TO_DEGREES;
+        nav_roll = msg_attitude.roll  * Angles.RADIANS_TO_DEGREES;
+
+        this.mAndruavUnitBase.updateFCBNavInfo();
+        EventBus.getDefault().post(a7adath_nav_info_ready); // ToDo: this should be an internal trigger in Andruav Protocol Lib
+    }
+
+
     public void execute_NavController (final msg_nav_controller_output msg_nav_controller_output)
     {
-
-        nav_pitch = msg_nav_controller_output.nav_pitch;
-        nav_roll = msg_nav_controller_output.nav_roll;
-        //msg_nav_controller_output.nav_bearing // Equals to YAW not  GPS bearing
-
         if (mAndruavUnitBase.getFlightModeFromBoard() == FlightMode.CONST_FLIGHT_CONTROL_AUTO) {
             target_bearing = msg_nav_controller_output.target_bearing * Angles.DEGREES_TO_RADIANS;
             wp_dist = msg_nav_controller_output.wp_dist;
@@ -1221,7 +1227,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
         this.mAndruavUnitBase.updateFCBNavInfo();
         EventBus.getDefault().post(a7adath_nav_info_ready); // ToDo: this should be an internal trigger in Andruav Protocol Lib
-
     }
 
 
@@ -1231,23 +1236,21 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
      */
     public void  execute_ParseParameters (final SimpleArrayMap<String,msg_param_value> parametersByName)
     {
-
         if ( parametersByName.get("RCMAP_ROLL") != null) {
             mRCMAP_ROLL = (int) parametersByName.get("RCMAP_ROLL").param_value;
         }
 
         if ( parametersByName.get("RCMAP_PITCH") != null) {
-            RCMAP_PITCH = (int) parametersByName.get("RCMAP_PITCH").param_value;
+            mRCMAP_PITCH = (int) parametersByName.get("RCMAP_PITCH").param_value;
         }
 
         if ( parametersByName.get("RCMAP_THROTTLE") != null) {
-            RCMAP_THROTTLE = (int) parametersByName.get("RCMAP_THROTTLE").param_value;
+            mRCMAP_THROTTLE = (int) parametersByName.get("RCMAP_THROTTLE").param_value;
         }
 
         if ( parametersByName.get("RCMAP_YAW") != null) {
-            RCMAP_YAW = (int) parametersByName.get("RCMAP_YAW").param_value;
+            mRCMAP_YAW = (int) parametersByName.get("RCMAP_YAW").param_value;
         }
-
 
         if ( parametersByName.get("GPS_TYPE") != null) {
             mGPS1_Type = (int) parametersByName.get("GPS_TYPE").param_value;
