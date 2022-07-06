@@ -20,7 +20,9 @@ import com.hoho.android.usbserial.util.SerialInputOutputManager;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import timber.log.Timber;
@@ -170,20 +172,23 @@ public class UsbHohoConnection extends UsbConnection.UsbConnectionImpl {
             return;
         }
         if(usbConnection == null) {
-            if (!usbManager.hasPermission(driver.getDevice()))
-                Log.d(TAG,"connection failed: permission denied");
-            else
-                Log.d(TAG,"connection failed: open failed");
+            Log.d(TAG,"connection failed: open failed");
             return;
+        }
+
+        if (!usbManager.hasPermission(driver.getDevice())) {
+            Log.d(TAG, "connection failed: permission denied");
+            scheduler = Executors.newSingleThreadScheduledExecutor();
+            scheduler.schedule(permissionWatchdog, 15, TimeUnit.SECONDS);
+            Log.d(TAG, "Requesting permission to access usb device " + driver.getDevice().getDeviceName());
+            usbManager.requestPermission(driver.getDevice(), usbPermissionIntent);
+
+            return ;
         }
 
         try {
             usbSerialPort.open(usbConnection);
             usbSerialPort.setParameters(mBaudRate, UsbSerialPort.DATABITS_8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
-//            if(withIoManager) {
-//                usbIoManager = new SerialInputOutputManager(usbSerialPort, this);
-//                usbIoManager.start();
-//            }
             Log.d(TAG,"connected");
             mConnected = true;
             onUsbConnectionOpened(extras);
