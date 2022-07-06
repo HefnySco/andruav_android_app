@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Allow anything connected -->
+    <usb-device product-id="-1" vendor-id="-1" />
 
 </resources>

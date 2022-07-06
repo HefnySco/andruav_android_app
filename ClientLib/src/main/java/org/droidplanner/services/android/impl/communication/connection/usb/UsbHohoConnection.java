@@ -51,6 +51,7 @@ public class UsbHohoConnection extends UsbConnection.UsbConnectionImpl {
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            // enter here when user press ok or cancel as a reply for "Access Permission" dialog.
             final String action = intent.getAction();
             if (ACTION_USB_PERMISSION.equals(action)) {
                 removeWatchdog();
@@ -135,22 +136,27 @@ public class UsbHohoConnection extends UsbConnection.UsbConnectionImpl {
 
         UsbDevice device = null;
         UsbManager usbManager = (UsbManager) mContext.getSystemService(Context.USB_SERVICE);
+
         for (UsbDevice v : usbManager.getDeviceList().values())
-//            if(v.getDeviceId() == deviceId)
-//                device = v;
             device = v;
         if (device == null) {
             Log.d(TAG, "connection failed: device not found");
             return;
         }
+
+        // Determine class that handles this USB based on vendor & product id
         UsbSerialDriver driver = UsbSerialProber.getDefaultProber().probeDevice(device);
         if (driver == null) {
+            // you can define your custome filters here. // we already defined them as default values.
             driver = CustomProber.getCustomProber().probeDevice(device);
         }
+
         if (driver == null) {
             Log.d(TAG, "connection failed: no driver for device");
             return;
         }
+
+        // if no port then return.
         if (driver.getPorts().size() < 1) {
             Log.d(TAG, "connection failed: not enough ports at device");
             return;
@@ -166,6 +172,7 @@ public class UsbHohoConnection extends UsbConnection.UsbConnectionImpl {
 
         UsbDeviceConnection usbConnection = usbManager.openDevice(driver.getDevice());
         if(usbConnection == null && usbPermission == UsbPermission.Unknown && !usbManager.hasPermission(driver.getDevice())) {
+            // enter here if user has not given permission for accessing USB.
             usbPermission = UsbPermission.Requested;
             PendingIntent usbPermissionIntent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
             usbManager.requestPermission(driver.getDevice(), usbPermissionIntent);
