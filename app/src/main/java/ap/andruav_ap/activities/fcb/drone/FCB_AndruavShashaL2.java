@@ -44,6 +44,7 @@ import com.andruav.TelemetryProtocol;
 import com.andruav.event.droneReport_Event.Event_FCB_Changed;
 
 import ap.andruav_ap.widgets.SmartOptimization_Dlg;
+import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_ProtocolChanged;
 import ap.andruavmiddlelibrary.factory.communication.NetInfoAdapter;
 import ap.andruavmiddlelibrary.factory.util.GMail;
 import ap.andruavmiddlelibrary.preference.Preference;
@@ -106,6 +107,13 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         mhandle.sendMessageDelayed(msg, 0);
     }
 
+
+    public void onEvent(Event_ProtocolChanged event_protocolChanged) {
+
+        Message msg = new Message();
+        msg.obj = event_protocolChanged;
+        mhandle.sendMessageDelayed(msg, 0);
+    }
 
     private void initGUI ()
     {
@@ -271,9 +279,9 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
             // sometimes it is called from outside form before initialization - OnEvent-
             return;
         }
-        int drawable=R.drawable.bluetooth_gy_72x72;
+        int drawable=R.drawable.service_3dr_72x72;
 
-        if (bIsCOnnecting || (TelemetryModeer.getConnectionInfo()!= TelemetryModeer.CURRENTCONNECTION_NON))
+        if (bIsCOnnecting && (TelemetryModeer.getConnectionInfo()!= TelemetryModeer.CURRENTCONNECTION_NON))
         {
             rbBlueTooth.setEnabled(false);
             rbUSB.setEnabled(false);
@@ -283,62 +291,20 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
             rbService_3DR.setEnabled(false);
             rbNative.setEnabled(false);
 
-            switch (Preference.getFCBTargetLib(null))
-            {
-                case Preference.FCB_LIB_3DR:
-                    drawable = R.drawable.service_3dr_72x72;
-                    break;
-                case Preference.FCB_LIB_NATIVE:
-                default:
-                    switch (Preference.getFCBTargetComm(null))
-                    {
-                        case Preference.FCB_COM_BT:
-                            drawable = R.drawable.bluetooth_b_72x72;
-                            break;
-                        case Preference.FCB_COM_TCP:
-                            drawable = R.drawable.ip_network_b_72x72;
-                            break;
-                        case Preference.FCB_COM_UDP:
-                            drawable = R.drawable.ip_network_b_72x72;
-                            break;
-                        case Preference.FCB_COM_USB:
-                            drawable = R.drawable.usb2_b_72x72;
-                            break;
-                    }
-                    break;
-            }
+            drawable = R.drawable.service_3dr_72x72;
+
+        }
+        else if (bIsCOnnecting && (TelemetryModeer.getConnectionInfo()== TelemetryModeer.CURRENTCONNECTION_NON)) {
+            drawable = R.drawable.service_3dr_bl_72x72;
+
         }
         else
         {
-
             setPhysicalConnectionGUI();
             rbService_3DR.setEnabled(true);
             rbNative.setEnabled(true);
 
-           switch (Preference.getFCBTargetLib(null))
-            {
-                case Preference.FCB_LIB_3DR:
-                    drawable = R.drawable.service_3dr_gy_72x72;
-                    break;
-                case Preference.FCB_LIB_NATIVE:
-                default:
-                    switch (Preference.getFCBTargetComm(null))
-                    {
-                        case Preference.FCB_COM_BT:
-                            drawable = R.drawable.bluetooth_gy_72x72;
-                            break;
-                        case Preference.FCB_COM_TCP:
-                            drawable = R.drawable.ip_network_gy_72x72;
-                            break;
-                        case Preference.FCB_COM_UDP:
-                            drawable = R.drawable.ip_network_gy_72x72;
-                            break;
-                        case Preference.FCB_COM_USB:
-                            drawable = R.drawable.usb2_gy_72x72;
-                            break;
-                    }
-                    break;
-            }
+            drawable = R.drawable.service_3dr_gy_72x72;
         }
 
 
