@@ -420,6 +420,10 @@ public class MainScreen extends BaseAndruavShasha {
             AndruavSettings.loadMyPermanentTasksByPartyID();
         }
 
+        if (Preference.isAutoFCBConnect(null))
+        {
+            TelemetryModeer.connectToPreferredConnection(Me,false);
+        }
 
     }
 
