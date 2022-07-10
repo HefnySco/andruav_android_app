@@ -395,18 +395,10 @@ public class Andruav_Parser {
                 andruavBinary_2MR.targetName = json_receive_data.getString(ProtocolHeaders.Target);
             }
 
-            if (json_receive_data.has(ProtocolHeaders.Encryption)) {
-                andruavBinary_2MR.isEncrypted = json_receive_data.getBoolean(ProtocolHeaders.Encryption);
-            } else {
-                // enc non-existed means false not null
-                andruavBinary_2MR.isEncrypted = false;
-            }
-
             final byte[] binaryMessage = new byte[messageCMD.length - i - 1];
             System.arraycopy(messageCMD, i + 1, binaryMessage, 0, binaryMessage.length);
 
             andruavBinary_2MR.setMessageText(binaryMessage);
-
 
             return andruavBinary_2MR;
         } catch (BadPaddingException e) {

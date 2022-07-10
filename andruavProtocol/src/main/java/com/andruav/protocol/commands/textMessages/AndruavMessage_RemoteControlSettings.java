@@ -1,6 +1,6 @@
 package com.andruav.protocol.commands.textMessages;
 
-import com.andruav.event.fcb_7adath._7adath_FCB_RemoteControlSettings;
+import com.andruav.event.fcb_event.Event_FCB_RemoteControlSettings;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,13 +8,13 @@ import org.json.JSONObject;
 
 /***
  * Define remote control mode:
- *  {@link _7adath_FCB_RemoteControlSettings#RC_SUB_ACTION_CENTER_CHANNELS}
- *  {@link _7adath_FCB_RemoteControlSettings#RC_SUB_ACTION_CENTER_CHANNELS}
- *  {@link _7adath_FCB_RemoteControlSettings#RC_SUB_ACTION_FREEZE_CHANNELS}
- *  {@link _7adath_FCB_RemoteControlSettings#RC_SUB_ACTION_JOYSTICK_CHANNELS}
- *  {@link _7adath_FCB_RemoteControlSettings#RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED}
+ *  {@link Event_FCB_RemoteControlSettings#RC_SUB_ACTION_CENTER_CHANNELS}
+ *  {@link Event_FCB_RemoteControlSettings#RC_SUB_ACTION_CENTER_CHANNELS}
+ *  {@link Event_FCB_RemoteControlSettings#RC_SUB_ACTION_FREEZE_CHANNELS}
+ *  {@link Event_FCB_RemoteControlSettings#RC_SUB_ACTION_JOYSTICK_CHANNELS}
+ *  {@link Event_FCB_RemoteControlSettings#RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED}
  *
- * triggers when received event {@link _7adath_FCB_RemoteControlSettings}
+ * triggers when received event {@link Event_FCB_RemoteControlSettings}
  */
 public class AndruavMessage_RemoteControlSettings extends AndruavMessageBase {
     public final static int TYPE_RemoteControlSettings = 1047;

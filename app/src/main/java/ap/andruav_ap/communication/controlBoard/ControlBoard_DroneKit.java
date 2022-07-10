@@ -20,7 +20,7 @@ import com.mavlink.common.msg_servo_output_raw;
 import com.andruav.AndruavFacade;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
-import com.andruav.event.fcb_7adath._7adath_FCB_RemoteControlSettings;
+import com.andruav.event.fcb_event.Event_FCB_RemoteControlSettings;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.event.droneReport_Event.Event_WayPointsRecieved;
 import com.andruav.sensors.AndruavGimbal;
@@ -302,7 +302,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     }
 
 
-    public void onEvent (final _7adath_FCB_RemoteControlSettings event)
+    public void onEvent (final Event_FCB_RemoteControlSettings event)
     {
         int[] channels = new int[8];
 
@@ -310,29 +310,29 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
         switch (event.rcSubAction) {
 
-            case _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_CENTER_CHANNELS: {
+            case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_CENTER_CHANNELS: {
                 activate_Rc_sub_action_center_channels();
             }
             break;
 
-            case _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_FREEZE_CHANNELS: {
+            case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_FREEZE_CHANNELS: {
                 activate_Rc_sub_action_freeze_channels();
             }
             break;
 
-            case _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS: {
+            case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS: {
                 activate_Rc_sub_action_joystick_channels();
             }
             break;
 
 
-            case _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED: {
+            case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED: {
                 activate_Rc_sub_action_channel_guided();
             }
             break;
 
 
-            case _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED: {
+            case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED: {
                 // Release all channels by setting them to Zero.
                 // TODO: check if this affects servos or you use higher channels.
                 for (int i=0;i<8;++i)
@@ -341,7 +341,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
                 }
                 //Just release dont repeat message
                 rc_command = false;
-                event.rcSubAction = _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED;
+                event.rcSubAction = Event_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED;
 
                 releaseChannels();
             }
@@ -410,17 +410,17 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
         if (rcChannelBlock)
         {
             // FORCE RELEASE if blocked mode.
-            return _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED;
+            return Event_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED;
         }
 
-        if ((rcAction==_7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS) &&(vehicleMode ==FlightMode.CONST_FLIGHT_CONTROL_GUIDED))
+        if ((rcAction== Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS) &&(vehicleMode ==FlightMode.CONST_FLIGHT_CONTROL_GUIDED))
         {
-            return _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED;
+            return Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED;
         }
 
-        if ((rcAction==_7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED) &&(vehicleMode !=FlightMode.CONST_FLIGHT_CONTROL_GUIDED))
+        if ((rcAction== Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED) &&(vehicleMode !=FlightMode.CONST_FLIGHT_CONTROL_GUIDED))
         {
-            return _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS;
+            return Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS;
         }
 
         return rcAction;
@@ -506,16 +506,16 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
         switch (subAction)
         {
-           case _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED:
+           case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED:
             {
 
                 releaseChannels();
 
             }
                 break;
-            case _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_CENTER_CHANNELS:
-            case _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_FREEZE_CHANNELS:
-            case _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS:
+            case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_CENTER_CHANNELS:
+            case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_FREEZE_CHANNELS:
+            case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS:
             {
                 final msg_rc_channels_override msg = new msg_rc_channels_override();
 
@@ -577,7 +577,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
             }
             break;
 
-            case _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED:
+            case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED:
             {
                 if (App.droneKitServer == null) break ;
 

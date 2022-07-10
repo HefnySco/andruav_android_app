@@ -36,20 +36,7 @@
 
     <application>
 
-        <activity
-            android:name="org.droidplanner.services.android.impl.ui.activity.UsbIntentReceiver"
-            android:launchMode="singleInstance"
-            android:noHistory="true"
-            android:excludeFromRecents="true">
-            <!-- USB connection  intent -->
-            <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"/>
-            </intent-filter>
 
-            <meta-data
-                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
-                android:resource="@xml/device_filter"/>
-        </activity>
 
         <service
             android:name="org.droidplanner.services.android.impl.api.DroidPlannerService"

@@ -1,6 +1,6 @@
-package com.andruav.event.fcb_7adath;
+package com.andruav.event.fcb_event;
 
-public class _7adath_FCB_RemoteControlSettings {
+public class Event_FCB_RemoteControlSettings {
 
 
     /***
@@ -25,7 +25,7 @@ public class _7adath_FCB_RemoteControlSettings {
     public int rcSubAction;
 
 
-    public _7adath_FCB_RemoteControlSettings(final int rcsubsction)
+    public Event_FCB_RemoteControlSettings(final int rcsubsction)
     {
         rcSubAction = rcsubsction;
     }

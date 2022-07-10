@@ -3,7 +3,7 @@ package com.andruav;
 import android.location.Location;
 
 import com.andruav.controlBoard.shared.missions.MissionBase;
-import com.andruav.event.fcb_7adath._7adath_FCB_RemoteControlSettings;
+import com.andruav.event.fcb_event.Event_FCB_RemoteControlSettings;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitMapBase;
 import com.andruav.andruavUnit.AndruavUnitShadow;
@@ -755,7 +755,7 @@ public class AndruavFacade extends AndruavFacadeBase{
 
         if (andruavUnitBase == null) return ;
 
-        sendRemoteControlSettings (andruavUnitBase, _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS);
+        sendRemoteControlSettings (andruavUnitBase, Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS);
 
         return ;
     }
@@ -766,7 +766,7 @@ public class AndruavFacade extends AndruavFacadeBase{
 
         if (andruavUnitBase == null) return ;
 
-        sendRemoteControlSettings (andruavUnitBase, _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED);
+        sendRemoteControlSettings (andruavUnitBase, Event_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED);
 
         return ;
     }

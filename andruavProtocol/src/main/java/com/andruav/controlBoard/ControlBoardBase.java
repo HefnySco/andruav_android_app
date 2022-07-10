@@ -1,7 +1,7 @@
 package com.andruav.controlBoard;
 
 import com.andruav.AndruavEngine;
-import com.andruav.event.fcb_7adath._7adath_FCB_RemoteControlSettings;
+import com.andruav.event.fcb_event.Event_FCB_RemoteControlSettings;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.Constants;
 import com.andruav.EmergencyBase;
@@ -76,9 +76,9 @@ public class ControlBoardBase {
         {   // a change happend
             if (block)
             {   // Software Remote from Andruav GCS and GamePads are released.
-                sendRCChannels(_7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED, null, false);
-                sendRCChannels(_7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED, null, false);
-                sendRCChannels(_7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED, null, false);
+                sendRCChannels(Event_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED, null, false);
+                sendRCChannels(Event_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED, null, false);
+                sendRCChannels(Event_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED, null, false);
                 AndruavEngine.notification().Speak("Blocked");
             }
             else

@@ -436,8 +436,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
         App.iEvent_socketData = this;
 
-        // repeatGPS();
-
         isInit = true;
     }
 

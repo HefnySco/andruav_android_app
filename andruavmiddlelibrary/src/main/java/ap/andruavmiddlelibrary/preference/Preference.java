@@ -697,7 +697,6 @@ public class Preference {
 
     public static final int FCB_LIB_NATIVE = 1;
     public static final int FCB_LIB_3DR    = 2;
-    public static final int FCB_LIB_DJI    = 3;
     public static int getFCBTargetLib(final android.content.ContextWrapper contextWrapper) {
         return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "GZdFGZjFlOHw", 1);
     }

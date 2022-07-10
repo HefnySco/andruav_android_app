@@ -18,7 +18,7 @@ import com.andruav.event.droneReport_Event.Event_UnitShutDown;
 import com.andruav.event.droneReport_Event.Event_Vehicle_ARM_Changed;
 import com.andruav.event.droneReport_Event.Event_Vehicle_Flying_Changed;
 import com.andruav.event.droneReport_Event.Event_Vehicle_Mode_Changed;
-import com.andruav.event.fcb_7adath._7adath_FCB_RemoteControlSettings;
+import com.andruav.event.fcb_event.Event_FCB_RemoteControlSettings;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_SensorsStatus;
 import com.andruav.sensors.AndruavGimbal;
 import com.andruav.interfaces.INotification;
@@ -1229,7 +1229,7 @@ public class AndruavUnitBase {
 
     public boolean isManualTXBlocked()
     {
-        return (getManualTXBlockedSubAction() != _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED);
+        return (getManualTXBlockedSubAction() != Event_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED);
     }
 
     /*
@@ -1249,11 +1249,11 @@ public class AndruavUnitBase {
 
     /**
      * TX Status
-     *  {@link _7adath_FCB_RemoteControlSettings#RC_SUB_ACTION_CENTER_CHANNELS} : 1500 channels values are sent. TX is no longer effective.
-     *  {@link _7adath_FCB_RemoteControlSettings#RC_SUB_ACTION_FREEZE_CHANNELS} : last TX readings are freezed and sent as fixed values. TX is no longer effective.
-     *  {@link _7adath_FCB_RemoteControlSettings#RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED} : RCChannels is being sent to Drone. TX  is no longer effective for some channels.
-     *  {@link _7adath_FCB_RemoteControlSettings#RC_SUB_ACTION_JOYSTICK_CHANNELS} : RCChannels is being sent to Drone. TX  is no longer effective for some channels.
-     *  {@link _7adath_FCB_RemoteControlSettings#RC_SUB_ACTION_RELEASED} : there is no RCChannel info sent to Drone.
+     *  {@link Event_FCB_RemoteControlSettings#RC_SUB_ACTION_CENTER_CHANNELS} : 1500 channels values are sent. TX is no longer effective.
+     *  {@link Event_FCB_RemoteControlSettings#RC_SUB_ACTION_FREEZE_CHANNELS} : last TX readings are freezed and sent as fixed values. TX is no longer effective.
+     *  {@link Event_FCB_RemoteControlSettings#RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED} : RCChannels is being sent to Drone. TX  is no longer effective for some channels.
+     *  {@link Event_FCB_RemoteControlSettings#RC_SUB_ACTION_JOYSTICK_CHANNELS} : RCChannels is being sent to Drone. TX  is no longer effective for some channels.
+     *  {@link Event_FCB_RemoteControlSettings#RC_SUB_ACTION_RELEASED} : there is no RCChannel info sent to Drone.
      *
      * @return
      */
@@ -1286,23 +1286,23 @@ public class AndruavUnitBase {
         {
             switch (mManualTXBlockedSubAction)
             {
-                case _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_CENTER_CHANNELS:
+                case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_CENTER_CHANNELS:
                     if (IsMe()) PanicFacade.cannotDoAutopilotAction(INotification.NOTIFICATION_TYPE_WARNING, AndruavMessage_Error.ERROR_RCControl, AndruavEngine.AppContext.getString(R.string.gen_rc_centered),null);
 
                     break;
 
-                case _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_FREEZE_CHANNELS:
+                case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_FREEZE_CHANNELS:
                     if (IsMe()) PanicFacade.cannotDoAutopilotAction(INotification.NOTIFICATION_TYPE_WARNING, AndruavMessage_Error.ERROR_RCControl, AndruavEngine.AppContext.getString(R.string.gen_rc_freezed),null);
 
                     break;
 
-                case _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED:
+                case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED:
                     if (IsMe()) PanicFacade.cannotDoAutopilotAction(INotification.NOTIFICATION_TYPE_WARNING, AndruavMessage_Error.ERROR_RCControl, AndruavEngine.AppContext.getString(R.string.gen_rc_releazed),null);
 
                     break;
 
-                case _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED:
-                case _7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS:
+                case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED:
+                case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS:
                     if (IsMe()) PanicFacade.cannotDoAutopilotAction(INotification.NOTIFICATION_TYPE_WARNING, AndruavMessage_Error.ERROR_RCControl, AndruavEngine.AppContext.getString(R.string.gen_rc_joystick),null);
 
                     break;

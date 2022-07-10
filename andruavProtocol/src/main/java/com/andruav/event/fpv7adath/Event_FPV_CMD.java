@@ -8,7 +8,7 @@ import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_Ctrl_Ca
  * Holds camera related commands sent to Drone from other units.
  * <br><br>*Created by M.Hefny on 02-Nov-14.
  */
-public class _7adath_FPV_CMD {
+public class Event_FPV_CMD {
 
     /***
      * This commands has two parameters:
@@ -44,7 +44,7 @@ public class _7adath_FPV_CMD {
 
     public boolean SendBackImages = true;       // sendMessageToModule images back to Requested GCS
     
-    public _7adath_FPV_CMD(int msource)
+    public Event_FPV_CMD(int msource)
     {
         CMD_ID = msource;
     }

@@ -1,6 +1,6 @@
 package com.andruav;
 
-import com.andruav.event.fpv7adath._7adath_FPV_CMD;
+import com.andruav.event.fpv7adath.Event_FPV_CMD;
 import com.andruav.controlBoard.ControlBoardBase;
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_Ctrl_Camera;
 
@@ -12,7 +12,7 @@ import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_Ctrl_Ca
 public  class AndruavMeFacade {
 
 
-    public static void Ctrl_Camera (final _7adath_FPV_CMD a7adath_fpv_cmd)
+    public static void Ctrl_Camera (final Event_FPV_CMD a7adath_fpv_cmd)
     {
 
         switch (a7adath_fpv_cmd.CameraSource )

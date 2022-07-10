@@ -23,8 +23,8 @@ import com.andruav.event.droneReport_Event.Event_TargetLocation_Ready;
 import com.andruav.event.droneReport_Event.Event_WayPointsRecieved;
 import com.andruav.event.droneReport_Event.Event_WayPointsUpdated;
 import com.andruav.event.droneReport_Event.Event_CameraZoom;
-import com.andruav.event.fcb_7adath._7adath_FCB_RemoteControlSettings;
-import com.andruav.event.fpv7adath._7adath_FPV_CMD;
+import com.andruav.event.fcb_event.Event_FCB_RemoteControlSettings;
+import com.andruav.event.fpv7adath.Event_FPV_CMD;
 import com.andruav.event.networkEvent.EventSocketState;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.controlBoard.ControlBoardBase;
@@ -88,8 +88,8 @@ import org.json.JSONException;
 import java.net.URI;
 import java.util.List;
 
-import static com.andruav.event.fcb_7adath._7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS;
-import static com.andruav.event.fcb_7adath._7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED;
+import static com.andruav.event.fcb_event.Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS;
+import static com.andruav.event.fcb_event.Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED;
 import static com.andruav.protocol.commands.ProtocolHeaders.CMD_COMM_GROUP;
 
 public abstract class AndruavWSClientBase {
@@ -828,7 +828,7 @@ public abstract class AndruavWSClientBase {
 
                     if (cameraModule.BuiltInModule) {
                         // This is a local camera for this Andruav Device
-                        _7adath_FPV_CMD a7adath_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_FLASHCAM);
+                        Event_FPV_CMD a7adath_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_FLASHCAM);
 
                         a7adath_fpv_cmd.ACT = (andruavMessage_cameraFlash.FlashOn == AndruavMessage_CameraFlash.FLASH_ON);
                         a7adath_fpv_cmd.Requester = andruav_2MR.partyID;
@@ -865,7 +865,7 @@ public abstract class AndruavWSClientBase {
 
                     if (cameraModule.BuiltInModule) {
                         // This is a local camera for this Andruav Device
-                        _7adath_FPV_CMD a7adath_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_SWITCHCAM);
+                        Event_FPV_CMD a7adath_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_SWITCHCAM);
 
                         a7adath_fpv_cmd.Variables.put("SendBackTo", andruavMessage_cameraSwitch.CameraUniqueName);
                         a7adath_fpv_cmd.Requester = andruav_2MR.partyID;
@@ -1094,7 +1094,7 @@ public abstract class AndruavWSClientBase {
                 }
 
                 final AndruavMessage_RemoteControlSettings andruavMessage_remoteControlSettings = (AndruavMessage_RemoteControlSettings) andruav_2MR.andruavMessageBase;
-                _7adath_FCB_RemoteControlSettings a7adathFCB_remoteControlSettings = new _7adath_FCB_RemoteControlSettings(andruavMessage_remoteControlSettings.rcSubAction);
+                Event_FCB_RemoteControlSettings a7adathFCB_remoteControlSettings = new Event_FCB_RemoteControlSettings(andruavMessage_remoteControlSettings.rcSubAction);
                 AndruavEngine.getEventBus().post(a7adathFCB_remoteControlSettings);
 
             }
@@ -1749,7 +1749,6 @@ public abstract class AndruavWSClientBase {
     public void broadcastMessageToGroup(final AndruavResalaBinaryBase andruavMessage, final boolean addTime)
     {
         AndruavBinary_2MR andruavBinary2MR = new AndruavBinary_2MR();
-        andruavBinary2MR.isEncrypted = AndruavSettings.encryptionEnabled;
         andruavBinary2MR.MessageRouting = CMD_COMM_GROUP;
         andruavBinary2MR.andruavResalaBinaryBase = andruavMessage;
 
@@ -1772,7 +1771,6 @@ public abstract class AndruavWSClientBase {
     public void sendMessageToIndividual(final AndruavMessageBase andruavMessage, final String target, final Boolean addTime, final boolean instant)
     {
         Andruav_2MR andruav2MR = new Andruav_2MR();
-        andruav2MR.isEncrypted = AndruavSettings.encryptionEnabled;
         andruav2MR.MessageRouting =ProtocolHeaders.CMD_COMM_INDIVIDUAL;
         andruav2MR.andruavMessageBase = andruavMessage;
 
@@ -1815,7 +1813,6 @@ public abstract class AndruavWSClientBase {
 
     public void sendMessageToIndividual(final AndruavResalaBinaryBase andruavMessage, final String target, final boolean addTime,  final  boolean instant) {
         AndruavBinary_2MR andruavBinary2MR = new AndruavBinary_2MR();
-        andruavBinary2MR.isEncrypted = AndruavSettings.encryptionEnabled;
         andruavBinary2MR.MessageRouting =ProtocolHeaders.CMD_COMM_INDIVIDUAL;
         andruavBinary2MR.andruavResalaBinaryBase = andruavMessage;
 
@@ -1827,7 +1824,6 @@ public abstract class AndruavWSClientBase {
     public void broadcastMessageToGroup(final AndruavMessageBase andruavMessage, final boolean addTime, final boolean instant)
     {
         Andruav_2MR andruav2MR = new Andruav_2MR();
-        andruav2MR.isEncrypted = AndruavSettings.encryptionEnabled;
         andruav2MR.MessageRouting =ProtocolHeaders.CMD_COMM_GROUP;
         andruav2MR.andruavMessageBase = andruavMessage;
 
@@ -1878,7 +1874,6 @@ public abstract class AndruavWSClientBase {
     public void sendSysCMD(final AndruavMessageBase andruavMessage, final boolean addTime, final boolean instant)
     {
         Andruav_2MR andruav2MR = new Andruav_2MR();
-        andruav2MR.isEncrypted = false; // never encrypt a system command
         andruav2MR.MessageRouting = ProtocolHeaders.CMD_TYPE_SYS;
         andruav2MR.partyID = AndruavSettings.andruavWe7daBase.PartyID;
         andruav2MR.groupName   = AndruavSettings.andruavWe7daBase.GroupName;
@@ -1891,7 +1886,6 @@ public abstract class AndruavWSClientBase {
     public void sendSystemCMD(final AndruavMessageBase andruavMessageBase, final boolean addTime, final boolean instant)
     {
         Andruav_2MR andruav2MR = new Andruav_2MR();
-        andruav2MR.isEncrypted = false; // never encrypt a system command
         andruav2MR.MessageRouting = ProtocolHeaders.CMD_TYPE_SYS;
         andruav2MR.partyID = AndruavSettings.andruavWe7daBase.PartyID;
         andruav2MR.groupName   = AndruavSettings.andruavWe7daBase.GroupName;

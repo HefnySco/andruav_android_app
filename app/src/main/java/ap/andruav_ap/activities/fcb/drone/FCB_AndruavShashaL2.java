@@ -288,9 +288,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
                 case Preference.FCB_LIB_3DR:
                     drawable = R.drawable.service_3dr_72x72;
                     break;
-                case Preference.FCB_LIB_DJI:
-                    drawable = R.drawable.dji_72x72;
-                    break;
                 case Preference.FCB_LIB_NATIVE:
                 default:
                     switch (Preference.getFCBTargetComm(null))
@@ -315,11 +312,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         {
 
             setPhysicalConnectionGUI();
-            //rbBlueTooth.setEnabled(true);
-            //rbUSB.setEnabled(true);
-            //rbTCP.setEnabled(true);
-            //rbUDP.setEnabled(true);
-
             rbService_3DR.setEnabled(true);
             rbNative.setEnabled(true);
 
@@ -327,9 +319,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
             {
                 case Preference.FCB_LIB_3DR:
                     drawable = R.drawable.service_3dr_gy_72x72;
-                    break;
-                case Preference.FCB_LIB_DJI:
-                    drawable = R.drawable.dji_72x72;
                     break;
                 case Preference.FCB_LIB_NATIVE:
                 default:
@@ -453,9 +442,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         Preference.setFCBDroneUDPServerPort(null, txtUDPPort.getText().toString());
 
         int FCBTargetLib = Preference.FCB_LIB_NATIVE;
-        //if (rbNative.isChecked()) FCBTargetLib = Preference.FCB_LIB_NATIVE;
         if (rbService_3DR.isChecked()) FCBTargetLib = Preference.FCB_LIB_3DR;
-        //if (rbDJI.isChecked()) FCBTargetLib = Preference.FCB_LIB_DJI;
 
         Preference.setFCBTargetLib(null, FCBTargetLib);
 
@@ -485,10 +472,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         switch (Preference.getFCBTargetLib(null))
         {
             case Preference.FCB_LIB_3DR:
-                rbService_3DR.setChecked(true);
-                break;
-            case Preference.FCB_LIB_DJI:
-                //rbDJI.setChecked(true);
                 rbService_3DR.setChecked(true);
                 break;
             case Preference.FCB_LIB_NATIVE:

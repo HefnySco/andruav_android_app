@@ -20,8 +20,8 @@ import com.andruav.event.droneReport_Event.Event_SERVO_Outputs_Ready;
 import com.andruav.event.droneReport_Event.Event_TargetLocation_Ready;
 import com.andruav.event.droneReport_Event.Event_TelemetryGCSRequest;
 import com.andruav.event.droneReport_Event.Event_WayPointReached;
-import com.andruav.event.fcb_7adath._7adath_FCB_2AMR;
-import com.andruav.event.fpv7adath._7adath_FPV_CMD;
+import com.andruav.event.fcb_event._7adath_FCB_2AMR;
+import com.andruav.event.fpv7adath.Event_FPV_CMD;
 import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
 import com.andruav.event.networkEvent.EventLoginClient;
 import com.andruav.event.networkEvent.EventSocketState;
@@ -872,7 +872,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
     protected void executeRemoteExecuteCMD(final Andruav_2MR andruav_2MR) {
         try {
 
-            _7adath_FPV_CMD a7adath_fpv_cmd;
+            Event_FPV_CMD a7adath_fpv_cmd;
 
             switch (andruav_2MR.andruavMessageBase.messageTypeID) {
 
@@ -957,7 +957,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                             if (AndruavSettings.andruavWe7daBase.getIsCGS())
                                 break; // not a valid command to GCSevent_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_TAKEIMAGE);
 
-                            a7adath_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_RECORDVIDEO);
+                            a7adath_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_RECORDVIDEO);
                             a7adath_fpv_cmd.Requester = andruav_2MR.partyID;
                             a7adath_fpv_cmd.ACT = andruavResala_remoteExecute.getBooleanValue("Act");
                             if (Preference.useExternalCam(null)) {
@@ -1026,7 +1026,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                         case AndruavMessage_RemoteExecute.RemoteCommand_ROTATECAM:
                             if ((andruavUnit != null) && (!andruavUnit.canVideo())) break;
                             //sendMessageToModule internal command to FPV activity
-                            a7adath_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_ROTATECAM);
+                            a7adath_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_ROTATECAM);
                             a7adath_fpv_cmd.Requester = andruav_2MR.partyID;
                             EventBus.getDefault().post(a7adath_fpv_cmd);
 
@@ -1133,7 +1133,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
                     EventBus.getDefault().post(new _7adath_InitAndroidCamera());
 
-                    a7adath_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_TAKEIMAGE);
+                    a7adath_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_TAKEIMAGE);
 
                     a7adath_fpv_cmd.CameraSource    = andruavResala_ctrl_camera.CameraSource;
                     a7adath_fpv_cmd.NumberOfImages    = andruavResala_ctrl_camera.NumberOfImages;

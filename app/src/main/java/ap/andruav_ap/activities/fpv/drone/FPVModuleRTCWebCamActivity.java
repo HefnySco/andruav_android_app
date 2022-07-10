@@ -26,7 +26,7 @@ import com.andruav.FeatureSwitch;
 import com.andruav.event.droneReport_Event.Event_CameraZoom;
 import com.andruav.event.droneReport_Event.Event_Vehicle_Flying_Changed;
 import com.andruav.event.droneReport_Event.Event_Vehicle_Mode_Changed;
-import com.andruav.event.fpv7adath._7adath_FPV_CMD;
+import com.andruav.event.fpv7adath.Event_FPV_CMD;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitSystem;
 import com.andruav.interfaces.INotification;
@@ -199,7 +199,7 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
         mHandle.sendMessageDelayed(msg,0);
     }
 
-    public void onEvent(final _7adath_FPV_CMD a7adath_fpv_CMD) {
+    public void onEvent(final Event_FPV_CMD a7adath_fpv_CMD) {
 
         if(!DeviceManagerFacade.hasCamera()) return ;
         final Message msg = mHandle.obtainMessage();
@@ -291,18 +291,18 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
 
                 }
 
-                else if (msg.obj instanceof _7adath_FPV_CMD) {
-                    _7adath_FPV_CMD a7adath_FPV_CMD = (_7adath_FPV_CMD) msg.obj;
+                else if (msg.obj instanceof Event_FPV_CMD) {
+                    Event_FPV_CMD a7adath_FPV_CMD = (Event_FPV_CMD) msg.obj;
                     switch (a7adath_FPV_CMD.CMD_ID) {
-                        case _7adath_FPV_CMD.FPV_CMD_FLASHCAM:
+                        case Event_FPV_CMD.FPV_CMD_FLASHCAM:
                             mPeerConnectionManager.setFlash(a7adath_FPV_CMD.ACT? AndruavWebRTCGlobals.FlashOn:AndruavWebRTCGlobals.FlashOff);
                             break;
 
-                        case _7adath_FPV_CMD.FPV_CMD_SWITCHCAM:
+                        case Event_FPV_CMD.FPV_CMD_SWITCHCAM:
                             mPeerConnectionManager.switchCamera();
                             break;
 
-                        case _7adath_FPV_CMD.FPV_CMD_TAKEIMAGE:
+                        case Event_FPV_CMD.FPV_CMD_TAKEIMAGE:
                             mTakeImageCount = a7adath_FPV_CMD.NumberOfImages;
                             mSaveImageLocally = a7adath_FPV_CMD.SaveImageLocally;
                             if (a7adath_FPV_CMD.TimeBetweenShotes ==0)
@@ -324,11 +324,11 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
                             break;
 
 
-                        case _7adath_FPV_CMD.FPV_CMD_ROTATECAM:
+                        case Event_FPV_CMD.FPV_CMD_ROTATECAM:
 
                             break;
 
-                        case _7adath_FPV_CMD.FPV_CMD_RECORDVIDEO:
+                        case Event_FPV_CMD.FPV_CMD_RECORDVIDEO:
                             mRecordVideo = a7adath_FPV_CMD.ACT;
                             if (!mRecordVideo)
                             {
@@ -339,7 +339,7 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
                                 startRecording();
 
                             }break;
-                        case _7adath_FPV_CMD.FPV_CMD_STREAMVIDEO:
+                        case Event_FPV_CMD.FPV_CMD_STREAMVIDEO:
                             /*final String unitName2 = a7adath_FPV_CMD.Requester;
                             mSendBackTo = AndruavMo7arek.getAndruavWe7daMapBase().get(unitName2);
 

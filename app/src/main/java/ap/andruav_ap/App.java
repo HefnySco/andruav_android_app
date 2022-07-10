@@ -42,7 +42,7 @@ import com.andruav.AndruavDroneFacade;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavFacade;
 import com.andruav.AndruavSettings;
-import com.andruav.event.fcb_7adath._7adath_FCB_2AMR;
+import com.andruav.event.fcb_event._7adath_FCB_2AMR;
 import com.andruav.event.networkEvent._7adath_ConnectionQuality;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
 import com.andruav.andruavUnit.AndruavUnitMe;
@@ -100,7 +100,6 @@ import java.util.concurrent.TimeUnit;
 
 import ap.andruavmiddlelibrary.log.ExceptionHTTPLogger;
 import ap.andruavmiddlelibrary.log.ExceptionHandler;
-import ap.andruavmiddlelibrary.factory.communication.NetInfoAdapter;
 import ap.sensors.SensorService;
 import ap.andruavmiddlelibrary.database.DaoManager;
 
