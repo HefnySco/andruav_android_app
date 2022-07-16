@@ -1232,7 +1232,6 @@ public class MainScreen extends BaseAndruavShasha {
         if (autoConnect)
         {
 
-            // Toast.makeText(Me,"SHOULD  COnnect",Toast.LENGTH_LONG).show();
             Log.d("ac","autoconnect resume true");
             mhandle.postDelayed(new Runnable() {
                 @Override
