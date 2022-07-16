@@ -4,7 +4,7 @@ import com.mavlink.ardupilotmega.msg_mount_status;
 import com.mavlink.common.msg_attitude;
 import com.mavlink.common.msg_heartbeat;
 import com.mavlink.common.msg_nav_controller_output;
-import com.mavlink.common.msg_rc_channels_raw;
+import com.mavlink.common.msg_rc_channels;
 import com.mavlink.common.msg_servo_output_raw;
 import com.mavlink.common.msg_statustext;
 import com.andruav.AndruavSettings;
@@ -102,17 +102,17 @@ public class DroneMavlinkHandler {
      *
      * @param msg_rc_channels_raw
      */
-    public static void execute_rc_channel_raw( msg_rc_channels_raw msg_rc_channels_raw)
+    public static void execute_rc_channel_raw( msg_rc_channels msg_rc_channels)
     {
         // COPY LATEST CHANNELS FOR Channel Freezeing & Releasing
-        channelsRaw[0] =  msg_rc_channels_raw.chan1_raw;
-        channelsRaw[1] =  msg_rc_channels_raw.chan2_raw;
-        channelsRaw[2] =  msg_rc_channels_raw.chan3_raw;
-        channelsRaw[3] =  msg_rc_channels_raw.chan4_raw;
-        channelsRaw[4] =  msg_rc_channels_raw.chan5_raw;
-        channelsRaw[5] =  msg_rc_channels_raw.chan6_raw;
-        channelsRaw[6] =  msg_rc_channels_raw.chan7_raw;
-        channelsRaw[7] =  msg_rc_channels_raw.chan8_raw;
+        channelsRaw[0] =  msg_rc_channels.chan1_raw;
+        channelsRaw[1] =  msg_rc_channels.chan2_raw;
+        channelsRaw[2] =  msg_rc_channels.chan3_raw;
+        channelsRaw[3] =  msg_rc_channels.chan4_raw;
+        channelsRaw[4] =  msg_rc_channels.chan5_raw;
+        channelsRaw[5] =  msg_rc_channels.chan6_raw;
+        channelsRaw[6] =  msg_rc_channels.chan7_raw;
+        channelsRaw[7] =  msg_rc_channels.chan8_raw;
 
 
 //        // BLocking Section
