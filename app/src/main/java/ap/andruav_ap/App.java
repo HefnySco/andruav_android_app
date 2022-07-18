@@ -835,38 +835,31 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         PackageManager manager = this.getPackageManager();
         PackageInfo info;
         try {
-            info = manager.getPackageInfo(this.getPackageName(), 0);
-            App.versionName = info.versionName;
+                info = manager.getPackageInfo(this.getPackageName(), 0);
+                App.versionName = info.versionName;
 
-            // There was no Andruav installed here before.
+                // There was no Andruav installed here before.
+               isFirstRun = Preference.getAppVersion(null).equals("");
 
+               if (isFirstRun)
+               {
+                   onFirstAndruavRun();
+               }
+                // This isthe first run of an updated version.
+                isNewVersion = (Preference.getAppVersion(null).equals(App.versionName) == false);
 
+                // HEFNY DEBUG
+                //isNewVersion = true;
+                if (isNewVersion)
+                {
+                    onFirstUpdatedVersionRun(Preference.getAppVersion(null));
+                }
 
-           isFirstRun = Preference.getAppVersion(null).equals("");
-
-           if (isFirstRun)
-           {
-               onFirstAndruavRun();
-           }
-            // This isthe first run of an updated version.
-            isNewVersion = (Preference.getAppVersion(null).equals(App.versionName) == false);
-
-            // HEFNY DEBUG
-            //isNewVersion = true;
-            if (isNewVersion)
-            {
-                onFirstUpdatedVersionRun(Preference.getAppVersion(null));
+                Preference.setAppVersion(null,App.versionName);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+                App.versionName = "0.0.0";
             }
-
-            Preference.setAppVersion(null,App.versionName);
-
-
-
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            App.versionName = "0.0.0";
-        }
     }
 
     /***
@@ -901,7 +894,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     public void onFirstUpdatedVersionRun(String currentlyInstalledVersion)
     {
 
-        Preference.setLoginAccessCode(null,"");
+        //Preference.setLoginAccessCode(null,"");
         Preference.isLocalServer(null,false);
         Preference.setFirstServer(null,0);
         Preference.useStreamVideoHD(null,true);
