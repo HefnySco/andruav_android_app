@@ -12,13 +12,13 @@ import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_Ctrl_Ca
 public  class AndruavMeFacade {
 
 
-    public static void Ctrl_Camera (final Event_FPV_CMD a7adath_fpv_cmd)
+    public static void Ctrl_Camera (final Event_FPV_CMD event_fpv_cmd)
     {
 
-        switch (a7adath_fpv_cmd.CameraSource )
+        switch (event_fpv_cmd.CameraSource )
         {
             case AndruavMessage_Ctrl_Camera.CAMERA_SOURCE_MOBILE:
-                AndruavEngine.getEventBus().post(a7adath_fpv_cmd);
+                AndruavEngine.getEventBus().post(event_fpv_cmd);
                 break;
 
             case AndruavMessage_Ctrl_Camera.CAMERA_SOURCE_FCB:
