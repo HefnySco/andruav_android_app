@@ -90,7 +90,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
     FCB_AndruavShashaL2 Me;
 
     boolean bSaved = true;
-    boolean bIsCOnnecting = false;
+
 
     public void onEvent (GUIEvent_UpdateConnection guiEvent_updateConnection)
     {
@@ -281,7 +281,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         }
         int drawable=R.drawable.service_3dr_72x72;
 
-        if (bIsCOnnecting && (TelemetryModeer.getConnectionInfo()!= TelemetryModeer.CURRENTCONNECTION_NON))
+        if (TelemetryModeer.getConnectionInfo()!= TelemetryModeer.CURRENTCONNECTION_NON)
         {
             rbBlueTooth.setEnabled(false);
             rbUSB.setEnabled(false);
@@ -294,7 +294,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
             drawable = R.drawable.service_3dr_72x72;
 
         }
-        else if (bIsCOnnecting && (TelemetryModeer.getConnectionInfo()== TelemetryModeer.CURRENTCONNECTION_NON)) {
+        else if (TelemetryModeer.isConnecting() && (TelemetryModeer.getConnectionInfo()== TelemetryModeer.CURRENTCONNECTION_NON)) {
             drawable = R.drawable.service_3dr_bl_72x72;
 
         }
@@ -509,7 +509,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
 
                    // TTS.getInstance().Speak("Disconnecting");
                     final String connstr = getString(R.string.gen_bluetooth_disconnecting);
-                    bIsCOnnecting = false;
                     final ProgressDialog progress = DialogHelper.doModalProgressDialog(this,"FCB",connstr);
                     App.mScheduleHandler.postDelayed(new Runnable() {
                         @Override
@@ -527,7 +526,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
                 else
                 {
                     final String connstr = getString(R.string.gen_bluetooth_connecting);
-                    bIsCOnnecting = true;
                     final ProgressDialog progress = DialogHelper.doModalProgressDialog(this,"FCB",connstr);
                     App.mScheduleHandler.postDelayed(new Runnable() {
                         @Override

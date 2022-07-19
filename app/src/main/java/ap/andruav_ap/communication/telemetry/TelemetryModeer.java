@@ -41,7 +41,7 @@ public class TelemetryModeer {
     public static final int CURRENTCONNECTION_TCP   =6;  // native
     //public final int CURRENTCONNECTION_BT=5;
 
-    protected static boolean mIsConnected = false;
+    protected static boolean mIsConnecting = false;
     protected static int mCurrentConnection = CURRENTCONNECTION_NON;
 
     protected static  Context mContext;
@@ -49,6 +49,10 @@ public class TelemetryModeer {
 
    private static int lastConnected = CURRENTCONNECTION_NON;
 
+    public static boolean isConnecting ()
+    {
+        return mIsConnecting;
+    }
     public static synchronized void setConnected (final int connected)
     {
 
@@ -108,9 +112,7 @@ public class TelemetryModeer {
             {
                 App.telemetryProtocolParser.shutDown();
                 App.telemetryProtocolParser = null;
-
             }
-
         }
         else
         {
@@ -137,7 +139,6 @@ public class TelemetryModeer {
         {
             String str = "IGNORE For " + TelemetryModeer.getConnectionInfo();
             Toast.makeText(App.context, str, Toast.LENGTH_LONG).show();
-
         }
     }
 
@@ -158,7 +159,8 @@ public class TelemetryModeer {
         mContextWrapper = new ContextWrapper(mContext);
         closeAllConnections();
 
-       switch (Preference.getFCBTargetLib(null))
+
+        switch (Preference.getFCBTargetLib(null))
        {
            case Preference.FCB_LIB_NATIVE:
                switch (Preference.getFCBTargetComm(null))
@@ -235,6 +237,8 @@ public class TelemetryModeer {
               break;
 
        }
+       // should be set after closeAllConnections()
+       mIsConnecting = true;
     }
 
     public static void closeAllConnections ()
@@ -244,6 +248,7 @@ public class TelemetryModeer {
         closeUDPServer();
         closeDJI();
         closeDroneKit();
+        mIsConnecting = false;
     }
 
 
