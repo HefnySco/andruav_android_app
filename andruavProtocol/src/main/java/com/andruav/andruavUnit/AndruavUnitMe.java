@@ -60,27 +60,11 @@ public class AndruavUnitMe extends AndruavUnitBase {
         if (missionBase == null)
         {
             // current mission is not updated
-            //App.droneKitServer.doReadMission();
             FCBoard.do_ReadMission();
             return ;
         }
         missionBase.Status = MissionBase.Report_NAV_ItemReached;
 
-        // Take Actions based on some Mission Items
-        if ((missionBase instanceof MissionCameraTrigger) || (missionBase instanceof MissionCameraControl))
-        {
-            AndruavEngine.getEventBus().post(new _7adath_InitAndroidCamera());
-
-            Event_FPV_CMD event_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_TAKEIMAGE);
-            event_fpv_cmd.CameraSource          = AndruavMessage_Ctrl_Camera.CAMERA_SOURCE_MOBILE;
-            event_fpv_cmd.NumberOfImages        = 1;
-            event_fpv_cmd.TimeBetweenShotes     = 0;
-            event_fpv_cmd.DistanceBetweenShotes = 0;
-            event_fpv_cmd.SendBackImages        =  true;
-            event_fpv_cmd.SaveImageLocally = true;
-            AndruavEngine.getEventBus().post(event_fpv_cmd);
-
-        }
         AndruavFacade.sendWayPointsReached(null, missionItemIndex, MissionBase.Report_NAV_ItemReached);
     }
 }

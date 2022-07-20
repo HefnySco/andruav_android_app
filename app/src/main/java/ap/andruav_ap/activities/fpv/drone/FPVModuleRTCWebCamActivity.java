@@ -313,11 +313,8 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
                             mDistanceBetweenShotes = a7adath_FPV_CMD.DistanceBetweenShotes;
                             mSendBackImages = a7adath_FPV_CMD.SendBackImages;
 
-                            final String unitName = a7adath_FPV_CMD.Requester;
-                            if (unitName != null)
-                            {
-                                mSendBackTo = AndruavEngine.getAndruavWe7daMapBase().get(unitName);
-                            }
+                            mSendBackTo = a7adath_FPV_CMD.Requester;
+
                             mTakeImage = true;
                             takeImage();
                            // PanicFacade.cannotStartCamera(INotification.NOTIFICATION_TYPE_ERROR,INotification.NOTIFICATION_TYPE_ERROR,"Take Image is not supported in this video mode yet",null);

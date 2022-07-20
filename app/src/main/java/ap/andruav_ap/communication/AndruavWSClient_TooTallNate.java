@@ -958,7 +958,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                                 break; // not a valid command to GCSevent_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_TAKEIMAGE);
 
                             event_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_RECORDVIDEO);
-                            event_fpv_cmd.Requester = andruav_2MR.partyID;
+                            event_fpv_cmd.Requester = andruavUnit;
                             event_fpv_cmd.ACT = andruavResala_remoteExecute.getBooleanValue("Act");
                             if (Preference.useExternalCam(null)) {
                                 // new IPWebCamImage(event_fpv_cmd);
@@ -1027,7 +1027,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                             if ((andruavUnit != null) && (!andruavUnit.canVideo())) break;
                             //sendMessageToModule internal command to FPV activity
                             event_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_ROTATECAM);
-                            event_fpv_cmd.Requester = andruav_2MR.partyID;
+                            event_fpv_cmd.Requester = andruavUnit;
                             EventBus.getDefault().post(event_fpv_cmd);
 
                             andruav_2MR.processed = true;
@@ -1141,7 +1141,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                     event_fpv_cmd.DistanceBetweenShotes = andruavResala_ctrl_camera.DistanceBetweenShotes;
                     event_fpv_cmd.SendBackImages =  andruavResala_ctrl_camera.SendBackImages;
 
-                    event_fpv_cmd.Requester = andruav_2MR.partyID;
+                    event_fpv_cmd.Requester = andruavUnit;
 
                     AndruavMeFacade.Ctrl_Camera(event_fpv_cmd);
 

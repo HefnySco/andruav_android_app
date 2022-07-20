@@ -2,6 +2,7 @@ package com.andruav.event.fpv7adath;
 
 import androidx.collection.SimpleArrayMap;
 
+import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_Ctrl_Camera;
 
 /**
@@ -27,7 +28,7 @@ public class Event_FPV_CMD {
     public Boolean ACT;
     public SimpleArrayMap<String, String> Variables = new SimpleArrayMap<String, String>() ;
 
-    public String Requester;
+    public AndruavUnitBase Requester;
 
 
     public int CameraSource             = AndruavMessage_Ctrl_Camera.CAMERA_SOURCE_MOBILE;

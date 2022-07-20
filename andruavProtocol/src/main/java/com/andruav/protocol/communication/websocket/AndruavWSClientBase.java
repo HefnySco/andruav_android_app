@@ -831,7 +831,7 @@ public abstract class AndruavWSClientBase {
                         Event_FPV_CMD a7adath_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_FLASHCAM);
 
                         a7adath_fpv_cmd.ACT = (andruavMessage_cameraFlash.FlashOn == AndruavMessage_CameraFlash.FLASH_ON);
-                        a7adath_fpv_cmd.Requester = andruav_2MR.partyID;
+                        a7adath_fpv_cmd.Requester = andruavWe7da;
                         AndruavEngine.getEventBus().post(a7adath_fpv_cmd);
                     } else {
                         // This is a camera module connected to Andruav Device
@@ -868,7 +868,7 @@ public abstract class AndruavWSClientBase {
                         Event_FPV_CMD a7adath_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_SWITCHCAM);
 
                         a7adath_fpv_cmd.Variables.put("SendBackTo", andruavMessage_cameraSwitch.CameraUniqueName);
-                        a7adath_fpv_cmd.Requester = andruav_2MR.partyID;
+                        a7adath_fpv_cmd.Requester = andruavWe7da;
                         AndruavEngine.getEventBus().post(a7adath_fpv_cmd);
                     } else {
                         // This is a camera module connected to Andruav Device
