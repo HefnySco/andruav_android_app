@@ -88,7 +88,7 @@ import ap.andruavmiddlelibrary.webrtc.classes.PnPeer;
 
 public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener, VideoSink, VSink {
 
-
+    private final Object stateLock = new Object();
 
     //private TLD_Tracker tld_tracker;
     private final int TLDmode_OFF = 0;
@@ -465,66 +465,31 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
         Me = this;
         App.activeActivity = this;
         App.ForceLanguage();
-        //setScreenOrientation(false);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         Window win = getWindow();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_fpvdrone_rtcweb_cam);
-
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
 
         andruavUnit_selected =  AndruavSettings.andruavWe7daBase;
 
-      //initRTC();
         initGUI();
 
-
-
     }
-
-//    private void setScreenOrientation (boolean speak)
-//    {
-//        int orientation = Preference.getRTCCamRotateCAM(null);
-//        int requestedOrientation= ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-//        switch (orientation)
-//        {
-//            case Surface.ROTATION_0:
-//                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-//                if (speak) AndruavMo7arek.notification().Speak("zero degree");
-//                break;
-//            case Surface.ROTATION_90:
-//                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-//                if (speak) AndruavMo7arek.notification().Speak("90 degrees");
-//                break;
-//            case Surface.ROTATION_180:
-//                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
-//                if (speak) AndruavMo7arek.notification().Speak("180 degrees");
-//                break;
-//            case Surface.ROTATION_270:
-//                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
-//                if (speak) AndruavMo7arek.notification().Speak("270 degrees");
-//                break;
-//        }
-//        setRequestedOrientation(requestedOrientation);
-//    }
-
 
     @Override
     protected void onRestart() {
         super.onRestart();
         // get out of this screen so that you can re-initailize video.
         this.finish();
-
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-
     }
 
-        @Override
+    @Override
     protected void onResume() {
         super.onResume();
 
@@ -767,88 +732,87 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
 
         @Override
         public void onFrame(Bitmap bitmap) {
-            if (mTakeImageCount > 0) {
-                final long now = System.currentTimeMillis();
-                if (mTimeBetweenShots > 0) {  // dont take multiple images if time is equal to zero ... no burst images
+            synchronized (stateLock) {
+                if (mTakeImageCount > 0) {
+                    final long now = System.currentTimeMillis();
+                    if (mTimeBetweenShots > 0) {  // dont take multiple images if time is equal to zero ... no burst images
 
-                    if ((now - lastTime) >= mTimeBetweenShots) {
-                        mTakeImageCount = mTakeImageCount - 1;
+                        if ((now - lastTime) >= mTimeBetweenShots) {
+                            mTakeImageCount = mTakeImageCount - 1;
+                            mTakeImage = true;
+                            lastTime = now;
+                        } else {
+                            mTakeImage = false;
+                        }
+
+                        if (mTakeImageCount > 0) {
+                            mHandle.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (mTakeImageCount == 0) return;
+                                    takeImage();
+                                }
+                            }, mTimeBetweenShots);
+                        }
+
+                    } else {
+                        // only a single image
+                        mTakeImageCount = 0; // reset counter
                         mTakeImage = true;
-                        lastTime = now;
-                    }
-                    else
-                    {
-                        mTakeImage = false;
-                    }
-
-                    if (mTakeImageCount > 0)
-                    {
-                        mHandle.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mTakeImageCount==0) return;
-                                takeImage();
-                            }
-                        },mTimeBetweenShots);
                     }
 
                 } else {
-                    // only a single image
-                    mTakeImageCount = 0; // reset counter
-                    mTakeImage = true;
+                    mTakeImage = false;
                 }
 
-            } else {
-                mTakeImage = false;
-            }
+                if (mTakeImage) {
+                    try {
+                        final String imageDescription = "Image No#" + mTakeImageCount;
 
-            if (mTakeImage) {
-                try {
-                    final String imageDescription = "Image No#" + mTakeImageCount;
-
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byte[] pout = stream.toByteArray();
-                    stream.flush();
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                        byte[] pout = stream.toByteArray();
+                        stream.flush();
 
 
-                    AndruavFacade.sendImage(pout, AndruavSettings.andruavWe7daBase.getAvailableLocation(), mSendBackTo);
-                    if (mSaveImageLocally) {
-                        final Bitmap bitmap2 = Image_Helper.createBMPfromJPG(pout);
-                        Bitmap rotatedBmp = Image_Helper.rotateImage(bitmap2, bitmap2.getWidth(), bitmap2.getHeight(), Preference.getFPVActivityRotation(null));
-                        File savedImageFile = FileHelper.savePic(rotatedBmp, null, App.KMLFile.getImageFolder());
-                        if (savedImageFile == null) {
-                            // sendMessageToModule error messages to GCS Please
+                        AndruavFacade.sendImage(pout, AndruavSettings.andruavWe7daBase.getAvailableLocation(), mSendBackTo);
+                        if (mSaveImageLocally) {
+                            final Bitmap bitmap2 = Image_Helper.createBMPfromJPG(pout);
+                            Bitmap rotatedBmp = Image_Helper.rotateImage(bitmap2, bitmap2.getWidth(), bitmap2.getHeight(), Preference.getFPVActivityRotation(null));
+                            File savedImageFile = FileHelper.savePic(rotatedBmp, null, App.KMLFile.getImageFolder());
+                            if (savedImageFile == null) {
+                                // sendMessageToModule error messages to GCS Please
+                                bitmap.recycle();
+                                rotatedBmp.recycle();
+                                return;
+                            }
+
+                            Image_Helper.AddGPStoJpg(savedImageFile.getAbsolutePath(), AndruavSettings.andruavWe7daBase.getAvailableLocation());
+
+
+                            Event_FPV_Image event_fpv_image = new Event_FPV_Image();
+                            event_fpv_image.isLocalImage = true;
+                            event_fpv_image.isVideo = false;
+                            event_fpv_image.ImageFile = savedImageFile;
+                            event_fpv_image.ImageLocation = AndruavSettings.andruavWe7daBase.getAvailableLocation();
+                            event_fpv_image.Description = "Image No#" + mTakeImageCount;
+                            EventBus.getDefault().post(event_fpv_image);
+
                             bitmap.recycle();
                             rotatedBmp.recycle();
-                            return;
+
                         }
-
-                        Image_Helper.AddGPStoJpg(savedImageFile.getAbsolutePath(), AndruavSettings.andruavWe7daBase.getAvailableLocation());
-
-
-                        Event_FPV_Image event_fpv_image = new Event_FPV_Image();
-                        event_fpv_image.isLocalImage = true;
-                        event_fpv_image.isVideo = false;
-                        event_fpv_image.ImageFile = savedImageFile;
-                        event_fpv_image.ImageLocation = AndruavSettings.andruavWe7daBase.getAvailableLocation();
-                        event_fpv_image.Description = "Image No#" + mTakeImageCount;
-                        EventBus.getDefault().post(event_fpv_image);
-
-                        bitmap.recycle();
-                        rotatedBmp.recycle();
-
+                    } catch (Exception ex) {
+                        AndruavEngine.log().logException(AndruavSettings.AccessCode, "exception_fpv2", ex);
+                        PanicFacade.cannotStartCamera(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_CAMERA, App.getAppContext().getString(R.string.andruav_error_camertakeimage), null);
+                        skip = false;
                     }
-                } catch (Exception ex) {
-                    AndruavEngine.log().logException(AndruavSettings.AccessCode, "exception_fpv2", ex);
-                    PanicFacade.cannotStartCamera(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_CAMERA, App.getAppContext().getString(R.string.andruav_error_camertakeimage), null);
+
                     skip = false;
                 }
 
-                skip = false;
+                mSurfaceViewRenderer.clearImage();
             }
-
-            mSurfaceViewRenderer.clearImage();
         }
 
     };
