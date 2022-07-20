@@ -70,13 +70,6 @@ public class FlightMode {
     public static final int CONST_FLIGHT_CONTROL_TAKEOFF           = 22;  // check array resource in case you want to change this number
 
 
-    public static final int CONST_FLIGHT_CONTROL_QHOVER        	    = 23;
-    public static final int CONST_FLIGHT_CONTROL_QLOITER       		= 24;
-    public static final int CONST_FLIGHT_CONTROL_QSTABILIZE    		= 25;
-    public static final int CONST_FLIGHT_CONTROL_QLAND         		= 26;
-    public static final int CONST_FLIGHT_CONTROL_QRTL          		= 27;
-    public static final int CONST_FLIGHT_CONTROL_ACRO          	    = 28;
-
     public static final int CONST_FLIGHT_CONTROL_INITIALIZING      = 99;  // check array resource in case you want to change this number
 
     // remapped for ROVER
