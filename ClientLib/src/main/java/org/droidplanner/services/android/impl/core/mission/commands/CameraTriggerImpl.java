@@ -10,7 +10,15 @@ import org.droidplanner.services.android.impl.core.mission.MissionItemType;
 import java.util.List;
 
 public class CameraTriggerImpl extends MissionCMD {
-    private double distance = (0);
+
+    // Camera trigger distance. 0 to stop triggering.
+    private double triggerDistance = (0);
+
+    // Camera shutter integration time. -1 or 0 to ignore
+    private double shutter  = (0);
+
+    // Trigger camera once immediately. (0 = no trigger, 1 = trigger)
+    private double trigger  = (0);
 
     public CameraTriggerImpl(MissionItemImpl item) {
         super(item);
@@ -21,9 +29,11 @@ public class CameraTriggerImpl extends MissionCMD {
         unpackMAVMessage(msg);
     }
 
-    public CameraTriggerImpl(MissionImpl missionImpl, double triggerDistance) {
+    public CameraTriggerImpl(MissionImpl missionImpl, double triggerDistance, double shutter, double trigger) {
         super(missionImpl);
-        this.distance = triggerDistance;
+        this.triggerDistance = triggerDistance;
+        this.shutter = shutter;
+        this.trigger = trigger;
     }
 
     @Override
@@ -31,13 +41,17 @@ public class CameraTriggerImpl extends MissionCMD {
         List<msg_mission_item> list = super.packMissionItem();
         msg_mission_item mavMsg = list.get(0);
         mavMsg.command = MAV_CMD.MAV_CMD_DO_SET_CAM_TRIGG_DIST;
-        mavMsg.param1 = (float) distance;
+        mavMsg.param1 = (float) triggerDistance;
+        mavMsg.param2 = (float) shutter;
+        mavMsg.param3 = (float) trigger;
         return list;
     }
 
     @Override
     public void unpackMAVMessage(msg_mission_item mavMsg) {
-        distance = (mavMsg.param1);
+        triggerDistance = (mavMsg.param1);
+        shutter = (mavMsg.param2);
+        trigger = (mavMsg.param3);
     }
 
     @Override
@@ -46,10 +60,26 @@ public class CameraTriggerImpl extends MissionCMD {
     }
 
     public double getTriggerDistance() {
-        return distance;
+        return triggerDistance;
     }
 
     public void setTriggerDistance(double triggerDistance) {
-        this.distance = triggerDistance;
+        this.triggerDistance = triggerDistance;
+    }
+
+    public double getShutter() {
+        return shutter;
+    }
+
+    public void setShutter(double shutter) {
+        this.shutter = shutter;
+    }
+
+    public double getTrigger() {
+        return trigger;
+    }
+
+    public void setTrigger(double trigger) {
+        this.trigger = trigger;
     }
 }

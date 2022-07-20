@@ -71,7 +71,8 @@ public class SurveyImpl extends MissionItemImpl {
 
     private void packSurveyPoints(List<msg_mission_item> list) {
         //Generate the camera trigger
-        CameraTriggerImpl camTrigger = new CameraTriggerImpl(missionImpl, surveyData.getLongitudinalPictureDistance());
+        //TODO: adding parameters instead of fixed values.
+        CameraTriggerImpl camTrigger = new CameraTriggerImpl(missionImpl, surveyData.getLongitudinalPictureDistance(),0,0);
 
         //Add it if the user wants it to start before the first waypoint.
         if(startCameraBeforeFirstWaypoint){
@@ -97,7 +98,8 @@ public class SurveyImpl extends MissionItemImpl {
             }
         }
 
-        list.addAll((new CameraTriggerImpl(missionImpl, (0.0)).packMissionItem()));
+        //TODO: adding parameters instead of fixed values.
+        list.addAll((new CameraTriggerImpl(missionImpl, 0.0, 0.0, 0.0).packMissionItem()));
     }
 
     protected msg_mission_item getSurveyPoint(LatLong point, double altitude){

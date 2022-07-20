@@ -850,8 +850,8 @@ public class CommonApiUtils {
         if (message == null)
             return;
 
-        message.compid = drone.getCompid();
-        message.sysid = drone.getSysid();
+        //message.compid = drone.getCompid();
+        //message.sysid = drone.getSysid();
 
         //Set the target system and target component for MAVLink messages that support those
         //attributes.

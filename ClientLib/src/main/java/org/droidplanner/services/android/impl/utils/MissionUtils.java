@@ -14,6 +14,7 @@ import com.o3dr.services.android.lib.util.UriUtils;
 
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
 import org.droidplanner.services.android.impl.core.mission.MissionItemImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.CameraControlImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.CameraTriggerImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.ChangeSpeedImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.ConditionYawImpl;
@@ -266,6 +267,9 @@ public class MissionUtils {
                     break;
                 case MAV_CMD.MAV_CMD_DO_SET_CAM_TRIGG_DIST:
                     received.add(new CameraTriggerImpl(msg, missionImpl));
+                    break;
+                case MAV_CMD.MAV_CMD_DO_DIGICAM_CONTROL:
+                    received.add(new CameraControlImpl(msg, missionImpl));
                     break;
                 case MAV_CMD.MAV_CMD_DO_GRIPPER:
                     received.add(new EpmGripperImpl(msg, missionImpl));

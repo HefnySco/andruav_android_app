@@ -1,9 +1,12 @@
 package org.droidplanner.services.android.impl.utils;
 
+
+
 import android.util.Log;
 
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
+import com.o3dr.services.android.lib.drone.mission.item.command.CameraControl;
 import com.o3dr.services.android.lib.drone.mission.item.command.CameraTrigger;
 import com.o3dr.services.android.lib.drone.mission.item.command.ChangeSpeed;
 import com.o3dr.services.android.lib.drone.mission.item.command.DoJump;
@@ -28,6 +31,7 @@ import com.o3dr.services.android.lib.drone.mission.item.spatial.Waypoint;
 
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
 import org.droidplanner.services.android.impl.core.mission.MissionItemImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.CameraControlImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.CameraTriggerImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.ChangeSpeedImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.ConditionYawImpl;
@@ -100,7 +104,19 @@ public class ProxyUtils {
             case CAMERA_TRIGGER: {
                 CameraTrigger proxy = (CameraTrigger) proxyItem;
 
-                CameraTriggerImpl temp = new CameraTriggerImpl(missionImpl, (proxy.getTriggerDistance()));
+                CameraTriggerImpl temp = new CameraTriggerImpl(missionImpl, proxy.getTriggerDistance(), proxy.getShutter(), proxy.getTrigger());
+
+                missionItemImpl = temp;
+                break;
+            }
+            case CAMERA_CONTROL: {
+                CameraControl proxy = (CameraControl) proxyItem;
+
+                CameraControlImpl temp = new CameraControlImpl(missionImpl, proxy.getSessionControl(), proxy.getZoomAbsolute(),
+                        proxy.getZoomRelative(), proxy.getFocus(),
+                        proxy.getShootCommand(), proxy.getCommandIdentity(),
+                        proxy.getShotID()
+                        );
 
                 missionItemImpl = temp;
                 break;
@@ -491,10 +507,28 @@ public class ProxyUtils {
 
                 CameraTrigger temp = new CameraTrigger();
                 temp.setTriggerDistance(source.getTriggerDistance());
+                temp.setShutter(source.getShutter());
+                temp.setTrigger(source.getTrigger());
 
                 proxyMissionItem = temp;
                 break;
             }
+            case CAMERA_CONTROL: {
+                CameraControlImpl source = (CameraControlImpl) itemImpl;
+
+                CameraControl temp = new CameraControl();
+                temp.setSessionControl(source.getSessionControl());
+                temp.setZoomAbsolute(source.getZoomAbsolute());
+                temp.setZoomRelative(source.getZoomRelative());
+                temp.setFocus(source.getFocus());
+                temp.setShootCommand(source.getShootCommand());
+                temp.setCommandIdentity(source.getCommandIdentity());
+                temp.setShotID(source.getShotID());
+
+                proxyMissionItem = temp;
+                break;
+            }
+
             case EPM_GRIPPER: {
                 EpmGripperImpl source = (EpmGripperImpl) itemImpl;
 

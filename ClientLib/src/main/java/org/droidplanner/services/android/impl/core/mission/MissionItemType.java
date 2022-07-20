@@ -1,5 +1,6 @@
 package org.droidplanner.services.android.impl.core.mission;
 
+import org.droidplanner.services.android.impl.core.mission.commands.CameraControlImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.CameraTriggerImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.ChangeSpeedImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.ConditionYawImpl;
@@ -34,6 +35,7 @@ public enum MissionItemType {
     CYLINDRICAL_SURVEY("Structure Scan"),
     CHANGE_SPEED("Change Speed"),
     CAMERA_TRIGGER("Camera Trigger"),
+    CAMERA_CONTROL("Camera Control"),
     EPM_GRIPPER("EPM"),
     SET_SERVO("Set Servo"),
     CONDITION_YAW("Set Yaw"),
@@ -63,6 +65,8 @@ public enum MissionItemType {
                 return new ChangeSpeedImpl(referenceItem);
             case CAMERA_TRIGGER:
                 return new CameraTriggerImpl(referenceItem);
+            case CAMERA_CONTROL:
+                return new CameraControlImpl(referenceItem);
             case EPM_GRIPPER:
                 return new EpmGripperImpl(referenceItem);
             case RTL:

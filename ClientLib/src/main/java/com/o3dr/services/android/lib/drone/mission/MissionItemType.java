@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
+import com.o3dr.services.android.lib.drone.mission.item.command.CameraControl;
 import com.o3dr.services.android.lib.drone.mission.item.command.CameraTrigger;
 import com.o3dr.services.android.lib.drone.mission.item.command.ChangeSpeed;
 import com.o3dr.services.android.lib.drone.mission.item.command.DoJump;
@@ -26,6 +27,8 @@ import com.o3dr.services.android.lib.drone.mission.item.spatial.SplineWaypoint;
 import com.o3dr.services.android.lib.drone.mission.item.spatial.Waypoint;
 import com.o3dr.services.android.lib.drone.property.Type;
 import com.o3dr.services.android.lib.util.ParcelableUtils;
+
+import org.droidplanner.services.android.impl.core.mission.commands.CameraControlImpl;
 
 /**
  * /**
@@ -90,6 +93,18 @@ public enum MissionItemType {
         @Override
         protected Creator<CameraTrigger> getMissionItemCreator() {
             return CameraTrigger.CREATOR;
+        }
+    },
+
+    CAMERA_CONTROL("Camera Command") {
+        @Override
+        public MissionItem getNewItem() {
+            return new CameraControl();
+        }
+
+        @Override
+        protected Creator<CameraControl> getMissionItemCreator() {
+            return CameraControl.CREATOR;
         }
     },
 
