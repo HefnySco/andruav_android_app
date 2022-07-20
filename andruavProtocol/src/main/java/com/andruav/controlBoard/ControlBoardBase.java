@@ -732,6 +732,10 @@ public class ControlBoardBase {
                 do_Manual(iControlBoard_callback);
                 break;
 
+            case FlightMode.CONST_FLIGHT_CONTROL_ACRO:
+                do_Acro(iControlBoard_callback);
+                break;
+
             case FlightMode.CONST_FLIGHT_CONTROL_STABILIZE:
                 break;
 
@@ -860,6 +864,10 @@ public class ControlBoardBase {
         PanicFacade.cannotDoAutopilotAction(AndruavEngine.getPreference().getContext().getString(R.string.andruav_error_autopilot_cannot_do_manual));
     }
 
+    public void do_Acro (final IControlBoard_Callback lo7Ta7akom_callback)
+    {
+        PanicFacade.cannotDoAutopilotAction(AndruavEngine.getPreference().getContext().getString(R.string.andruav_error_autopilot_cannot_do_acro));
+    }
 
     public void do_POS_Hold (final IControlBoard_Callback lo7Ta7akom_callback)
     {

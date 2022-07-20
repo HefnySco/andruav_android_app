@@ -1778,6 +1778,13 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
         App.droneKitServer.do_Manual(lo7Ta7akom_callback);
     }
 
+    @Override
+    public void do_Acro (final IControlBoard_Callback lo7Ta7akom_callback)
+    {
+        if (rcChannelBlock) return ;
+
+        App.droneKitServer.do_Acro(lo7Ta7akom_callback);
+    }
 
     @Override
     public void do_FBWA (final IControlBoard_Callback lo7Ta7akom_callback)

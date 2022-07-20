@@ -35,7 +35,7 @@ public class FlightMode {
 
     public static final int CONST_FLIGHT_CONTROL_ALT_HOLD           =7;
 
-    // Manual , Acro
+    // Manual
     public static final int CONST_FLIGHT_CONTROL_MANUAL             =8;
 
 
@@ -69,6 +69,7 @@ public class FlightMode {
 
     public static final int CONST_FLIGHT_CONTROL_TAKEOFF           = 22;  // check array resource in case you want to change this number
 
+    public static final int CONST_FLIGHT_CONTROL_ACRO              = 28;
 
     public static final int CONST_FLIGHT_CONTROL_INITIALIZING      = 99;  // check array resource in case you want to change this number
 
@@ -112,6 +113,9 @@ public class FlightMode {
 
             case CONST_FLIGHT_CONTROL_MANUAL:
                 return "Manual";
+
+            case CONST_FLIGHT_CONTROL_ACRO:
+                return "Acro";
 
             case CONST_FLIGHT_CONTROL_GUIDED:
                 return "Guided";

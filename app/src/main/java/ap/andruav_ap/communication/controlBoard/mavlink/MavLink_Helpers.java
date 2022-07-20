@@ -473,6 +473,23 @@ public class MavLink_Helpers {
                 break;
 
 
+            case FlightMode.CONST_FLIGHT_CONTROL_ACRO:
+                switch  (APM_VehicleType)
+                {
+                    case MAV_TYPE.MAV_TYPE_FIXED_WING:
+                        mode = VehicleMode.PLANE_ACRO;
+                        break;
+                    case MAV_TYPE.MAV_TYPE_GROUND_ROVER:
+                        mode = VehicleMode.ROVER_ACRO;
+                        break;
+                    case MAV_TYPE.MAV_TYPE_SUBMARINE:
+                        mode = VehicleMode.SUBMARINE_ACRO;
+                        break;
+                    default:
+                        mode = VehicleMode.COPTER_ACRO;
+                }
+                break;
+
             case FlightMode.CONST_FLIGHT_CONTROL_FBWA:
                 switch  (APM_VehicleType)
                 {
@@ -568,8 +585,8 @@ public class MavLink_Helpers {
 
                     case 0: //Stabilize
                         return FlightMode.CONST_FLIGHT_CONTROL_STABILIZE;
-
                     case 1:     //Acro
+                        return FlightMode.CONST_FLIGHT_CONTROL_ACRO;
                     case 13:    //Sport
                         return FlightMode.CONST_FLIGHT_CONTROL_MANUAL;
                     case 2:     //Alt Hold
@@ -602,7 +619,10 @@ public class MavLink_Helpers {
                 switch (apm_flightMode)
                 {
                     case 0:     //MANUAL
-                    case 2:     //LEARNING
+                        return FlightMode.CONST_FLIGHT_CONTROL_MANUAL;
+                    case 1:     //ACRO
+                        return FlightMode.CONST_FLIGHT_CONTROL_ACRO;
+                    case 2:     //LEARNING obsolete.
                         return FlightMode.CONST_FLIGHT_CONTROL_MANUAL;
                     case 3: //STEERING
                         return FlightMode.CONST_FLIGHT_CONTROL_STABILIZE;
@@ -628,8 +648,9 @@ public class MavLink_Helpers {
                 {
                     case 0:     //MANUAL
                     case 2:     //LEARNING
-                    case 4:     //Acro
                         return FlightMode.CONST_FLIGHT_CONTROL_MANUAL;
+                    case 4:     //Acro
+                        return FlightMode.CONST_FLIGHT_CONTROL_ACRO;
                     case 3: //Training
                         return FlightMode.CONST_FLIGHT_CONTROL_STABILIZE;
                     case 5: //FBW A
@@ -675,6 +696,7 @@ public class MavLink_Helpers {
                     case 0:     //STABILIZE
                         return FlightMode.CONST_FLIGHT_CONTROL_STABILIZE;
                     case 1:     //ACRO
+                        return FlightMode.CONST_FLIGHT_CONTROL_ACRO;
                     case 19:     //ACRO
                         return FlightMode.CONST_FLIGHT_CONTROL_MANUAL;
                     case 2: //ALT_HOLD
