@@ -897,7 +897,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                         case AndruavMessage_RemoteExecute.RemoteCommand_MAKETILT:
 
                             if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                                break; // not a valid command to GCSevent_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_TAKEIMAGE);
+                                break;
                             EventBus.getDefault().post(new Event_IMU_CMD(Event_IMU_CMD.IMU_CMD_UpdateZeroTilt));
                             break;
 
@@ -926,14 +926,14 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                         case AndruavMessage_RemoteExecute.RemoteCommand_SET_GPS_SOURCE:
                             if ((andruavUnit != null) && (!andruavUnit.canControl())) break;
                             if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                                break; // not a valid command to GCSevent_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_TAKEIMAGE);
+                                break;
                             AndruavSettings.andruavWe7daBase.setGPSMode(Integer.parseInt(((AndruavMessage_RemoteExecute) (andruav_2MR.andruavMessageBase)).Variables.get("s")));
                             break;
 
                         case AndruavMessage_RemoteExecute.RemoteCommand_CONNECT_FCB:
                             if ((andruavUnit != null) && (!(andruavUnit.canControl() || andruavUnit.canTelemetry()))) break;
                             if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                                break; // not a valid command to GCSevent_fpv_cmd = new _7adath_FPV_2AMR(_7adath_FPV_2AMR.FPV_CMD_TAKEIMAGE);
+                                break;
                             final _7adath_FCB_2AMR adath_fcb_2AMR = new _7adath_FCB_2AMR();
                             adath_fcb_2AMR.enForceConnection = true;
                             EventBus.getDefault().post(adath_fcb_2AMR);
@@ -955,7 +955,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                         case AndruavMessage_RemoteExecute.RemoteCommand_RECORDVIDEO:
                             if ((andruavUnit != null) && (!andruavUnit.canVideo())) break;
                             if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                                break; // not a valid command to GCSevent_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_TAKEIMAGE);
+                                break;
 
                             event_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_RECORDVIDEO);
                             event_fpv_cmd.Requester = andruavUnit;
@@ -973,7 +973,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                         case AndruavMessage_RemoteExecute.RemoteCommand_STREAMVIDEORESUME:
                             if ((andruavUnit != null) && (!andruavUnit.canVideo())) break;
                             if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                                break; // not a valid command to GCSevent_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_TAKEIMAGE);
+                                break;
                             break;
 
                         case AndruavMessage_RemoteExecute.RemoteCommand_ChangeUnitID:
@@ -983,7 +983,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                         case AndruavMessage_RemoteExecute.RemoteCommand_STREAMVIDEO:
                             if ((andruavUnit != null) && (!andruavUnit.canVideo())) break; // not permitted
                             if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                                break; // not a valid command to GCSevent_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_TAKEIMAGE);
+                                break;
 
                             if (andruavUnit != null) {
 
@@ -1128,7 +1128,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
                     final AndruavMessage_Ctrl_Camera andruavResala_ctrl_camera = (AndruavMessage_Ctrl_Camera) (andruav_2MR.andruavMessageBase);
                     if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                        break; // not a valid command to GCSevent_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_TAKEIMAGE);
+                        break;
 
 
                     EventBus.getDefault().post(new _7adath_InitAndroidCamera());

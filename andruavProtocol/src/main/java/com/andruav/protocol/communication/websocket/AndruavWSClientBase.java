@@ -816,7 +816,7 @@ public abstract class AndruavWSClientBase {
 
                     if ((andruavWe7da != null) && (!andruavWe7da.canImage())) break;
                     if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                        break; // not a valid command to GCSevent_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_TAKEIMAGE);
+                        break;
 
                     final AndruavMessage_CameraFlash andruavMessage_cameraFlash = (AndruavMessage_CameraFlash) andruav_2MR.andruavMessageBase;
 
