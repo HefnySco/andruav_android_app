@@ -7,7 +7,7 @@ package com.andruav.controlBoard.shared.missions;
 public class WayPointStep extends MissionBase {
 
 
-    public final static byte TYPE_WAYPOINTSTEP = 16; // same as mavlink
+    public final static int TYPE_WAYPOINTSTEP = 16; // same as mavlink
 
 
     public  double  Latitude;

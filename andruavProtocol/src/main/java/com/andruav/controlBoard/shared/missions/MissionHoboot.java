@@ -6,7 +6,7 @@ package com.andruav.controlBoard.shared.missions;
  */
 public class MissionHoboot extends MissionBase {
 
-    public final static byte TYPE_HOBOOT = 21; // same as mavlink
+    public final static int TYPE_HOBOOT = 21; // same as mavlink
 
 
     public MissionHoboot()

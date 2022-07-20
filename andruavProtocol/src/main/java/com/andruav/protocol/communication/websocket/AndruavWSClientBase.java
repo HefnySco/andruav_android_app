@@ -1510,10 +1510,6 @@ public abstract class AndruavWSClientBase {
 
             }
 
-            case AndruavMessage_Ctrl_Camera.TYPE_AndruavResala_Ctrl_Camera:
-
-                break;
-
         }
 
 

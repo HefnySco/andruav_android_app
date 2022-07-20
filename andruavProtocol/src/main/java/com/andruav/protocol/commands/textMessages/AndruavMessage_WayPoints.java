@@ -1,6 +1,8 @@
 package com.andruav.protocol.commands.textMessages;
 
 import com.andruav.controlBoard.shared.missions.MissionBase;
+import com.andruav.controlBoard.shared.missions.MissionCameraTrigger;
+import com.andruav.controlBoard.shared.missions.MissionCameraControl;
 import com.andruav.controlBoard.shared.missions.MissionDayra;
 import com.andruav.controlBoard.shared.missions.MissionEkla3;
 import com.andruav.controlBoard.shared.missions.MissionHoboot;
@@ -119,6 +121,20 @@ public class AndruavMessage_WayPoints extends AndruavMessageBase {
                     missionBase = mohemmaRTL;
                     break;
 
+                case MissionCameraTrigger.TYPE_CAMERA_TRIGGER:
+                    final MissionCameraTrigger mohemmaCamera = new MissionCameraTrigger();
+                    mohemmaCamera.Sequence       =  jobj.getInt("s");
+
+                    missionBase = mohemmaCamera;
+                    break;
+
+                case MissionCameraControl.TYPE_CAMERA_CONTROL:
+                    final MissionCameraControl mohemmaCameraCommand = new MissionCameraControl();
+                    mohemmaCameraCommand.Sequence       =  jobj.getInt("s");
+
+                    missionBase = mohemmaCameraCommand;
+                    break;
+
                 default:
                     missionBase = new MissionBase();
                     missionBase.Sequence       =  jobj.getInt("s");
@@ -197,6 +213,20 @@ public class AndruavMessage_WayPoints extends AndruavMessageBase {
                     final MissionRTL mohemmaRTL = (MissionRTL) missionBase;
                     json_record.accumulate("t", MissionRTL.TYPE_RTL);
                     json_record.accumulate("s",mohemmaRTL.Sequence);
+
+                    break;
+
+                case MissionCameraTrigger.TYPE_CAMERA_TRIGGER:
+                    final MissionCameraTrigger mohemmaCamera = (MissionCameraTrigger) missionBase;
+                    json_record.accumulate("t", MissionCameraTrigger.TYPE_CAMERA_TRIGGER);
+                    json_record.accumulate("s",mohemmaCamera.Sequence);
+
+                    break;
+
+                case MissionCameraControl.TYPE_CAMERA_CONTROL:
+                    final MissionCameraControl mohemmaCameraCommand = (MissionCameraControl) missionBase;
+                    json_record.accumulate("t", mohemmaCameraCommand.TYPE_CAMERA_CONTROL);
+                    json_record.accumulate("s",mohemmaCameraCommand.Sequence);
 
                     break;
 

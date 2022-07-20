@@ -6,7 +6,7 @@ package com.andruav.controlBoard.shared.missions;
 public class MissionEkla3 extends MissionBase {
 
 
-    public final static byte TYPE_EKLA3 = 22; // same as mavlink
+    public final static int TYPE_EKLA3 = 22; // same as mavlink
 
 
     private double mAltitude;

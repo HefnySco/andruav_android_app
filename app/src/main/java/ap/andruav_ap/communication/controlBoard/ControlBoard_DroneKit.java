@@ -8,11 +8,14 @@ import android.os.Message;
 
 import androidx.collection.SimpleArrayMap;
 
+import com.andruav.controlBoard.shared.missions.MissionCameraTrigger;
+import com.andruav.controlBoard.shared.missions.MissionCameraControl;
 import com.andruav.event.Event_Remote_ChannelsCMD;
 import com.andruav.event.droneReport_Event.Event_GPS_Ready;
 import com.andruav.sensors.AndruavIMU;
 import com.mavlink.MAVLinkPacket;
 import com.mavlink.common.msg_attitude;
+import com.mavlink.common.msg_heartbeat;
 import com.mavlink.common.msg_nav_controller_output;
 import com.mavlink.common.msg_param_value;
 import com.mavlink.common.msg_rc_channels_override;
@@ -38,6 +41,7 @@ import com.andruav.controlBoard.shared.missions.MissionRTL;
 import com.andruav.controlBoard.shared.missions.SplineMission;
 import com.andruav.controlBoard.shared.missions.WayPointStep;
 import com.andruav.util.GPSHelper;
+import com.mavlink.enums.MAV_COMPONENT;
 import com.mavlink.enums.MAV_MODE_FLAG;
 import com.mavlink.enums.MAV_STATE;
 import com.o3dr.services.android.lib.coordinate.LatLong;
@@ -45,6 +49,8 @@ import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.mission.Mission;
 import com.o3dr.services.android.lib.drone.mission.MissionItemType;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
+import com.o3dr.services.android.lib.drone.mission.item.command.CameraControl;
+import com.o3dr.services.android.lib.drone.mission.item.command.CameraTrigger;
 import com.o3dr.services.android.lib.drone.mission.item.command.ResetROI;
 import com.o3dr.services.android.lib.drone.mission.item.command.ReturnToLaunch;
 import com.o3dr.services.android.lib.drone.mission.item.command.Takeoff;
@@ -86,7 +92,7 @@ import static org.droidplanner.services.android.impl.core.MAVLink.MavLinkCommand
 import static org.droidplanner.services.android.impl.core.MAVLink.MavLinkCommands.MAVLINK_SET_POS_TYPE_MASK_YAW_IGNORE;
 
 /**
- * Created by mhefny on 1/20/16.
+ * Created by M.Hefny on 19/07/2022
  */
 public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
@@ -98,7 +104,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     private Handler mhandle;
     private HandlerThread mhandlerThread;
     private State vehicleState;
-    private final int INTERNAL_CMD_NON        =0;                // no internal commands required
+    private final int INTERNAL_CMD_NON           =0;                // no internal commands required
     private boolean canFly = false;
     /***
      * step 1: get home mLocation
@@ -132,6 +138,8 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
     private boolean mParameteredRefreshedCompleted = false;
 
+    private int mSysId;
+    private short mType;
 
     /***
      * mGPS_MAV_NUM 0:send to first GPS,1:send to 2nd GPS,127:send to all
@@ -140,6 +148,16 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     private int mGPS_MAV_NUM = 999;
 
 
+    private void sendCameraHeartBeat()
+    {
+        msg_heartbeat msg_heartbeat = new msg_heartbeat();
+        msg_heartbeat.sysid =  mSysId;
+        msg_heartbeat.compid = MAV_COMPONENT.MAV_COMP_ID_CAMERA;
+        final MavlinkMessageWrapper mavlinkMessageWrapper = new MavlinkMessageWrapper(msg_heartbeat);
+        if (App.droneKitServer == null) return ;
+        App.droneKitServer.sendMavlink (mavlinkMessageWrapper);
+
+    }
 
     private static final long RC_COMMAND_TIME_OUT   = 3500;
 
@@ -165,16 +183,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
                 sendRCChannels (AndruavSettings.andruavWe7daBase.getManualTXBlockedSubAction(),channelsshared,false);
             }
         }
-        else
-        {
-//            if (channelsshared!= null) {
-//                channelsshared[1] = 0; // this is because it is mixed with Tracking so zero them.
-//                channelsshared[3] = 0;
-//            }
-
-        }
-
-
     }
 
 
@@ -184,13 +192,18 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     private ScheduledExecutorService rcRepeater;
 
     /**
-     * Runnable used to sendMessageToModule the rcRunnable.
+     * Runnable used to sendMessageToModule the rcRunnable & Other repeated messages.
      */
-    private final Runnable rcRunnable = new Runnable() {
+    private final Runnable ReapeterCommunicatorRunnable = new Runnable() {
+        private int rate = 0;
         @Override
         public void run() {
             try {
                 sendRCChannelsRepeater();
+                if (rate%5==0) {
+                    sendCameraHeartBeat();
+                }
+                ++rate;
             }
             catch (final Exception e)
             {
@@ -433,7 +446,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
             if (rcRepeater == null || rcRepeater.isShutdown()) {
                 rcRepeater = Executors.newSingleThreadScheduledExecutor();
-                rcRepeater.scheduleWithFixedDelay(rcRunnable, 0, 300, TimeUnit.MILLISECONDS);
+                rcRepeater.scheduleWithFixedDelay(ReapeterCommunicatorRunnable, 0, 300, TimeUnit.MILLISECONDS);
             }
 
         }
@@ -457,19 +470,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
         return "MAVLINK ver:"; // + String.valueOf(this.mavlink_version);
     }
 
-
-//    public void sendRCChannels (int rudder, int elevator)
-//    {
-//
-//        int[] channels= new int[8];
-//        channels[1] = elevator; // + channelsshared[1];
-//        channels[3] = rudder ;//   + channelsshared[3];
-//        channels = RemoteControl.calculateChannels2(channels,true);
-//        //channels[1] += channelsshared[1]; //these are scaled values ...
-//        //channels[3] += channelsshared[3];
-//
-//        sendRCChannels(_7adath_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS,channels, false);
-//    }
 
     public void sendServoChannel (final int channel, final int value)
     {
@@ -602,20 +602,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
                         (short) (MAVLINK_SET_POS_TYPE_MASK_POS_IGNORE | MAVLINK_SET_POS_TYPE_MASK_ACC_IGNORE | MAVLINK_SET_POS_TYPE_MASK_YAW_IGNORE),
                         null
                 );
-
-//                final msg_set_position_target_local_ned msg = new msg_set_position_target_local_ned();
-//
-//                msg.coordinate_frame = MAV_FRAME_BODY_NED;
-//                msg.type_mask = MAVLINK_SET_POS_TYPE_MASK_POS_IGNORE | MAVLINK_SET_POS_TYPE_MASK_ACC_IGNORE | MAVLINK_SET_POS_TYPE_MASK_YAW_RATE_IGNORE;
-//
-//                msg.vx = (channels[1] - 1500) / 100.0f;
-//                msg.vy = (channels[0] - 1500) / 100.0f;
-//                msg.vz = (1500 - channels[2]) / 100.0f;
-//                msg.yaw = (channels[3] - 1500)*6.26f/1000.0f;
-//
-//                final MavlinkMessageWrapper mavlinkMessageWrapper = new MavlinkMessageWrapper(msg);
-//                if (App.droneKitServer == null) return ;
-//                App.droneKitServer.sendSimulatedPacket (mavlinkMessageWrapper,false);
             }
             break;
         }
@@ -660,12 +646,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
         try {
 
-            switch (mavLinkPacket.msgid)
-            {
-                default:
-                    break;
-            }
-
             if (sendPacket )
             {
                 App.sendTelemetryfromDrone(mavLinkPacket.encodePacket());
@@ -684,9 +664,11 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
 
 
-    public void onDroneEvent_HeartBeat (final int type, final int base_mode, final int system_status, final int mavlink_version)
+    public void onDroneEvent_HeartBeat (final int sysid, final short type, final int base_mode, final int system_status, final int mavlink_version)
     {
 
+        mSysId = sysid;
+        mType = type;
         mAndruavUnitBase.setVehicleType(MavLink_Helpers.setCommonVehicleType (type));
         canFly = MavLink_Helpers.isCanFly (type);
 
@@ -973,7 +955,27 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
                     break;
 
                 case CAMERA_TRIGGER:
-                case CHANGE_SPEED:
+                    final CameraTrigger cameraTrigger = ((CameraTrigger)item);
+
+                    MissionCameraTrigger mohemmaCamera= new MissionCameraTrigger();
+                    mohemmaCamera.Sequence       =  wp;
+
+                    // OR DEVELOP SOMTHING BETWEEN THE BOARD & THE 3rdPARTY
+                    missionBase = mohemmaCamera;
+
+                    break;
+
+                case CAMERA_CONTROL:
+                    final CameraControl cameraControl = ((CameraControl)item);
+
+                    MissionCameraControl mohemmaCameraControl= new MissionCameraControl();
+                    mohemmaCameraControl.Sequence       =  wp;
+
+                    // OR DEVELOP SOMTHING BETWEEN THE BOARD & THE 3rdPARTY
+                    missionBase = mohemmaCameraControl;
+
+                    break;
+
                 case CIRCLE:
                     final Circle circle = ((Circle)item);
 
@@ -992,6 +994,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
                     break;
 
+                case CHANGE_SPEED:
                 case DO_JUMP:
                 case DO_LAND_START:
                 case EPM_GRIPPER:
@@ -1074,17 +1077,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     public void onDroneEvent_MissionItemReached (final int  missionItemIndex)
     {
 
-        MissionBase missionBase = this.mAndruavUnitBase.getMohemmaMapBase().valueAt(missionItemIndex);
-        if (missionBase == null)
-        {
-            // current mission is not updated
-            App.droneKitServer.doReadMission();
-
-            return ;
-        }
-        missionBase.Status = MissionBase.Report_NAV_ItemReached;
-
-        AndruavFacade.sendWayPointsReached(null, missionItemIndex, MissionBase.Report_NAV_ItemReached);
+        this.mAndruavUnitBase.missionItemReached(missionItemIndex);
     }
 
 

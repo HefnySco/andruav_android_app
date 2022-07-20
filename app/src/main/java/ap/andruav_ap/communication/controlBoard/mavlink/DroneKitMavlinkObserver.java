@@ -2,6 +2,7 @@ package ap.andruav_ap.communication.controlBoard.mavlink;
 
 import com.mavlink.MAVLinkPacket;
 import com.mavlink.common.msg_attitude;
+import com.mavlink.common.msg_command_long;
 import com.mavlink.common.msg_heartbeat;
 import com.mavlink.common.msg_rc_channels;
 import com.mavlink.messages.MAVLinkMessage;
@@ -60,7 +61,7 @@ public class DroneKitMavlinkObserver extends MavlinkObserver
                     break;
 
                 case msg_rc_channels.MAVLINK_MSG_ID_RC_CHANNELS:
-                    DroneMavlinkHandler.execute_rc_channel_raw((msg_rc_channels) mavLinkMessage);
+                    DroneMavlinkHandler.execute_rc_channels((msg_rc_channels) mavLinkMessage);
                     break;
 
                 case msg_attitude.MAVLINK_MSG_ID_ATTITUDE:
@@ -87,13 +88,17 @@ public class DroneKitMavlinkObserver extends MavlinkObserver
                 case msg_servo_output_raw.MAVLINK_MSG_ID_SERVO_OUTPUT_RAW:
                     DroneMavlinkHandler.execute_ServoOutputMessage ((msg_servo_output_raw)mavLinkMessage);
                     break;
+
+                case msg_command_long.MAVLINK_MSG_ID_COMMAND_LONG:
+                    DroneMavlinkHandler.execute_command_long ((msg_command_long) mavLinkMessage);
+                    break;
             }
 
 
             final MAVLinkPacket mavLinkPacket = mavLinkMessage.pack();
 
 
-            boolean bsend = true;
+            boolean bsend;
             final int isSmartTelemetry = Preference.getSmartMavlinkTelemetry(null);
             if (isSmartTelemetry > Constants.SMART_TELEMETRY_LEVEL_0) {
                 bsend = TrafficOptimizer.shouldSend(mavLinkPacket,isSmartTelemetry);
@@ -103,8 +108,6 @@ public class DroneKitMavlinkObserver extends MavlinkObserver
             mavLinkPacket.sysid = mavLinkMessage.sysid;
             mavLinkPacket.compid = mavLinkMessage.compid;
 
-
-            //Log.e("MAV", String.valueOf(mavLinkMessage.msgid));
 
             if (!(AndruavSettings.andruavWe7daBase.FCBoard instanceof ControlBoard_DroneKit)) return;
             sysid = mavLinkMessage.sysid;

@@ -6,7 +6,7 @@ package com.andruav.controlBoard.shared.missions;
 public class MissionDayra extends MissionBase {
 
 
-    public final static byte TYPE_DAYRA = 5;
+    public final static int TYPE_DAYRA = 5;
 
     public double Altitude;
     public double Latitude;

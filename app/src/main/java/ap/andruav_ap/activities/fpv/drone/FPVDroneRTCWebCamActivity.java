@@ -307,12 +307,7 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
                     }
 
 
-                }else if (msg.obj instanceof Event_Vehicle_Flying_Changed)
-                {
-                    takeSSingleImage(new AndruavUnitSystem());
-
-                }
-                else if (msg.obj instanceof Event_FPV_CMD) {
+                } else if (msg.obj instanceof Event_FPV_CMD) {
                     Event_FPV_CMD a7adath_FPV_CMD = (Event_FPV_CMD) msg.obj;
                     switch (a7adath_FPV_CMD.CMD_ID) {
                         case Event_FPV_CMD.FPV_CMD_FLASHCAM:

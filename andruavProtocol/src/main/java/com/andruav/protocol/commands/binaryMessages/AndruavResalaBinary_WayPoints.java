@@ -2,6 +2,7 @@ package com.andruav.protocol.commands.binaryMessages;
 
 import com.andruav.BinaryHelper;
 import com.andruav.controlBoard.shared.missions.MissionBase;
+import com.andruav.controlBoard.shared.missions.MissionCameraTrigger;
 import com.andruav.controlBoard.shared.missions.MissionEkla3;
 import com.andruav.controlBoard.shared.missions.MissionHoboot;
 import com.andruav.controlBoard.shared.missions.MohemmaMapBase;
@@ -84,6 +85,11 @@ public class AndruavResalaBinary_WayPoints extends AndruavResalaBinaryBase {
                 mohemmaRTL.Sequence = BinaryHelper.getInt(data, byteIndex + 1);
 
                 missionBase = mohemmaRTL;
+            } else if (waypointType == MissionCameraTrigger.TYPE_CAMERA_TRIGGER) {
+                final MissionCameraTrigger mohemmaCamera = new MissionCameraTrigger();
+                mohemmaCamera.Sequence = BinaryHelper.getInt(data, byteIndex + 1);
+
+                missionBase = mohemmaCamera;
             } else
             {
                 missionBase = new MissionBase();
@@ -111,7 +117,7 @@ public class AndruavResalaBinary_WayPoints extends AndruavResalaBinaryBase {
             if (missionBase instanceof WayPointStep) {
                 final WayPointStep wayPointStep= (WayPointStep) missionBase;
 
-                BinaryHelper.putByte(WayPointStep.TYPE_WAYPOINTSTEP, data, byteIndex);
+                BinaryHelper.putInt(WayPointStep.TYPE_WAYPOINTSTEP, data, byteIndex);
                 BinaryHelper.putInt(wayPointStep.Sequence, data, byteIndex + 1);
                 BinaryHelper.putDouble(wayPointStep.Longitude, data, byteIndex+5);
                 BinaryHelper.putDouble(wayPointStep.Latitude, data, byteIndex + 13);
@@ -123,7 +129,7 @@ public class AndruavResalaBinary_WayPoints extends AndruavResalaBinaryBase {
             else if (missionBase instanceof MissionEkla3)
             {
                 final MissionEkla3 mohemmaEkla3 = (MissionEkla3) missionBase;
-                BinaryHelper.putByte(MissionEkla3.TYPE_EKLA3, data, byteIndex);
+                BinaryHelper.putInt(MissionEkla3.TYPE_EKLA3, data, byteIndex);
                 BinaryHelper.putInt(mohemmaEkla3.Sequence, data, byteIndex + 1);
                 BinaryHelper.putDouble(mohemmaEkla3.getAltitude(), data, byteIndex + 5);
                 BinaryHelper.putDouble(mohemmaEkla3.getPitch(), data, byteIndex + 13);
@@ -131,14 +137,20 @@ public class AndruavResalaBinary_WayPoints extends AndruavResalaBinaryBase {
             else if (missionBase instanceof MissionHoboot)
             {
                 final MissionHoboot mohemmaHoboot = (MissionHoboot) missionBase;
-                BinaryHelper.putByte(MissionHoboot.TYPE_HOBOOT, data, byteIndex);
+                BinaryHelper.putInt(MissionHoboot.TYPE_HOBOOT, data, byteIndex);
                 BinaryHelper.putInt(mohemmaHoboot.Sequence, data, byteIndex + 1);
             }
             else if (missionBase instanceof MissionRTL)
             {
                 final MissionRTL mohemmaRTL = (MissionRTL) missionBase;
-                BinaryHelper.putByte(MissionRTL.TYPE_RTL, data, byteIndex);
+                BinaryHelper.putInt(MissionRTL.TYPE_RTL, data, byteIndex);
                 BinaryHelper.putInt(mohemmaRTL.Sequence, data, byteIndex + 1);
+            }
+            else if (missionBase instanceof MissionCameraTrigger)
+            {
+                final MissionCameraTrigger mohemmaCamera = (MissionCameraTrigger) missionBase;
+                BinaryHelper.putInt(MissionCameraTrigger.TYPE_CAMERA_TRIGGER, data, byteIndex);
+                BinaryHelper.putInt(mohemmaCamera.Sequence, data, byteIndex + 1);
             }
             else
             {

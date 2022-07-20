@@ -4,7 +4,7 @@ package com.andruav.controlBoard.shared.missions;
  * Created by mhefny on 10/1/16.
  */
 public class SplineMission extends MissionBase {
-    public final static byte TYPE_SPLINE_WAYPOINT = 6;
+    public final static int TYPE_SPLINE_WAYPOINT = 6;
 
 
 

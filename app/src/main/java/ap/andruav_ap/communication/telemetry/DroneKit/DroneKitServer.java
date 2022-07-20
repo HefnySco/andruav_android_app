@@ -1005,8 +1005,12 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
     }
 
 
+    public void sendMavlink (final MavlinkMessageWrapper mavlinkMessageWrapper)
+    {
+        ExperimentalApi.getApi(mDrone).sendMavlinkMessage(mavlinkMessageWrapper);
+    }
 
-    public void sendSimulatedPacket (MavlinkMessageWrapper mavlinkMessageWrapper, boolean byPassBlocked)
+    public void sendSimulatedPacket (final MavlinkMessageWrapper mavlinkMessageWrapper, boolean byPassBlocked)
     {
         if (byPassBlocked || (!AndruavSettings.andruavWe7daBase.FCBoard.do_RCChannelBlocked())) {
             ExperimentalApi.getApi(mDrone).sendMavlinkMessage(mavlinkMessageWrapper);
@@ -1198,9 +1202,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-
         final Mission mission = MissionPlanner_Helper.parseMissionWayPointsText (missionText);
-
 
         if (mission == null) return ;
 
@@ -1233,7 +1235,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-
         MissionApi.getApi(mDrone).setMission(mission,true);
     }
 
@@ -1246,9 +1247,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-
         sendSetCurrentWaypoint((short)missionItemNumber);  // skip Home
-
     }
 
     public void doReadHome()
@@ -1259,7 +1258,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         {
             return ;
         }
-
 
         final Home droneHome =   mDrone.getAttribute(AttributeType.HOME);
         if (AndruavSettings.andruavWe7daBase.FCBoard !=null)   ((ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard).onDroneEvent_HomeUpdated(droneHome);
@@ -1343,7 +1341,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             if (abstractCommandListener!= null) abstractCommandListener.onError(-1);
             return ;
         }
-
 
         VehicleApi.getApi(mDrone).setVehicleHome(latLongAlt, abstractCommandListener);
     }

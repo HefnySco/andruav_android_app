@@ -5,7 +5,7 @@ package com.andruav.controlBoard.shared.missions;
  */
 public class MissionRTL extends MissionBase {
 
-    public final static byte TYPE_RTL = 20; // same as mavlink
+    public final static int TYPE_RTL = 20; // same as mavlink
 
 
     public MissionRTL()

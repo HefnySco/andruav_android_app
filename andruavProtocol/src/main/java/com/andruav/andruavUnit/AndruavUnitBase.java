@@ -9,6 +9,7 @@ import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.Constants;
 import com.andruav.TelemetryProtocol;
+import com.andruav.controlBoard.shared.missions.MissionBase;
 import com.andruav.event.droneReport_Event.Event_Emergency_Changed;
 import com.andruav.event.droneReport_Event.Event_FCB_Changed;
 import com.andruav.event.droneReport_Event.Event_GCSBlockedChanged;
@@ -951,7 +952,16 @@ public class AndruavUnitBase {
         }
     }
 
-
+    public void missionItemReached(final int missionItemIndex)
+    {
+        MissionBase missionBase = getMohemmaMapBase().valueAt(missionItemIndex);
+        if (missionBase == null)
+        {
+            // current mission is not updated
+            return ;
+        }
+        missionBase.Status = MissionBase.Report_NAV_ItemReached;
+    }
 
     public void doClearMission () {
 

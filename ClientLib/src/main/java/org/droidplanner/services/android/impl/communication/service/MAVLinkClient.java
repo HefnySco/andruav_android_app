@@ -205,7 +205,8 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
 
     @Override
     public synchronized void sendMessage(MAVLinkMessage message, ICommandListener listener) {
-        sendMavMessage(message, DEFAULT_SYS_ID, DEFAULT_COMP_ID, listener);
+        //sendMavMessage(message, DEFAULT_SYS_ID, DEFAULT_COMP_ID, listener);
+        sendMavMessage(message, message.sysid, message.compid, listener);
     }
 
     protected void sendMavMessage(MAVLinkMessage message, int sysId, int compId, ICommandListener listener){

@@ -1,7 +1,14 @@
 package ap.andruav_ap.communication.controlBoard.mavlink;
 
+import com.andruav.AndruavEngine;
+import com.andruav.event.fpv7adath.Event_FPV_CMD;
+import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
+import com.andruav.interfaces.INotification;
+import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
+import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_Ctrl_Camera;
 import com.mavlink.ardupilotmega.msg_mount_status;
 import com.mavlink.common.msg_attitude;
+import com.mavlink.common.msg_command_long;
 import com.mavlink.common.msg_heartbeat;
 import com.mavlink.common.msg_nav_controller_output;
 import com.mavlink.common.msg_rc_channels;
@@ -9,6 +16,7 @@ import com.mavlink.common.msg_servo_output_raw;
 import com.mavlink.common.msg_statustext;
 import com.andruav.AndruavSettings;
 import com.andruav.notification.PanicFacade;
+import com.mavlink.enums.MAV_CMD;
 
 import ap.andruav_ap.communication.controlBoard.ControlBoard_DroneKit;
 
@@ -29,7 +37,7 @@ public class DroneMavlinkHandler {
     {
         // https://tools.ietf.org/html/rfc5424#section-6.2.1
         // ignore low level messages
-        if (msg_statustext.severity >=5) return;
+        //if (msg_statustext.severity >=5) return;
 
         int len = msg_statustext.text.length;
         char[] cbuf = new char[len+1];
@@ -39,8 +47,7 @@ public class DroneMavlinkHandler {
         //MHefny: status message is max 50 character and is NOT null terminated string when sending 50 character
         cbuf[len]=0;
 
-
-        PanicFacade.cannotDoAutopilotAction(String.valueOf(cbuf));
+        PanicFacade.cannotDoAutopilotAction(msg_statustext.severity,msg_statustext.severity,String.valueOf(cbuf),null);
     }
 
     public static void execute_ServoOutputMessage(final msg_servo_output_raw msg_servo_output_raw) {
@@ -95,14 +102,14 @@ public class DroneMavlinkHandler {
         final ControlBoard_DroneKit controlBoard_droneKit = (ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard;
 
         if (controlBoard_droneKit == null) return ;
-        controlBoard_droneKit.onDroneEvent_HeartBeat (msg_heartbeat.type, msg_heartbeat.base_mode, msg_heartbeat.system_status, msg_heartbeat.mavlink_version);
+        controlBoard_droneKit.onDroneEvent_HeartBeat (msg_heartbeat.sysid, msg_heartbeat.type, msg_heartbeat.base_mode, msg_heartbeat.system_status, msg_heartbeat.mavlink_version);
     }
 
     /***
      *
-     * @param msg_rc_channels_raw
+     * @param msg_rc_channels
      */
-    public static void execute_rc_channel_raw( msg_rc_channels msg_rc_channels)
+    public static void execute_rc_channels( msg_rc_channels msg_rc_channels)
     {
         // COPY LATEST CHANNELS FOR Channel Freezeing & Releasing
         channelsRaw[0] =  msg_rc_channels.chan1_raw;
@@ -114,60 +121,6 @@ public class DroneMavlinkHandler {
         channelsRaw[6] =  msg_rc_channels.chan7_raw;
         channelsRaw[7] =  msg_rc_channels.chan8_raw;
 
-
-//        // BLocking Section
-//        if (!Preference.isRCBlockEnabled(null))
-//        {
-//            AndruavSettings.andruavWe7daBase.FCBoard.isRCChannelBlocked(false);
-//            return;
-//        }
-//
-//        final int channelNum= Preference.getChannelRCBlock(null);
-//        final int channelValue;
-//        switch (channelNum)
-//        {
-//            case 1:
-//                channelValue = msg_rc_channels_raw.chan1_raw;
-//                break;
-//            case 2:
-//                channelValue = msg_rc_channels_raw.chan2_raw;
-//                break;
-//            case 3:
-//                channelValue = msg_rc_channels_raw.chan3_raw;
-//                break;
-//            case 4:
-//                channelValue = msg_rc_channels_raw.chan4_raw;
-//                break;
-//            case 5:
-//                channelValue = msg_rc_channels_raw.chan5_raw;
-//                break;
-//            case 6:
-//                channelValue = msg_rc_channels_raw.chan6_raw;
-//                break;
-//            case 7:
-//                channelValue = msg_rc_channels_raw.chan7_raw;
-//                break;
-//            case 8:
-//                channelValue = msg_rc_channels_raw.chan8_raw;
-//                break;
-//            default:
-//                return;
-//        }
-//
-//        rcChannelBlock_trials = rcChannelBlock_trials + 1;
-//
-//
-//        final boolean block = channelValue >= Preference.getChannelRCBlock_min_value(null);
-//
-//        // if (rcChannelBlock_trials >=3)
-//        // {
-//        rcChannelBlock_trials =0;
-//        //if ((rcChannelBlock != block) && block
-//
-//        AndruavSettings.andruavWe7daBase.FCBoard.isRCChannelBlocked(block);
-//        //TODO:  Broadcast status & add it to extra ID Messages
-        // }
-
         rcChannelBlock_trials = rcChannelBlock_trials + 1;
 
         if ((rcChannelBlock_trials % 5) ==0) {
@@ -175,4 +128,38 @@ public class DroneMavlinkHandler {
             ((ControlBoard_DroneKit) AndruavSettings.andruavWe7daBase.FCBoard).checkBlockingMode();
         }
     }
+
+    public static void execute_command_long (msg_command_long mavLinkMessage)
+    {
+        switch(mavLinkMessage.command)
+        {
+            case MAV_CMD.MAV_CMD_DO_DIGICAM_CONTROL: {
+                AndruavEngine.getEventBus().post(new _7adath_InitAndroidCamera());
+
+                Event_FPV_CMD event_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_TAKEIMAGE);
+                event_fpv_cmd.CameraSource = AndruavMessage_Ctrl_Camera.CAMERA_SOURCE_MOBILE;
+                event_fpv_cmd.NumberOfImages = 1;
+                event_fpv_cmd.TimeBetweenShotes = 0;
+                event_fpv_cmd.DistanceBetweenShotes = 0;
+                event_fpv_cmd.SendBackImages = true;
+                event_fpv_cmd.SaveImageLocally = true;
+                AndruavEngine.getEventBus().post(event_fpv_cmd);
+                break;
+            }
+            case MAV_CMD.MAV_CMD_DO_SET_CAM_TRIGG_DIST: {
+                AndruavEngine.getEventBus().post(new _7adath_InitAndroidCamera());
+
+                Event_FPV_CMD event_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_TAKEIMAGE);
+                event_fpv_cmd.CameraSource = AndruavMessage_Ctrl_Camera.CAMERA_SOURCE_MOBILE;
+                event_fpv_cmd.NumberOfImages = 1;
+                event_fpv_cmd.TimeBetweenShotes = 0;
+                event_fpv_cmd.DistanceBetweenShotes = 0;
+                event_fpv_cmd.SendBackImages = true;
+                event_fpv_cmd.SaveImageLocally = true;
+                AndruavEngine.getEventBus().post(event_fpv_cmd);
+                break;
+            }
+        }
+    }
+
 }

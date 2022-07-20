@@ -7,6 +7,7 @@ import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
 import org.droidplanner.services.android.impl.core.mission.MissionItemImpl;
+import org.droidplanner.services.android.impl.core.mission.commands.CameraControlImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.CameraTriggerImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.ChangeSpeedImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.ConditionYawImpl;
@@ -178,7 +179,7 @@ public class MissionPlanner_Helper {
 
         List<msg_mission_item> rawMissionItems = new LinkedList<>();
 
-        for (int i=1,len = lines.length;i<len;++i)
+        for (int i=2,len = lines.length;i<len;++i)
         {
             final String[] rowData = lines[i].split("\t");
             final msg_mission_item msg = new msg_mission_item();
@@ -252,6 +253,9 @@ public class MissionPlanner_Helper {
                     break;
                 case MAV_CMD.MAV_CMD_DO_SET_CAM_TRIGG_DIST:
                     received.add(new CameraTriggerImpl(msg, missionImpl));
+                    break;
+                case MAV_CMD.MAV_CMD_DO_DIGICAM_CONTROL:
+                    received.add(new CameraControlImpl(msg, missionImpl));
                     break;
                 case MAV_CMD.MAV_CMD_DO_GRIPPER:
                     received.add(new EpmGripperImpl(msg, missionImpl));

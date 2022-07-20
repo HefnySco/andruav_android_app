@@ -60,8 +60,6 @@ public class AndruavUnitMapBase extends SimpleArrayMap<String, AndruavUnitBase> 
 
     }
 
-
-
     /***
      * Called when a new unit added
      * @param andruavUnitBase
