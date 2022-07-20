@@ -1551,7 +1551,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             @Override
             public void onTimeout() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try Loiter Mode again");
+                PanicFacade.cannotDoAutopilotAction("Time Out. Please try Surface Mode again");
             }
         });
     }
@@ -1716,10 +1716,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         });
     }
 
-    /***
-     * Manual is ALT-HOLD for Copter
-     * @param lo7Ta7akom_callback
-     */
     public void do_Manual (final IControlBoard_Callback lo7Ta7akom_callback)
     {
 
@@ -1746,7 +1742,39 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             public void onTimeout() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
 
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try RTL Mode again");
+                PanicFacade.cannotDoAutopilotAction("Time Out. Please try Manual Mode again");
+            }
+        });
+    }
+
+
+    public void do_Acro (final IControlBoard_Callback lo7Ta7akom_callback)
+    {
+
+        if ((mDrone==null) || (!isConnected()))
+        {
+            if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnFailue(-1);
+            return ;
+        }
+
+        VehicleApi.getApi(mDrone).setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_ACRO), new AbstractCommandListener() {
+            @Override
+            public void onSuccess() {
+                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnSuccess();
+            }
+
+            @Override
+            public void onError(int executionError) {
+                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnFailue(executionError);
+                final String error = MavLink_Helpers.getACKError(executionError);
+                PanicFacade.cannotDoAutopilotAction(error);
+            }
+
+            @Override
+            public void onTimeout() {
+                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
+
+                PanicFacade.cannotDoAutopilotAction("Time Out. Please try Acro Mode again");
             }
         });
     }
@@ -1823,7 +1851,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             public void onTimeout() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
 
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try RTL Mode again");
+                PanicFacade.cannotDoAutopilotAction("Time Out. Please try Brake Mode again");
             }
         });
     }

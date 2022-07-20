@@ -35,6 +35,7 @@
     <string name="andruav_error_autopilot_cannot_do_smart_rtl">Drone cannot do Smart RTL</string>
     <string name="andruav_error_autopilot_cannot_do_guided">Drone cannot do Guided mode</string>
     <string name="andruav_error_autopilot_cannot_do_manual">Drone cannot do Manual mode</string>
+    <string name="andruav_error_autopilot_cannot_do_acro">Drone cannot do Acro mode</string>
     <string name="andruav_error_autopilot_cannot_do_circle">Circle mode not Supported</string>
 
     <string name="andruav_error_autopilot_cannot_do_pos_hold">Drone cannot do Position Hold</string>
