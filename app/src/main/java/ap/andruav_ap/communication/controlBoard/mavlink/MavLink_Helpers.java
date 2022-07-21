@@ -168,7 +168,7 @@ public class MavLink_Helpers {
                         mode = ApmModes.FIXED_WING_LOITER.getNumber();
                         break;
                     case MAV_TYPE.MAV_TYPE_GROUND_ROVER:
-                        mode = ApmModes.ROVER_HOLD.getNumber(); // I assume that
+                        mode = ApmModes.ROVER_LOITER.getNumber(); // I assume that
                         break;
                     default:
                         mode = ApmModes.ROTOR_LOITER.getNumber();
@@ -397,7 +397,7 @@ public class MavLink_Helpers {
                         mode = VehicleMode.PLANE_LOITER;
                         break;
                     case MAV_TYPE.MAV_TYPE_GROUND_ROVER:
-                        mode = VehicleMode.ROVER_HOLD; // I assume that
+                        mode = VehicleMode.ROVER_LOITER; // I assume that
                         break;
                     default:
                         mode = VehicleMode.COPTER_LOITER;
@@ -632,6 +632,8 @@ public class MavLink_Helpers {
                         return FlightMode.CONST_FLIGHT_CONTROL_GUIDED;
                     case 11:     //RTL
                         return FlightMode.CONST_FLIGHT_CONTROL_RTL;
+                    case 5:
+                        return FlightMode.CONST_FLIGHT_CONTROL_LOITER;
                     case 4:     //HOLD similar to brake mode
                         return FlightMode.CONST_FLIGHT_CONTROL_HOLD;
                     case 12:     //HOLD similar to brake mode

@@ -170,7 +170,7 @@ public class CommonApiUtils {
                 return VehicleMode.COPTER_GUIDED;
 
             case ROTOR_LOITER:
-                return VehicleMode.COPTER_LOITER;
+                return VehicleMode.ROVER_LOITER;
 
             case ROTOR_RTL:
                 return VehicleMode.COPTER_RTL;
@@ -247,6 +247,9 @@ public class CommonApiUtils {
 
             case ROVER_GUIDED:
                 return VehicleMode.ROVER_GUIDED;
+
+            case ROVER_LOITER:
+                return VehicleMode.ROVER_LOITER;
 
             case ROVER_INITIALIZING:
                 return VehicleMode.ROVER_INITIALIZING;
