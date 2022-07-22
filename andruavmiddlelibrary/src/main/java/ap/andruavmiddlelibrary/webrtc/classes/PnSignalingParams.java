@@ -148,6 +148,7 @@ import ap.andruavmiddlelibrary.preference.Preference;
 //            iceServers.add(new PeerConnection.IceServer("turn:numb.viagenie.ca", "rcMobilestuff@gmail.com", "andruav_turn"));
 
             // Extra Defaults - 19 STUN servers + 4 initial = 23 severs (+2 padding) = Array cap 25
+            iceServers.add(new PeerConnection.IceServer("turn:airgap.droneengage.com:3478","airgap","1234"));
             iceServers.add(new PeerConnection.IceServer("turn:104.131.188.164:3478","andruav_ap","1234"));
             iceServers.add(new PeerConnection.IceServer("stun:stun3.l.google.com:19302"));
             //iceServers.add(new PeerConnection.IceServer("stun:stun4.l.google.com:19302"));
