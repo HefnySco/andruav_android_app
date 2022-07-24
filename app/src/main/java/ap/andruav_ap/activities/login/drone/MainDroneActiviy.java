@@ -192,6 +192,10 @@ public class MainDroneActiviy extends AppCompatActivity {
                 doProgressDialog();
                 try
                 {
+                    AndruavSettings.AuthIp = Preference.getAuthServerURL(null);
+                    AndruavSettings.AuthPort =Preference.getAuthServerPort(null);
+
+
                     LoginClient.RetrieveAccountName(edtAccessCode.getText().toString());
                 }
                 catch (UnsupportedEncodingException e )
