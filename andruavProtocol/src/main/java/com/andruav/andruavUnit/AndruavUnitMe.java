@@ -56,14 +56,7 @@ public class AndruavUnitMe extends AndruavUnitBase {
     @Override
     public void missionItemReached(final int missionItemIndex)
     {
-        MissionBase missionBase = getMohemmaMapBase().valueAt(missionItemIndex);
-        if (missionBase == null)
-        {
-            // current mission is not updated
-            FCBoard.do_ReadMission();
-            return ;
-        }
-        missionBase.Status = MissionBase.Report_NAV_ItemReached;
+        super.missionItemReached(missionItemIndex);
 
         AndruavFacade.sendWayPointsReached(null, missionItemIndex, MissionBase.Report_NAV_ItemReached);
     }

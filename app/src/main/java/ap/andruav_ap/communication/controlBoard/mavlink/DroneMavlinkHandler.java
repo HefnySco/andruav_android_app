@@ -127,6 +127,7 @@ public class DroneMavlinkHandler {
         if ((rcChannelBlock_trials % 5) ==0) {
             rcChannelBlock_trials = 0 ;
             ((ControlBoard_DroneKit) AndruavSettings.andruavWe7daBase.FCBoard).checkBlockingMode();
+            ((ControlBoard_DroneKit) AndruavSettings.andruavWe7daBase.FCBoard).checkRCCamSwitch();
         }
     }
 

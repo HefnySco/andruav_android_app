@@ -798,6 +798,32 @@ public class Preference {
     }
 
 
+    /////////////////////RC Camera Switch
+    public static void isRCCamEnabled(final android.content.ContextWrapper contextWrapper, final boolean rcBlockEnabled) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "sw_cam_rc_en", rcBlockEnabled);
+    }
+
+    public static boolean isRCCamEnabled(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "sw_cam_rc_en", false);
+    }
+
+    public static void setChannelRCCam(final android.content.ContextWrapper contextWrapper, final int channelNumber) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "sw_cam_rc_num", String.valueOf(channelNumber));
+    }
+
+    public static int getChannelRCCam(final android.content.ContextWrapper contextWrapper) {
+        return Integer.parseInt(SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "sw_cam_rc_num" , "8"));
+    }
+
+
+    public static void setChannelRCCam_min_value(final android.content.ContextWrapper contextWrapper, final int minvalue) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "sw_cam_rc_pwm", String.valueOf(minvalue));
+    }
+
+    public static int getChannelRCCam_min_value(final android.content.ContextWrapper contextWrapper) {
+        return Integer.parseInt(SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "sw_cam_rc_pwm" , "1800"));
+    }
+
     ///////////////////// FAILE SAFE RC BLOCK
 
     public static void isRCBlockEnabled(final android.content.ContextWrapper contextWrapper, final boolean rcBlockEnabled) {
@@ -1099,7 +1125,6 @@ public class Preference {
         FactoryReset_RC(contextWrapper);
         FactoryReset_Telemetry(contextWrapper);
         FactoryReset_FPV(contextWrapper);
-        FactoryReset_SocialMedia(contextWrapper);
         FactoryReset_GUIWizard(contextWrapper);
 
     }
@@ -1249,11 +1274,11 @@ public class Preference {
 
         Preference.isRCBlockEnabled(contextWrapper,false);
         Preference.setChannelRCBlock(contextWrapper,8);
-        Preference.setChannelRCBlock_min_value(contextWrapper,1500);
+        Preference.setChannelRCBlock_min_value(contextWrapper,1800);
 
-    }
-
-    public static void FactoryReset_SocialMedia(final android.content.ContextWrapper contextWrapper) {
+        Preference.isRCCamEnabled(contextWrapper,false);
+        Preference.setChannelRCCam(contextWrapper,16);
+        Preference.setChannelRCCam_min_value(contextWrapper,1800);
 
     }
 

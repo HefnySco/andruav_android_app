@@ -24,6 +24,8 @@ public class SettingsDrone extends PreferenceActivity {
     protected EditTextPreference txtCommModuleIP;
     protected EditTextPreference txtGCSBlockChannelNumber;
     protected EditTextPreference txtGCSBlockPMWMinValue;
+    protected EditTextPreference txtRCCamChannelNumber;
+    protected EditTextPreference txtRCCamPMWMinValue;
     protected EditTextPreference txtBatteryMinPercentage;
     protected CheckBoxPreference chkCommModuleIPAuto;
     protected CheckBoxPreference chkGPSInjection;
@@ -92,6 +94,8 @@ public class SettingsDrone extends PreferenceActivity {
         //preferenceCategory = addTitle(R.string.pref_gr_advanced_settings);
         //addSection(R.xml.pref_advancedsettings);
 
+        txtRCCamChannelNumber = (EditTextPreference) findPreference("sw_cam_rc_num");
+        txtRCCamPMWMinValue = (EditTextPreference) findPreference("sw_cam_rc_pwm");
         txtMobileNum = (EditTextPreference) findPreference("ZB8vM05KAdg");
         txtGCSBlockChannelNumber = (EditTextPreference) findPreference("p7wCvhb2Akm");
         txtGCSBlockPMWMinValue = (EditTextPreference) findPreference("xokpINK9PECd");
@@ -105,11 +109,40 @@ public class SettingsDrone extends PreferenceActivity {
             ap.andruavmiddlelibrary.preference.Preference.isGPSInjecttionEnabled(null, false);
         }
 
+        txtRCCamChannelNumber.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                int val = Integer.parseInt(newValue.toString());
+                if ((val >= 1) && (val <= 8)) {
+
+                    return true;
+                } else {
+                    // invalid you can show invalid message
+                    Toast.makeText(getApplicationContext(), "bad channel number. choose from 1 to 16", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+            }
+        });
         txtGCSBlockChannelNumber.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 int val = Integer.parseInt(newValue.toString());
                 if ((val >= 1) && (val <= 8)) {
+
+                    return true;
+                } else {
+                    // invalid you can show invalid message
+                    Toast.makeText(getApplicationContext(), "bad channel number. choose from 1 to 8", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+            }
+        });
+
+        txtRCCamPMWMinValue.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                int val = Integer.parseInt(newValue.toString());
+                if ((val >= Constants.Default_RC_MIN_VALUE) && (val <= Constants.Default_RC_MAX_VALUE)) {
 
                     return true;
                 } else {

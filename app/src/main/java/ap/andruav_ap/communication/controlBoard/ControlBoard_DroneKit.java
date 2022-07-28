@@ -12,6 +12,7 @@ import com.andruav.controlBoard.shared.missions.MissionCameraTrigger;
 import com.andruav.controlBoard.shared.missions.MissionCameraControl;
 import com.andruav.event.Event_Remote_ChannelsCMD;
 import com.andruav.event.droneReport_Event.Event_GPS_Ready;
+import com.andruav.event.fpv7adath.Event_FPV_CMD;
 import com.andruav.sensors.AndruavIMU;
 import com.mavlink.MAVLinkPacket;
 import com.mavlink.common.msg_attitude;
@@ -140,6 +141,8 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
     private int mSysId;
     private short mType;
+
+    private int rcCamera;
 
     /***
      * mGPS_MAV_NUM 0:send to first GPS,1:send to 2nd GPS,127:send to all
@@ -381,6 +384,8 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
         gps_alt_scale = 1000.0; // mhefny I updated clinet LIB relative_alt
         gps_lnglat_scale = 1.0;
 
+        rcCamera = (Preference.getCameraNumber(null) + 1) % 2;
+
        // EventBus.getDefault().register(this, 1);
         ActivateListener(true);
 
@@ -409,6 +414,41 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
         final boolean block = channelValue >= Preference.getChannelRCBlock_min_value(null);
 
         do_RCChannelBlocked(block);
+    }
+
+
+    /***
+     * changes current camera foreground/background based on RC Channel status.
+     * Only Mobile camera is affected by this command.
+     */
+    public void checkRCCamSwitch ()
+    {
+        if (!Preference.isRCCamEnabled(null))
+        {
+            return ;
+        }
+
+        final int channelNum = Preference.getChannelRCCam(null);
+        final int channelValue;
+
+        channelValue = DroneMavlinkHandler.channelsRaw[channelNum-1];
+
+        final boolean button_on = channelValue >= Preference.getChannelRCCam_min_value(null);
+
+        int rcCamera_temp = 0;
+        if (button_on) {
+            rcCamera_temp = 1;
+        }
+
+        if (rcCamera!=rcCamera_temp)
+        {
+            // switch camera if switch changed.
+            rcCamera = rcCamera_temp;
+            final Event_FPV_CMD a7adath_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_SWITCHCAM);
+            a7adath_fpv_cmd.Requester = AndruavSettings.andruavWe7daBase;
+            AndruavEngine.getEventBus().post(a7adath_fpv_cmd);
+        }
+
     }
 
 

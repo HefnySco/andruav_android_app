@@ -455,11 +455,9 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
     {
         try {
 
-
             if (this.mDrone == null) {
                 return;
             }
-
 
             mDrone.disconnect();
 

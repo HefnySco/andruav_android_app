@@ -207,11 +207,6 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
                 localVideoTrack = pcFactory.createVideoTrack(AndruavSettings.andruavWe7daBase.PartyID, localVideoSource);
                 mediaStream.addTrack(localVideoTrack);
                localVideoTrack.addSink(videoFrame -> {
-//                    VideoFrame outVideoFrame = new VideoFrame(
-//                            videoFrame.getBuffer(),
-//                            90, videoFrame.getTimestampNs());
-                    // called in Drone Mode ---- Transmitting
-
                     mSurfaceViewRenderer.onFrame(videoFrame);
                     mExternalVideoSink.onFrame(videoFrame);
                 });
