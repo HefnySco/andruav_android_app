@@ -153,9 +153,14 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
     private void sendCameraHeartBeat()
     {
+        sendHeartBeat(mSysId, MAV_COMPONENT.MAV_COMP_ID_CAMERA);
+    }
+
+    private void sendHeartBeat(final int sysid, final int compid)
+    {
         msg_heartbeat msg_heartbeat = new msg_heartbeat();
-        msg_heartbeat.sysid =  mSysId;
-        msg_heartbeat.compid = MAV_COMPONENT.MAV_COMP_ID_CAMERA;
+        msg_heartbeat.sysid =  sysid;
+        msg_heartbeat.compid = compid;
         final MavlinkMessageWrapper mavlinkMessageWrapper = new MavlinkMessageWrapper(msg_heartbeat);
         if (App.droneKitServer == null) return ;
         App.droneKitServer.sendMavlink (mavlinkMessageWrapper);

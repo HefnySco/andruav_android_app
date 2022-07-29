@@ -858,16 +858,16 @@ public class CommonApiUtils {
 
         //Set the target system and target component for MAVLink messages that support those
         //attributes.
-        try {
-            Class<?> tempMessage = message.getClass();
-            Field target_system = tempMessage.getDeclaredField("target_system");
-            Field target_component = tempMessage.getDeclaredField("target_component");
-
-            target_system.setByte(message, (byte) message.sysid);
-            target_component.setByte(message, (byte) message.compid);
-        } catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException | ExceptionInInitializerError e) {
-            Timber.e(e, e.getMessage());
-        }
+//        try {
+//            Class<?> tempMessage = message.getClass();
+//            Field target_system = tempMessage.getDeclaredField("target_system");
+//            Field target_component = tempMessage.getDeclaredField("target_component");
+//
+//            target_system.setByte(message, (byte) message.sysid);
+//            target_component.setByte(message, (byte) message.compid);
+//        } catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException | ExceptionInInitializerError e) {
+//            Timber.e(e, e.getMessage());
+//        }
 
         drone.getMavClient().sendMessage(message, null);
     }
