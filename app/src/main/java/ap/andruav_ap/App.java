@@ -1067,6 +1067,11 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     }
 
     @Override
+    public boolean  getSendBackImages () {
+        return Preference.getSendBackImages(null);
+    }
+
+    @Override
     public String TAG() {
         return "rcmobile.FPV";
     }

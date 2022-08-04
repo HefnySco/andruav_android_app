@@ -1,6 +1,7 @@
 package com.andruav;
 
 import android.location.Location;
+import android.preference.Preference;
 
 import com.andruav.controlBoard.shared.missions.MissionBase;
 import com.andruav.event.fcb_event.Event_FCB_RemoteControlSettings;
@@ -405,7 +406,7 @@ public class AndruavFacade extends AndruavFacadeBase{
     /***
      *  Possinle Contradiction {@link   }
      *
-     * @param image
+     * @param image can be null and will be stored only in mobile device and will not be sent over network.
      * @param imageLocation
      * @param target
      */
@@ -414,9 +415,11 @@ public class AndruavFacade extends AndruavFacadeBase{
         final AndruavResalaBinary_IMG andruavMessageBinary_img = new AndruavResalaBinary_IMG();
         andruavMessageBinary_img.ImageLocation = imageLocation;
         //andruavMessageBinary_img.IsVideo = isVideo;
-        andruavMessageBinary_img.setImage(image);
+        if ((image != null) && (AndruavEngine.getPreference().getSendBackImages()))
+        {
+            andruavMessageBinary_img.setImage(image);
+        }
         sendMessage(andruavMessageBinary_img,target, Boolean.FALSE);
-        //sendMessage(andruavMessageBinary_img,App.UserName); //for debug sendMessageToModule to myself
     }
 
 

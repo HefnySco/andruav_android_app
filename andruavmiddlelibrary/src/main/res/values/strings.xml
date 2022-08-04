@@ -93,6 +93,8 @@
     <string name="pref_gr_fpv_switch_cam_rc_ch_num_summary">Use RC Channel to switch between cams.</string>
     <string name="pref_gr_fpv_switch_cam_rc_ch_num_min">RC CAM PWM min</string>
     <string name="pref_gr_fpv_switch_cam_rc_ch_num_min_summary">Minimum PWM signal to activate next camera. A typical value is 1800.</string>
+    <string name="pref_gr_fpv_videocam_sendback">Send and Save Image</string>
+    <string name="pref_gr_fpv_videocam_sendback_summary">Send Images to GCS in Realtime. Images are always saved o phone storage.</string>
     <string name="pref_gr_fpv_videocamem_hd">Stream in HD</string>
     <string name="pref_gr_fpv_videocamemirrored_hd_summary">Note: Prefer streaming in HD if network allows.</string>
     <string name="pref_gr_fpv_imagecapturesize">Captured Image Size</string>

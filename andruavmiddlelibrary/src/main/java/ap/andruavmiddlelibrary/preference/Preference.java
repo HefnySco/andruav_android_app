@@ -969,6 +969,13 @@ public class Preference {
 
 
 
+    public static boolean  getSendBackImages(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "sbimg", true);
+    }
+
+    public static void setSendBackImages(final android.content.ContextWrapper contextWrapper, final boolean value) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "sbimg" , value);
+    }
 
 
     public static boolean useStreamVideoHD(final android.content.ContextWrapper contextWrapper) {
@@ -1237,6 +1244,7 @@ public class Preference {
         Preference.useUDPCamera(contextWrapper, true);
         Preference.setVideoImageSizeQuality(contextWrapper, 0);
         Preference.useStreamVideoHD(contextWrapper, true);
+        Preference.setSendBackImages(contextWrapper, true);
         Preference.useLocalStunServerOnly(contextWrapper, false);
         Preference.setSTUNServer(contextWrapper, "");
         Preference.setCameraNumber(contextWrapper, 0); //backFacingCam

@@ -32,6 +32,7 @@ public interface IPreference {
 
     int getChannelminValue(final int channelNumber);
 
+    boolean getSendBackImages();
 
     /***
       * Used to LOG in android Log
