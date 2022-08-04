@@ -57,7 +57,7 @@
     <string name="pref_gr_recovery_chk_rc_block">Enable RC Block</string>
     <string name="pref_gr_recovery_chk_rc_block_summary">vehicle accepts Blocking command to mute all control from GCSs.</string>
     <string name="pref_gr_recovery_edt_rcCh_blk_trigger">RC Block TX Channel</string>
-    <string name="pref_gr_recovery_edt_rcCh_blk_trigger_summary">Channel number that triggers GCS block. Choose a value from 1 to 8.</string>
+    <string name="pref_gr_recovery_edt_rcCh_blk_trigger_summary">Channel number that triggers GCS block. Choose a value from 1 to 18.</string>
     <string name="pref_gr_recovery_edt_blk_battery_min">Battery min %</string>
     <string name="pref_gr_recovery_edt_blk_battery_min_summary">Minimum board or mobile battery percentage to activate Fail Safe.</string>
     <string name="pref_gr_recovery_edt_blk_trigger_min">RC Block Channel PMW min</string>

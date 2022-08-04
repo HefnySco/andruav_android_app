@@ -31,7 +31,7 @@ public class DroneMavlinkHandler {
 
     private static int rcChannelBlock_trials = 0; // to avoid glitches
 
-    public static int[] channelsRaw = new int[8];
+    public static int[] channelsRaw = new int[18];
 
 
     public static void execute_StatusMessage(final msg_statustext msg_statustext)
@@ -121,6 +121,16 @@ public class DroneMavlinkHandler {
         channelsRaw[5] =  msg_rc_channels.chan6_raw;
         channelsRaw[6] =  msg_rc_channels.chan7_raw;
         channelsRaw[7] =  msg_rc_channels.chan8_raw;
+        channelsRaw[8] =  msg_rc_channels.chan9_raw;
+        channelsRaw[9] =  msg_rc_channels.chan10_raw;
+        channelsRaw[10] =  msg_rc_channels.chan11_raw;
+        channelsRaw[11] =  msg_rc_channels.chan12_raw;
+        channelsRaw[12] =  msg_rc_channels.chan13_raw;
+        channelsRaw[13] =  msg_rc_channels.chan14_raw;
+        channelsRaw[14] =  msg_rc_channels.chan15_raw;
+        channelsRaw[15] =  msg_rc_channels.chan16_raw;
+        channelsRaw[16] =  msg_rc_channels.chan17_raw;
+        channelsRaw[17] =  msg_rc_channels.chan18_raw;
 
         rcChannelBlock_trials = rcChannelBlock_trials + 1;
 

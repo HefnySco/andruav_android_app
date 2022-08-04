@@ -113,7 +113,7 @@ public class SettingsDrone extends PreferenceActivity {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 int val = Integer.parseInt(newValue.toString());
-                if ((val >= 1) && (val <= 8)) {
+                if ((val >= 1) && (val <= 18)) {
 
                     return true;
                 } else {
@@ -127,12 +127,12 @@ public class SettingsDrone extends PreferenceActivity {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 int val = Integer.parseInt(newValue.toString());
-                if ((val >= 1) && (val <= 8)) {
+                if ((val >= 1) && (val <= 16)) {
 
                     return true;
                 } else {
                     // invalid you can show invalid message
-                    Toast.makeText(getApplicationContext(), "bad channel number. choose from 1 to 8", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "bad channel number. choose from 1 to 16", Toast.LENGTH_LONG).show();
                     return false;
                 }
             }
