@@ -18,14 +18,20 @@ public class AndruavBinaryHelper {
     public static byte[] joinBinarywithText(final String txt, final byte[] Binary) {
         final byte[] msgHeader = txt.getBytes();
         final byte[] msgBinary = Binary;
+        int length = 0;
+        if (msgBinary!=null) {
+            length = msgBinary.length;
+        }
 
-        final byte[] buf = new byte[msgHeader.length + 1 + msgBinary.length];
+        final byte[] buf = new byte[msgHeader.length + 1 + length];
 
         System.arraycopy(msgHeader, 0, buf, 0, msgHeader.length);
         buf[msgHeader.length] = 0;
         //buf[msgHeader.length + 1]=0;
         //buf[msgHeader.length + 2]=' ';
-        System.arraycopy(msgBinary, 0, buf, msgHeader.length + 1, msgBinary.length);
+        if (length!=0) {
+            System.arraycopy(msgBinary, 0, buf, msgHeader.length + 1, length);
+        }
 
         return buf;
     }
