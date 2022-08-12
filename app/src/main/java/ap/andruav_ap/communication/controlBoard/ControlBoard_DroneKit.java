@@ -562,62 +562,73 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
             case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_FREEZE_CHANNELS:
             case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS:
             {
+                //https://mavlink.io/en/messages/common.html#RC_CHANNELS_OVERRIDE
+                int[] rc_channels=new int[18];
+                for (int i=0;i<8;++i)
+                {
+                    rc_channels[i] = 0; // A value of 0 means to release this channel back to the RC radio.
+                }
+
+                for (int i=8;i<18;++i)
+                {
+                    rc_channels[i] = Short.MAX_VALUE-1 ; // means to release this channel back to the RC radio.
+                }
+
                 final msg_rc_channels_override msg = new msg_rc_channels_override();
 
                 if (mParameteredRefreshedCompleted)
                 {
-                    int[] rc_channels=new int[18];
-                    for (int i=0;i<18;++i)
-                    {
-                        rc_channels[i] = Short.MAX_VALUE ;
-                    }
+
                     rc_channels[mRCMAP_ROLL-1]    = (short) channels[0];                // Aileron
                     rc_channels[mRCMAP_PITCH-1]    = (short) channels[1];               // Elevator
                     rc_channels[mRCMAP_THROTTLE-1] = (short) channels[2];                // Throttle
                     rc_channels[mRCMAP_YAW-1]      = (short) channels[3];                // Rudder
 
-                    msg.chan1_raw = (short) rc_channels[0];
-                    msg.chan2_raw = (short) rc_channels[1];
-                    msg.chan3_raw = (short) rc_channels[2];
-                    msg.chan4_raw = (short) rc_channels[3];
-                    msg.chan5_raw = (short) rc_channels[4];
-                    msg.chan6_raw = (short) rc_channels[5];
-                    msg.chan7_raw = (short) rc_channels[6];
-                    msg.chan8_raw = (short) rc_channels[7];
-                    msg.chan9_raw = (short) rc_channels[8];
-                    msg.chan10_raw = (short) rc_channels[9];
-                    msg.chan11_raw = (short) rc_channels[10];
-                    msg.chan12_raw = (short) rc_channels[11];
-                    msg.chan13_raw = (short) rc_channels[12];
-                    msg.chan14_raw = (short) rc_channels[13];
-                    msg.chan15_raw = (short) rc_channels[14];
-                    msg.chan16_raw = (short) rc_channels[15];
-                    msg.chan17_raw = (short) rc_channels[16];
-                    msg.chan18_raw = (short) rc_channels[17];
                 }
-                else
-                {
-                    msg.chan1_raw = (short) channels[0];                // Aileron
-                    msg.chan2_raw = (short) channels[1];                // Elevator
-                    msg.chan3_raw = (short) channels[2];                // Throttle
-                    msg.chan4_raw = (short) channels[3];                // Rudder
+//                else
+//                {
+//                    msg.chan1_raw = (short) channels[0];                // Aileron
+//                    msg.chan2_raw = (short) channels[1];                // Elevator
+//                    msg.chan3_raw = (short) channels[2];                // Throttle
+//                    msg.chan4_raw = (short) channels[3];                // Rudder
+//
+//                    if (allEightChannels) {
+//                        msg.chan5_raw = channels[4];
+//                        msg.chan6_raw = channels[5];
+//                        msg.chan7_raw = channels[6];
+//                        msg.chan8_raw = channels[7];
+//                    } else {
+//                        // POTENTIAL ISSUE ... channels 5 -8 are released here ... this could conflict wth Mission Planner
+//                        msg.chan5_raw = Short.MAX_VALUE; //(short) channels[4];
+//                        msg.chan6_raw = 0; //(short) channels[5];
+//                        msg.chan7_raw = 0; //(short) channels[6];
+//                        msg.chan8_raw = 0; //(short) channels[7];
+//                    }
+//                }
 
-                    if (allEightChannels) {
-                        msg.chan5_raw = channels[4];
-                        msg.chan6_raw = channels[5];
-                        msg.chan7_raw = channels[6];
-                        msg.chan8_raw = channels[7];
-                    } else {
-                        // POTENTIAL ISSUE ... channels 5 -8 are released here ... this could conflict wth Mission Planner
-                        msg.chan5_raw = 0; //(short) channels[4];
-                        msg.chan6_raw = 0; //(short) channels[5];
-                        msg.chan7_raw = 0; //(short) channels[6];
-                        msg.chan8_raw = 0; //(short) channels[7];
-                    }
-                }
+                msg.chan1_raw = (short) rc_channels[0];
+                msg.chan2_raw = (short) rc_channels[1];
+                msg.chan3_raw = (short) rc_channels[2];
+                msg.chan4_raw = (short) rc_channels[3];
+                msg.chan5_raw = (short) rc_channels[4];
+                msg.chan6_raw = (short) rc_channels[5];
+                msg.chan7_raw = (short) rc_channels[6];
+                msg.chan8_raw = (short) rc_channels[7];
+                msg.chan9_raw = (short) rc_channels[8];
+                msg.chan10_raw = (short) rc_channels[9];
+                msg.chan11_raw = (short) rc_channels[10];
+                msg.chan12_raw = (short) rc_channels[11];
+                msg.chan13_raw = (short) rc_channels[12];
+                msg.chan14_raw = (short) rc_channels[13];
+                msg.chan15_raw = (short) rc_channels[14];
+                msg.chan16_raw = (short) rc_channels[15];
+                msg.chan17_raw = (short) rc_channels[16];
+                msg.chan18_raw = (short) rc_channels[17];
 
                 final MavlinkMessageWrapper mavlinkMessageWrapper = new MavlinkMessageWrapper(msg);
                 if (App.droneKitServer == null) return ;
+                msg.sysid = 255; // simulate GCS
+                msg.compid = 0;
                 App.droneKitServer.sendSimulatedPacket (mavlinkMessageWrapper,false);
             }
             break;
