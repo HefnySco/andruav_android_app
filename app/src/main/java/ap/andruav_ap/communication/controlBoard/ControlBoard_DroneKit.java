@@ -670,10 +670,12 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     private void releaseChannels ()
     {
 
-        if (do_RCChannelBlocked()) return ;
-
         final msg_rc_channels_override msg = new msg_rc_channels_override();
 
+        // Channels 0-7 0 means release.
+        // Channels 8-17 UINT16_MAX-1 means release.
+
+        final short release = Short.MAX_VALUE -1;
         msg.chan1_raw=0;
         msg.chan2_raw=0;
         msg.chan3_raw=0;
@@ -682,6 +684,16 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
         msg.chan6_raw=0;
         msg.chan7_raw=0;
         msg.chan8_raw=0;
+        msg.chan9_raw = release;
+        msg.chan10_raw = release;
+        msg.chan11_raw = release;
+        msg.chan12_raw = release;
+        msg.chan13_raw = release;
+        msg.chan14_raw = release;
+        msg.chan15_raw = release;
+        msg.chan16_raw = release;
+        msg.chan17_raw = release;
+        msg.chan18_raw = release;
 
         final MavlinkMessageWrapper mavlinkMessageWrapper = new MavlinkMessageWrapper(msg);
         if (App.droneKitServer == null) return ;
