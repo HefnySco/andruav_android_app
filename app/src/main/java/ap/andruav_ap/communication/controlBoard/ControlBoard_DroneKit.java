@@ -672,8 +672,8 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
         final msg_rc_channels_override msg = new msg_rc_channels_override();
 
-        // Channels 0-7 0 means release.
-        // Channels 8-17 UINT16_MAX-1 means release.
+        // Channels 1-8 0 means release.
+        // Channels 9-18 UINT16_MAX-1 means release.
 
         final short release = Short.MAX_VALUE -1;
         msg.chan1_raw=0;
