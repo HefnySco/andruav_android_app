@@ -574,12 +574,7 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
                 droneEvent = AttributeEvent.SIGNAL_UPDATED;
                 break;
 
-            case RC_IN:
-                break;
-            case RC_OUT:
-                break;
-
-            case ARMING_STARTED:
+           case ARMING_STARTED:
             case ARMING:
                 droneEvent = AttributeEvent.STATE_ARMING;
                 break;

@@ -761,16 +761,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
     }
 
-
-    public void onDroneEvent_StateUpdated (final State vehicleState)
-    {
-        this.vehicleState = vehicleState;
-        isFlying = vehicleState.isFlying() && canFly;
-        this.mAndruavUnitBase.IsFlying(isFlying);
-        isArmed = vehicleState.isArmed() || (App.droneKitServer.getAPM_VehicleType() == VehicleTypes.VEHICLE_ROVER);
-        this.mAndruavUnitBase.IsArmed(isArmed);
-    }
-
     public void onDroneEvent_SpeedUpdated (Speed droneSpeed)
     {
         gps_groundspeed =  droneSpeed.getGroundSpeed();

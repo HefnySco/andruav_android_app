@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.mavlink.common.msg_rc_channels;
 import com.mavlink.messages.MAVLinkMessage;
 import com.mavlink.ardupilotmega.msg_camera_feedback;
 import com.mavlink.ardupilotmega.msg_mag_cal_progress;
@@ -15,7 +16,6 @@ import com.mavlink.ardupilotmega.msg_mount_status;
 import com.mavlink.ardupilotmega.msg_radio;
 import com.mavlink.common.msg_named_value_int;
 import com.mavlink.common.msg_raw_imu;
-import com.mavlink.common.msg_rc_channels_raw;
 import com.mavlink.common.msg_servo_output_raw;
 import com.mavlink.common.msg_statustext;
 import com.mavlink.common.msg_sys_status;
@@ -37,7 +37,6 @@ import org.droidplanner.services.android.impl.core.drone.variables.Camera;
 import org.droidplanner.services.android.impl.core.drone.variables.GuidedPoint;
 import org.droidplanner.services.android.impl.core.drone.variables.HeartBeat;
 import org.droidplanner.services.android.impl.core.drone.variables.Magnetometer;
-import org.droidplanner.services.android.impl.core.drone.variables.RC;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.AccelCalibration;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.MagnetometerCalibrationImpl;
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
@@ -78,7 +77,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
 
     public static final String FIRMWARE_VERSION_NUMBER_REGEX = "\\d+(\\.\\d{1,2})?";
 
-    private final org.droidplanner.services.android.impl.core.drone.variables.RC rc;
     private final MissionImpl missionImpl;
     private final GuidedPoint guidedPoint;
     private final AccelCalibration accelCalibrationSetup;
@@ -98,7 +96,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
 
         this.waypointManager = new WaypointManager(this, handler);
 
-        rc = new RC(this);
         this.missionImpl = new MissionImpl(this);
         this.guidedPoint = new GuidedPoint(this, handler);
         this.accelCalibrationSetup = new AccelCalibration(this, handler);
@@ -321,9 +318,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
                 return true;
 
             //CALIBRATION ACTIONS
-            case CalibrationActions.ACTION_START_IMU_CALIBRATION:
-                CommonApiUtils.startIMUCalibration(this, listener);
-                return true;
 
             case CalibrationActions.ACTION_SEND_IMU_CALIBRATION_ACK:
                 int imuAck = data.getInt(CalibrationActions.EXTRA_IMU_STEP);
@@ -461,14 +455,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
                     msg_radio m_radio = (msg_radio) message;
                     processSignalUpdate(m_radio.rxerrors, m_radio.fixed, m_radio.rssi,
                             m_radio.remrssi, m_radio.txbuf, m_radio.noise, m_radio.remnoise);
-                    break;
-
-                case msg_rc_channels_raw.MAVLINK_MSG_ID_RC_CHANNELS_RAW:
-                    rc.setRcInputValues((msg_rc_channels_raw) message);
-                    break;
-
-                case msg_servo_output_raw.MAVLINK_MSG_ID_SERVO_OUTPUT_RAW:
-                    rc.setRcOutputValues((msg_servo_output_raw) message);
                     break;
 
                 case msg_camera_feedback.MAVLINK_MSG_ID_CAMERA_FEEDBACK:
