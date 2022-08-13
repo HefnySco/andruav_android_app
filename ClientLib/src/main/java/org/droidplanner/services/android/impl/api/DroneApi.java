@@ -145,7 +145,7 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
             clientVersionCode = apiListener.getClientVersionCode();
         } catch (RemoteException e) {
             Timber.e(e, e.getMessage());
-            dpService.releaseDroneApi(this.ownerId);
+            dpService.releaseDroneApi();
         }
 
         this.clientInfo = new ClientInfo(this.ownerId, apiVersionCode, clientVersionCode);

@@ -61,8 +61,7 @@ public class DroidPlannerService extends Service {
     /**
      * Stores drone api instances per connected client. The client are denoted by their app id.
      */
-    final ConcurrentHashMap<String, DroneApi> droneApiStore = new ConcurrentHashMap<>();
-
+    DroneApi droneApiStore = null;
     /**
      * Caches drone managers per connection type.
      */
@@ -84,8 +83,11 @@ public class DroidPlannerService extends Service {
         if (listener == null)
             return null;
 
+        releaseDroneApi();
+
         DroneApi droneApi = new DroneApi(this, listener, appId);
-        droneApiStore.put(appId, droneApi);
+//        droneApiStore.put(appId, droneApi);
+        droneApiStore = droneApi;
         lbm.sendBroadcast(new Intent(ACTION_DRONE_CREATED));
         updateForegroundNotification();
         return droneApi;
@@ -94,19 +96,22 @@ public class DroidPlannerService extends Service {
     /**
      * Release the drone api instance attached to the given app id.
      *
-     * @param appId Application id of the disconnecting client.
      */
-    void releaseDroneApi(String appId) {
-        if (appId == null)
-            return;
+    void releaseDroneApi() {
+        if (droneApiStore == null) return ;
+        droneApiStore.destroy();
+        droneApiStore = null;
 
-        DroneApi droneApi = droneApiStore.remove(appId);
-        if (droneApi != null) {
-            Timber.d("Releasing drone api instance for " + appId);
-            droneApi.destroy();
-            lbm.sendBroadcast(new Intent(ACTION_DRONE_DESTROYED));
-            updateForegroundNotification();
-        }
+//        if (appId == null)
+//            return;
+//
+//        DroneApi droneApi = droneApiStore.remove(appId);
+//        if (droneApi != null) {
+//            Timber.d("Releasing drone api instance for " + appId);
+//            droneApi.destroy();
+//            lbm.sendBroadcast(new Intent(ACTION_DRONE_DESTROYED));
+//            updateForegroundNotification();
+//        }
     }
 
     /**
@@ -233,10 +238,14 @@ public class DroidPlannerService extends Service {
                     .setPriority(NotificationCompat.PRIORITY_MIN)
                     .setSmallIcon(R.drawable.ic_stat_notify);
 
-            final int connectedCount = droneApiStore.size();
-            if (connectedCount > 1) {
-                notifBuilder.setContentText(connectedCount + " connected apps");
+            if (droneApiStore != null)
+            {
+                notifBuilder.setContentText(" connected apps");
             }
+//            final int connectedCount = droneApiStore.size();
+//            if (connectedCount > 1) {
+//                notifBuilder.setContentText(connectedCount + " connected apps");
+//            }
 
             final Notification notification = notifBuilder.build();
             startForeground(FOREGROUND_ID, notification);
@@ -270,10 +279,13 @@ public class DroidPlannerService extends Service {
         super.onDestroy();
         Timber.d("Destroying DroneKit-Android.");
 
-        for (DroneApi droneApi : droneApiStore.values()) {
-            droneApi.destroy();
-        }
-        droneApiStore.clear();
+//        for (DroneApi droneApi : droneApiStore.values()) {
+//            droneApi.destroy();
+//        }
+        //droneApiStore.clear();
+        if (droneApiStore == null) return ;
+        droneApiStore.destroy();
+        droneApiStore = null;
 
         for (DroneManager droneMgr : droneManagers.values()) {
             droneMgr.destroy();
@@ -295,8 +307,7 @@ public class DroidPlannerService extends Service {
             switch (action) {
 
                 case ACTION_RELEASE_API_INSTANCE:
-                    final String appId = intent.getStringExtra(EXTRA_API_INSTANCE_APP_ID);
-                    releaseDroneApi(appId);
+                    releaseDroneApi();
                     break;
             }
         }
