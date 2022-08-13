@@ -160,9 +160,9 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
     }
 
     @Override
-    protected void doConnect(String appId, DroneApi listener, ConnectionParameter connParams) {
+    protected void doConnect(DroneApi listener, ConnectionParameter connParams) {
         if (mavClient.isDisconnected()) {
-            Timber.i("Opening connection for %s", appId);
+            Timber.i("Opening connection for app");
             mavClient.openConnection();
         } else {
             if (isConnected()) {
@@ -172,7 +172,7 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
             }
         }
 
-        mavClient.registerForTLogLogging(appId, connParams.getTLogLoggingUri());
+        mavClient.registerForTLogLogging("appId", connParams.getTLogLoggingUri());
 
         updateDroneStreamRate(connParams);
     }
@@ -204,19 +204,21 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
     }
 
     @Override
-    protected void doDisconnect(String appId, DroneApi listener) {
+    protected void doDisconnect(DroneApi listener) {
         if (drone instanceof GenericMavLinkDrone) {
-            ((GenericMavLinkDrone) drone).tryStoppingVideoStream(appId);
+            //TODO:MHEFNY Remove APPID
+            ((GenericMavLinkDrone) drone).tryStoppingVideoStream("appId");
         }
 
         if (listener != null) {
-            mavClient.unregisterForTLogLogging(appId);
+            //TODO:MHEFNY Remove APPID
+            mavClient.unregisterForTLogLogging("appId");
             if (isConnected()) {
                 listener.onDroneEvent(DroneInterfaces.DroneEventsType.DISCONNECTED, drone);
             }
         }
 
-        if (mavClient.isConnected() && connectedApps.isEmpty()) {
+        if (mavClient.isConnected()  && (connectedApp==null)) {
             //Reset the gimbal mount mode
             executeAsyncAction(new Action(GimbalActions.ACTION_RESET_GIMBAL_MOUNT_MODE), null);
 
@@ -247,10 +249,11 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
             }
         }
 
-        if (!connectedApps.isEmpty()) {
-            for (DroneApi droneEventsListener : connectedApps.values()) {
-                droneEventsListener.onReceivedMavLinkMessage(receivedMsg);
-            }
+        if (connectedApp!= null) {
+            connectedApp.onReceivedMavLinkMessage(receivedMsg);
+//            for (DroneApi droneEventsListener : connectedApps.values()) {
+//                droneEventsListener.onReceivedMavLinkMessage(receivedMsg);
+//            }
         }
     }
 
@@ -389,28 +392,20 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
 
     @Override
     public void onCalibrationCancelled() {
-        if (connectedApps.isEmpty())
-            return;
-
-        for (DroneApi listener : connectedApps.values())
-            listener.onCalibrationCancelled();
+        if (connectedApp!=null)
+            connectedApp.onCalibrationCancelled();
     }
 
     @Override
     public void onCalibrationProgress(msg_mag_cal_progress progress) {
-        if (connectedApps.isEmpty())
-            return;
-
-        for (DroneApi listener : connectedApps.values())
-            listener.onCalibrationProgress(progress);
+        if (connectedApp!=null)
+            connectedApp.onCalibrationProgress(progress);
     }
 
     @Override
     public void onCalibrationCompleted(msg_mag_cal_report report) {
-        if (connectedApps.isEmpty())
-            return;
-
-        for (DroneApi listener : connectedApps.values())
-            listener.onCalibrationCompleted(report);
+        //if (connectedApps.isEmpty())
+        if (connectedApp!=null)
+            connectedApp.onCalibrationCompleted(report);
     }
 }

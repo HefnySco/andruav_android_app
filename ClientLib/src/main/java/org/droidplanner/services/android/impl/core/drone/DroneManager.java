@@ -35,7 +35,7 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
 
     public static final String EXTRA_CLIENT_APP_ID = "extra_client_app_id";
 
-    protected final ConcurrentHashMap<String, DroneApi> connectedApps = new ConcurrentHashMap<>();
+    protected DroneApi connectedApp = null;
 
     protected final Context context;
     protected final Handler handler;
@@ -71,56 +71,47 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
         disconnect();
         destroyAutopilot();
 
-        connectedApps.clear();
-
     }
 
-    public synchronized void connect(String appId, DroneApi listener, ConnectionParameter connParams) {
-        if (listener == null || TextUtils.isEmpty(appId)) {
+    public synchronized void connect(DroneApi listener, ConnectionParameter connParams) {
+        if (listener == null ) {
             return;
         }
 
-        connectedApps.put(appId, listener);
-        doConnect(appId, listener, connParams);
+        connectedApp = listener;
+        //connectedApps.put(appId, listener);
+        doConnect(listener, connParams);
     }
 
-    protected void doConnect(String appId, DroneApi listener, ConnectionParameter connParams) {
+    protected void doConnect(DroneApi listener, ConnectionParameter connParams) {
 
     }
 
     private void disconnect() {
-        if (!connectedApps.isEmpty()) {
-            for (DroneApi client : connectedApps.values()) {
-                disconnect(client.getClientInfo());
-            }
+        if (connectedApp != null)
+        {
+            disconnect(connectedApp);
+            connectedApp = null;
         }
     }
 
     public int getConnectedAppsCount() {
-        return connectedApps.size();
+        if (connectedApp != null) return 1;
+
+        return 0;
     }
 
-    public void disconnect(DroneApi.ClientInfo clientInfo) {
-        String appId = clientInfo.appId;
-        if (TextUtils.isEmpty(appId)) {
-            return;
-        }
-
-        Log.d(TAG, "Disconnecting client " + appId);
-        DroneApi listener = connectedApps.remove(appId);
-
-        doDisconnect(appId, listener);
+    public void disconnect(DroneApi listener) {
+        if (listener == null) return ;
+        doDisconnect(listener);
     }
 
-    protected void doDisconnect(String appId, DroneApi listener) {
+    protected void doDisconnect(DroneApi listener) {
         if (isConnected() && listener != null) {
             listener.onDroneEvent(DroneInterfaces.DroneEventsType.DISCONNECTED, drone);
         }
 
-        if (connectedApps.isEmpty()) {
-            //Reset the gimbal mount mode
-            executeAsyncAction(null, new Action(GimbalActions.ACTION_RESET_GIMBAL_MOUNT_MODE), null);
-        }
+        executeAsyncAction(null, new Action(GimbalActions.ACTION_RESET_GIMBAL_MOUNT_MODE), null);
     }
 
     protected void notifyDroneEvent(DroneInterfaces.DroneEventsType event) {
@@ -146,13 +137,10 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
                 break;
         }
 
-        if (connectedApps.isEmpty()) {
-            return;
+        if (connectedApp!=null) {
+            connectedApp.onConnectionStatus(connectionStatus);
         }
 
-        for (DroneApi droneEventsListener : connectedApps.values()) {
-            droneEventsListener.onConnectionStatus(connectionStatus);
-        }
     }
 
     public T getDrone() {
@@ -207,13 +195,11 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
     }
 
     protected void notifyDroneAttributeEvent(String attributeEvent, Bundle eventInfo) {
-        if (TextUtils.isEmpty(attributeEvent) || connectedApps.isEmpty()) {
+        if (TextUtils.isEmpty(attributeEvent) || (connectedApp==null)) {
             return;
         }
 
-        for (DroneApi listener : connectedApps.values()) {
-            listener.onAttributeEvent(attributeEvent, eventInfo);
-        }
+        connectedApp.onAttributeEvent(attributeEvent, eventInfo);
     }
 
     @Override
@@ -225,45 +211,29 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
                 break;
         }
 
-        if (connectedApps.isEmpty()) {
-            return;
-        }
-
-        for (DroneApi droneEventsListener : connectedApps.values()) {
-            droneEventsListener.onDroneEvent(event, drone);
+        if (connectedApp!=null) {
+            connectedApp.onDroneEvent(event, drone);
         }
     }
 
     @Override
     public void onBeginReceivingParameters() {
-        if (connectedApps.isEmpty()) {
-            return;
-        }
-
-        for (DroneApi droneEventsListener : connectedApps.values()) {
-            droneEventsListener.onBeginReceivingParameters();
+        if (connectedApp!=null) {
+            connectedApp.onBeginReceivingParameters();
         }
     }
 
     @Override
     public void onParameterReceived(Parameter parameter, int index, int count) {
-        if (connectedApps.isEmpty()) {
-            return;
-        }
-
-        for (DroneApi droneEventsListener : connectedApps.values()) {
-            droneEventsListener.onParameterReceived(parameter, index, count);
+        if (connectedApp!=null) {
+            connectedApp.onParameterReceived(parameter, index, count);
         }
     }
 
     @Override
     public void onEndReceivingParameters() {
-        if (connectedApps.isEmpty()) {
-            return;
-        }
-
-        for (DroneApi droneEventsListener : connectedApps.values()) {
-            droneEventsListener.onEndReceivingParameters();
+        if (connectedApp!=null) {
+            connectedApp.onEndReceivingParameters();
         }
     }
 
@@ -273,13 +243,10 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
 
     @Override
     public void onMessageLogged(int logLevel, String message) {
-        if (connectedApps.isEmpty()) {
-            return;
+        if (connectedApp!=null) {
+            connectedApp.onMessageLogged(logLevel, message);
         }
 
-        for (DroneApi listener : connectedApps.values()) {
-            listener.onMessageLogged(logLevel, message);
-        }
     }
 
     @Override

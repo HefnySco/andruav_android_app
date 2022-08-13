@@ -132,7 +132,7 @@ public class DroidPlannerService extends Service {
         droneManager = DroneManager.generateDroneManager(getApplicationContext(), connParams, new Handler(Looper.getMainLooper()));
 
         Timber.d("Drone manager connection for " + appId);
-        droneManager.connect(appId, listener, connParams);
+        droneManager.connect(listener, connParams);
         return droneManager;
     }
 
@@ -148,7 +148,7 @@ public class DroidPlannerService extends Service {
 
         String appId = clientInfo.appId;
         Timber.d("Drone manager disconnection for " + appId);
-        droneMgr.disconnect(clientInfo);
+        droneMgr.disconnect(droneApiStore);
         if (droneMgr.getConnectedAppsCount() == 0) {
             Timber.d("Destroying drone manager.");
             droneMgr.destroy();
