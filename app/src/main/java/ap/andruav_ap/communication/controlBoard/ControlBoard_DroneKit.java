@@ -627,6 +627,8 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
                 final MavlinkMessageWrapper mavlinkMessageWrapper = new MavlinkMessageWrapper(msg);
                 if (App.droneKitServer == null) return ;
+                msg.target_system = mSystemId; // simulate GCS
+                msg.target_component = mComponentId;
                 msg.sysid = 255; // simulate GCS
                 msg.compid = 0;
                 App.droneKitServer.sendSimulatedPacket (mavlinkMessageWrapper,false);
