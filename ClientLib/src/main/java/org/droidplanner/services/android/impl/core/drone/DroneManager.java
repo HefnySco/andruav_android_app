@@ -20,8 +20,6 @@ import com.o3dr.services.android.lib.model.action.Action;
 import org.droidplanner.services.android.impl.api.DroneApi;
 import org.droidplanner.services.android.impl.communication.model.DataLink;
 import org.droidplanner.services.android.impl.core.drone.autopilot.Drone;
-import org.droidplanner.services.android.impl.core.drone.autopilot.apm.solo.ArduSolo;
-import org.droidplanner.services.android.impl.core.drone.autopilot.apm.solo.SoloComp;
 import org.droidplanner.services.android.impl.core.drone.manager.MavLinkDroneManager;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
 
@@ -96,18 +94,6 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
                 disconnect(client.getClientInfo());
             }
         }
-    }
-
-    /**
-     * @return True if we can expect to find a companion computer on the connected channel.
-     */
-    protected boolean isCompanionComputerEnabled() {
-        final int connectionType = connectionParameter.getConnectionType();
-
-        return drone instanceof ArduSolo
-            || (connectionType == ConnectionType.TYPE_UDP && SoloComp.isAvailable(context))
-            || connectionType == ConnectionType.TYPE_SOLO;
-
     }
 
     public int getConnectedAppsCount() {

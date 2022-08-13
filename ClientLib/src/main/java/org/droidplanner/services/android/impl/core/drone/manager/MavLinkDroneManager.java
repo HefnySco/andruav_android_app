@@ -35,7 +35,6 @@ import org.droidplanner.services.android.impl.core.drone.autopilot.apm.ArduCopte
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.ArduPlane;
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.ArduRover;
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.ArduSub;
-import org.droidplanner.services.android.impl.core.drone.autopilot.apm.solo.ArduSolo;
 import org.droidplanner.services.android.impl.core.drone.autopilot.generic.GenericMavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.autopilot.px4.Px4Native;
 import org.droidplanner.services.android.impl.core.drone.profiles.ParameterManager;
@@ -49,7 +48,6 @@ import org.droidplanner.services.android.impl.core.gcs.follow.FollowAlgorithm;
 import org.droidplanner.services.android.impl.core.gcs.location.FusedLocation;
 import org.droidplanner.services.android.impl.utils.AndroidApWarningParser;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
-import org.droidplanner.services.android.impl.utils.SoloApiUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -98,18 +96,8 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
 
         switch (type) {
             case ARDU_COPTER:
-                if (isCompanionComputerEnabled()) {
-                    onVehicleTypeReceived(FirmwareType.ARDU_SOLO);
-                    return;
-                }
-
                 Timber.i("Instantiating ArduCopter autopilot.");
                 this.drone = new ArduCopter(droneId, context, mavClient, handler, new AndroidApWarningParser(), this);
-                break;
-
-            case ARDU_SOLO:
-                Timber.i("Instantiating ArduSolo autopilot.");
-                this.drone = new ArduSolo(droneId, context, mavClient, handler, new AndroidApWarningParser(), this);
                 break;
 
             case ARDU_PLANE:
@@ -389,12 +377,6 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
 
             FollowAlgorithm currentAlg = followMe.getFollowAlgorithm();
             if (currentAlg.getType() != selectedMode) {
-                if (selectedMode == FollowAlgorithm.FollowModes.SOLO_SHOT &&
-                        !SoloApiUtils.isSoloLinkFeatureAvailable(drone, listener)) {
-                    Timber.w("FollowType is SOLO_SHOT, but SoloLink is not available.");
-                    return;
-                }
-
                 FollowAlgorithm algo = selectedMode.getAlgorithmType(this, handler);
                 Timber.d("Setting followAlgorithm to %s", algo);
                 followMe.setAlgorithm(algo);
