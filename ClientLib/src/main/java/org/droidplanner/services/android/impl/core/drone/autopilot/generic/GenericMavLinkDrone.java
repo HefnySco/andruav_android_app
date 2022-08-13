@@ -279,30 +279,29 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         events.removeDroneListener(listener);
     }
 
-    public void startVideoStream(Bundle videoProps, String appId, String newVideoTag, Surface videoSurface,
+    public void startVideoStream(Bundle videoProps, String newVideoTag, Surface videoSurface,
                                  ICommandListener listener) {
-        videoMgr.startVideoStream(videoProps, appId, newVideoTag, videoSurface, listener);
+        videoMgr.startVideoStream(videoProps, videoSurface, listener);
     }
 
-    public void stopVideoStream(String appId, String currentVideoTag, ICommandListener listener) {
-        videoMgr.stopVideoStream(appId, currentVideoTag, listener);
+    public void stopVideoStream(ICommandListener listener) {
+        videoMgr.stopVideoStream(listener);
     }
 
-    public void startVideoStreamForObserver(String appId, String newVideoTag, ICommandListener listener) {
-        videoMgr.startVideoStreamForObserver(appId, newVideoTag, listener);
+    public void startVideoStreamForObserver(String newVideoTag, ICommandListener listener) {
+        videoMgr.startVideoStreamForObserver(newVideoTag, listener);
     }
 
-    public void stopVideoStreamForObserver(String appId, String currentVideoTag, ICommandListener listener) {
-        videoMgr.stopVideoStreamForObserver(appId, currentVideoTag, listener);
+    public void stopVideoStreamForObserver(ICommandListener listener) {
+        videoMgr.stopVideoStreamForObserver(listener);
     }
 
     /**
      * Stops the video stream if the current owner is the passed argument.
      *
-     * @param appId
      */
-    public void tryStoppingVideoStream(String appId) {
-        videoMgr.tryStoppingVideoStream(appId);
+    public void tryStoppingVideoStream() {
+        videoMgr.tryStoppingVideoStream();
     }
 
     protected void notifyAttributeListener(String attributeEvent) {

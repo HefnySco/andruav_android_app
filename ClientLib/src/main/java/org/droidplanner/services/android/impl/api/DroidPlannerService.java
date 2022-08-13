@@ -85,7 +85,7 @@ public class DroidPlannerService extends Service {
 
         releaseDroneApi();
 
-        DroneApi droneApi = new DroneApi(this, listener, appId);
+        DroneApi droneApi = new DroneApi(this, listener);
 //        droneApiStore.put(appId, droneApi);
         droneApiStore = droneApi;
         lbm.sendBroadcast(new Intent(ACTION_DRONE_CREATED));
@@ -118,12 +118,11 @@ public class DroidPlannerService extends Service {
      * Establish a connection with a vehicle using the given connection parameter.
      *
      * @param connParams Parameters used to connect to the vehicle.
-     * @param appId      Application id of the connecting client.
      * @param listener   Callback to receive drone events.
      * @return A DroneManager instance which acts as router between the connected vehicle and the listeneing client(s).
      */
-    DroneManager connectDroneManager(ConnectionParameter connParams, String appId, DroneApi listener) {
-        if (connParams == null || TextUtils.isEmpty(appId) || listener == null)
+    DroneManager connectDroneManager(ConnectionParameter connParams, DroneApi listener) {
+        if (connParams == null  || listener == null)
             return null;
 
         if (droneManager != null) {
@@ -131,7 +130,7 @@ public class DroidPlannerService extends Service {
         }
         droneManager = DroneManager.generateDroneManager(getApplicationContext(), connParams, new Handler(Looper.getMainLooper()));
 
-        Timber.d("Drone manager connection for " + appId);
+        Timber.d("Drone manager connection for app");
         droneManager.connect(listener, connParams);
         return droneManager;
     }
@@ -143,11 +142,10 @@ public class DroidPlannerService extends Service {
      * @param clientInfo Info of the disconnecting client.
      */
     void disconnectDroneManager(DroneManager droneMgr, DroneApi.ClientInfo clientInfo) {
-        if (droneMgr == null || clientInfo == null || TextUtils.isEmpty(clientInfo.appId))
+        if (droneMgr == null || clientInfo == null )
             return;
 
-        String appId = clientInfo.appId;
-        Timber.d("Drone manager disconnection for " + appId);
+        Timber.d("Drone manager disconnection for app");
         droneMgr.disconnect(droneApiStore);
         if (droneMgr.getConnectedAppsCount() == 0) {
             Timber.d("Destroying drone manager.");

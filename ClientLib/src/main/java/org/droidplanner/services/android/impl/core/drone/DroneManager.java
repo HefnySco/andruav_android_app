@@ -33,8 +33,6 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
 
     private static final String TAG = DroneManager.class.getSimpleName();
 
-    public static final String EXTRA_CLIENT_APP_ID = "extra_client_app_id";
-
     protected DroneApi connectedApp = null;
 
     protected final Context context;
@@ -188,7 +186,6 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
 
         switch (type) {
             case ControlActions.ACTION_ENABLE_MANUAL_CONTROL:
-                data.putString(EXTRA_CLIENT_APP_ID, clientInfo.appId);
                 break;
         }
         return executeAsyncAction(action, listener);

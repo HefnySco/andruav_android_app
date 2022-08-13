@@ -36,7 +36,7 @@ public class ArduCopter extends ArduPilot {
     private static final Version BRAKE_FEATURE_FIRMWARE_VERSION = ARDU_COPTER_V3_3;
     private static final Version COMPASS_CALIBRATION_MIN_VERSION = ARDU_COPTER_V3_4;
 
-    private final ConcurrentHashMap<String, ICommandListener> manualControlStateListeners = new ConcurrentHashMap<>();
+    private ICommandListener manualControlState = null;
 
     public ArduCopter(String droneId, Context context, DataLink.DataLinkProvider<MAVLinkMessage> mavClient, Handler handler, AutopilotWarningParser warningParser, LogMessageListener logListener) {
         super(droneId, context, mavClient, handler, warningParser, logListener);
@@ -86,13 +86,12 @@ public class ArduCopter extends ArduPilot {
     @Override
     public void destroy(){
         super.destroy();
-        manualControlStateListeners.clear();
+        manualControlState = null;
     }
 
     @Override
     protected boolean enableManualControl(Bundle data, ICommandListener listener){
         boolean enable = data.getBoolean(ControlActions.EXTRA_DO_ENABLE);
-        String appId = data.getString(DroneManager.EXTRA_CLIENT_APP_ID);
 
         State state = getState();
         ApmModes vehicleMode = state.getMode();
@@ -105,11 +104,11 @@ public class ArduCopter extends ArduPilot {
             }
 
             if(listener != null) {
-                manualControlStateListeners.put(appId, listener);
+                manualControlState = listener;
             }
         }
         else{
-            manualControlStateListeners.remove(appId);
+            manualControlState = null;
 
             if(vehicleMode != ApmModes.ROTOR_GUIDED){
                 CommonApiUtils.postSuccessEvent(listener);
@@ -128,11 +127,11 @@ public class ArduCopter extends ArduPilot {
             case MODE:
                 //Listen for vehicle mode updates, and update the manual control state listeners appropriately
                 ApmModes currentMode = getState().getMode();
-                for(ICommandListener listener: manualControlStateListeners.values()) {
+                if (manualControlState != null) {
                     if (currentMode == ApmModes.ROTOR_GUIDED) {
-                        CommonApiUtils.postSuccessEvent(listener);
+                        CommonApiUtils.postSuccessEvent(manualControlState);
                     } else {
-                        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
+                        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, manualControlState);
                     }
                 }
                 break;

@@ -1040,7 +1040,7 @@ public class CommonApiUtils {
                 msgReport.offdiag_x, msgReport.offdiag_y, msgReport.offdiag_z);
     }
 
-    public static void startVideoStream(Drone drone, Bundle videoProps, String appId, String videoTag,
+    public static void startVideoStream(Drone drone, Bundle videoProps, String videoTag,
                                         Surface videoSurface, ICommandListener listener) {
         if (!(drone instanceof GenericMavLinkDrone)) {
             postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
@@ -1048,10 +1048,10 @@ public class CommonApiUtils {
         }
 
         GenericMavLinkDrone mavLinkDrone = (GenericMavLinkDrone) drone;
-        mavLinkDrone.startVideoStream(videoProps, appId, videoTag, videoSurface, listener);
+        mavLinkDrone.startVideoStream(videoProps, videoTag, videoSurface, listener);
     }
 
-    public static void stopVideoStream(Drone drone, String appId, String videoTag,
+    public static void stopVideoStream(Drone drone, String videoTag,
                                        ICommandListener listener) {
         if (!(drone instanceof GenericMavLinkDrone)) {
             postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
@@ -1059,10 +1059,10 @@ public class CommonApiUtils {
         }
 
         GenericMavLinkDrone mavLinkDrone = (GenericMavLinkDrone) drone;
-        mavLinkDrone.stopVideoStream(appId, videoTag, listener);
+        mavLinkDrone.stopVideoStream(listener);
     }
 
-    public static void startVideoStreamForObserver(Drone drone, String appId, String videoTag,
+    public static void startVideoStreamForObserver(Drone drone, String videoTag,
                                         ICommandListener listener) {
         if (!(drone instanceof GenericMavLinkDrone)) {
             postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
@@ -1070,10 +1070,10 @@ public class CommonApiUtils {
         }
 
         GenericMavLinkDrone mavLinkDrone = (GenericMavLinkDrone) drone;
-        mavLinkDrone.startVideoStreamForObserver(appId, videoTag, listener);
+        mavLinkDrone.startVideoStreamForObserver(videoTag, listener);
     }
 
-    public static void stopVideoStreamForObserver(Drone drone, String appId, String videoTag,
+    public static void stopVideoStreamForObserver(Drone drone, String videoTag,
                                        ICommandListener listener) {
         if (!(drone instanceof GenericMavLinkDrone)) {
             postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
@@ -1081,6 +1081,6 @@ public class CommonApiUtils {
         }
 
         GenericMavLinkDrone mavLinkDrone = (GenericMavLinkDrone) drone;
-        mavLinkDrone.stopVideoStreamForObserver(appId, videoTag, listener);
+        mavLinkDrone.stopVideoStreamForObserver(listener);
     }
 }
