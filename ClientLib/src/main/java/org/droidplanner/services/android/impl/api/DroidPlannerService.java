@@ -65,7 +65,7 @@ public class DroidPlannerService extends Service {
     /**
      * Caches drone managers per connection type.
      */
-    final ConcurrentHashMap<ConnectionParameter, DroneManager> droneManagers = new ConcurrentHashMap<>();
+    DroneManager droneManager = null;
 
     private DPServices dpServices;
 
@@ -126,23 +126,14 @@ public class DroidPlannerService extends Service {
         if (connParams == null || TextUtils.isEmpty(appId) || listener == null)
             return null;
 
-        DroneManager droneMgr = droneManagers.get(connParams);
-        if (droneMgr == null) {
-            final DroneManager temp = DroneManager.generateDroneManager(getApplicationContext(), connParams, new Handler(Looper.getMainLooper()));
-
-            droneMgr = droneManagers.putIfAbsent(connParams, temp);
-            if(droneMgr == null){
-                Timber.d("Generating new drone manager.");
-                droneMgr = temp;
-            }
-            else{
-                temp.destroy();
-            }
+        if (droneManager != null) {
+            droneManager.destroy();
         }
+        droneManager = DroneManager.generateDroneManager(getApplicationContext(), connParams, new Handler(Looper.getMainLooper()));
 
         Timber.d("Drone manager connection for " + appId);
-        droneMgr.connect(appId, listener, connParams);
-        return droneMgr;
+        droneManager.connect(appId, listener, connParams);
+        return droneManager;
     }
 
     /**
@@ -161,7 +152,7 @@ public class DroidPlannerService extends Service {
         if (droneMgr.getConnectedAppsCount() == 0) {
             Timber.d("Destroying drone manager.");
             droneMgr.destroy();
-            droneManagers.remove(droneMgr.getConnectionParameter());
+            droneManager = null;
         }
     }
 
@@ -283,14 +274,15 @@ public class DroidPlannerService extends Service {
 //            droneApi.destroy();
 //        }
         //droneApiStore.clear();
-        if (droneApiStore == null) return ;
-        droneApiStore.destroy();
-        droneApiStore = null;
-
-        for (DroneManager droneMgr : droneManagers.values()) {
-            droneMgr.destroy();
+        if (droneApiStore != null) {
+            droneApiStore.destroy();
+            droneApiStore = null;
         }
-        droneManagers.clear();
+
+        if (droneManager != null) {
+            droneManager.destroy();
+            droneManager = null;
+        }
 
         dpServices.destroy();
 
