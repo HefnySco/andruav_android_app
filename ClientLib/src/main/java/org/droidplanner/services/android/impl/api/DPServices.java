@@ -54,15 +54,15 @@ final class DPServices extends IDroidPlannerServices.Stub {
         Log.d(TAG, "List of connected apps request from " + requesterId);
 
         List<Bundle> appsInfo = new ArrayList<>();
-        for(DroneApi droneApi : serviceRef.droneApiStore.values()){
-            if(droneApi.isConnected()){
-                DroneManager droneManager = droneApi.getDroneManager();
+        if (serviceRef.droneApiStore != null) {
+            if(serviceRef.droneApiStore.isConnected()){
+                DroneManager droneManager = serviceRef.droneApiStore.getDroneManager();
                 if(droneManager != null) {
-                    final ConnectionParameter droneParams = droneApi.getDroneManager().getConnectionParameter();
+                    final ConnectionParameter droneParams = serviceRef.droneApiStore.getDroneManager().getConnectionParameter();
                     final ConnectionParameter sanitizedParams = droneParams.clone();
 
                     Bundle info = new Bundle();
-                    info.putString(GCSEvent.EXTRA_APP_ID, droneApi.getOwnerId());
+                    info.putString(GCSEvent.EXTRA_APP_ID, serviceRef.droneApiStore.getOwnerId());
                     info.putParcelable(GCSEvent.EXTRA_VEHICLE_CONNECTION_PARAMETER, sanitizedParams);
 
                     appsInfo.add(info);
@@ -77,7 +77,7 @@ final class DPServices extends IDroidPlannerServices.Stub {
     public void releaseDroneApi(IDroneApi dpApi) throws RemoteException {
         Log.d(TAG, "Releasing acquired drone api handle.");
         if(dpApi instanceof DroneApi) {
-            serviceRef.releaseDroneApi(((DroneApi) dpApi).getOwnerId());
+            serviceRef.releaseDroneApi();
         }
     }
 }

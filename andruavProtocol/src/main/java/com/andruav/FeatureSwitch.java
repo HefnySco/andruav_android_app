@@ -78,7 +78,7 @@ public class FeatureSwitch {
     public static final boolean IGNORE_NO_INTERNET_CONNECTION = true; // also should be true for local server
 
 
-    public static final boolean DEBUG_MODE = false;
+    public static final boolean DEBUG_MODE = true;
     public static final boolean DEBUG_LOG_MODE = false; // works only iff [DEBUG_MODE==true]
 
 }

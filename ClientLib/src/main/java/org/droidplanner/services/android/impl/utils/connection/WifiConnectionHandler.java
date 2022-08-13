@@ -81,13 +81,13 @@ public class WifiConnectionHandler {
                     int supplicationError = intent.getIntExtra(WifiManager.EXTRA_SUPPLICANT_ERROR, -1);
                     Timber.d("Supplicant state changed error %s with state %s and ssid %s", supplicationError, supState, ssid);
                     if (supplicationError == WifiManager.ERROR_AUTHENTICATING) {
-                        if (NetworkUtils.isSoloNetwork(ssid)) {
-                            notifyWifiConnectionFailed();
-                            WifiConfiguration wifiConfig = getWifiConfigs(ssid);
-                            if (wifiConfig != null) {
-                                wifiMgr.removeNetwork(wifiConfig.networkId);
-                            }
-                        }
+//                        if (NetworkUtils.isSoloNetwork(ssid)) {
+//                            notifyWifiConnectionFailed();
+//                            WifiConfiguration wifiConfig = getWifiConfigs(ssid);
+//                            if (wifiConfig != null) {
+//                                wifiMgr.removeNetwork(wifiConfig.networkId);
+//                            }
+//                        }
                     }
                     break;
 

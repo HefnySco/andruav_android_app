@@ -13,7 +13,6 @@ import android.os.Bundle;
 import com.o3dr.android.client.BuildConfig;
 
 import org.droidplanner.services.android.impl.core.MAVLink.connection.MavLinkConnection;
-import org.droidplanner.services.android.impl.core.drone.autopilot.apm.solo.SoloComp;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -33,9 +32,6 @@ public class NetworkUtils {
      * @return Internet connection availability.
      */
     public static boolean isNetworkAvailable(Context context) {
-        if (!BuildConfig.SITL_DEBUG && isOnSololinkNetwork(context))
-            return false;
-
         ConnectivityManager connectivityManager = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
@@ -48,18 +44,6 @@ public class NetworkUtils {
         final WifiInfo connectedWifi = wifiMgr.getConnectionInfo();
         final String connectedSSID = connectedWifi == null ? null : connectedWifi.getSSID().replace("\"", "");
         return connectedSSID;
-    }
-
-    public static boolean isOnSololinkNetwork(Context context) {
-        if (BuildConfig.SITL_DEBUG)
-            return true;
-
-        final String connectedSSID = getCurrentWifiLink(context);
-        return isSoloNetwork(connectedSSID);
-    }
-
-    public static boolean isSoloNetwork(String ssid) {
-        return ssid != null && ssid.startsWith(SoloComp.SOLO_LINK_WIFI_PREFIX);
     }
 
     public static void bindSocketToNetwork(Bundle extras, Socket socket) throws IOException {

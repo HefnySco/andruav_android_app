@@ -627,6 +627,8 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
                 final MavlinkMessageWrapper mavlinkMessageWrapper = new MavlinkMessageWrapper(msg);
                 if (App.droneKitServer == null) return ;
+                msg.target_system = mSystemId; // simulate GCS
+                msg.target_component = mComponentId;
                 msg.sysid = 255; // simulate GCS
                 msg.compid = 0;
                 App.droneKitServer.sendSimulatedPacket (mavlinkMessageWrapper,false);
@@ -759,16 +761,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     {
 
 
-    }
-
-
-    public void onDroneEvent_StateUpdated (final State vehicleState)
-    {
-        this.vehicleState = vehicleState;
-        isFlying = vehicleState.isFlying() && canFly;
-        this.mAndruavUnitBase.IsFlying(isFlying);
-        isArmed = vehicleState.isArmed() || (App.droneKitServer.getAPM_VehicleType() == VehicleTypes.VEHICLE_ROVER);
-        this.mAndruavUnitBase.IsArmed(isArmed);
     }
 
     public void onDroneEvent_SpeedUpdated (Speed droneSpeed)

@@ -4,7 +4,7 @@ package com.o3dr.services.android.lib.model;
 /**
 * Asynchronous notification of a command execution state.
 */
-oneway interface ICommandListener {
+ interface ICommandListener {
 
     /**
     * Called when the command was executed successfully.

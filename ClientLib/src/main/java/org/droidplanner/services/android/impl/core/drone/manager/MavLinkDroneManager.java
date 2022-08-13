@@ -35,7 +35,6 @@ import org.droidplanner.services.android.impl.core.drone.autopilot.apm.ArduCopte
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.ArduPlane;
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.ArduRover;
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.ArduSub;
-import org.droidplanner.services.android.impl.core.drone.autopilot.apm.solo.ArduSolo;
 import org.droidplanner.services.android.impl.core.drone.autopilot.generic.GenericMavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.autopilot.px4.Px4Native;
 import org.droidplanner.services.android.impl.core.drone.profiles.ParameterManager;
@@ -49,7 +48,6 @@ import org.droidplanner.services.android.impl.core.gcs.follow.FollowAlgorithm;
 import org.droidplanner.services.android.impl.core.gcs.location.FusedLocation;
 import org.droidplanner.services.android.impl.utils.AndroidApWarningParser;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
-import org.droidplanner.services.android.impl.utils.SoloApiUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -98,18 +96,8 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
 
         switch (type) {
             case ARDU_COPTER:
-                if (isCompanionComputerEnabled()) {
-                    onVehicleTypeReceived(FirmwareType.ARDU_SOLO);
-                    return;
-                }
-
                 Timber.i("Instantiating ArduCopter autopilot.");
                 this.drone = new ArduCopter(droneId, context, mavClient, handler, new AndroidApWarningParser(), this);
-                break;
-
-            case ARDU_SOLO:
-                Timber.i("Instantiating ArduSolo autopilot.");
-                this.drone = new ArduSolo(droneId, context, mavClient, handler, new AndroidApWarningParser(), this);
                 break;
 
             case ARDU_PLANE:
@@ -172,9 +160,9 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
     }
 
     @Override
-    protected void doConnect(String appId, DroneApi listener, ConnectionParameter connParams) {
+    protected void doConnect(DroneApi listener, ConnectionParameter connParams) {
         if (mavClient.isDisconnected()) {
-            Timber.i("Opening connection for %s", appId);
+            Timber.i("Opening connection for app");
             mavClient.openConnection();
         } else {
             if (isConnected()) {
@@ -184,7 +172,7 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
             }
         }
 
-        mavClient.registerForTLogLogging(appId, connParams.getTLogLoggingUri());
+        mavClient.registerForTLogLogging("appId", connParams.getTLogLoggingUri());
 
         updateDroneStreamRate(connParams);
     }
@@ -216,19 +204,21 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
     }
 
     @Override
-    protected void doDisconnect(String appId, DroneApi listener) {
+    protected void doDisconnect(DroneApi listener) {
         if (drone instanceof GenericMavLinkDrone) {
-            ((GenericMavLinkDrone) drone).tryStoppingVideoStream(appId);
+            //TODO:MHEFNY Remove APPID
+            ((GenericMavLinkDrone) drone).tryStoppingVideoStream();
         }
 
         if (listener != null) {
-            mavClient.unregisterForTLogLogging(appId);
+            //TODO:MHEFNY Remove APPID
+            mavClient.unregisterForTLogLogging("appId");
             if (isConnected()) {
                 listener.onDroneEvent(DroneInterfaces.DroneEventsType.DISCONNECTED, drone);
             }
         }
 
-        if (mavClient.isConnected() && connectedApps.isEmpty()) {
+        if (mavClient.isConnected()  && (connectedApp==null)) {
             //Reset the gimbal mount mode
             executeAsyncAction(new Action(GimbalActions.ACTION_RESET_GIMBAL_MOUNT_MODE), null);
 
@@ -259,10 +249,11 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
             }
         }
 
-        if (!connectedApps.isEmpty()) {
-            for (DroneApi droneEventsListener : connectedApps.values()) {
-                droneEventsListener.onReceivedMavLinkMessage(receivedMsg);
-            }
+        if (connectedApp!= null) {
+            connectedApp.onReceivedMavLinkMessage(receivedMsg);
+//            for (DroneApi droneEventsListener : connectedApps.values()) {
+//                droneEventsListener.onReceivedMavLinkMessage(receivedMsg);
+//            }
         }
     }
 
@@ -389,12 +380,6 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
 
             FollowAlgorithm currentAlg = followMe.getFollowAlgorithm();
             if (currentAlg.getType() != selectedMode) {
-                if (selectedMode == FollowAlgorithm.FollowModes.SOLO_SHOT &&
-                        !SoloApiUtils.isSoloLinkFeatureAvailable(drone, listener)) {
-                    Timber.w("FollowType is SOLO_SHOT, but SoloLink is not available.");
-                    return;
-                }
-
                 FollowAlgorithm algo = selectedMode.getAlgorithmType(this, handler);
                 Timber.d("Setting followAlgorithm to %s", algo);
                 followMe.setAlgorithm(algo);
@@ -407,28 +392,20 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
 
     @Override
     public void onCalibrationCancelled() {
-        if (connectedApps.isEmpty())
-            return;
-
-        for (DroneApi listener : connectedApps.values())
-            listener.onCalibrationCancelled();
+        if (connectedApp!=null)
+            connectedApp.onCalibrationCancelled();
     }
 
     @Override
     public void onCalibrationProgress(msg_mag_cal_progress progress) {
-        if (connectedApps.isEmpty())
-            return;
-
-        for (DroneApi listener : connectedApps.values())
-            listener.onCalibrationProgress(progress);
+        if (connectedApp!=null)
+            connectedApp.onCalibrationProgress(progress);
     }
 
     @Override
     public void onCalibrationCompleted(msg_mag_cal_report report) {
-        if (connectedApps.isEmpty())
-            return;
-
-        for (DroneApi listener : connectedApps.values())
-            listener.onCalibrationCompleted(report);
+        //if (connectedApps.isEmpty())
+        if (connectedApp!=null)
+            connectedApp.onCalibrationCompleted(report);
     }
 }

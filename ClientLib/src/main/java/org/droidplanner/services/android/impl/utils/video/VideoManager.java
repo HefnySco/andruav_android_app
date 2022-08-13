@@ -69,9 +69,6 @@ public class VideoManager implements IpConnectionListener {
     private final AtomicBoolean isStarted = new AtomicBoolean(false);
     private final AtomicBoolean wasConnected = new AtomicBoolean(false);
 
-    private final AtomicReference<String> videoOwnerId = new AtomicReference<>(NO_VIDEO_OWNER);
-    private final AtomicReference<String> videoTagRef = new AtomicReference<>("");
-
     protected UdpConnection linkConn;
 
     private final MediaCodecManager mediaCodecManager;
@@ -132,10 +129,7 @@ public class VideoManager implements IpConnectionListener {
     }
 
     public void reset() {
-        Timber.d("Resetting video tag (%s) and owner id (%s)", videoTagRef.get(), videoOwnerId.get());
-        videoTagRef.set("");
-        videoOwnerId.set(NO_VIDEO_OWNER);
-
+        Timber.d("Resetting video");
         disableLocalRecording();
 
         stopDecoding(null);
@@ -143,6 +137,7 @@ public class VideoManager implements IpConnectionListener {
 
     public void stopDecoding(DecoderListener listener) {
         Log.i(TAG, "Aborting video decoding process.");
+        if (mediaCodecManager == null) return ;
         mediaCodecManager.stopDecoding(listener);
 
         stop();
@@ -275,15 +270,13 @@ public class VideoManager implements IpConnectionListener {
         return true;
     }
 
-    private void checkForLocalRecording(String appId, Bundle videoProps){
-        if (TextUtils.isEmpty(appId))
-            return;
+    private void checkForLocalRecording(Bundle videoProps){
 
         final boolean isLocalRecordingEnabled = videoProps.getBoolean(CameraActions.EXTRA_VIDEO_ENABLE_LOCAL_RECORDING);
         if (isLocalRecordingEnabled) {
             String localRecordingFilename = videoProps.getString(CameraActions.EXTRA_VIDEO_LOCAL_RECORDING_FILENAME);
             if(TextUtils.isEmpty(localRecordingFilename)){
-                localRecordingFilename = appId + "." + FILE_DATE_FORMAT.format(new Date());
+                localRecordingFilename = "appid." + FILE_DATE_FORMAT.format(new Date());
             }
 
             if(!localRecordingFilename.equalsIgnoreCase(streamRecorder.getRecordingFilename())){
@@ -299,13 +292,9 @@ public class VideoManager implements IpConnectionListener {
         }
     }
 
-    public void startVideoStream(Bundle videoProps, String appId, String newVideoTag, Surface videoSurface,
+    public void startVideoStream(Bundle videoProps,Surface videoSurface,
                                  final ICommandListener listener) {
-        Timber.d("Video stream start request from %s. Video owner is %s.", appId, videoOwnerId.get());
-
-        if (!isAppIdValid(appId, listener)) {
-            return;
-        }
+        Timber.d("Video stream start request from appID.");
 
         final int udpPort = videoProps.getInt(CameraActions.EXTRA_VIDEO_PROPS_UDP_PORT, -1);
         if (videoSurface == null || udpPort == -1){
@@ -313,27 +302,8 @@ public class VideoManager implements IpConnectionListener {
             return;
         }
 
-        if (newVideoTag == null)
-            newVideoTag = "";
 
-        if (appId.equals(videoOwnerId.get())) {
-            String currentVideoTag = videoTagRef.get();
-            if (currentVideoTag == null)
-                currentVideoTag = "";
-
-            if (newVideoTag.equals(currentVideoTag)) {
-                // Check if the local recording state needs to be updated.
-                checkForLocalRecording(appId, videoProps);
-
-                postSuccessEvent(listener);
-                return;
-            }
-        }
-
-        if (videoOwnerId.compareAndSet(NO_VIDEO_OWNER, appId)) {
-            videoTagRef.set(newVideoTag);
-
-            checkForLocalRecording(appId, videoProps);
+            checkForLocalRecording(videoProps);
 
             Timber.i("Starting video decoding.");
             startDecoding(udpPort, videoSurface, new DecoderListener() {
@@ -357,38 +327,19 @@ public class VideoManager implements IpConnectionListener {
                     reset();
                 }
             });
-        }
-        else {
-            postErrorEvent(CommandExecutionError.COMMAND_DENIED, listener);
-        }
+
     }
 
-    public void startVideoStreamForObserver(String appId, String newVideoTag,
+    public void startVideoStreamForObserver(String newVideoTag,
                                             final ICommandListener listener) {
-        Timber.d("Video stream start request from %s. Video owner is %s.", appId,
-            videoOwnerId.get());
-
-        if (!isAppIdValid(appId, listener)) {
-            return;
-        }
+        Timber.d("Video stream start request from app. Video owner is.");
 
         if (newVideoTag == null)
             newVideoTag = "";
 
-        if (appId.equals(videoOwnerId.get())) {
-            String currentVideoTag = videoTagRef.get();
-            if (currentVideoTag == null)
-                currentVideoTag = "";
 
-            if (newVideoTag.equals(currentVideoTag)){
-                postSuccessEvent(listener);
-                return;
-            }
-        }
-
-        if (videoOwnerId.compareAndSet(NO_VIDEO_OWNER, appId)) {
-            videoTagRef.set(newVideoTag);
-            Timber.i("Successful lock obtained for app with id %s.", appId);
+        if (listener != null) {
+            Timber.i("Successful lock obtained for app with id appID." );
 
             videoStreamObserverUsed.set(true);
 
@@ -398,34 +349,13 @@ public class VideoManager implements IpConnectionListener {
         }
     }
 
-    public void stopVideoStream(String appId, String currentVideoTag,
-                                final ICommandListener listener) {
-        Timber.d("Video stream stop request from %s. Video owner is %s.", appId, videoOwnerId.get());
+    public void stopVideoStream(final ICommandListener listener) {
+        Timber.d("Video stream stop request from appID.");
 
-        if (!isAppIdValid(appId, listener)) {
-            return;
-        }
-
-        final String currentVideoOwner = videoOwnerId.get();
-        if (NO_VIDEO_OWNER.equals(currentVideoOwner)) {
-            Timber.d("No video owner set. Nothing to do.");
 
             disableLocalRecording();
 
-            postSuccessEvent(listener);
-            return;
-        }
-
-        if (currentVideoTag == null)
-            currentVideoTag = "";
-
-        if (appId.equals(currentVideoOwner) && currentVideoTag.equals(videoTagRef.get())
-                && videoOwnerId.compareAndSet(currentVideoOwner, NO_VIDEO_OWNER)){
-            videoTagRef.set("");
-
-            disableLocalRecording();
-
-            Timber.d("Stopping video decoding. Current owner is %s.", currentVideoOwner);
+            Timber.d("Stopping video decoding.");
 
             Timber.i("Stopping video decoding.");
             stopDecoding(new DecoderListener() {
@@ -443,76 +373,25 @@ public class VideoManager implements IpConnectionListener {
                     postSuccessEvent(listener);
                 }
             });
+
+    }
+
+    public void stopVideoStreamForObserver(final ICommandListener listener) {
+        Timber.d("Video stream stop request from appID.");
+
+
+        videoStreamObserverUsed.set(false);
+        postSuccessEvent(listener);
+    }
+
+    public void tryStoppingVideoStream() {
+
+        if(videoStreamObserverUsed.get()){
+            stopVideoStreamForObserver(null);
         }
         else {
-            postErrorEvent(CommandExecutionError.COMMAND_DENIED, listener);
+            stopVideoStream(null);
         }
     }
 
-    public void stopVideoStreamForObserver(String appId, String currentVideoTag,
-                                           final ICommandListener listener) {
-        Timber.d("Video stream stop request from %s. Video owner is %s.", appId, videoOwnerId.get());
-
-        if (!isAppIdValid(appId, listener)) {
-            return;
-        }
-
-        final String currentVideoOwner = videoOwnerId.get();
-        if (NO_VIDEO_OWNER.equals(currentVideoOwner)) {
-            Timber.d("No video owner set. Nothing to do.");
-
-            postSuccessEvent(listener);
-            return;
-        }
-
-        if (currentVideoTag == null)
-            currentVideoTag = "";
-
-        if (appId.equals(currentVideoOwner) && currentVideoTag.equals(videoTagRef.get())
-            && videoOwnerId.compareAndSet(currentVideoOwner, NO_VIDEO_OWNER)){
-            videoTagRef.set("");
-
-            Timber.d("Stopping video decoding. Current owner is %s.", currentVideoOwner);
-
-            Timber.i("Stop using video observer...");
-
-            videoStreamObserverUsed.set(false);
-
-            postSuccessEvent(listener);
-        }
-        else {
-            postErrorEvent(CommandExecutionError.COMMAND_DENIED, listener);
-        }
-    }
-
-    public void tryStoppingVideoStream(String parentId) {
-        if (TextUtils.isEmpty(parentId))
-            return;
-
-        final String videoOwner = videoOwnerId.get();
-        if (NO_VIDEO_OWNER.equals(videoOwner))
-            return;
-
-        if (videoOwner.equals(parentId)){
-            Timber.d("Stopping video owned by %s", parentId);
-
-            if(videoStreamObserverUsed.get()){
-                stopVideoStreamForObserver(parentId, videoTagRef.get(), null);
-            }
-            else {
-                stopVideoStream(parentId, videoTagRef.get(), null);
-            }
-        }
-    }
-
-    private boolean isAppIdValid(String appId, ICommandListener listener) {
-        if (TextUtils.isEmpty(appId)) {
-            Timber.w("Owner id is empty.");
-            postErrorEvent(CommandExecutionError.COMMAND_DENIED, listener);
-
-            return false;
-        }
-
-        return true;
-    }
 }

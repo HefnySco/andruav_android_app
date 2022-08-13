@@ -61,12 +61,11 @@ public class DroidPlannerService extends Service {
     /**
      * Stores drone api instances per connected client. The client are denoted by their app id.
      */
-    final ConcurrentHashMap<String, DroneApi> droneApiStore = new ConcurrentHashMap<>();
-
+    DroneApi droneApiStore = null;
     /**
      * Caches drone managers per connection type.
      */
-    final ConcurrentHashMap<ConnectionParameter, DroneManager> droneManagers = new ConcurrentHashMap<>();
+    DroneManager droneManager = null;
 
     private DPServices dpServices;
 
@@ -84,8 +83,11 @@ public class DroidPlannerService extends Service {
         if (listener == null)
             return null;
 
-        DroneApi droneApi = new DroneApi(this, listener, appId);
-        droneApiStore.put(appId, droneApi);
+        releaseDroneApi();
+
+        DroneApi droneApi = new DroneApi(this, listener);
+//        droneApiStore.put(appId, droneApi);
+        droneApiStore = droneApi;
         lbm.sendBroadcast(new Intent(ACTION_DRONE_CREATED));
         updateForegroundNotification();
         return droneApi;
@@ -94,50 +96,43 @@ public class DroidPlannerService extends Service {
     /**
      * Release the drone api instance attached to the given app id.
      *
-     * @param appId Application id of the disconnecting client.
      */
-    void releaseDroneApi(String appId) {
-        if (appId == null)
-            return;
+    void releaseDroneApi() {
+        if (droneApiStore == null) return ;
+        droneApiStore.destroy();
+        droneApiStore = null;
 
-        DroneApi droneApi = droneApiStore.remove(appId);
-        if (droneApi != null) {
-            Timber.d("Releasing drone api instance for " + appId);
-            droneApi.destroy();
-            lbm.sendBroadcast(new Intent(ACTION_DRONE_DESTROYED));
-            updateForegroundNotification();
-        }
+//        if (appId == null)
+//            return;
+//
+//        DroneApi droneApi = droneApiStore.remove(appId);
+//        if (droneApi != null) {
+//            Timber.d("Releasing drone api instance for " + appId);
+//            droneApi.destroy();
+//            lbm.sendBroadcast(new Intent(ACTION_DRONE_DESTROYED));
+//            updateForegroundNotification();
+//        }
     }
 
     /**
      * Establish a connection with a vehicle using the given connection parameter.
      *
      * @param connParams Parameters used to connect to the vehicle.
-     * @param appId      Application id of the connecting client.
      * @param listener   Callback to receive drone events.
      * @return A DroneManager instance which acts as router between the connected vehicle and the listeneing client(s).
      */
-    DroneManager connectDroneManager(ConnectionParameter connParams, String appId, DroneApi listener) {
-        if (connParams == null || TextUtils.isEmpty(appId) || listener == null)
+    DroneManager connectDroneManager(ConnectionParameter connParams, DroneApi listener) {
+        if (connParams == null  || listener == null)
             return null;
 
-        DroneManager droneMgr = droneManagers.get(connParams);
-        if (droneMgr == null) {
-            final DroneManager temp = DroneManager.generateDroneManager(getApplicationContext(), connParams, new Handler(Looper.getMainLooper()));
-
-            droneMgr = droneManagers.putIfAbsent(connParams, temp);
-            if(droneMgr == null){
-                Timber.d("Generating new drone manager.");
-                droneMgr = temp;
-            }
-            else{
-                temp.destroy();
-            }
+        if (droneManager != null) {
+            droneManager.destroy();
         }
+        droneManager = DroneManager.generateDroneManager(getApplicationContext(), connParams, new Handler(Looper.getMainLooper()));
 
-        Timber.d("Drone manager connection for " + appId);
-        droneMgr.connect(appId, listener, connParams);
-        return droneMgr;
+        Timber.d("Drone manager connection for app");
+        droneManager.connect(listener, connParams);
+        return droneManager;
     }
 
     /**
@@ -147,16 +142,15 @@ public class DroidPlannerService extends Service {
      * @param clientInfo Info of the disconnecting client.
      */
     void disconnectDroneManager(DroneManager droneMgr, DroneApi.ClientInfo clientInfo) {
-        if (droneMgr == null || clientInfo == null || TextUtils.isEmpty(clientInfo.appId))
+        if (droneMgr == null || clientInfo == null )
             return;
 
-        String appId = clientInfo.appId;
-        Timber.d("Drone manager disconnection for " + appId);
-        droneMgr.disconnect(clientInfo);
+        Timber.d("Drone manager disconnection for app");
+        droneMgr.disconnect(droneApiStore);
         if (droneMgr.getConnectedAppsCount() == 0) {
             Timber.d("Destroying drone manager.");
             droneMgr.destroy();
-            droneManagers.remove(droneMgr.getConnectionParameter());
+            droneManager = null;
         }
     }
 
@@ -233,10 +227,14 @@ public class DroidPlannerService extends Service {
                     .setPriority(NotificationCompat.PRIORITY_MIN)
                     .setSmallIcon(R.drawable.ic_stat_notify);
 
-            final int connectedCount = droneApiStore.size();
-            if (connectedCount > 1) {
-                notifBuilder.setContentText(connectedCount + " connected apps");
+            if (droneApiStore != null)
+            {
+                notifBuilder.setContentText(" connected apps");
             }
+//            final int connectedCount = droneApiStore.size();
+//            if (connectedCount > 1) {
+//                notifBuilder.setContentText(connectedCount + " connected apps");
+//            }
 
             final Notification notification = notifBuilder.build();
             startForeground(FOREGROUND_ID, notification);
@@ -270,15 +268,19 @@ public class DroidPlannerService extends Service {
         super.onDestroy();
         Timber.d("Destroying DroneKit-Android.");
 
-        for (DroneApi droneApi : droneApiStore.values()) {
-            droneApi.destroy();
+//        for (DroneApi droneApi : droneApiStore.values()) {
+//            droneApi.destroy();
+//        }
+        //droneApiStore.clear();
+        if (droneApiStore != null) {
+            droneApiStore.destroy();
+            droneApiStore = null;
         }
-        droneApiStore.clear();
 
-        for (DroneManager droneMgr : droneManagers.values()) {
-            droneMgr.destroy();
+        if (droneManager != null) {
+            droneManager.destroy();
+            droneManager = null;
         }
-        droneManagers.clear();
 
         dpServices.destroy();
 
@@ -295,8 +297,7 @@ public class DroidPlannerService extends Service {
             switch (action) {
 
                 case ACTION_RELEASE_API_INSTANCE:
-                    final String appId = intent.getStringExtra(EXTRA_API_INSTANCE_APP_ID);
-                    releaseDroneApi(appId);
+                    releaseDroneApi();
                     break;
             }
         }

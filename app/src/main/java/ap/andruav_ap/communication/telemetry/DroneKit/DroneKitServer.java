@@ -582,30 +582,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
     }
 
 
-    protected  void onDroneEvent_StateUpdated (final Bundle extras)
-    {
-        if (AndruavSettings.andruavWe7daBase.FCBoard ==null) return ;
-
-        final State vehicleState = mDrone.getAttribute(AttributeType.STATE);
-        if (vehicleState.isFlying()) {
-            // Land
-            //setMode(VehicleMode.COPTER_LAND);
-        } else if (vehicleState.isArmed()) {
-            // Take off
-            //ctrl_takeOff(10); // Default take off maxAltitude is 10m
-        } else if (!vehicleState.isConnected()) {
-            // Connect
-            // alertUser("Connect to a drone first");
-        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
-            // Connected but not Armed
-            // this.drone.arm(true);
-        }
-
-        ((ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard).onDroneEvent_StateUpdated(vehicleState);
-        return ;
-    }
-
-
     protected  void onDroneEvent_TypeUpdated (final Bundle extras)
     {
         if (AndruavSettings.andruavWe7daBase.FCBoard ==null) return ;
@@ -615,12 +591,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
     }
 
-
-    protected  void onDroneEvent_StateArming (final Bundle extras)
-    {
-        final  State vehicleState = mDrone.getAttribute(AttributeType.STATE);
-        if (AndruavSettings.andruavWe7daBase.FCBoard !=null)   ((ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard).onDroneEvent_StateArming(vehicleState);
-    }
 
     protected void onDroneEvent_GuidedUpdated (final Bundle extras)
     {
@@ -779,7 +749,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             case AttributeEvent.HEARTBEAT_RESTORED:
             {
                 heartBeatStatus = HEARTBEAT_RESTORED;
-                onDroneEvent_StateArming(null);
 
                 PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_NORMAL, AndruavMessage_Error.ERROR_Lo7etTa7akom, App.getAppContext().getString(R.string.andruav_error_dronekitconnection_res), null);
 
@@ -833,14 +802,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             case AttributeEvent.STATE_DISCONNECTED:
                 onDroneEvent_StateDisconnected (extras);
-                break;
-
-            case AttributeEvent.STATE_UPDATED:
-                onDroneEvent_StateUpdated(extras);
-                break;
-
-            case AttributeEvent.STATE_ARMING:
-                onDroneEvent_StateArming (extras);
                 break;
 
             case AttributeEvent.TYPE_UPDATED:

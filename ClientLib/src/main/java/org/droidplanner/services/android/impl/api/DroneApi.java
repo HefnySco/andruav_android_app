@@ -114,7 +114,6 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
     private DroneManager droneMgr;
     private final IApiListener apiListener;
 
-    private final String ownerId;
     private final ClientInfo clientInfo;
 
     private final DroidPlannerService service;
@@ -123,13 +122,11 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
 
     private ConnectionParameter connectionParams;
 
-    DroneApi(DroidPlannerService dpService, IApiListener listener, String ownerId) {
+    DroneApi(DroidPlannerService dpService, IApiListener listener) {
 
         this.service = dpService;
         this.context = dpService.getApplicationContext();
         handler = new Handler(Looper.getMainLooper());
-
-        this.ownerId = ownerId;
 
         observersList = new ConcurrentLinkedQueue<>();
         mavlinkObserversList = new ConcurrentLinkedQueue<>();
@@ -145,14 +142,14 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
             clientVersionCode = apiListener.getClientVersionCode();
         } catch (RemoteException e) {
             Timber.e(e, e.getMessage());
-            dpService.releaseDroneApi(this.ownerId);
+            dpService.releaseDroneApi();
         }
 
-        this.clientInfo = new ClientInfo(this.ownerId, apiVersionCode, clientVersionCode);
+        this.clientInfo = new ClientInfo(apiVersionCode, clientVersionCode);
     }
 
     void destroy() {
-        Timber.d("Destroying drone api instance for %s", this.ownerId);
+        Timber.d("Destroying drone api instance for app");
         this.observersList.clear();
         this.mavlinkObserversList.clear();
 
@@ -166,7 +163,7 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
     }
 
     public String getOwnerId() {
-        return ownerId;
+        return "app";
     }
 
     public DroneManager getDroneManager() {
@@ -263,7 +260,7 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
                 }
 
                 this.connectionParams = connParams;
-                this.droneMgr = service.connectDroneManager(this.connectionParams, ownerId, this);
+                this.droneMgr = service.connectDroneManager(this.connectionParams, this);
 
                 if(isEventsBufferingEnabled()) {
                     eventsBuffer.clear();
@@ -293,7 +290,7 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
             Timber.w("Client is not longer available.");
             this.context.startService(new Intent(this.context, DroidPlannerService.class)
                 .setAction(DroidPlannerService.ACTION_RELEASE_API_INSTANCE)
-                .putExtra(DroidPlannerService.EXTRA_API_INSTANCE_APP_ID, this.ownerId));
+                .putExtra(DroidPlannerService.EXTRA_API_INSTANCE_APP_ID, getOwnerId()));
         }
     }
 
@@ -371,25 +368,25 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
                     videoProps.putInt(CameraActions.EXTRA_VIDEO_PROPS_UDP_PORT, VideoManager.ARTOO_UDP_PORT);
                 }
 
-                CommonApiUtils.startVideoStream(drone, videoProps, ownerId, videoTag, videoSurface, listener);
+                CommonApiUtils.startVideoStream(drone, videoProps, videoTag, videoSurface, listener);
                 break;
             }
 
             case ExperimentalActions.ACTION_START_VIDEO_STREAM_FOR_OBSERVER: {
                 String videoTag = data.getString(CameraActions.EXTRA_VIDEO_TAG, "");
-                CommonApiUtils.startVideoStreamForObserver(drone, ownerId, videoTag, listener);
+                CommonApiUtils.startVideoStreamForObserver(drone, videoTag, listener);
                 break;
             }
 
             case CameraActions.ACTION_STOP_VIDEO_STREAM: {
                 String videoTag = data.getString(CameraActions.EXTRA_VIDEO_TAG, "");
-                CommonApiUtils.stopVideoStream(drone, ownerId, videoTag, listener);
+                CommonApiUtils.stopVideoStream(drone, videoTag, listener);
                 break;
             }
 
             case ExperimentalActions.ACTION_STOP_VIDEO_STREAM_FOR_OBSERVER: {
                 String videoTag = data.getString(CameraActions.EXTRA_VIDEO_TAG, "");
-                CommonApiUtils.stopVideoStreamForObserver(drone, ownerId, videoTag, listener);
+                CommonApiUtils.stopVideoStreamForObserver(drone, videoTag, listener);
                 break;
             }
 
@@ -558,7 +555,7 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
             case DISCONNECTED:
                 //Broadcast the disconnection with the vehicle.
                 context.sendBroadcast(new Intent(GCSEvent.ACTION_VEHICLE_DISCONNECTION)
-                    .putExtra(GCSEvent.EXTRA_APP_ID, ownerId));
+                    .putExtra(GCSEvent.EXTRA_APP_ID, getOwnerId()));
 
                 droneEvent = AttributeEvent.STATE_DISCONNECTED;
 
@@ -574,12 +571,7 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
                 droneEvent = AttributeEvent.SIGNAL_UPDATED;
                 break;
 
-            case RC_IN:
-                break;
-            case RC_OUT:
-                break;
-
-            case ARMING_STARTED:
+           case ARMING_STARTED:
             case ARMING:
                 droneEvent = AttributeEvent.STATE_ARMING;
                 break;
@@ -680,7 +672,7 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
                 ConnectionParameter sanitizedParameter = connectionParams.clone();
 
                 context.sendBroadcast(new Intent(GCSEvent.ACTION_VEHICLE_CONNECTION)
-                    .putExtra(GCSEvent.EXTRA_APP_ID, ownerId)
+                    .putExtra(GCSEvent.EXTRA_APP_ID, getOwnerId())
                     .putExtra(GCSEvent.EXTRA_VEHICLE_CONNECTION_PARAMETER, sanitizedParameter));
 
                 attributesInfo.add(Pair.create(AttributeEvent.STATE_CONNECTED, extrasBundle));
@@ -828,13 +820,11 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
 
     public static class ClientInfo {
 
-        public final String appId;
         public final int apiVersionCode;
         public final int clientVersionCode;
 
-        public ClientInfo(String appId, int apiVersionCode, int clientVersionCode) {
+        public ClientInfo(int apiVersionCode, int clientVersionCode) {
             this.apiVersionCode = apiVersionCode;
-            this.appId = appId;
             this.clientVersionCode = clientVersionCode;
         }
     }

@@ -10,7 +10,6 @@ import com.o3dr.services.android.lib.model.action.Action;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.DroneEventsType;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.OnDroneListener;
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
-import org.droidplanner.services.android.impl.core.drone.autopilot.apm.solo.ArduSolo;
 import org.droidplanner.services.android.impl.core.drone.manager.MavLinkDroneManager;
 import org.droidplanner.services.android.impl.core.drone.variables.GuidedPoint;
 import org.droidplanner.services.android.impl.core.drone.variables.State;
@@ -46,9 +45,7 @@ public class Follow implements OnDroneListener<MavLinkDrone>, LocationReceiver {
         if(drone != null)
             drone.addDroneListener(this);
 
-        followAlgorithm = (drone instanceof ArduSolo)?
-                FollowAlgorithm.FollowModes.SOLO_SHOT.getAlgorithmType(droneMgr, handler):
-                FollowAlgorithm.FollowModes.LEASH.getAlgorithmType(droneMgr, handler);
+        followAlgorithm = FollowAlgorithm.FollowModes.LEASH.getAlgorithmType(droneMgr, handler);
 
         this.locationFinder = locationFinder;
         mLocationRelay = new LocationRelay();

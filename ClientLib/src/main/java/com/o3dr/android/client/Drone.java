@@ -16,7 +16,6 @@ import com.o3dr.android.client.interfaces.LinkListener;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
 import com.o3dr.services.android.lib.drone.calibration.magnetometer.MagnetometerCalibrationStatus;
-import com.o3dr.services.android.lib.drone.companion.solo.SoloAttributes;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.mission.Mission;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
@@ -373,9 +372,6 @@ public class Drone {
                 return (T) new ReturnToMeState();
 
             case AttributeType.CAMERA:
-            case SoloAttributes.SOLO_STATE:
-            case SoloAttributes.SOLO_GOPRO_STATE:
-            case SoloAttributes.SOLO_GOPRO_STATE_V2:
             default:
                 return null;
         }

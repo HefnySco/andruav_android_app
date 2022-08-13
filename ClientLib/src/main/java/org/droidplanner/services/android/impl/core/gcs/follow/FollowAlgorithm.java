@@ -119,8 +119,6 @@ public abstract class FollowAlgorithm {
                     return new FollowGuidedScan(droneMgr, handler);
                 case LOOK_AT_ME:
                     return new FollowLookAtMe(droneMgr, handler);
-                case SOLO_SHOT:
-                    return new FollowSoloShot(droneMgr, handler);
             }
         }
     }
