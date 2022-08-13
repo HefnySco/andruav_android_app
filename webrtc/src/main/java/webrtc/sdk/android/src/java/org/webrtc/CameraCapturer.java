@@ -476,8 +476,8 @@ abstract class CameraCapturer implements CameraVideoCapturer {
         }
       });
       currentSession = null;
-
-      int cameraNameIndex = Arrays.asList(deviceNames).indexOf(cameraName);
+      //TODO: Hefny send camera ID when switching to enforce rear or head.
+      final int cameraNameIndex = Arrays.asList(deviceNames).indexOf(cameraName);
       cameraName = deviceNames[(cameraNameIndex + 1) % deviceNames.length];
 
       sessionOpening = true;
