@@ -33,10 +33,6 @@ public class AndruavGCSSerialSocketServer {
     protected int mport;
     protected ServerSocket serverSocket;
 
-    // protected Handler mHandler;
-    protected HandlerThread mhandleThread;
-    protected Thread mServerThread;
-    protected Thread mClientThread;
     protected ServerThread mServerRunnable;
     protected Boolean mkillMe = true;
     protected CommunicationThread mClientsocketRunnable;
@@ -378,18 +374,6 @@ public class AndruavGCSSerialSocketServer {
         mip=ip;
         mkillMe = false;
 
-        if (mhandleThread == null)
-        {
-
-            mhandleThread = new HandlerThread("SerialSocketServer");
-            mevent_socketData = new Event_SocketData();
-            mhandleThread.start();
-        }
-
-
-        mServerRunnable = new ServerThread();
-        mServerThread = new  Thread (mServerRunnable);
-        mServerThread.start();
     }
 
     public void stopListening ()
@@ -407,14 +391,9 @@ public class AndruavGCSSerialSocketServer {
                 mServerRunnable = null;
             }
 
-            if (mServerThread != null) {
-                mServerThread.join();
-                mServerThread = null;
-            }
+           EventBus.getDefault().post(new Event_SocketAction(Event_SocketAction.SOCKETACTION_CLOSED));
 
-            EventBus.getDefault().post(new Event_SocketAction(Event_SocketAction.SOCKETACTION_CLOSED));
-
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             final long now = System.currentTimeMillis();
             if ((now - last_sent_time) < last_sent_time_duration)
             {
