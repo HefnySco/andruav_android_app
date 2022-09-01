@@ -77,7 +77,6 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
         }
 
         connectedApp = listener;
-        //connectedApps.put(appId, listener);
         doConnect(listener, connParams);
     }
 
