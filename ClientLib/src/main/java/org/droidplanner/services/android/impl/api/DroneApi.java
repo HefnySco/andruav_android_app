@@ -44,7 +44,6 @@ import com.o3dr.services.android.lib.model.IMavlinkObserver;
 import com.o3dr.services.android.lib.model.IObserver;
 import com.o3dr.services.android.lib.model.action.Action;
 
-import org.droidplanner.services.android.impl.communication.connection.SoloConnection;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces;
 import org.droidplanner.services.android.impl.core.drone.DroneManager;
 import org.droidplanner.services.android.impl.core.drone.autopilot.Drone;
@@ -231,12 +230,6 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
             throw new ConnectionException("Invalid connection parameters");
         }
 
-        if (SoloConnection.isUdpSoloConnection(context, connParams)) {
-            ConnectionParameter update = SoloConnection.getSoloConnectionParameterFromUdp(context, connParams);
-            if (update != null) {
-                return update;
-            }
-        }
         return connParams;
     }
 
