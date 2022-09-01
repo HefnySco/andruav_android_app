@@ -4,11 +4,15 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.net.nsd.NsdManager;
+import android.net.nsd.NsdServiceInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.activities.HUBCommunication;
@@ -134,7 +140,8 @@ public class MainScreen extends BaseAndruavShasha {
     private boolean isUSBIntent = false;
     ////// EOF ActivityMosa3ed Variables
 
-
+    WifiManager.MulticastLock multicastLock;
+    NsdHelper mNsdHelper;
     /////////// EOF Attributes
 
 
@@ -508,9 +515,9 @@ public class MainScreen extends BaseAndruavShasha {
             @Override
             public void onClick(View view) {
 
+                //startActivity(new Intent(MainScreen.this, DataShashaTab.class));
 
-                startActivity(new Intent(MainScreen.this, DataShashaTab.class));
-
+                mNsdHelper.discoverServices();
 
             }
         });
@@ -899,7 +906,6 @@ public class MainScreen extends BaseAndruavShasha {
 
 
 
-
         if ((getIntent().getBooleanExtra("autoconnect",false)  || Preference.isAutoStart(null)) && (!Preference.isGCS(null)))
         {
 
@@ -910,7 +916,22 @@ public class MainScreen extends BaseAndruavShasha {
             // login to test if there is an account.
             doLogin(false);  // true makes a bg
         }
+
+        WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        multicastLock = wifi.createMulticastLock("multicastLock");
+        multicastLock.setReferenceCounted(true);
+        multicastLock.acquire();
+
+
+        mNsdHelper = new NsdHelper(getApplicationContext());
+        mNsdHelper.initializeResolveListener();
+        mNsdHelper.registerService(5353);
+        //NsdServiceInfo service = mNsdHelper.getChosenServiceInfo();
+
     }
+
+
+
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     protected void disableButtonBar() {
@@ -997,7 +1018,7 @@ public class MainScreen extends BaseAndruavShasha {
                 public void run() {
                     item2.setEnabled(true);
                 }
-            },1500);
+            },0);
 
 
             final int status = App.getAndruavWSStatus();
@@ -1189,6 +1210,7 @@ public class MainScreen extends BaseAndruavShasha {
 
         //http://stackoverflow.com/questions/3611457/android-temporarily-disable-orientation-changes-in-an-activity
 
+        multicastLock.release(); // release after browsing
 
     }
 
@@ -1278,5 +1300,8 @@ public class MainScreen extends BaseAndruavShasha {
          */
         doExit();
     }
+
+
+
 
 }
