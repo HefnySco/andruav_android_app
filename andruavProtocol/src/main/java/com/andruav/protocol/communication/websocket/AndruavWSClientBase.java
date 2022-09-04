@@ -72,12 +72,12 @@ import com.andruav.protocol.commands.textMessages.FlightControl.AndruavMessage_G
 import com.andruav.protocol.commands.textMessages.FlightControl.AndruavMessage_GuidedPoint;
 import com.andruav.protocol.commands.textMessages.FlightControl.AndruavMessage_Land;
 import com.andruav.protocol.commands.textMessages.FlightControl.AndruavMessage_ChangeAltitude;
-import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_Ctrl_Camera;
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_RemoteExecute;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_ConnectedCommServer;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_LoadTasks;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_LogoutCommServer;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_Ping;
+import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_UdpProxy;
 import com.andruav.protocol.communication.uavos.AndruavUDPServerBase;
 import com.andruav.uavos.modules.UAVOSHelper;
 import com.andruav.uavos.modules.UAVOSModuleCamera;
@@ -88,6 +88,7 @@ import org.json.JSONException;
 import java.net.URI;
 import java.util.List;
 
+import static com.andruav.Constants._nezam_;
 import static com.andruav.event.fcb_event.Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS;
 import static com.andruav.event.fcb_event.Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS_GUIDED;
 import static com.andruav.protocol.commands.ProtocolHeaders.CMD_COMM_GROUP;
@@ -253,9 +254,6 @@ public abstract class AndruavWSClientBase {
     {
         mhandler.removeCallbacksAndMessages(null);
         synchronized (mSocketStateSync) {
-            //socketState = enum_socketState.DISCONNECTING;
-
-            // mSocketAction   = SOCKETACTION_DISCONNECTING;
 
             setSocketAction (SOCKETACTION_DISCONNECTING);
 
@@ -276,7 +274,6 @@ public abstract class AndruavWSClientBase {
         socketDisconnect();
         synchronized (mSocketStateSync) {
             mkillMe = true;
-            //socketState = enum_socketState.FREASH;
 
             setSocketState  (SOCKETSTATE_FREASH);
             setSocketAction (SOCKETACTION_NONE);
@@ -1239,6 +1236,32 @@ public abstract class AndruavWSClientBase {
                     final AndruavMessage_CommSignalsStatus andruavMessage_commSignalsStatus = (AndruavMessage_CommSignalsStatus) andruav_2MR.andruavMessageBase;
                     andruavWe7da.setSignal(andruavMessage_commSignalsStatus.signalType, andruavMessage_commSignalsStatus.signalLevel);
                 }
+            }
+            break;
+
+            case AndruavSystem_UdpProxy.TYPE_AndruavSystem_UdpProxy:
+            {
+                andruav_2MR.processed = true;
+                AndruavUnitBase andruavWe7da;
+                if (andruav_2MR.partyID.contains(_nezam_.toUpperCase()))
+                {
+                    andruavWe7da = AndruavSettings.andruavWe7daBase;
+                }
+                else
+                {
+                    andruavWe7da = (AndruavEngine.getAndruavWe7daMapBase()).get(andruav_2MR.partyID);
+                }
+
+                if (andruavWe7da != null)
+                {
+                    final AndruavSystem_UdpProxy andruavSystem_udpProxy = (AndruavSystem_UdpProxy) andruav_2MR.andruavMessageBase;
+                    andruavWe7da.setUdpConfig(andruavSystem_udpProxy.address1, andruavSystem_udpProxy.address2,
+                            andruavSystem_udpProxy.port1, andruavSystem_udpProxy.port2,
+                            andruavSystem_udpProxy.enabled);
+                }
+
+
+
             }
             break;
         }

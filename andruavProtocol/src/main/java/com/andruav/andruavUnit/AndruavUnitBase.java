@@ -14,7 +14,9 @@ import com.andruav.event.droneReport_Event.Event_Emergency_Changed;
 import com.andruav.event.droneReport_Event.Event_FCB_Changed;
 import com.andruav.event.droneReport_Event.Event_GCSBlockedChanged;
 import com.andruav.event.droneReport_Event.Event_GPS_Ready;
+import com.andruav.event.droneReport_Event.Event_IMU_Ready;
 import com.andruav.event.droneReport_Event.Event_TargetLocation_Ready;
+import com.andruav.event.droneReport_Event.Event_UDP_Proxy;
 import com.andruav.event.droneReport_Event.Event_UnitShutDown;
 import com.andruav.event.droneReport_Event.Event_Vehicle_ARM_Changed;
 import com.andruav.event.droneReport_Event.Event_Vehicle_Flying_Changed;
@@ -40,7 +42,6 @@ import com.andruav.util.AndruavLatLngAlt;
  * Created by M.Hefny on 14-Feb-15.
  */
 public class AndruavUnitBase {
-
 
     private final boolean mIsMe;
 
@@ -74,6 +75,60 @@ public class AndruavUnitBase {
      * enabled when {@link AndruavMessage_SensorsStatus} need to be sent
      */
     public boolean sensorStatusAlertActive = false;
+
+
+
+    ////////// UDP Connection
+
+    /**
+     * IP used by the drone to send data via UDP proxy.
+     */
+    protected String udp_socket_ip_unit;
+    /**
+     * IP used by others to send data to drone via UDP proxy.
+     */
+    protected String udp_socket_ip_3rdparty;
+    /**
+     * port used by the drone to send data via UDP proxy.
+     */
+    protected int udp_socket_port_unit;
+    /**
+     * port used by the drone to send data via UDP proxy.
+     */
+    protected int udp_socket_port_3rdparty;
+
+    /**
+     * This is enabled only by two ways:
+     * 1- Communication server confirms creation of a UDP proxy for you -a drone-.
+     * 2- You receive a message from another drone telling you its UDP proxy availability.
+     */
+    protected boolean udp_proxy_enabled = false;
+
+    public boolean isUdpProxyEnabled()
+    {
+        return udp_proxy_enabled;
+    }
+    public void setUdpConfig (String address1, String address2, int port1, int port2, boolean enabled)
+    {
+        boolean changed = false;
+
+        changed = ((udp_socket_ip_unit == null) || !udp_socket_ip_unit.contains(address1))
+                || ((udp_socket_ip_3rdparty == null) || !udp_socket_ip_3rdparty.contains(address2))
+                || (udp_socket_port_unit != port1)
+                || (udp_socket_port_3rdparty != port2)
+                || (udp_proxy_enabled != enabled);
+
+        udp_socket_ip_unit = address1;
+        udp_socket_ip_3rdparty = address2;
+        udp_socket_port_unit = port1;
+        udp_socket_port_3rdparty = port2;
+
+        udp_proxy_enabled = enabled;
+
+        if (changed) {
+            AndruavEngine.getEventBus().post(new Event_UDP_Proxy(this));
+        }
+    }
 
 
     //////// Attributes
