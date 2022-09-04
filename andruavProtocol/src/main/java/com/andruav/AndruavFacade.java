@@ -36,6 +36,7 @@ import com.andruav.protocol.commands.textMessages.AndruavMessage_WayPoints;
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_Ctrl_Camera;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_LoadTasks;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_WayPoints;
+import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_UdpProxy;
 import com.andruav.util.AndruavLatLngAlt;
 
 import org.json.JSONObject;
@@ -362,6 +363,16 @@ public class AndruavFacade extends AndruavFacadeBase{
         SendTelemetry(Event_TelemetryGCSRequest.REQUEST_END,AndruavSettings.remoteTelemetryAndruavWe7da, Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
     }
 
+    public static void StartUDPTelemetry()
+    {
+        final AndruavSystem_UdpProxy andruavMessage_UdpProxy = new AndruavSystem_UdpProxy();
+        sendSystemCommandToCommServer (andruavMessage_UdpProxy,false, false);
+    }
+
+    public static void StopUdpTelemetry()
+    {
+
+    }
 
     /***
      *  /***
@@ -395,6 +406,8 @@ public class AndruavFacade extends AndruavFacadeBase{
 
         sendMessage(andruavMessage_remoteExecute,target, Boolean.FALSE);
     }
+
+
 
 
 
