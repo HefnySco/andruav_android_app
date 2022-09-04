@@ -241,42 +241,6 @@ public class ConnectionParameter implements Parcelable {
             eventsDispatchingPeriod);
     }
 
-    /**
-     *
-     * @param ssid Wifi SSID of the solo vehicle link. This will remove a leading and/or trailing quotation.
-     * @param password Password to access the solo wifi network. This value can be null as long as the wifi
-     *                 configuration has been set up and stored in the mobile device's system.
-     * @param tlogLoggingUri Uri where the tlog data should be logged. Pass null if the tlog data shouldn't be logged.
-     * @return Returns {@link ConnectionParameter} with type {@link ConnectionType#TYPE_SOLO}.
-     */
-    public static ConnectionParameter newSoloConnection(String ssid, @Nullable String password, @Nullable Uri tlogLoggingUri){
-        return newSoloConnection(ssid, password, tlogLoggingUri, DEFAULT_EVENTS_DISPATCHING_PERIOD);
-    }
-
-    /**
-     *
-     * @param ssid Wifi SSID of the solo vehicle link. This will remove a leading and/or trailing quotation.
-     * @param password Password to access the solo wifi network. This value can be null as long as the wifi
-     *                 configuration has been set up and stored in the mobile device's system.
-     * @param tlogLoggingUri Uri where the tlog data should be logged. Pass null if the tlog data shouldn't be logged.
-     * @param eventsDispatchingPeriod Dictates how long (in milliseconds) to wait before dispatching
-     *                                buffered drone events. A value of OL means events should be
-     *                                dispatched as soon as they are received.
-     * @return Returns {@link ConnectionParameter} with type {@link ConnectionType#TYPE_SOLO}.
-     */
-    public static ConnectionParameter newSoloConnection(String ssid, @Nullable String password,
-                                                        @Nullable Uri tlogLoggingUri,
-                                                        long eventsDispatchingPeriod){
-        String ssidWithoutQuotes = ssid.replaceAll("^\"|\"$", "");
-
-        Bundle paramsBundle = new Bundle(2);
-        paramsBundle.putString(ConnectionType.EXTRA_SOLO_LINK_ID, ssidWithoutQuotes);
-        paramsBundle.putString(ConnectionType.EXTRA_SOLO_LINK_PASSWORD, password);
-
-        return new ConnectionParameter(ConnectionType.TYPE_SOLO, paramsBundle, tlogLoggingUri,
-            eventsDispatchingPeriod);
-    }
-
     private ConnectionParameter(@ConnectionType.Type int connectionType, Bundle paramsBundle){
         this(connectionType, paramsBundle, null);
     }
