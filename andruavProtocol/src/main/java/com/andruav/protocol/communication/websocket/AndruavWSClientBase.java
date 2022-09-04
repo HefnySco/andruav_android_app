@@ -168,28 +168,17 @@ public abstract class AndruavWSClientBase {
     protected boolean mIgnoreConnect = false;
 
 
-    protected boolean getEnforceNameStatus() {
-        return true;
-    }
-
-
-
     public abstract boolean isConnected();
 
     public abstract void connect(final String url );
+
     public abstract void connect (final URI url);
 
-
     protected abstract void onBinaryMessage(final AndruavBinary_2MR andruavBinary2MR);
-
 
     protected abstract void onTextMessage(final Andruav_2MR andruav2MR);
 
     protected abstract void onError(final int code, final String reason);
-
-    protected abstract void onDeleted(final boolean isSuccess);
-
-    protected abstract void onAdded(final boolean isSuccess);
 
     protected abstract void executeInternalBinaryCommand(final AndruavBinary_2MR andruav_2MR);
 
