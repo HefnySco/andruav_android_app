@@ -368,12 +368,6 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
 
     @Override
-    protected boolean getEnforceNameStatus ()
-    {
-        return Preference.isEnforceName(null);
-    }
-
-    @Override
     protected void onOpen ()
     {
         super.onOpen();
@@ -468,26 +462,6 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
         EventBus.getDefault().post(new EventSocketState(EventSocketState.ENUM_SOCKETSTATE.onError, reason));
     }
 
-    @Override
-    protected void onAdded (final boolean isSuccess)
-    {
-        if (isSuccess) {
-            EventBus.getDefault().post(new EventSocketState(EventSocketState.ENUM_SOCKETSTATE.onRegistered, "Registered"));
-
-            final Emergency emergency = (Emergency) AndruavEngine.getEmergency();
-            if (emergency != null) {
-                emergency.resetEmergency();
-                emergency.resetTimers();
-            }
-        }
-
-    }
-
-    @Override
-    protected void onDeleted (final boolean isSuccess)
-    {
-
-    }
 
     @Override
     protected void reconnect ()

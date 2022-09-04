@@ -66,6 +66,7 @@ import com.andruav.protocol.commands.textMessages.FlightControl.AndruavMessage_C
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_ConnectedCommServer;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_LogoutCommServer;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_Ping;
+import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_UdpProxy;
 import com.andruav.protocol.commands.textMessages.uavosCommands.AndruavModule_ID;
 
 import org.json.JSONObject;
@@ -332,6 +333,9 @@ public class Andruav_Parser {
                 break;
             case AndruavSystem_ConnectedCommServer.TYPE_AndruavSystem_ConnectedCommServer:
                 andruavMessageBase = new AndruavSystem_ConnectedCommServer();
+                break;
+            case AndruavSystem_UdpProxy.TYPE_AndruavSystem_UdpProxy:
+                andruavMessageBase = new AndruavSystem_UdpProxy();
                 break;
             case AndruavModule_ID.TYPE_AndruavModule_ID:
                 andruavMessageBase = new AndruavModule_ID();
