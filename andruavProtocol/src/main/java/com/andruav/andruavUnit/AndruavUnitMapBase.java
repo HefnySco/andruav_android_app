@@ -49,7 +49,7 @@ public class AndruavUnitMapBase extends SimpleArrayMap<String, AndruavUnitBase> 
     {
         if ((key == null) || (key.isEmpty())) return null;
 
-        if (key.equals(Constants._nezam_))
+        if (key.equals(Constants._nezam_.toUpperCase()))
         {
             return new AndruavUnitSystem();
         }
