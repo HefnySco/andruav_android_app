@@ -1,5 +1,7 @@
 package ap.andruav_ap.communication.controlBoard;
 
+import static com.mavlink.common.msg_heartbeat.MAVLINK_MSG_ID_HEARTBEAT;
+
 import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
@@ -721,13 +723,20 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
                 App.sendTelemetryfromDrone(mavLinkPacket.encodePacket());
             }
 
-            if (AndruavSettings.andruavWe7daBase.isUdpProxyEnabled())
+            if (AndruavSettings.andruavWe7daBase.isUdpProxyAccessedLately())
             {
                 final byte[] msg = mavLinkPacket.encodePacket();
                 final int length = msg.length;
-
                 AndruavEngine.getUDPProxy().sendMessage(msg, length);
             }
+            else
+            if ((AndruavSettings.andruavWe7daBase.isUdpProxyEnabled()) && (mavLinkPacket.msgid == MAVLINK_MSG_ID_HEARTBEAT))
+            {
+                final byte[] msg = mavLinkPacket.encodePacket();
+                final int length = msg.length;
+                AndruavEngine.getUDPProxy().sendMessage(msg, length);
+            }
+
 
         }
         catch (Exception ex)

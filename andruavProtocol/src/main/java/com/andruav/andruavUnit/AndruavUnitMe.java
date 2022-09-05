@@ -4,11 +4,6 @@ import com.andruav.AndruavEngine;
 import com.andruav.AndruavFacade;
 import com.andruav.TelemetryProtocol;
 import com.andruav.controlBoard.shared.missions.MissionBase;
-import com.andruav.controlBoard.shared.missions.MissionCameraTrigger;
-import com.andruav.controlBoard.shared.missions.MissionCameraControl;
-import com.andruav.event.fpv7adath.Event_FPV_CMD;
-import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
-import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_Ctrl_Camera;
 
 /**
  * Created by mhefny on 4/7/17.
@@ -60,4 +55,23 @@ public class AndruavUnitMe extends AndruavUnitBase {
 
         AndruavFacade.sendWayPointsReached(null, missionItemIndex, MissionBase.Report_NAV_ItemReached);
     }
+
+    private Long lastaccess_udp_proxy_receive =0l;
+    /**
+     * another vehicle is sending data to me via my udp proxy, I may want to activate telemetry
+     * @return
+     */
+    public boolean isUdpProxyAccessedLately()
+    {
+        return  !((System.currentTimeMillis() - lastaccess_udp_proxy_receive) > 20000);
+    }
+
+    /**
+     * update last access time.
+     */
+    public void updateUdpProxyLastReceiveTime()
+    {
+       lastaccess_udp_proxy_receive =System.currentTimeMillis();
+    }
+
 }

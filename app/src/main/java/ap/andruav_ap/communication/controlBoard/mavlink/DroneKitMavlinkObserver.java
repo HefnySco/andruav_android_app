@@ -18,7 +18,7 @@ import com.o3dr.android.client.MavlinkObserver;
 import com.o3dr.services.android.lib.mavlink.MavlinkMessageWrapper;
 
 import ap.andruav_ap.communication.controlBoard.ControlBoard_DroneKit;
-import ap.andruav_ap.communication.telemetry.BlueTooth.Event_FCBData;
+import com.andruav.event.fcb_event.Event_FCBData;
 import ap.andruav_ap.communication.telemetry.DroneKit.DroneKitServer;
 import com.andruav.event.fcb_event.Event_SocketData;
 import ap.andruavmiddlelibrary.preference.Preference;

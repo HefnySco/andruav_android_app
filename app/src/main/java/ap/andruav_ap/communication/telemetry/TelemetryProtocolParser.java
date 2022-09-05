@@ -11,7 +11,7 @@ import com.andruav.controlBoard.ControlBoardBase;
 
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.App;
-import ap.andruav_ap.communication.telemetry.BlueTooth.Event_FCBData;
+import com.andruav.event.fcb_event.Event_FCBData;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
 import com.andruav.event.fcb_event.Event_SocketAction;
 import com.andruav.event.fcb_event.Event_SocketData;

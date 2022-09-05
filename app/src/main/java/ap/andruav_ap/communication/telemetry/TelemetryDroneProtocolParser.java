@@ -10,7 +10,7 @@ import com.andruav.interfaces.INotification;
 import ap.andruav_ap.App;
 
 import ap.andruav_ap.communication.controlBoard.ControlBoard_DroneKit;
-import ap.andruav_ap.communication.telemetry.BlueTooth.Event_FCBData;
+import com.andruav.event.fcb_event.Event_FCBData;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_ProtocolChanged;
 import ap.andruav_ap.R;
 
@@ -110,16 +110,11 @@ public class TelemetryDroneProtocolParser  extends TelemetryProtocolParser{
 
     }
 
-
-
-
-
     @Override
     protected void sendFCBTelemetry (final Event_FCBData event_FCBData)
     {
         try
         {
-
             final int telemetry_protocol = AndruavSettings.andruavWe7daBase.getTelemetry_protocol();
             if ((telemetry_protocol == TelemetryProtocol.TelemetryProtocol_Unknown_Telemetry) || (telemetry_protocol == TelemetryProtocol.TelemetryProtocol_DroneKit_Telemetry))
             {

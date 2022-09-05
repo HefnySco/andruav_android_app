@@ -57,7 +57,7 @@ import java.io.UnsupportedEncodingException;
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.App;
 import ap.andruav_ap.Emergency;
-import ap.andruav_ap.communication.telemetry.BlueTooth.Event_FCBData;
+import com.andruav.event.fcb_event.Event_FCBData;
 import com.andruav.event.fcb_event.Event_SocketData;
 import ap.andruavmiddlelibrary.ILoginClientCallback;
 import ap.andruavmiddlelibrary.LoginClient;

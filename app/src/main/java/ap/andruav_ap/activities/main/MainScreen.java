@@ -449,6 +449,9 @@ public class MainScreen extends BaseAndruavShasha {
             TelemetryModeer.connectToPreferredConnection(Me,false);
         }
 
+
+        AndruavFacade.StartUdpTelemetry();
+
     }
 
 
@@ -532,16 +535,7 @@ public class MainScreen extends BaseAndruavShasha {
             @Override
             public void onClick(View view) {
 
-                if (AndruavSettings.andruavWe7daBase.isUdpProxyEnabled())
-                {
-                    AndruavFacade.StopUdpTelemetry();
-                }
-                else
-                {
-                    AndruavFacade.StartUdoTelemetry();
-                }
-
-                //startActivity(new Intent(MainScreen.this, DataShashaTab.class));
+                startActivity(new Intent(MainScreen.this, DataShashaTab.class));
 
 
             }

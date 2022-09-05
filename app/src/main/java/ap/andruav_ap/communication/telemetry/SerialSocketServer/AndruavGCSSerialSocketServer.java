@@ -18,7 +18,7 @@ import com.andruav.AndruavSettings;
 import com.andruav.Constants;
 import com.andruav.TelemetryProtocol;
 
-import ap.andruav_ap.communication.telemetry.BlueTooth.Event_FCBData;
+import com.andruav.event.fcb_event.Event_FCBData;
 
 import com.andruav.event.fcb_event.Event_SocketAction;
 import com.andruav.event.fcb_event.Event_SocketData;

@@ -183,13 +183,8 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
                 final MAVLinkMessage mavLinkMessage = tmpMavLinkPacket.unpack();
                 final MavlinkMessageWrapper mavlinkMessageWrapper = new MavlinkMessageWrapper(mavLinkMessage);
 
-                switch (tmpMavLinkPacket.msgid)
-                {
+                ExperimentalApi.getApi(mDrone).sendMavlinkMessage(mavlinkMessageWrapper);
 
-                    default:
-                        ExperimentalApi.getApi(mDrone).sendMavlinkMessage(mavlinkMessageWrapper);
-                        break;
-                }
             }
         }
     }
@@ -343,19 +338,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         msg.input_c = (int) (alt * 100);  // in cm
 
         ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(msg));
-
-    }
-
-    /***
-    * Data is received from Serial Socket This data could be from the server on the same andruav
-    * or can be received from AndruavCommand {@link //Commands.BinaryMessages.AndruavResalaBinaryBase}
-    *
-    * Data from Remote GCS should be delivered directly to board, as in initialization Drone protocol
-    * is set from the board reply only to ensure accuracy
-    * @param event
-    */
-    public void onEvent (Event_SocketData event)
-    {
 
     }
 

@@ -38,6 +38,7 @@ public class UDPProxy extends UDPServerBase {
         event_socketData.IsLocal = Event_SocketData.SOURCE_REMOTE;
         event_socketData.Data = buffer;
         event_socketData.DataLength = len;
+        AndruavSettings.andruavWe7daBase.updateUdpProxyLastReceiveTime();
         AndruavEngine.getEventBus().post(event_socketData);
     }
 }
