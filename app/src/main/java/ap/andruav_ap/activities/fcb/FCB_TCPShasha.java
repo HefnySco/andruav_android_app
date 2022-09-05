@@ -34,7 +34,7 @@ import com.andruav.andruavUnit.AndruavUnitShadow;
 import com.andruav.TelemetryProtocol;
 import com.andruav.event.droneReport_Event.Event_FCB_Changed;
 
-import ap.andruav_ap.communication.telemetry.SerialSocketServer.Event_SocketAction;
+import com.andruav.event.fcb_event.Event_SocketAction;
 import ap.andruav_ap.widgets.SmartOptimization_Dlg;
 import ap.andruavmiddlelibrary.preference.Preference;
 import ap.andruav_ap.R;

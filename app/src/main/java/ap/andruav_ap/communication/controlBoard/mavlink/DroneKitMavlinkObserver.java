@@ -9,7 +9,6 @@ import com.mavlink.messages.MAVLinkMessage;
 import com.mavlink.ardupilotmega.msg_mount_status;
 import com.mavlink.common.msg_command_ack;
 import com.mavlink.common.msg_nav_controller_output;
-import com.mavlink.common.msg_rc_channels_raw;
 import com.mavlink.common.msg_servo_output_raw;
 import com.mavlink.common.msg_statustext;
 import com.andruav.AndruavEngine;
@@ -21,7 +20,7 @@ import com.o3dr.services.android.lib.mavlink.MavlinkMessageWrapper;
 import ap.andruav_ap.communication.controlBoard.ControlBoard_DroneKit;
 import ap.andruav_ap.communication.telemetry.BlueTooth.Event_FCBData;
 import ap.andruav_ap.communication.telemetry.DroneKit.DroneKitServer;
-import ap.andruav_ap.communication.telemetry.SerialSocketServer.Event_SocketData;
+import com.andruav.event.fcb_event.Event_SocketData;
 import ap.andruavmiddlelibrary.preference.Preference;
 
 /**
@@ -98,7 +97,7 @@ public class DroneKitMavlinkObserver extends MavlinkObserver
             final MAVLinkPacket mavLinkPacket = mavLinkMessage.pack();
 
 
-            boolean bsend = true;
+            boolean bsend;
             final int isSmartTelemetry = Preference.getSmartMavlinkTelemetry(null);
             if (isSmartTelemetry > Constants.SMART_TELEMETRY_LEVEL_0) {
                 bsend = TrafficOptimizer.shouldSend(mavLinkPacket,isSmartTelemetry);

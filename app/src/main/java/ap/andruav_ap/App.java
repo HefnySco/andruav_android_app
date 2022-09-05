@@ -83,6 +83,7 @@ import ap.andruavmiddlelibrary.factory.tts.TTS;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
 import com.andruav.protocol.commands.ProtocolHeaders;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_CameraList;
+import com.andruav.protocol.communication.udpproxy.UDPProxy;
 import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
 import com.andruav.uavos.modules.UAVOSConstants;
 import com.andruav.uavos.modules.UAVOSException;
@@ -93,6 +94,7 @@ import com.andruav.util.RandomString;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.SocketException;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -709,7 +711,13 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         exceptionHTTPLogger = new ExceptionHTTPLogger();
         AndruavEngine.setLogHandler(exceptionHTTPLogger);
-
+        UDPProxy udpProxy = new UDPProxy();
+        try {
+            udpProxy.init();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        AndruavEngine.setUDPProxy(udpProxy);
 
         exceptionHTTPLogger.sendOldErrors();
 
@@ -1069,6 +1077,11 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     @Override
     public boolean  getSendBackImages () {
         return Preference.getSendBackImages(null);
+    }
+
+    @Override
+    public int getSmartMavlinkTelemetry() {
+        return Preference.getSmartMavlinkTelemetry(null);
     }
 
     @Override

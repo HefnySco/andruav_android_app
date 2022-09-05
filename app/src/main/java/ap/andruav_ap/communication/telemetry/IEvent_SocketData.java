@@ -1,6 +1,6 @@
 package ap.andruav_ap.communication.telemetry;
 
-import ap.andruav_ap.communication.telemetry.SerialSocketServer.Event_SocketData;
+import com.andruav.event.fcb_event.Event_SocketData;
 
 /**
  * Created by mhefny on 12/30/16.

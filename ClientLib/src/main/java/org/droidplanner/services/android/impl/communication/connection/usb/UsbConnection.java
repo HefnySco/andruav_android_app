@@ -75,7 +75,6 @@ public class UsbConnection extends AndroidMavLinkConnection {
         // Fallback
         if (mUsbConnection == null) {
             final UsbHohoConnection tmp = new UsbHohoConnection(context, this, mBaudRate);
-            //final UsbConnectionImpl tmp = new UsbCDCConnection(context, this, mBaudRate);
 
             // If an error happens here, let it propagate up the call chain since this is the fallback.
             tmp.openUsbConnection(connectionExtras);

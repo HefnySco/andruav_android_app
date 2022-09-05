@@ -17,6 +17,7 @@ import com.andruav.interfaces.IPreference;
 import com.andruav.protocol.commands.Andruav_Parser;
 import com.andruav.protocol.communication.uavos.AndruavUDPBase;
 import com.andruav.protocol.communication.uavos.AndruavUDPServerBase;
+import com.andruav.protocol.communication.udpproxy.UDPProxy;
 import com.andruav.protocol.communication.udpserver.UDPServerBase;
 import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
 import com.andruav.uavos.modules.UAVOSException;
@@ -85,6 +86,8 @@ public class AndruavEngine {
      */
     private static AndruavUDPBase andruavAndruavUDPServerBase;
 
+    private static UDPProxy udpProxy;
+
     public static IPreference getPreference() {
         return mPreference;
     }
@@ -133,6 +136,11 @@ public class AndruavEngine {
         return andruavAndruavUDPServerBase;
     }
 
+    public static UDPProxy getUDPProxy() {
+
+        return udpProxy;
+    }
+
     /**
      * Set active instance for {@link #andruavAndruavUDPServerBase}
      *
@@ -140,6 +148,12 @@ public class AndruavEngine {
      */
     public static void setAndruavUDP(AndruavUDPBase AndruavUDP) {
         andruavAndruavUDPServerBase = AndruavUDP;
+    }
+
+
+    public static void setUDPProxy(UDPProxy udpproxy)
+    {
+        udpProxy = udpproxy;
     }
 
 

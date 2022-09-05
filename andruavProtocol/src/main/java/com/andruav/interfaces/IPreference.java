@@ -34,6 +34,7 @@ public interface IPreference {
 
     boolean getSendBackImages();
 
+    int getSmartMavlinkTelemetry();
     /***
       * Used to LOG in android Log
       * @return

@@ -67,6 +67,7 @@ import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_C
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_LogoutCommServer;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_Ping;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_UdpProxy;
+import com.andruav.protocol.commands.textMessages.AndruavMessage_UDPProxy_Info;
 import com.andruav.protocol.commands.textMessages.uavosCommands.AndruavModule_ID;
 
 import org.json.JSONObject;
@@ -318,6 +319,9 @@ public class Andruav_Parser {
                 break;
             case AndruavMessage_SensorsStatus.TYPE_AndruavMessage_SensorsStatus:
                 andruavMessageBase = new AndruavMessage_SensorsStatus();
+                break;
+            case AndruavMessage_UDPProxy_Info.TYPE_AndruavMessage_UdpProxy_Info:
+                andruavMessageBase = new AndruavMessage_UDPProxy_Info();
                 break;
             case AndruavMessage_ServoChannel.TYPE_AndruavMessage_ServoChannel:
                 andruavMessageBase = new AndruavMessage_ServoChannel();

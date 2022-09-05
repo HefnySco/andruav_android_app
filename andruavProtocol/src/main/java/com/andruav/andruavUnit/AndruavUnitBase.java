@@ -38,6 +38,9 @@ import com.andruav.sensors.AndruavIMU;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 import com.andruav.util.AndruavLatLngAlt;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
  * Created by M.Hefny on 14-Feb-15.
  */
@@ -103,8 +106,32 @@ public class AndruavUnitBase {
      * 2- You receive a message from another drone telling you its UDP proxy availability.
      */
     protected boolean udp_proxy_enabled = false;
+    InetAddress udp_proxy_IPv4 = null;
 
-    public boolean isUdpProxyEnabled()
+    public final InetAddress getUdp_iaddress_socket_unit()
+    {
+       return udp_proxy_IPv4;
+    }
+
+    public final String getUdp_socket_ip_unit()
+    {
+        return udp_socket_ip_unit;
+    }
+    public final int getUdp_socket_port_unit()
+    {
+        return udp_socket_port_unit;
+    }
+
+    public final String getUdp_socket_ip_3rdparty()
+    {
+        return udp_socket_ip_3rdparty;
+    }
+    public final int getUdp_socket_port_3rdparty()
+    {
+        return udp_socket_port_3rdparty;
+    }
+
+   public boolean isUdpProxyEnabled()
     {
         return udp_proxy_enabled;
     }
@@ -126,7 +153,18 @@ public class AndruavUnitBase {
         udp_proxy_enabled = enabled;
 
         if (changed) {
+            udp_proxy_IPv4 = null;
+            try {
+                udp_proxy_IPv4 = InetAddress.getByName(udp_socket_ip_unit);
+            } catch (UnknownHostException e) {
+                udp_proxy_IPv4 = null;
+            }
+
             AndruavEngine.getEventBus().post(new Event_UDP_Proxy(this));
+            if(IsMe())
+            {
+                AndruavFacade.sendUdpProxyStatus(null);
+            }
         }
     }
 
