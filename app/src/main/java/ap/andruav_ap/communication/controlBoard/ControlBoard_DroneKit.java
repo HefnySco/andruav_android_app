@@ -721,6 +721,14 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
                 App.sendTelemetryfromDrone(mavLinkPacket.encodePacket());
             }
 
+            if (AndruavSettings.andruavWe7daBase.isUdpProxyEnabled())
+            {
+                final byte[] msg = mavLinkPacket.encodePacket();
+                final int length = msg.length;
+
+                AndruavEngine.getUDPProxy().sendMessage(msg, length);
+            }
+
         }
         catch (Exception ex)
         {

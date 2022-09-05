@@ -12,7 +12,14 @@ public class Event_TelemetryGCSRequest {
 
     public static final int REQUEST_START    = 1;
     public static final int REQUEST_END      = 2;
+    /**
+     * Add unit to telemetry and adjust rate
+     */
     public static final int REQUEST_RESUME   = 3;
+    /**
+     * Adjust Rate only. Useful in UDPProxy, but will affect rate on all connected gcs.
+     */
+    public static final int ADJUST_RATE      = 4;
     public AndruavUnitBase andruavUnitBase;
     public int Request;
 

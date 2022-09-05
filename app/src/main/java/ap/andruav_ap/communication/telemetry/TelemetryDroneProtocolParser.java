@@ -1,7 +1,6 @@
 package ap.andruav_ap.communication.telemetry;
 
 
-import com.mavlink.MAVLinkPacket;
 import com.mavlink.Parser;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
@@ -12,7 +11,6 @@ import ap.andruav_ap.App;
 
 import ap.andruav_ap.communication.controlBoard.ControlBoard_DroneKit;
 import ap.andruav_ap.communication.telemetry.BlueTooth.Event_FCBData;
-import ap.andruav_ap.communication.telemetry.SerialSocketServer.Event_SocketData;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_ProtocolChanged;
 import ap.andruav_ap.R;
 

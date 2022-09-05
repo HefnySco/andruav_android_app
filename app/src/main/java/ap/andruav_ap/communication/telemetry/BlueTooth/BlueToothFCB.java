@@ -8,7 +8,7 @@ import com.andruav.interfaces.INotification;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 
 import ap.andruav_ap.communication.telemetry.IEvent_SocketData;
-import ap.andruav_ap.communication.telemetry.SerialSocketServer.Event_SocketData;
+import com.andruav.event.fcb_event.Event_SocketData;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
 import com.andruav.notification.PanicFacade;
 

@@ -1,7 +1,6 @@
 package com.andruav;
 
 import android.location.Location;
-import android.preference.Preference;
 
 import com.andruav.controlBoard.shared.missions.MissionBase;
 import com.andruav.event.fcb_event.Event_FCB_RemoteControlSettings;
@@ -37,6 +36,7 @@ import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_Ctrl_Ca
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_LoadTasks;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_WayPoints;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_UdpProxy;
+import com.andruav.protocol.commands.textMessages.AndruavMessage_UDPProxy_Info;
 import com.andruav.util.AndruavLatLngAlt;
 
 import org.json.JSONObject;
@@ -363,15 +363,26 @@ public class AndruavFacade extends AndruavFacadeBase{
         SendTelemetry(Event_TelemetryGCSRequest.REQUEST_END,AndruavSettings.remoteTelemetryAndruavWe7da, Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
     }
 
-    public static void StartUDPTelemetry()
+    public static void StartUdoTelemetry()
     {
         final AndruavSystem_UdpProxy andruavMessage_UdpProxy = new AndruavSystem_UdpProxy();
+        andruavMessage_UdpProxy.enabled = true;
         sendSystemCommandToCommServer (andruavMessage_UdpProxy,false, false);
     }
 
     public static void StopUdpTelemetry()
     {
+        final AndruavSystem_UdpProxy andruavMessage_UdpProxy = new AndruavSystem_UdpProxy();
+        andruavMessage_UdpProxy.enabled = false;
+        sendSystemCommandToCommServer (andruavMessage_UdpProxy,false, false);
+    }
 
+    public static void sendUdpProxyStatus(final AndruavUnitShadow target)
+    {
+        final AndruavMessage_UDPProxy_Info andruavMessage_udpProxy_info = new AndruavMessage_UDPProxy_Info(AndruavSettings.andruavWe7daBase.getUdp_socket_ip_3rdparty(), AndruavSettings.andruavWe7daBase.getUdp_socket_port_3rdparty(),
+                AndruavEngine.getPreference().getSmartMavlinkTelemetry(), AndruavSettings.andruavWe7daBase.isUdpProxyEnabled() );
+
+        sendMessage(andruavMessage_udpProxy_info,target, Boolean.FALSE);
     }
 
     /***
@@ -686,15 +697,6 @@ public class AndruavFacade extends AndruavFacadeBase{
         sendMessage(andruavResala_remoteExecute,target, Boolean.FALSE);
 
     }
-    /*
-    public static void sendFlightMode(int flightMode,final AndruavWe7daBase target)
-    {
-        final AndruavResala_FlightControl andruavMessage_flightControl = new AndruavResala_FlightControl();
-        andruavMessage_flightControl.FlightMode = flightMode;
-        sendMessage(andruavMessage_flightControl,target);
-    }
-    */
-
 
 
     /***

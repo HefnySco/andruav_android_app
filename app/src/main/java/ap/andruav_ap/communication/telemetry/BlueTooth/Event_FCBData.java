@@ -6,7 +6,7 @@ import com.mavlink.MAVLinkPacket;
 import com.andruav.andruavUnit.AndruavUnitBase;
 
 
-import ap.andruav_ap.communication.telemetry.SerialSocketServer.Event_SocketData;
+import com.andruav.event.fcb_event.Event_SocketData;
 
 /**
  * Created by M.Hefny on 25-Nov-14.

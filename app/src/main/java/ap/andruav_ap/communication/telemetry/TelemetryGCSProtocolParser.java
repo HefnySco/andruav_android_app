@@ -10,7 +10,7 @@ import com.andruav.TelemetryProtocol;
 import ap.andruav_ap.App;
 import ap.andruav_ap.communication.telemetry.BlueTooth.Event_FCBData;
 import ap.andruav_ap.communication.telemetry.SerialSocketServer.AndruavGCSSerialSocketServer;
-import ap.andruav_ap.communication.telemetry.SerialSocketServer.Event_SocketData;
+import com.andruav.event.fcb_event.Event_SocketData;
 
 /**
  * Created by mhefny on 2/15/16.

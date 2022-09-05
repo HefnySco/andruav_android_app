@@ -52,6 +52,8 @@ import ap.andruav_ap.communication.telemetry.TelemetryDroneProtocolParser;
 import ap.andruav_ap.communication.telemetry.TelemetryGCSProtocolParser;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 import ap.andruav_ap.DeviceManagerFacade;
+
+import com.andruav.event.droneReport_Event.Event_UDP_Proxy;
 import com.andruav.event.networkEvent.EventLoginClient;
 import com.andruav.event.networkEvent.EventSocketState;
 
@@ -142,6 +144,15 @@ public class MainScreen extends BaseAndruavShasha {
 
 
 
+    public void onEvent(Event_UDP_Proxy event_protocolChanged) {
+
+        if (!event_protocolChanged.mAndruavWe7da.IsMe()) return ;
+
+        Message msg = new Message();
+        msg.obj = event_protocolChanged;
+        mhandle.sendMessageDelayed(msg, 0);
+    }
+
     public void onEvent (final Event_GCSBlockedChanged a7adath_gcsBlockedChanged)
     {
 
@@ -229,6 +240,19 @@ public class MainScreen extends BaseAndruavShasha {
                 if (msg.obj instanceof Event_ProtocolChanged)
                 {
                     updateFCBButton();
+                }
+                else if (msg.obj instanceof Event_UDP_Proxy)
+                {
+                    Event_UDP_Proxy event_udp_proxy = (Event_UDP_Proxy) msg.obj;
+                    if (AndruavSettings.andruavWe7daBase.isUdpProxyEnabled()) {
+                        AndruavEngine.notification().Speak("UDP Proxy Enabled");
+                    }
+                    else
+                    {
+                        AndruavEngine.notification().Speak("UDP Proxy Disabled");
+                    }
+
+
                 }
                 else if (msg.obj instanceof Event_GCSBlockedChanged)
                 {
@@ -508,8 +532,16 @@ public class MainScreen extends BaseAndruavShasha {
             @Override
             public void onClick(View view) {
 
+                if (AndruavSettings.andruavWe7daBase.isUdpProxyEnabled())
+                {
+                    AndruavFacade.StopUdpTelemetry();
+                }
+                else
+                {
+                    AndruavFacade.StartUdoTelemetry();
+                }
 
-                startActivity(new Intent(MainScreen.this, DataShashaTab.class));
+                //startActivity(new Intent(MainScreen.this, DataShashaTab.class));
 
 
             }

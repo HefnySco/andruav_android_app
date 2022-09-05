@@ -2,12 +2,10 @@ package ap.andruav_ap.communication.telemetry;
 
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Message;
 
 import com.mavlink.Parser;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
-import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.TelemetryProtocol;
 import com.andruav.controlBoard.ControlBoardBase;
 
@@ -15,8 +13,8 @@ import de.greenrobot.event.EventBus;
 import ap.andruav_ap.App;
 import ap.andruav_ap.communication.telemetry.BlueTooth.Event_FCBData;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
-import ap.andruav_ap.communication.telemetry.SerialSocketServer.Event_SocketAction;
-import ap.andruav_ap.communication.telemetry.SerialSocketServer.Event_SocketData;
+import com.andruav.event.fcb_event.Event_SocketAction;
+import com.andruav.event.fcb_event.Event_SocketData;
 
 /**
  * Created by mhefny on 2/15/16.

@@ -78,6 +78,7 @@ import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_L
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_LogoutCommServer;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_Ping;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_UdpProxy;
+import com.andruav.protocol.commands.textMessages.AndruavMessage_UDPProxy_Info;
 import com.andruav.protocol.communication.uavos.AndruavUDPServerBase;
 import com.andruav.uavos.modules.UAVOSHelper;
 import com.andruav.uavos.modules.UAVOSModuleCamera;
@@ -1239,6 +1240,11 @@ public abstract class AndruavWSClientBase {
             }
             break;
 
+            case AndruavMessage_UDPProxy_Info.TYPE_AndruavMessage_UdpProxy_Info:
+            {
+                //TODO: Handle this message in GCS mode & Swarms.
+            }
+            break;
             case AndruavSystem_UdpProxy.TYPE_AndruavSystem_UdpProxy:
             {
                 andruav_2MR.processed = true;
@@ -1259,9 +1265,6 @@ public abstract class AndruavWSClientBase {
                             andruavSystem_udpProxy.port1, andruavSystem_udpProxy.port2,
                             andruavSystem_udpProxy.enabled);
                 }
-
-
-
             }
             break;
         }

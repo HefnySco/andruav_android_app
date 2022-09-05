@@ -60,7 +60,7 @@ public class AndruavSystem_UdpProxy extends AndruavMessageBase {
 
         json_data.accumulate("socket1",json_socket1);
         json_data.accumulate("socket2",json_socket2);
-
+        json_data.accumulate("en", enabled);
         return json_data.toString();
     }
 }

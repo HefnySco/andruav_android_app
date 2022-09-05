@@ -46,6 +46,7 @@ import com.andruav.protocol.commands.textMessages.Configuration.AndruavMessage_C
 import com.andruav.protocol.commands.textMessages.Configuration.AndruavMessage_Config_UnitID;
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_Ctrl_Camera;
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_RemoteExecute;
+import com.andruav.protocol.commands.textMessages.AndruavMessage_UDPProxy_Info;
 import com.andruav.protocol.communication.uavos.AndruavUDPServerBase;
 import com.andruav.protocol.communication.websocket.AndruavWSClientBase_TooTallNate;
 
@@ -57,7 +58,7 @@ import de.greenrobot.event.EventBus;
 import ap.andruav_ap.App;
 import ap.andruav_ap.Emergency;
 import ap.andruav_ap.communication.telemetry.BlueTooth.Event_FCBData;
-import ap.andruav_ap.communication.telemetry.SerialSocketServer.Event_SocketData;
+import com.andruav.event.fcb_event.Event_SocketData;
 import ap.andruavmiddlelibrary.ILoginClientCallback;
 import ap.andruavmiddlelibrary.LoginClient;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_IMU_CMD;
@@ -860,6 +861,13 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
                     switch (CMD_ID) {
 
+
+                        case AndruavMessage_UDPProxy_Info.TYPE_AndruavMessage_UdpProxy_Info:
+                            if (AndruavSettings.andruavWe7daBase.getIsCGS())
+                                break;
+                            AndruavFacade.sendUdpProxyStatus(andruavUnit);
+                            break;
+
                         case AndruavMessage_CameraList.TYPE_AndruavCMD_CameraList:
                             if (AndruavSettings.andruavWe7daBase.getIsCGS())
                                 break; // not a valid command to GCSevent_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_TAKEIMAGE);
@@ -913,18 +921,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                             EventBus.getDefault().post(adath_fcb_2AMR);
                             break;
 
-                            /*case AndruavResala_RemoteExecute.RemoteCommand_SWITCHCAM:
-                            if ((andruavUnit != null) && (!andruavUnit.canImage())) break;
-                            if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                                break; // not a valid command to GCSevent_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_TAKEIMAGE);
-                            event_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_SWITCHCAM);
 
-                            event_fpv_cmd.Variables.put("SendBackTo", andruav_2MR.partyID);
-                            event_fpv_cmd.Requester = andruav_2MR.partyID;
-
-                            EventBus.getDefault().post(event_fpv_cmd);
-
-                            break;*/
                         // StartStop recording video
                         case AndruavMessage_RemoteExecute.RemoteCommand_RECORDVIDEO:
                             if ((andruavUnit != null) && (!andruavUnit.canVideo())) break;
@@ -963,7 +960,6 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
                                 if (andruavResala_remoteExecute.getBooleanValue("Act")) {
                                     EventBus.getDefault().post(new _7adath_InitAndroidCamera());
-                                    //AndruavDroneFacade.sendCameraList(true,andruavUnit);
 
                                     if (AndruavSettings.mVideoRequests.get(andruavUnit.PartyID) == null) {
 
@@ -1038,6 +1034,13 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                                     }
                                 }
                                 else
+                                if ( request == Event_TelemetryGCSRequest.ADJUST_RATE) {
+                                    final int LVL = andruavResala_remoteExecute.getIntValue("LVL", Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
+                                    if (LVL != Constants.SMART_TELEMETRY_LEVEL_NEGLECT) {
+                                        Preference.setSmartMavlinkTelemetry(null, LVL);
+                                    }
+                                }
+                                else
                                 {
                                     if (andruavUnit.canTelemetry()) {
                                         // add or resume both make sure they are added in our request list
@@ -1053,6 +1056,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                                         //
 
                                         // Update Smart Telemetry Level if Requested
+                                        // Adjust Rate also if required
                                         final int LVL = andruavResala_remoteExecute.getIntValue("LVL", Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
                                         if (LVL != Constants.SMART_TELEMETRY_LEVEL_NEGLECT) {
                                             Preference.setSmartMavlinkTelemetry(null, LVL);
