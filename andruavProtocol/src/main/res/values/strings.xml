@@ -16,7 +16,8 @@
     <string name="andruav_error_dronekitconnection_res">Drone telemetry has been restored</string>
     <string name="andruav_error_bluetootherror">Drone BLUE TOOTH telemetry has been disconnected</string>
     <string name="andruav_error_telemetryprotocol_undef">Cannot identify telemetry protocol.</string>
-
+    <string name="udp_proxy_en">UDP Telemetry Enabled</string>
+    <string name="udp_proxy_dis">UDP Telemetry Disabled</string>
     <string name="andruav_error_autopilot_cannot_do">Command Not Supported</string>
     <string name="andruav_error_autopilot_cannot_do_arm">Drone cannot do ARM</string>
     <string name="andruav_error_autopilot_cannot_do_disarm">Drone cannot do DISARM</string>

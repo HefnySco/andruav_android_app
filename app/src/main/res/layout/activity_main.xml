@@ -120,6 +120,18 @@
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/mainactivity_txtUdpProxy"
+            android:layout_gravity="bottom"
+            android:layout_weight="0.50"
+            android:hint="Telem:"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp" />
+
     </LinearLayout>
     </ScrollView>
 

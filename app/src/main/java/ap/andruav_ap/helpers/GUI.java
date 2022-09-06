@@ -67,10 +67,18 @@ public class GUI {
         }
     }
 
+    public static  String writeUdpProxy() {
+        if (!AndruavSettings.andruavWe7daBase.isUdpProxyEnabled())
+        {
+            return "<font color=#75A4D3><b>telem: </b></font><font color=#36AB36>not available</font>";
+        }
 
+        return String.format("<font color=#75A4D3><b>telem: </b></font><font color=#36AB36>%s</font><font color=#75A4D3><b>:</b></font><font color=#36AB36>%d</font>",AndruavSettings.andruavWe7daBase.getUdp_socket_ip_3rdparty(),AndruavSettings.andruavWe7daBase.getUdp_socket_port_3rdparty());
+
+    }
     public static  String writeTextEmail() {
         String email = Preference.getLoginUserName(null);
-
+        final StringBuffer text = new StringBuffer();
         if ((email == null) || (email.equals(""))) {
             return "No Account is defined";
         } else {

@@ -53,7 +53,7 @@ import ap.andruav_ap.communication.telemetry.TelemetryGCSProtocolParser;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 import ap.andruav_ap.DeviceManagerFacade;
 
-import com.andruav.event.droneReport_Event.Event_UDP_Proxy;
+import com.andruav.event.fcb_event.Event_UDP_Proxy;
 import com.andruav.event.networkEvent.EventLoginClient;
 import com.andruav.event.networkEvent.EventSocketState;
 
@@ -107,6 +107,7 @@ public class MainScreen extends BaseAndruavShasha {
     private Button mbtnFCB;
     private Button mbtnData;
     private TextView mtxtAccessCode;
+    private TextView mtxtUDPProxy;
 
     private Handler mhandle;
 
@@ -245,14 +246,14 @@ public class MainScreen extends BaseAndruavShasha {
                 {
                     Event_UDP_Proxy event_udp_proxy = (Event_UDP_Proxy) msg.obj;
                     if (AndruavSettings.andruavWe7daBase.isUdpProxyEnabled()) {
-                        AndruavEngine.notification().Speak("UDP Proxy Enabled");
+                        AndruavEngine.notification().Speak(getString(R.string.udp_proxy_en));
                     }
                     else
                     {
-                        AndruavEngine.notification().Speak("UDP Proxy Disabled");
+                        AndruavEngine.notification().Speak(getString(R.string.udp_proxy_dis));
                     }
 
-
+                    writeUDPProxy();
                 }
                 else if (msg.obj instanceof Event_GCSBlockedChanged)
                 {
@@ -543,7 +544,9 @@ public class MainScreen extends BaseAndruavShasha {
 
 
         mtxtAccessCode = findViewById(R.id.mainactivity_txtAccessCode);
+        mtxtUDPProxy = findViewById(R.id.mainactivity_txtUdpProxy);
         writeInfoLabel();
+        writeUDPProxy();
 
         // Define UI Handler
         UIHandler();
@@ -558,7 +561,11 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
     private void writeInfoLabel() {
-        mtxtAccessCode.setText(Html.fromHtml(String.format("<font color=#75A4D3><b>access code: </b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>pin code:</b></font><font color=#36AB36>%s</font>", GUI.writeTextAccessCode(),AndruavSettings.andruavWe7daBase.PartyID)));
+        mtxtAccessCode.setText(Html.fromHtml(String.format("<font color=#75A4D3><b>access code: </b></font><font color=#36AB36>%s</font>", GUI.writeTextAccessCode())));
+    }
+
+    private void writeUDPProxy() {
+        mtxtUDPProxy.setText(Html.fromHtml(GUI.writeUdpProxy()));
     }
 
 
@@ -1088,7 +1095,13 @@ public class MainScreen extends BaseAndruavShasha {
             return true;
         } else if (id == R.id.mi_main_About) {
 
-            DialogHelper.doModalDialog(Me, getString(R.string.gen_about), Html.fromHtml(String.format("<font color=#75A4D3><b>version:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>email:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>access code:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>pin code:</b></font><font color=#36AB36>%s</font>", App.versionName, GUI.writeTextEmail(),GUI.writeTextAccessCode(),AndruavSettings.andruavWe7daBase.PartyID)), null);
+            DialogHelper.doModalDialog(Me, getString(R.string.gen_about), Html.fromHtml(String.format("<font color=#75A4D3><b>version:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>email:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>access code:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>pin code:</b></font><font color=#36AB36>%s</font><br>%s",
+                    App.versionName,
+                    GUI.writeTextEmail(),
+                    GUI.writeTextAccessCode(),
+                    AndruavSettings.andruavWe7daBase.PartyID,
+                    GUI.writeUdpProxy()
+            )), null);
 
         }
         return super.onOptionsItemSelected(item);

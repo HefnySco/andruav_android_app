@@ -90,19 +90,9 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
 
     private final Object stateLock = new Object();
 
-    //private TLD_Tracker tld_tracker;
-    private final int TLDmode_OFF = 0;
-    private final int TLDmode_WAITING_FOR_TARGET = 1;
-    private final int TLDmode_TRACKING = 2;
-    private int mTLDmode = 0;
-
-
-    //private Quadrilateral_F64 initialTargetLocation;
-
     private FPVDroneRTCWebCamActivity Me;
     private static Handler mHandle;
     private SurfaceViewRenderer mSurfaceViewRenderer;
-    //private BoofSurfaceView boofSurfaceView;
     PeerConnectionManager mPeerConnectionManager;
     private AndruavUnitBase andruavUnit_selected;
     private final Object synObj = new Object();

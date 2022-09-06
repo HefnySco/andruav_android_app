@@ -547,10 +547,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     @Override
     public  void sendRCChannels (final int subAction, final int[] channels, final boolean allEightChannels)
     {
-//        if(( channels != null) && (FeatureSwitch.DEBUG_MODE)) Log.e("TRK:", "XOut:" + channels[3]
-//                + "----YOut:" + channels[1]);
-
-
         switch (subAction)
         {
            case Event_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED:
@@ -587,26 +583,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
                     rc_channels[mRCMAP_YAW-1]      = (short) channels[3];                // Rudder
 
                 }
-//                else
-//                {
-//                    msg.chan1_raw = (short) channels[0];                // Aileron
-//                    msg.chan2_raw = (short) channels[1];                // Elevator
-//                    msg.chan3_raw = (short) channels[2];                // Throttle
-//                    msg.chan4_raw = (short) channels[3];                // Rudder
-//
-//                    if (allEightChannels) {
-//                        msg.chan5_raw = channels[4];
-//                        msg.chan6_raw = channels[5];
-//                        msg.chan7_raw = channels[6];
-//                        msg.chan8_raw = channels[7];
-//                    } else {
-//                        // POTENTIAL ISSUE ... channels 5 -8 are released here ... this could conflict wth Mission Planner
-//                        msg.chan5_raw = Short.MAX_VALUE; //(short) channels[4];
-//                        msg.chan6_raw = 0; //(short) channels[5];
-//                        msg.chan7_raw = 0; //(short) channels[6];
-//                        msg.chan8_raw = 0; //(short) channels[7];
-//                    }
-//                }
 
                 msg.chan1_raw = (short) rc_channels[0];
                 msg.chan2_raw = (short) rc_channels[1];
@@ -790,11 +766,10 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     public void onDroneEvent_AttitudeUpdated (final Attitude droneAttitude)
     {
 
-        pitchspeed= droneAttitude.getPitchSpeed();     // Pitch angle (degree)
-        rollspeed= droneAttitude.getRollSpeed();       // Roll angle (degree)
-        yaw= droneAttitude.getYaw();                  // Yaw angle (degree)
+        pitchspeed= droneAttitude.getPitchSpeed();      // Pitch angle (degree)
+        rollspeed= droneAttitude.getRollSpeed();        // Roll angle (degree)
+        yaw= droneAttitude.getYaw();                    // Yaw angle (degree)
         yawspeed= droneAttitude.getYawSpeed();
-        //time_boot_ms = droneAttitude.;
 
         PitchAngle = droneAttitude.getPitch();
         RollAngle = droneAttitude.getRoll();

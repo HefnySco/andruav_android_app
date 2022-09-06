@@ -1,4 +1,4 @@
-package com.andruav.event.droneReport_Event;
+package com.andruav.event.fcb_event;
 
 import com.andruav.andruavUnit.AndruavUnitBase;
 

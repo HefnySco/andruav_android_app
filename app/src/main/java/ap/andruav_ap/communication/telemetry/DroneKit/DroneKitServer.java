@@ -536,6 +536,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (mDrone== null) return ;
                 if (mDrone.isConnected())
                 {
                     VehicleApi.getApi(mDrone).refreshParameters();
