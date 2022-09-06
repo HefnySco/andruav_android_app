@@ -36,7 +36,7 @@ class UsbCDCConnection extends UsbConnection.UsbConnectionImpl {
 
     private static final IntentFilter intentFilter = new IntentFilter(ACTION_USB_PERMISSION);
     private enum UsbPermission { Unknown, Requested, Granted, Denied }
-    private UsbPermission usbPermission = UsbPermission.Unknown;
+    private final UsbPermission usbPermission = UsbPermission.Unknown;
 
     private final AtomicReference<UsbSerialDriver> serialDriverRef = new AtomicReference<>();
 

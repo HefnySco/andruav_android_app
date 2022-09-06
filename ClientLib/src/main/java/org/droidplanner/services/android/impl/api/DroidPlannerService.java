@@ -76,10 +76,9 @@ public class DroidPlannerService extends Service {
      * Generate a drone api instance for the client denoted by the given app id.
      *
      * @param listener Used to retrieve api information.
-     * @param appId    Application id of the connecting client.
      * @return a IDroneApi instance
      */
-    DroneApi registerDroneApi(IApiListener listener, String appId) {
+    DroneApi registerDroneApi(IApiListener listener) {
         if (listener == null)
             return null;
 
@@ -113,12 +112,16 @@ public class DroidPlannerService extends Service {
         if (connParams == null  || listener == null)
             return null;
 
-        if (droneManager != null) {
+        if (droneManager == null) {
+            droneManager = DroneManager.generateDroneManager(getApplicationContext(), connParams, new Handler(Looper.getMainLooper()));
+        }
+        else
+        {
             droneManager.destroy();
         }
-        droneManager = DroneManager.generateDroneManager(getApplicationContext(), connParams, new Handler(Looper.getMainLooper()));
 
-        Timber.d("Drone manager connection for app");
+
+        Timber.d("Drone manager connection for appId");
         droneManager.connect(listener, connParams);
         return droneManager;
     }
@@ -133,13 +136,10 @@ public class DroidPlannerService extends Service {
         if (droneMgr == null || clientInfo == null )
             return;
 
-        Timber.d("Drone manager disconnection for app");
-        droneMgr.disconnect(droneApiStore);
-        if (droneMgr.getConnectedAppsCount() == 0) {
-            Timber.d("Destroying drone manager.");
-            droneMgr.destroy();
-            droneManager = null;
-        }
+        Timber.d("Drone manager disconnection for appId");
+        droneMgr.disconnect();
+        droneMgr.destroy();
+        droneManager = null;
     }
 
     /**

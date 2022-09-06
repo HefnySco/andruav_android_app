@@ -83,25 +83,6 @@ public class ControlTower {
         towerListener.onTowerDisconnected();
     }
 
-    public Bundle[] getConnectedApps() {
-        Bundle[] connectedApps = new Bundle[0];
-        if (isTowerConnected()) {
-            try {
-                connectedApps = o3drServices.getConnectedApps(getApplicationId());
-                if (connectedApps != null) {
-                    final ClassLoader classLoader = ConnectionParameter.class.getClassLoader();
-                    for (Bundle appInfo : connectedApps) {
-                        appInfo.setClassLoader(classLoader);
-                    }
-                }
-            } catch (RemoteException e) {
-                Log.e(TAG, e.getMessage(), e);
-            }
-        }
-
-        return connectedApps;
-    }
-
     public void registerDrone(Drone drone, Handler handler) {
         if (drone == null)
             return;
@@ -153,7 +134,7 @@ public class ControlTower {
     }
 
     IDroneApi registerDroneApi() throws RemoteException {
-        return o3drServices.registerDroneApi(this.apiListener, getApplicationId());
+        return o3drServices.registerDroneApi(this.apiListener);
     }
 
     void releaseDroneApi(IDroneApi droneApi) throws RemoteException {

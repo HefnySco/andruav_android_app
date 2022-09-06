@@ -32,7 +32,7 @@ interface IDroidPlannerServices {
     * @param appId application id for the application acquiring the drone api handle.
     * @return IDroneApi object used to interact with the drone.
     */
-    IDroneApi registerDroneApi(IApiListener listener, String appId);
+    IDroneApi registerDroneApi(IApiListener listener);
 
     /**
     * Retrieve the list of all the connected apps.

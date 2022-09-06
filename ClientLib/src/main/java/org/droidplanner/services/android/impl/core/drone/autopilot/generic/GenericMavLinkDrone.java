@@ -74,7 +74,6 @@ import org.droidplanner.services.android.impl.core.firmware.FirmwareType;
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
 import org.droidplanner.services.android.impl.core.model.AutopilotWarningParser;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
-import org.droidplanner.services.android.impl.utils.video.VideoManager;
 
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_AXIS_R;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_AXIS_X;
@@ -96,8 +95,6 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     public static final int SiK_RADIO_FIXED_COMPID = 0x44; // 'D' 0x44 68
 
     private final DataLink.DataLinkProvider<MAVLinkMessage> mavClient;
-
-    protected final VideoManager videoMgr;
 
     private final DroneEvents events;
     protected final Type type;
@@ -139,8 +136,6 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         this.streamRates = new StreamRates(this);
         this.state = new State(this, handler, warningParser);
         parameterManager = new ParameterManager(this, context, handler);
-
-        this.videoMgr = new VideoManager(context, handler, mavClient);
     }
 
     @Override
@@ -281,28 +276,17 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
     public void startVideoStream(Bundle videoProps, String newVideoTag, Surface videoSurface,
                                  ICommandListener listener) {
-        videoMgr.startVideoStream(videoProps, videoSurface, listener);
     }
 
     public void stopVideoStream(ICommandListener listener) {
-        videoMgr.stopVideoStream(listener);
     }
 
     public void startVideoStreamForObserver(String newVideoTag, ICommandListener listener) {
-        videoMgr.startVideoStreamForObserver(newVideoTag, listener);
     }
 
     public void stopVideoStreamForObserver(ICommandListener listener) {
-        videoMgr.stopVideoStreamForObserver(listener);
     }
 
-    /**
-     * Stops the video stream if the current owner is the passed argument.
-     *
-     */
-    public void tryStoppingVideoStream() {
-        videoMgr.tryStoppingVideoStream();
-    }
 
     protected void notifyAttributeListener(String attributeEvent) {
         notifyAttributeListener(attributeEvent, null);

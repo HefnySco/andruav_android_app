@@ -88,7 +88,7 @@ public class FollowGuidedScan extends FollowAbove {
                 //Fallback to the default behavior
                 super.updateROI();
             } else {
-                Timber.d("ROI Target: " + roiTarget.toString());
+                Timber.d("ROI Target: " + roiTarget);
 
                 //Track the target until told otherwise.
                 MavLinkDoCmds.setROI(drone, roiTarget, null);

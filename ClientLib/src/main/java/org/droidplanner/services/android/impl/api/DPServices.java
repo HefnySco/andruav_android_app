@@ -45,8 +45,8 @@ final class DPServices extends IDroidPlannerServices.Stub {
     }
 
     @Override
-    public IDroneApi registerDroneApi(IApiListener listener, String appId) throws RemoteException {
-        return serviceRef.registerDroneApi(listener, appId);
+    public IDroneApi registerDroneApi(IApiListener listener) {
+        return serviceRef.registerDroneApi(listener);
     }
 
     @Override
@@ -62,7 +62,6 @@ final class DPServices extends IDroidPlannerServices.Stub {
                     final ConnectionParameter sanitizedParams = droneParams.clone();
 
                     Bundle info = new Bundle();
-                    info.putString(GCSEvent.EXTRA_APP_ID, serviceRef.droneApiStore.getOwnerId());
                     info.putParcelable(GCSEvent.EXTRA_VEHICLE_CONNECTION_PARAMETER, sanitizedParams);
 
                     appsInfo.add(info);

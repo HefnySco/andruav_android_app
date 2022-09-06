@@ -69,6 +69,8 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
         disconnect();
         destroyAutopilot();
 
+        connectedApp = null;
+
     }
 
     public synchronized void connect(DroneApi listener, ConnectionParameter connParams) {
@@ -84,23 +86,18 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
 
     }
 
-    private void disconnect() {
-        if (connectedApp != null)
-        {
-            disconnect(connectedApp);
-            connectedApp = null;
-        }
-    }
-
     public int getConnectedAppsCount() {
         if (connectedApp != null) return 1;
 
         return 0;
     }
 
-    public void disconnect(DroneApi listener) {
-        if (listener == null) return ;
-        doDisconnect(listener);
+    public void disconnect() {
+        if (connectedApp == null) return ;
+        DroneApi temp = connectedApp;
+        connectedApp = null;
+        doDisconnect(temp);
+
     }
 
     protected void doDisconnect(DroneApi listener) {
@@ -109,6 +106,7 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
         }
 
         executeAsyncAction(null, new Action(GimbalActions.ACTION_RESET_GIMBAL_MOUNT_MODE), null);
+
     }
 
     protected void notifyDroneEvent(DroneInterfaces.DroneEventsType event) {

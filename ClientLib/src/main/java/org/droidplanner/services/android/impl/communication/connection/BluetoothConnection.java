@@ -94,7 +94,7 @@ public class BluetoothConnection extends AndroidMavLinkConnection {
                         Log.d(BLUE, "id:" + id.toString());
                         if (id.toString().equalsIgnoreCase(UUID_SPP_DEVICE)) {
                             Log.d(BLUE,
-                                ">> Selected: " + device.getName() + " Using: " + id.toString());
+                                ">> Selected: " + device.getName() + " Using: " + id);
                             return device;
                         }
                     }

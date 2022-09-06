@@ -10,7 +10,6 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Pair;
-import android.view.Surface;
 
 import com.mavlink.messages.MAVLinkMessage;
 import com.mavlink.ardupilotmega.msg_mag_cal_progress;
@@ -53,7 +52,6 @@ import org.droidplanner.services.android.impl.core.drone.variables.calibration.M
 import org.droidplanner.services.android.impl.exception.ConnectionException;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
 import org.droidplanner.services.android.impl.utils.MissionUtils;
-import org.droidplanner.services.android.impl.utils.video.VideoManager;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -162,7 +160,7 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
     }
 
     public String getOwnerId() {
-        return "app";
+        return "appId";
     }
 
     public DroneManager getDroneManager() {
@@ -349,19 +347,7 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
 
             // CAMERA ACTIONS
             case CameraActions.ACTION_START_VIDEO_STREAM: {
-                Surface videoSurface = data.getParcelable(CameraActions.EXTRA_VIDEO_DISPLAY);
-                String videoTag = data.getString(CameraActions.EXTRA_VIDEO_TAG, "");
 
-                Bundle videoProps = data.getBundle(CameraActions.EXTRA_VIDEO_PROPERTIES);
-                if (videoProps == null) {
-                    //Only case where it's null is when interacting with a deprecated client version.
-                    //In this case, we assume that the client is attempting to start a solo stream, since that's
-                    //the only api that was exposed.
-                    videoProps = new Bundle();
-                    videoProps.putInt(CameraActions.EXTRA_VIDEO_PROPS_UDP_PORT, VideoManager.ARTOO_UDP_PORT);
-                }
-
-                CommonApiUtils.startVideoStream(drone, videoProps, videoTag, videoSurface, listener);
                 break;
             }
 

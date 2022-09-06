@@ -415,15 +415,7 @@ public abstract class MavLinkConnection {
         return extrasHolder.get();
     }
 
-    /**
-     * Used to query the presence of a connection listener.
-     *
-     * @param tag connection listener tag
-     * @return true if the tag is present in the listeners list.
-     */
-    public boolean hasMavLinkConnectionListener(String tag) {
-        return mListeners.containsKey(tag);
-    }
+
 
     /**
      * Removes the specified listener.

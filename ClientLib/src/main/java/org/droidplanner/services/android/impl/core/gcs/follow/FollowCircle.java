@@ -12,7 +12,7 @@ public class FollowCircle extends FollowWithRadiusAlgorithm {
     /**
      * °/s
      */
-    private double circleStep;
+    private final double circleStep;
     private double circleAngle = 0.0;
 
     public FollowCircle(MavLinkDroneManager droneMgr, Handler handler, double radius, double rate) {

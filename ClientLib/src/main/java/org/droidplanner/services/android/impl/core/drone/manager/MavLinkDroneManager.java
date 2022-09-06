@@ -205,10 +205,6 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
 
     @Override
     protected void doDisconnect(DroneApi listener) {
-        if (drone instanceof GenericMavLinkDrone) {
-            //TODO:MHEFNY Remove APPID
-            ((GenericMavLinkDrone) drone).tryStoppingVideoStream();
-        }
 
         if (listener != null) {
             //TODO:MHEFNY Remove APPID

@@ -97,8 +97,6 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
         if(isConnected() || isConnecting())
             return;
 
-        final String tag = toString();
-
         //Create the mavlink connection
         final int connectionType = connParams.getConnectionType();
         final Bundle paramsBundle = connParams.getParamsBundle();
@@ -141,7 +139,7 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
             }
         }
 
-        mavlinkConn.addMavLinkConnectionListener(tag, mConnectionListener);
+        mavlinkConn.addMavLinkConnectionListener("app_id", mConnectionListener);
 
         //Check if we need to ping a server to receive UDP data stream.
         if (connectionType == ConnectionType.TYPE_UDP) {
@@ -176,7 +174,7 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
         if (isDisconnected())
             return;
 
-        mavlinkConn.removeMavLinkConnectionListener(toString());
+        mavlinkConn.removeMavLinkConnectionListener("app_id");
         if(mavlinkConn.getMavLinkConnectionListenersCount() == 0){
             Timber.i("Disconnecting...");
             mavlinkConn.disconnect();
