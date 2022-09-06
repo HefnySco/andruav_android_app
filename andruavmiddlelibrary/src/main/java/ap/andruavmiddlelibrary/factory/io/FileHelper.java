@@ -62,7 +62,7 @@ public class FileHelper {
         try {
             OS.executeCMD("mkdir " + directoryPath, false);
         } catch (Exception e) {
-            Log.e(AndruavEngine.getPreference().TAG(), String.format("Failed in %s", e.toString()));
+            Log.e(AndruavEngine.getPreference().TAG(), String.format("Failed in %s", e));
         }
     }
 

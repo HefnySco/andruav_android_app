@@ -254,6 +254,8 @@ public class MainScreen extends BaseAndruavShasha {
                     }
 
                     writeUDPProxy();
+                    AndruavFacade.sendUdpProxyStatus(null);
+
                 }
                 else if (msg.obj instanceof Event_GCSBlockedChanged)
                 {

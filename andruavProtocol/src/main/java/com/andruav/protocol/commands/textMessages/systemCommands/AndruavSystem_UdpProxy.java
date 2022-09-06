@@ -26,6 +26,7 @@ public class AndruavSystem_UdpProxy extends AndruavMessageBase {
         address2 = "0.0.0.0";
         port1 = 0;
         port2 = 0;
+
     }
 
     @Override

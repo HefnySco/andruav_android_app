@@ -105,9 +105,9 @@ public class LoginClient {
     {
         if (FeatureSwitch.DEBUG_MODE) {
             // #1: LOCAL CHANGE
-            return "https://" + AndruavSettings.AuthIp  + ":" + String.valueOf(AndruavSettings.AuthPort);
+            return "https://" + AndruavSettings.AuthIp  + ":" + AndruavSettings.AuthPort;
         }else
-            return "https://" + AndruavSettings.AuthIp  + ":" + String.valueOf(AndruavSettings.AuthPort);
+            return "https://" + AndruavSettings.AuthIp  + ":" + AndruavSettings.AuthPort;
     }
 
     public static String getWSURL ()

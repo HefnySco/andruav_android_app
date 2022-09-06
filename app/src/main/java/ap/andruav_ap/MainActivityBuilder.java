@@ -64,7 +64,7 @@ public class MainActivityBuilder extends AppCompatActivity {
                     br.close();
                     file.delete();
 
-                    Log.e("logfpv", " log file " + text.toString());
+                    Log.e("logfpv", " log file " + text);
                     Log.e("logfpv", intent.getStringExtra("tag"));
                     AndruavEngine.log().log(intent.getStringExtra("userName"), intent.getStringExtra("tag"), text.toString());
                     Thread.sleep(500);

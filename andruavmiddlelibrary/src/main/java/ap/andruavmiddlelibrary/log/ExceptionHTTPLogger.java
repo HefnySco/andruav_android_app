@@ -206,7 +206,7 @@ public class ExceptionHTTPLogger implements ILog {
         exception.printStackTrace(new PrintWriter(stackTrace));
         errorReport = new StringBuilder();
         errorReport.append("************ CAUSE OF ERROR ************\n\n");
-        errorReport.append(stackTrace.toString());
+        errorReport.append(stackTrace);
 
         errorReport.append("\n************ DEVICE INFORMATION ***********\n");
         errorReport.append("Brand: ");
@@ -247,7 +247,7 @@ public class ExceptionHTTPLogger implements ILog {
         exception.printStackTrace(new PrintWriter(stackTrace));
         errorReport = new StringBuilder();
         errorReport.append("************ CAUSE OF ERROR ************\n\n");
-        errorReport.append(stackTrace.toString());
+        errorReport.append(stackTrace);
 
         errorReport.append("\n************ DEVICE INFORMATION ***********\n");
         errorReport.append("Brand: ");
@@ -289,7 +289,7 @@ public class ExceptionHTTPLogger implements ILog {
         error.printStackTrace(new PrintWriter(stackTrace));
         errorReport = new StringBuilder();
         errorReport.append("************ CAUSE OF ERROR ************\n\n");
-        errorReport.append(stackTrace.toString());
+        errorReport.append(stackTrace);
 
         errorReport.append("\n************ DEVICE INFORMATION ***********\n");
         errorReport.append("Brand: ");

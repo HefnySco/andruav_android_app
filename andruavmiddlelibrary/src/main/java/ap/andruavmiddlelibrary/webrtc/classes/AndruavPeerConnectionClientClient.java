@@ -84,7 +84,7 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
                     if (packet.has(PnRTCResala.JSON_SDP)) {
                         if(!peer.received) {
                             peer.setReceived(true);
-                            mRtcListener.onDebug(new PnRTCResala("SDP - " + peer.toString()));
+                            mRtcListener.onDebug(new PnRTCResala("SDP - " + peer));
                             // Todo: reveivercb(peer);onMessage
                         }
                         String type = packet.getString(PnRTCResala.JSON_TYPE);

@@ -686,11 +686,8 @@ public class MediaCodecVideoEncoder {
     if (lastKeyFrameMs < 0) {
       lastKeyFrameMs = presentationTimestampMs;
     }
-    boolean forcedKeyFrame = false;
-    if (!requestedKeyFrame && forcedKeyFrameMs > 0
-        && presentationTimestampMs > lastKeyFrameMs + forcedKeyFrameMs) {
-      forcedKeyFrame = true;
-    }
+    boolean forcedKeyFrame = !requestedKeyFrame && forcedKeyFrameMs > 0
+            && presentationTimestampMs > lastKeyFrameMs + forcedKeyFrameMs;
     if (requestedKeyFrame || forcedKeyFrame) {
       // Ideally MediaCodec would honor BUFFER_FLAG_SYNC_FRAME so we could
       // indicate this in queueInputBuffer() below and guarantee _this_ frame

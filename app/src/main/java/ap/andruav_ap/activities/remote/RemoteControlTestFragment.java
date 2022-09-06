@@ -157,7 +157,7 @@ public class RemoteControlTestFragment extends Fragment implements IFragmentSave
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(activity
                     + " must implement OnFragmentInteractionListener");
         }
     }

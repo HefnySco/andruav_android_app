@@ -210,7 +210,7 @@ public class KMLFileHandler {
                     new GenericDataRow(null, (long) GenericDataRow.DB_TYPE_KML_IMAGE, img.toString())
             );
 
-            Images.append(img.toString());
+            Images.append(img);
         }
         catch (Exception ex)
         {

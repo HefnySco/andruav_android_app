@@ -40,7 +40,7 @@ public class ExceptionHandlerBase implements
         exception.printStackTrace(new PrintWriter(stackTrace));
         errorReport = new StringBuilder();
         errorReport.append("************ CAUSE OF ERROR ************\n\n");
-        errorReport.append(stackTrace.toString());
+        errorReport.append(stackTrace);
 
         errorReport.append("\n************ DEVICE INFORMATION ***********\n");
         errorReport.append("Brand: ");

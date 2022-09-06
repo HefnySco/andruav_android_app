@@ -248,7 +248,7 @@ public class NetworkMonitorAutoDetect extends BroadcastReceiver {
       }
       NetworkInfo networkInfo = connectivityManager.getNetworkInfo(network);
       if (networkInfo == null) {
-        Logging.w(TAG, "Couldn't retrieve information from network " + network.toString());
+        Logging.w(TAG, "Couldn't retrieve information from network " + network);
         return new NetworkState(false, -1, -1, -1, -1);
       }
       // The general logic of handling a VPN in this method is as follows. getNetworkInfo will
@@ -400,11 +400,11 @@ public class NetworkMonitorAutoDetect extends BroadcastReceiver {
       LinkProperties linkProperties = connectivityManager.getLinkProperties(network);
       // getLinkProperties will return null if the network is unknown.
       if (linkProperties == null) {
-        Logging.w(TAG, "Detected unknown network: " + network.toString());
+        Logging.w(TAG, "Detected unknown network: " + network);
         return null;
       }
       if (linkProperties.getInterfaceName() == null) {
-        Logging.w(TAG, "Null interface name for network " + network.toString());
+        Logging.w(TAG, "Null interface name for network " + network);
         return null;
       }
 
@@ -413,7 +413,7 @@ public class NetworkMonitorAutoDetect extends BroadcastReceiver {
       if (connectionType == ConnectionType.CONNECTION_NONE) {
         // This may not be an error. The OS may signal a network event with connection type
         // NONE when the network disconnects.
-        Logging.d(TAG, "Network " + network.toString() + " is disconnected");
+        Logging.d(TAG, "Network " + network + " is disconnected");
         return null;
       }
 
@@ -421,7 +421,7 @@ public class NetworkMonitorAutoDetect extends BroadcastReceiver {
       // which appears to be usable. Just log them here.
       if (connectionType == ConnectionType.CONNECTION_UNKNOWN
           || connectionType == ConnectionType.CONNECTION_UNKNOWN_CELLULAR) {
-        Logging.d(TAG, "Network " + network.toString() + " connection type is " + connectionType
+        Logging.d(TAG, "Network " + network + " connection type is " + connectionType
                 + " because it has type " + networkState.getNetworkType() + " and subtype "
                 + networkState.getNetworkSubType());
       }
