@@ -34,7 +34,6 @@ public class AndruavGCSSerialSocketServer {
     protected int mport;
     protected ServerSocket serverSocket;
 
-    protected ServerThread mServerRunnable;
     protected Boolean mkillMe = true;
     protected CommunicationThread mClientsocketRunnable;
     protected Event_SocketData mevent_socketData;
@@ -206,126 +205,6 @@ public class AndruavGCSSerialSocketServer {
 
     }
 
-    /***
-     * Thread of Server Socket
-     * <br>Listening to new connections.
-     */
-    class ServerThread implements Runnable {
-
-        private Boolean mServerKillMe = false;
-        private long last_sent_time = 0;
-        private final long last_sent_time_duration = 1000;
-
-        public void run() {
-            Socket socket = null;
-            try {
-                EventBus.getDefault().register(Me);
-                //EventBus.getDefault().register(Me, "onEventBluetooth", Event_FCBData.class);
-
-                serverSocket = new ServerSocket();
-                serverSocket.bind(new InetSocketAddress(mip,mport));
-            } catch (IOException e) {
-                final long now = System.currentTimeMillis();
-                if ((now - last_sent_time) < last_sent_time_duration)
-                {
-                    return ;
-                }
-                last_sent_time = now;
-
-                AndruavEngine.log().logException(e);
-            }
-
-            EventBus.getDefault().post(new Event_SocketAction(Event_SocketAction.SOCKETACTION_STARTED));
-            while (!mServerKillMe && (!Thread.currentThread().isInterrupted())) {
-
-                try {
-
-                    socket = serverSocket.accept();
-                    AndruavSettings.andruavWe7daBase.setTelemetry_protocol(TelemetryProtocol.TelemetryProtocol_Unknown_Telemetry);
-                    final Event_SocketAction event_socketAction = new Event_SocketAction(Event_SocketAction.SOCKETACTION_CLIENT_CONNECTED);
-                    final SocketAddress socketAddress = socket.getRemoteSocketAddress();
-                    if (socketAddress!= null) {
-                        event_socketAction.clientSocketIP = socketAddress.toString();
-                        EventBus.getDefault().post(event_socketAction);
-                        AndruavEngine.notification().Speak(App.getAppContext().getString(R.string.gen_serialsocket_client_connected));
-                        AndruavFacade.ResumeTelemetry(Constants.SMART_TELEMETRY_LEVEL_NEGLECT); // if there is an active telemetry in a Drone .. give it a hint.
-                    }
-                    if (mServerKillMe) return ;
-
-                    CommunicationThread commThread = new CommunicationThread(socket);
-                    new Thread(commThread,"SerialSocketClient").start();
-
-                } catch (Exception e) {
-                    if (socket!= null)
-                    {
-                        try {
-                            socket.close();
-                        } catch (IOException e1) {
-                            final long now = System.currentTimeMillis();
-                            if ((now - last_sent_time) < last_sent_time_duration)
-                            {
-                                return ;
-                            }
-                            last_sent_time = now;
-
-                            AndruavEngine.log().logException(e1);
-                        }
-                    }
-                    if (mServerKillMe) break ; /// this is not a real error.
-                    AndruavEngine.log().logException(e);
-                }
-
-
-            }
-            try {
-
-                if (mClientsocketRunnable != null)
-                {
-                    mClientsocketRunnable.Close();
-                    mClientsocketRunnable = null;
-                }
-                serverSocket.close();
-            } catch (IOException e) {
-                final long now = System.currentTimeMillis();
-                if ((now - last_sent_time) < last_sent_time_duration)
-                {
-                    return ;
-                }
-                last_sent_time = now;
-
-                AndruavEngine.log().logException("fcb-exception", e);
-
-            }
-            finally {
-                final long now = System.currentTimeMillis();
-                if ((now - last_sent_time) < last_sent_time_duration)
-                {
-                    return ;
-                }
-                last_sent_time = now;
-
-                EventBus.getDefault().unregister(Me);
-            }
-        }
-
-        public void close ()
-        {
-            mServerKillMe = true;
-            try {
-                serverSocket.close();
-            } catch (IOException e) {
-                final long now = System.currentTimeMillis();
-                if ((now - last_sent_time) < last_sent_time_duration)
-                {
-                    return ;
-                }
-                last_sent_time = now;
-
-                AndruavEngine.log().logException("fcb-exception", e);
-            }
-        }
-    }
-
     public AndruavGCSSerialSocketServer()
     {
         Me = this;
@@ -387,10 +266,6 @@ public class AndruavGCSSerialSocketServer {
                 mHandler = null;
             }
             */
-            if (mServerRunnable != null) {
-                mServerRunnable.close();
-                mServerRunnable = null;
-            }
 
            EventBus.getDefault().post(new Event_SocketAction(Event_SocketAction.SOCKETACTION_CLOSED));
 

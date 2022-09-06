@@ -225,7 +225,7 @@ public class AndruavMessage_WayPoints extends AndruavMessageBase {
 
                 case MissionCameraControl.TYPE_CAMERA_CONTROL:
                     final MissionCameraControl mohemmaCameraCommand = (MissionCameraControl) missionBase;
-                    json_record.accumulate("t", mohemmaCameraCommand.TYPE_CAMERA_CONTROL);
+                    json_record.accumulate("t", MissionCameraControl.TYPE_CAMERA_CONTROL);
                     json_record.accumulate("s",mohemmaCameraCommand.Sequence);
 
                     break;
