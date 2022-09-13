@@ -8,6 +8,12 @@
         android:entryValues="@array/pref_gr_fcb_smarttelemetrylevelt_value" />
 
     <CheckBoxPreference
+        android:title="@string/pref_gr_fcb_autoudpproxy"
+        android:key="skiuLMsCOUDVqQ"
+        android:summary="@string/pref_gr_fcb_autoudpproxy_summary"
+        android:defaultValue="true"
+        />
+    <CheckBoxPreference
         android:title="@string/pref_gr_fcb_autofcbconnect"
         android:key="skiuLMsCOCFVqQ"
         android:summary="@string/pref_gr_fcb_autofcbconnect_summary"

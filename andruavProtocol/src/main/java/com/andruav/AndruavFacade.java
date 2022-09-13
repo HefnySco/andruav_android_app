@@ -363,14 +363,14 @@ public class AndruavFacade extends AndruavFacadeBase{
         SendTelemetry(Event_TelemetryGCSRequest.REQUEST_END,AndruavSettings.remoteTelemetryAndruavWe7da, Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
     }
 
-    public static void StartUdpTelemetry()
+    public static void StartUdpProxyTelemetry()
     {
         final AndruavSystem_UdpProxy andruavMessage_UdpProxy = new AndruavSystem_UdpProxy();
         andruavMessage_UdpProxy.enabled = true;
         sendSystemCommandToCommServer (andruavMessage_UdpProxy,false, false);
     }
 
-    public static void StopUdpTelemetry()
+    public static void StopUdpProxyTelemetry()
     {
         final AndruavSystem_UdpProxy andruavMessage_UdpProxy = new AndruavSystem_UdpProxy();
         andruavMessage_UdpProxy.enabled = false;

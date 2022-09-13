@@ -5,7 +5,7 @@ package com.andruav.event.networkEvent;
  */
 public class EventSocketState {
 
-    public enum ENUM_SOCKETSTATE  {onConnect,onDisconnect,onError,onMessage,onRegistered}
+    public enum ENUM_SOCKETSTATE  {onConnect,onDisconnect,onError,onMessage}
 
     public String Message;
     public ENUM_SOCKETSTATE SocketState;

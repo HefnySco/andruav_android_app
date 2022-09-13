@@ -1,5 +1,6 @@
 package ap.andruav_ap.communication.controlBoard;
 
+import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_REGISTERED;
 import static com.mavlink.common.msg_heartbeat.MAVLINK_MSG_ID_HEARTBEAT;
 
 import android.location.Location;
@@ -696,21 +697,33 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
             if (sendPacket )
             {
+                /**
+                 * This is Telemetry via WS.
+                 */
                 App.sendTelemetryfromDrone(mavLinkPacket.encodePacket());
             }
 
-            if (AndruavSettings.andruavWe7daBase.isUdpProxyAccessedLately())
+
+            /**
+               UDP Proxy Telemetry
+             */
+            final int status = App.getAndruavWSStatus();
+            final int action = App.getAndruavWSAction();
+            if (status == SOCKETSTATE_REGISTERED)
             {
-                final byte[] msg = mavLinkPacket.encodePacket();
-                final int length = msg.length;
-                AndruavEngine.getUDPProxy().sendMessage(msg, length);
-            }
-            else
-            if ((AndruavSettings.andruavWe7daBase.isUdpProxyEnabled()) && (mavLinkPacket.msgid == MAVLINK_MSG_ID_HEARTBEAT))
-            {
-                final byte[] msg = mavLinkPacket.encodePacket();
-                final int length = msg.length;
-                AndruavEngine.getUDPProxy().sendMessage(msg, length);
+                if (AndruavSettings.andruavWe7daBase.isUdpProxyAccessedLately())
+                {
+                    final byte[] msg = mavLinkPacket.encodePacket();
+                    final int length = msg.length;
+                    AndruavEngine.getUDPProxy().sendMessage(msg, length);
+                }
+                else
+                if ((AndruavSettings.andruavWe7daBase.isUdpProxyEnabled()) && (mavLinkPacket.msgid == MAVLINK_MSG_ID_HEARTBEAT))
+                {
+                    final byte[] msg = mavLinkPacket.encodePacket();
+                    final int length = msg.length;
+                    AndruavEngine.getUDPProxy().sendMessage(msg, length);
+                }
             }
 
 

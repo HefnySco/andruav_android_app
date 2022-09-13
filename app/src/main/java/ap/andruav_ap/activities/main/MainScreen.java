@@ -182,10 +182,8 @@ public class MainScreen extends BaseAndruavShasha {
         // sendMessageToModule all System messages and some of Communication messages
         Message msg = new Message();
 
-        if (Andruav_2MR.MessageRouting.equals(AndruavWSClientBase.MESSAGE_TYPE_SYSTEM)) {
-            // all system message passes.
-
-        } else {
+        if (!Andruav_2MR.MessageRouting.equals(AndruavWSClientBase.MESSAGE_TYPE_SYSTEM)) {
+            // only system message passes.
             return;
         }
         msg.obj = Andruav_2MR;
@@ -451,10 +449,6 @@ public class MainScreen extends BaseAndruavShasha {
         {
             TelemetryModeer.connectToPreferredConnection(Me,false);
         }
-
-
-        AndruavFacade.StartUdpTelemetry();
-
     }
 
 
@@ -1017,7 +1011,7 @@ public class MainScreen extends BaseAndruavShasha {
     public boolean onOptionsItemSelected(final MenuItem item) {
 
 
-        final  MenuItem item2 = item;
+        final  MenuItem mi_wsconnect = item;
 
 
         // Handle action bar item clicks here. The action bar will
@@ -1026,11 +1020,11 @@ public class MainScreen extends BaseAndruavShasha {
         int id = item.getItemId();
         if (id == R.id.action_main_wsconnect) {
 
-            item2.setEnabled(false);
+            mi_wsconnect.setEnabled(false);
             this.mhandle.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    item2.setEnabled(true);
+                    mi_wsconnect.setEnabled(true);
                 }
             },1500);
 

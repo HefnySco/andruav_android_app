@@ -604,6 +604,14 @@ public class Preference {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "skiuLMsCOCFVqQ", bEnabled);
     }
 
+    public static boolean isAutoUDPProxyConnect(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "skiuLMsCOUDVqQ", false);
+    }
+
+    public static void isAutoUDPProxyConnect(final android.content.ContextWrapper contextWrapper, final boolean bEnabled) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "skiuLMsCOUDVqQ", bEnabled);
+    }
+
     /***
      * DOnt access IMU or GPS from mobile -- even dont initialize it
      * @param contextWrapper
@@ -1168,6 +1176,7 @@ public class Preference {
 
         Preference.setSerialServerPort(contextWrapper, AndruavEngine.getPreference().getContext().getResources().getInteger(R.integer.pref_hub_Port));
         Preference.isAutoFCBConnect(contextWrapper, false);
+        Preference.isAutoUDPProxyConnect(contextWrapper, true);
         Preference.isMobileSensorsDisabled(contextWrapper, false);
 
 

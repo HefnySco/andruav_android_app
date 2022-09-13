@@ -1624,6 +1624,7 @@ public abstract class AndruavWSClientBase {
 
             case AndruavSystem_LogoutCommServer.TYPE_AndruavSystem_LogoutCommServer:
             {
+                // Unit connection has been terminated peacefully &  successfully.
                 final AndruavSystem_LogoutCommServer andruavSystem_logoutCommServer = (AndruavSystem_LogoutCommServer) andruavMessageBase;
                 setSocketState  (SOCKETSTATE_FREASH);
                 setSocketAction (SOCKETACTION_NONE);
@@ -1631,7 +1632,7 @@ public abstract class AndruavWSClientBase {
             break;
 
             case AndruavSystem_ConnectedCommServer.TYPE_AndruavSystem_ConnectedCommServer:
-            {
+            {   // Unit connection has finished successfully.
                 setSocketState  (SOCKETSTATE_REGISTERED);
                 setSocketAction (SOCKETACTION_NONE);
             }

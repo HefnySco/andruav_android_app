@@ -380,6 +380,19 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
         if (emergency != null) {
             emergency.triggerConnectionEmergency(false);
         }
+
+        if (Preference.isAutoUDPProxyConnect(null)==true) {
+            // Start it if it is not started on server.
+            AndruavFacade.StartUdpProxyTelemetry();
+        }
+        else
+        {
+            // stop any previous running UDP if you do not want them.
+            // do not stop when exit to avoid changing ports.
+            // stop when you do not need it.
+            AndruavFacade.StopUdpProxyTelemetry();
+        }
+
     }
 
     @Override
@@ -477,7 +490,10 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                             mhandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if (getSocketState() == SOCKETSTATE_REGISTERED) return ; // just an old retry
+                                if (getSocketState() == SOCKETSTATE_REGISTERED)
+                                {
+                                    return ; // just an old retry
+                                }
                                 if (mkillMe) return;
 
                                 final Emergency emergency = (Emergency) AndruavEngine.getEmergency();

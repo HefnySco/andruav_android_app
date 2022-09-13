@@ -83,6 +83,7 @@ import ap.andruavmiddlelibrary.factory.tts.TTS;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
 import com.andruav.protocol.commands.ProtocolHeaders;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_CameraList;
+import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_Ping;
 import com.andruav.protocol.communication.udpproxy.UDPProxy;
 import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
 import com.andruav.uavos.modules.UAVOSConstants;
@@ -241,6 +242,17 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                         App.notification.displayNotification(INotification.NOTIFICATION_TYPE_NORMAL, "Andruav", connection, true, INotification.INFO_TYPE_PROTOCOL, true);
 
                         App.gui_ConnectionIconID = R.drawable.connected_w_32x32;
+                        if (Preference.isAutoUDPProxyConnect(null)==true) {
+                            // Start it if it is not started on server.
+                            AndruavFacade.StartUdpProxyTelemetry();
+                        }
+                        else
+                        {
+                            // stop any previous running UDP if you do not want them.
+                            // do not stop when exit to avoid changing ports.
+                            // stop when you do not need it.
+                            AndruavFacade.StopUdpProxyTelemetry();
+                        }
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onDisconnect) {
                         App.gui_ConnectionIconID = R.drawable.connect_w_32x32;
                         App.soundManager.playSound(SoundManager.SND_ERR);
@@ -252,10 +264,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onMessage) {
                         // MenuItem mi = mMenu.findItem(R.id.action_main_wsconnect);
                         // mi.setIcon(R.drawable.connected_color_32x32);
-                    } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onRegistered) {
-                        // MenuItem mi = mMenu.findItem(R.id.action_main_wsconnect);
-                        // mi.setIcon(R.drawable.connected_color_32x32);
-                        TTS.getInstance().Speak(getString(R.string.gen_connected));
                     }
                 }
                 else if (msg.obj instanceof  _7adath_ConnectionQuality) {
@@ -877,6 +885,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
      */
     public void onFirstAndruavRun ()
     {
+        Preference.isAutoUDPProxyConnect(null, true);
         Preference.useStreamVideoHD(null,true);
         Preference.setFCBTargetLib(null, Preference.FCB_LIB_3DR);
         Preference.isEmergencyFlightModeFailSafeEnabled(null, 0); //FlightMode.CONST_FLIGHT_CONTROL_RTL);
@@ -902,7 +911,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     public void onFirstUpdatedVersionRun(String currentlyInstalledVersion)
     {
 
-        //Preference.setLoginAccessCode(null,"");
+        Preference.isAutoUDPProxyConnect(null, true);
         Preference.isLocalServer(null,false);
         Preference.setFirstServer(null,0);
         Preference.useStreamVideoHD(null,true);

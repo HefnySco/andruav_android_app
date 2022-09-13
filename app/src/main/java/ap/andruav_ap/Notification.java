@@ -46,11 +46,11 @@ import ap.andruavmiddlelibrary.factory.tts.TTS;
 
 public  class Notification implements INotification{
 
-    
+    final long SPEEK_MIN_TIME = 500;
     Random rnd = new Random();
     NotificationManager mNotificationManager;
     Context context;
-
+    long last_speek_time = 0;
 
     public void onEvent (final Event_ShutDown_Signalling event)
     {
@@ -197,6 +197,12 @@ public  class Notification implements INotification{
 
     @Override
     public void Speak(final String message) {
+        long now = System.currentTimeMillis();
+        if ((now - last_speek_time) < SPEEK_MIN_TIME)
+        {
+            return ;
+        }
+        last_speek_time = now;
         TTS.getInstance().Speak(message);
     }
 

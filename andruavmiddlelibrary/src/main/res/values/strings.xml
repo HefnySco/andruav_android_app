@@ -115,6 +115,8 @@
     <string name="pref_gr_fcb_enableSmartTelemetry_summary">Smart telemetry enables passive telemetry to use much less bandwidth.</string>
     <string name="pref_gr_fcb_autostart">Auto Start App</string>
     <string name="pref_gr_fcb_autostart_summary">Start Andruav automatically when Mobile restarts. DRONE MODE ONLY</string>
+    <string name="pref_gr_fcb_autoudpproxy">Auto Connect UDP Telemetry</string>
+    <string name="pref_gr_fcb_autoudpproxy_summary">Automatically opens UDP connection for Mission Planner to connect.</string>
     <string name="pref_gr_fcb_autofcbconnect">Auto Connect FCB</string>
     <string name="pref_gr_fcb_autofcbconnect_summary">Automatically connect to FCB board once Andruav Started.</string>
     <string name="pref_gr_fcb_ignore_mobsensors">Ignore Mobile Sensors</string>
