@@ -81,13 +81,11 @@
     <uses-permission android:name="android.hardware.usb.host" /> <!-- Social Media -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- DJI -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- WEB RTC -->
     <!-- Auto Reboot -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- PubNub Dependencies -->
-    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
-    <!-- <uses-permission android:name="android.permission.WAKE_LOCK" /> -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <!-- upgrade to Android 9-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -124,7 +122,6 @@
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -233,7 +230,9 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_fcb__drone"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" >
+
+        </activity>
 
         <service
             android:name="ap.sensors.SensorService"
@@ -250,6 +249,27 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </receiver>
+
+
+
+        <receiver
+            android:name="ap.andruav_ap.broadcastReceiver.USB_Receiver"
+            android:enabled="true"
+            android:exported="false"
+            >
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <action android:name="android.intent.action.MAIN" />
+            <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
+            <action android:name="android.hardware.usb.action.USB_STATE" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+
+        <meta-data
+            android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+            android:resource="@xml/device_filter" />
         </receiver>
     </application>
 

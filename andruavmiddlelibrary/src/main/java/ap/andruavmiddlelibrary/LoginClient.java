@@ -3,6 +3,8 @@ package ap.andruavmiddlelibrary;
 
 import android.location.Location;
 import android.os.AsyncTask;
+import android.util.Log;
+
 import androidx.core.util.Pair;
 import androidx.collection.SimpleArrayMap;
 
@@ -464,11 +466,15 @@ public class LoginClient {
                     Parameters.put ("ak",WEBMOFTA7Local);
                 }
             }
+            Log.d("ws",body);
+
             return ;
         } catch (Exception e) {
             AndruavEngine.log().logException(AndruavSettings.AccessCode, "AUTH_FAILED", e);
             LastError = 999;
             LastMessage = "Site is down ... please try later";
+            Log.d("ws","Site is down ... please try later");
+
             return ;
         }
 

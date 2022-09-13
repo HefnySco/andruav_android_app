@@ -260,6 +260,20 @@ public class NetInfoAdapter {
         return !((iP ==null) || iP.equals("0.0.0.0") || iP.equals(""));
     }
 
+    static public boolean isConnected() {
+        final Context context = AndruavEngine.getPreference().getContext();
+        ConnectivityManager cm;
+        try {
+            cm = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        } catch (NullPointerException e) {
+            return false;
+        }
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        final boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+    }
+
     private static String getPhoneType(final Integer key) {
         if( phoneType.containsKey(key) ) {
             return phoneType.get(key);

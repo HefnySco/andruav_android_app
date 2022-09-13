@@ -4,9 +4,14 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
@@ -532,7 +537,8 @@ public class MainScreen extends BaseAndruavShasha {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(MainScreen.this, DataShashaTab.class));
+                //startActivity(new Intent(MainScreen.this, DataShashaTab.class));
+                NetInfoAdapter.Update();
 
 
             }
@@ -572,6 +578,7 @@ public class MainScreen extends BaseAndruavShasha {
      * @param Connect
      */
     protected void doLogin(boolean Connect) {
+        Log.d("ws","doLogin");
 
         onFinalConnectionSucceededCalled = false;
 
@@ -602,10 +609,10 @@ public class MainScreen extends BaseAndruavShasha {
 
 
 
-        if (DeviceManagerFacade.isRunningOnEmulator()) {
-            AndruavEngine.log().logException(AndruavSettings.Account_SID, "emulator", new Exception("I am on a simulator"));
-
-        }
+//        if (DeviceManagerFacade.isRunningOnEmulator()) {
+//            AndruavEngine.log().logException(AndruavSettings.Account_SID, "emulator", new Exception("I am on a simulator"));
+//
+//        }
 
         if (AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED)) {
             return; // I am already connected.
@@ -629,24 +636,15 @@ public class MainScreen extends BaseAndruavShasha {
         // Test IP connection Including Tethering
         NetInfoAdapter.Update();
 
-        if ((FeatureSwitch.IGNORE_NO_INTERNET_CONNECTION==false) &&(NetInfoAdapter.getIPWifi() == null) && (NetInfoAdapter.getIP3G() == null)) {   // No Internet Access
-            //HEFNY
+        if (!NetInfoAdapter.isConnected()) {   // No Internet Access
+            Log.d("ws","isConnected is false");
             DialogHelper.doModalDialog(this, getString(R.string.gen_connection), getString(R.string.err_no_internet), null);
-
             return;
         }
 
-
-        if  (!NetInfoAdapter.isHasValidIPAddress())
-        {
-            // new network type you need to log
-            String Debug = NetInfoAdapter.getAllAvailNetwork_Debug();
-            AndruavEngine.log().log(AndruavSettings.AccessCode,"debug-conn",Debug);
-
-        }
-
-
         if (Connect) {
+            Log.d("ws","isConnected Connect");
+
             AndruavInternalCommands.init();
             isDisconnect = false;
 
@@ -690,7 +688,6 @@ public class MainScreen extends BaseAndruavShasha {
         isDisconnect = true;
         AndruavSettings.andruavWe7daBase.setShutdown(true);
         App.stopAndruavWS(false);
-        //AndruavMo7arek.log().LogDeviceInfo(AndruavSettings.AccessCode, "INFO-LoggingOut");
 
         if (AndruavSettings.andruavWe7daBase.getIsCGS())
         {
@@ -698,7 +695,6 @@ public class MainScreen extends BaseAndruavShasha {
         }
 
         AndruavSettings.andruavWe7daBase.getMohemmaMapBase().clear();
-        //AndruavSettings.andruavWe7daBase.getGeoFenceMapBase().clear();
         AndruavEngine.getAndruavWe7daMapBase().clear();
         App.stopSensorService();
     }
@@ -874,6 +870,10 @@ public class MainScreen extends BaseAndruavShasha {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //IntentFilter filter = new IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        //registerReceiver(mUsbAttachReceiver , filter);
+        //filter = new IntentFilter(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        //registerReceiver(mUsbDetachReceiver , filter);
 
         Me = this;
 
@@ -991,7 +991,6 @@ public class MainScreen extends BaseAndruavShasha {
                 DialogHelper.doModalDialog(this, "Limitation", msg, null);
             }
         }
-
 
         return true;
     }
@@ -1214,6 +1213,8 @@ public class MainScreen extends BaseAndruavShasha {
     protected void onDestroy() {
         super.onDestroy();
         // The activity is about to be destroyed.
+//        unregisterReceiver(mUsbDetachReceiver);
+//        unregisterReceiver(mUsbAttachReceiver);
         App.shutDown();
     }
 
@@ -1252,6 +1253,13 @@ public class MainScreen extends BaseAndruavShasha {
             mhandle.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+
+                    if (!NetInfoAdapter.isConnected())
+                    {
+                        Toast.makeText(getApplicationContext(), "no connection", Toast.LENGTH_LONG).show();
+                        mhandle.postDelayed(this, 1000);
+                        return ;
+                    }
                     autoConnect = false; /// toggle it back
                     Log.d("ac","autoconnect doLogin Resume  true");
                     doLogin(true);
@@ -1314,4 +1322,26 @@ public class MainScreen extends BaseAndruavShasha {
         doExit();
     }
 
+
+    BroadcastReceiver mUsbAttachReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
+                Toast.makeText(Me,"Usb Attached",Toast.LENGTH_LONG).show();
+                TelemetryModeer.connectToPreferredConnection(Me,false);
+            }
+        }
+    };
+
+    BroadcastReceiver mUsbDetachReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
+                Toast.makeText(Me,"Usb Detached",Toast.LENGTH_LONG).show();
+
+            }
+        }
+    };
 }
