@@ -242,7 +242,7 @@ public class Emergency extends EmergencyBase {
     {
         try {
 
-            if (!ignoreTiming && (App.getAndruavWSStatus() == AndruavWSClientBase.SOCKETSTATE_REGISTERED))
+            if (!ignoreTiming && (AndruavEngine.getAndruavWSStatus() == AndruavWSClientBase.SOCKETSTATE_REGISTERED))
             {
                 return;
             }

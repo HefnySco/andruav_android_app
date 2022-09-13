@@ -291,4 +291,24 @@ public class AndruavEngine {
     public static boolean isAndruavWSStatus (int State) {
         return AndruavEngine.getAndruavWS() != null && (AndruavEngine.getAndruavWS().getSocketState() == State);
     }
+
+    /***
+     * Returns current socket conneciton status
+     * @return
+     */
+    public static int getAndruavWSStatus () {
+        if (AndruavEngine.getAndruavWS()==null) return AndruavWSClientBase.SOCKETSTATE_FREASH;
+
+        return AndruavEngine.getAndruavWS().getSocketState();
+    }
+
+    /***
+     * Returns current socket conneciton status
+     * @return
+     */
+    public static int getAndruavWSAction () {
+        if (AndruavEngine.getAndruavWS()==null) return AndruavWSClientBase.SOCKETACTION_NONE;
+
+        return AndruavEngine.getAndruavWS().getSocketAction();
+    }
 }

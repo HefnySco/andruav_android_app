@@ -707,8 +707,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
             /**
                UDP Proxy Telemetry
              */
-            final int status = App.getAndruavWSStatus();
-            final int action = App.getAndruavWSAction();
+            final int status = AndruavEngine.getAndruavWSStatus();
             if (status == SOCKETSTATE_REGISTERED)
             {
                 if (AndruavSettings.andruavWe7daBase.isUdpProxyAccessedLately())

@@ -1,5 +1,7 @@
 package com.andruav.protocol.communication.udpproxy;
 
+import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_REGISTERED;
+
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.event.fcb_event.Event_SocketData;
@@ -34,6 +36,9 @@ public class UDPProxy extends UDPServerBase {
 
     @Override
     protected void onData(final DatagramPacket packet, final byte[] buffer, final int len) {
+        final int status = AndruavEngine.getAndruavWSStatus();
+        if (status != SOCKETSTATE_REGISTERED) return ;
+
         Event_SocketData event_socketData = new Event_SocketData();
         event_socketData.IsLocal = Event_SocketData.SOURCE_REMOTE;
         event_socketData.Data = buffer;

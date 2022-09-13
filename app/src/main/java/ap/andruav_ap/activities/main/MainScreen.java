@@ -328,16 +328,16 @@ public class MainScreen extends BaseAndruavShasha {
                 else if (msg.obj instanceof EventSocketState) {
                     EventSocketState eventSocketState = (EventSocketState) msg.obj;
                     if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onConnect) {
-                        updateConnectionIconsStatus(App.getAndruavWSStatus(), App.getAndruavWSAction());
+                        updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(), AndruavEngine.getAndruavWSAction());
                         progressDialogSetMessage(getString(R.string.gen_step3) + getString(R.string.gen_hostfound));
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onDisconnect) {
                         exitProgressDialog();
-                        updateConnectionIconsStatus(App.getAndruavWSStatus(), App.getAndruavWSAction());
+                        updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(), AndruavEngine.getAndruavWSAction());
 
 
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onError) {
                         exitProgressDialog();
-                        updateConnectionIconsStatus(App.getAndruavWSStatus(), App.getAndruavWSAction());
+                        updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(), AndruavEngine.getAndruavWSAction());
 
 
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onMessage) {
@@ -359,7 +359,7 @@ public class MainScreen extends BaseAndruavShasha {
                             progressDialogSetMessage(Html.fromHtml(text));
                             if (eventWSComm.IsErr == false) {
                                 text += "<br><font color=#75A4D3>" + getString(R.string.gen_ws_registered) + "</font'>";
-                                updateConnectionIconsStatus(App.getAndruavWSStatus(),App.getAndruavWSAction());
+                                updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(),AndruavEngine.getAndruavWSAction());
                                 AndruavEngine.getAndruavWS().sendPing();
 
                             } else {
@@ -379,7 +379,7 @@ public class MainScreen extends BaseAndruavShasha {
                         if ((eventWSComm.andruavMessageBase instanceof AndruavSystem_EnteredChatRoom)) {
                             if (eventWSComm.IsErr == false) {
                                 text += "<br><font color=#75A4D3>" + getString(R.string.gen_ws_registered) + "</font'>";
-                                updateConnectionIconsStatus(App.getAndruavWSStatus(),App.getAndruavWSAction());
+                                updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(),AndruavEngine.getAndruavWSAction());
                                 AndruavEngine.getAndruavWS().sendPing();
 
                             } else {
@@ -1001,7 +1001,7 @@ public class MainScreen extends BaseAndruavShasha {
     public boolean onPrepareOptionsMenu(final Menu menu) {
 
         TTS.getInstance().muteTTS = true; // we dont want to speak of update status of buttons
-        updateConnectionIconsStatus(App.getAndruavWSStatus(), App.getAndruavWSAction());
+        updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(), AndruavEngine.getAndruavWSAction());
         TTS.getInstance().muteTTS = false;
 
         return  super.onPrepareOptionsMenu(menu);
@@ -1029,8 +1029,8 @@ public class MainScreen extends BaseAndruavShasha {
             },1500);
 
 
-            final int status = App.getAndruavWSStatus();
-            final int action = App.getAndruavWSAction();
+            final int status = AndruavEngine.getAndruavWSStatus();
+            final int action = AndruavEngine.getAndruavWSAction();
 
             if ((status == SOCKETSTATE_CONNECTED) || (status == SOCKETSTATE_REGISTERED))
             {

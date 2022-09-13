@@ -635,26 +635,10 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
 
 
-    /***
-     * Returns current socket conneciton status
-     * @return
-     */
-    public static int getAndruavWSStatus () {
-        if (AndruavEngine.getAndruavWS()==null) return AndruavWSClientBase.SOCKETSTATE_FREASH;
-
-        return AndruavEngine.getAndruavWS().getSocketState();
-    }
 
 
-    /***
-     * Returns current socket conneciton status
-     * @return
-     */
-    public static int getAndruavWSAction () {
-        if (AndruavEngine.getAndruavWS()==null) return AndruavWSClientBase.SOCKETACTION_NONE;
 
-        return AndruavEngine.getAndruavWS().getSocketAction();
-    }
+
 
 
     /**
