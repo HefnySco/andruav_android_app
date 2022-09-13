@@ -48,7 +48,7 @@ public class AndruavInternalCommands {
         try {
             mHasExecuted = false;
             mLocal_2awamer.clear();
-            InputStream is = AndruavEngine.AppContext.getResources().openRawResource(R.raw.stored_commands);
+            InputStream is = AndruavEngine.AppContext.getResources().openRawResource(R.raw.r);
 
             final int size = is.available();
             if (size == 0) return;
