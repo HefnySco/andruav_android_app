@@ -406,7 +406,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
     {
         if (isInit) return ;
 
-        disCOnnectOnPurpose = false;
+        disCOnnectOnPurpose = true;
 
         mControlTower = new ControlTower(App.context);
         mDrone = new Drone(App.context);
@@ -511,9 +511,9 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
         ((ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard).onDroneEvent_StateConnected();
 
-        Type vehicleType = mDrone.getAttribute(AttributeType.TYPE);
-        APM_VehicleType = vehicleType.getDroneType();
-        ((ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard).onDroneEvent_TypeUpdated (vehicleType);
+//        Type vehicleType = mDrone.getAttribute(AttributeType.TYPE);
+//        APM_VehicleType = vehicleType.getDroneType();
+//        ((ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard).onDroneEvent_TypeUpdated (vehicleType);
 
 
 
@@ -566,10 +566,11 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
     protected  void onDroneEvent_TypeUpdated (final Bundle extras)
     {
-        if (AndruavSettings.andruavWe7daBase.FCBoard ==null) return ;
-
-        Type vehicleType = mDrone.getAttribute(AttributeType.TYPE);
-        ((ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard).onDroneEvent_TypeUpdated(vehicleType);
+        // Now we handle heart_beat message directly.
+//        if (AndruavSettings.andruavWe7daBase.FCBoard ==null) return ;
+//
+//        Type vehicleType = mDrone.getAttribute(AttributeType.TYPE);
+//        ((ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard).onDroneEvent_TypeUpdated(vehicleType);
 
     }
 
