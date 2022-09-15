@@ -537,10 +537,7 @@ public class MainScreen extends BaseAndruavShasha {
             @Override
             public void onClick(View view) {
 
-                //startActivity(new Intent(MainScreen.this, DataShashaTab.class));
-                NetInfoAdapter.Update();
-
-
+                startActivity(new Intent(MainScreen.this, DataShashaTab.class));
             }
         });
 
