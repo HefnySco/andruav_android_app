@@ -1184,7 +1184,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
 
     public void onDroneEvent_TypeUpdated (final Type vehicleType)
-    {
+    { // Now we handle heart beat message directly.
 
         switch (vehicleType.getDroneType()) {
             case Type.TYPE_ROVER:
@@ -1329,7 +1329,8 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
             }
         }
 
-        if (parametersByName.get("MNT_TYPE").param_value != 0) {
+        if ( parametersByName.get("MNT_TYPE") != null) {
+            if (parametersByName.get("MNT_TYPE").param_value != 0) {
                 /*
                     msg_param_value.param_value
                     0	None
@@ -1372,7 +1373,9 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
                     AndruavEngine.log().logException("dkit_mavlink", ex);
 
                 }
-                }else {
+                }
+        }
+        else {
                 mAndruavUnitBase.hasGimbal(false);
          }
 
