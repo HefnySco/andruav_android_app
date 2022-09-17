@@ -1,7 +1,7 @@
 package ap.andruav_ap.communication.telemetry;
 
 
-import com.mavlink.Parser;
+import com.MAVLink.Parser;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.TelemetryProtocol;

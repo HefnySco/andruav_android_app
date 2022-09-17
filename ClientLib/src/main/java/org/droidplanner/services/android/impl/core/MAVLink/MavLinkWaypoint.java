@@ -1,11 +1,11 @@
 package org.droidplanner.services.android.impl.core.MAVLink;
 
-import com.mavlink.common.msg_mission_ack;
-import com.mavlink.common.msg_mission_count;
-import com.mavlink.common.msg_mission_request;
-import com.mavlink.common.msg_mission_request_list;
-import com.mavlink.common.msg_mission_set_current;
-import com.mavlink.enums.MAV_MISSION_RESULT;
+import com.MAVLink.common.msg_mission_ack;
+import com.MAVLink.common.msg_mission_count;
+import com.MAVLink.common.msg_mission_request;
+import com.MAVLink.common.msg_mission_request_list;
+import com.MAVLink.common.msg_mission_set_current;
+import com.MAVLink.enums.MAV_MISSION_RESULT;
 
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 

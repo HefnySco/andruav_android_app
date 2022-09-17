@@ -1,7 +1,7 @@
 package ap.andruav_ap.communication.controlBoard.mavlink;
 
-import com.mavlink.enums.MAV_CMD_ACK;
-import com.mavlink.enums.MAV_TYPE;
+import com.MAVLink.enums.MAV_CMD_ACK;
+import com.MAVLink.enums.MAV_TYPE;
 import com.andruav.controlBoard.shared.common.FlightMode;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
@@ -731,7 +731,6 @@ public class MavLink_Helpers {
     {
         String err;
         switch (result) {
-            case 0:  // I found ZEO reply with success !!
             case MAV_CMD_ACK.MAV_CMD_ACK_OK:
                 err = "succeeded";
                 break;

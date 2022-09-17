@@ -3,7 +3,8 @@ package com.o3dr.services.android.lib.mavlink;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.mavlink.messages.MAVLinkMessage;
+import com.MAVLink.messages.MAVLinkMessage;
+
 
 /**
  * Wrapper class for a mavlink message, allowing it to be transmitted over android IPC mechanism.

@@ -1,7 +1,7 @@
 package org.droidplanner.services.android.impl.core.mission.waypoints;
 
-import com.mavlink.common.msg_mission_item;
-import com.mavlink.enums.MAV_CMD;
+import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.enums.MAV_CMD;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 

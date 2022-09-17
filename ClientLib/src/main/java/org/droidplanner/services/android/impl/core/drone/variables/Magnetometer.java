@@ -1,6 +1,6 @@
 package org.droidplanner.services.android.impl.core.drone.variables;
 
-import com.mavlink.common.msg_raw_imu;
+import com.MAVLink.common.msg_raw_imu;
 
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.DroneEventsType;
 import org.droidplanner.services.android.impl.core.drone.DroneVariable;

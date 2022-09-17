@@ -1,8 +1,8 @@
 package org.droidplanner.services.android.impl.core.drone.variables.calibration;
 
-import com.mavlink.messages.MAVLinkMessage;
-import com.mavlink.ardupilotmega.msg_mag_cal_progress;
-import com.mavlink.ardupilotmega.msg_mag_cal_report;
+import com.MAVLink.common.msg_mag_cal_report;
+import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
 
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkCalibration;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces;

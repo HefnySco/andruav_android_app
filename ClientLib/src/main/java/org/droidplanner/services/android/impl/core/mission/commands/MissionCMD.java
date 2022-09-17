@@ -1,6 +1,6 @@
 package org.droidplanner.services.android.impl.core.mission.commands;
 
-import com.mavlink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item;
 
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
 import org.droidplanner.services.android.impl.core.mission.MissionItemImpl;

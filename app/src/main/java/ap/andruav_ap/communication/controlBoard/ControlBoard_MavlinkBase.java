@@ -1,7 +1,7 @@
 package ap.andruav_ap.communication.controlBoard;
 
-import com.mavlink.MAVLinkPacket;
-import com.mavlink.Parser;
+import com.MAVLink.MAVLinkPacket;
+import com.MAVLink.Parser;
 import com.andruav.AndruavSettings;
 import com.andruav.event.droneReport_Event.Event_SERVO_Outputs_Ready;
 import com.andruav.andruavUnit.AndruavUnitBase;

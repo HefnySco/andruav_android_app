@@ -1,7 +1,7 @@
 package org.droidplanner.services.android.impl.core.MAVLink;
 
-import com.mavlink.common.msg_request_data_stream;
-import com.mavlink.enums.MAV_DATA_STREAM;
+import com.MAVLink.common.msg_request_data_stream;
+import com.MAVLink.enums.MAV_DATA_STREAM;
 
 import org.droidplanner.services.android.impl.communication.model.DataLink.DataLinkProvider;
 

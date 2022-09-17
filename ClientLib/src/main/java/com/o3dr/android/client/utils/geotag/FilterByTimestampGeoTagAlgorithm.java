@@ -2,9 +2,9 @@ package com.o3dr.android.client.utils.geotag;
 
 import android.util.Log;
 
-import com.mavlink.messages.MAVLinkMessage;
-import com.mavlink.ardupilotmega.msg_camera_feedback;
-import com.mavlink.common.msg_named_value_int;
+import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.ardupilotmega.msg_camera_feedback;
+import com.MAVLink.common.msg_named_value_int;
 import com.o3dr.android.client.utils.data.tlog.TLogParser;
 import com.o3dr.android.client.utils.data.tlog.TLogParser.Event;
 

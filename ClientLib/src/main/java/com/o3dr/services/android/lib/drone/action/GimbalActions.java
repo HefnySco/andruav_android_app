@@ -1,6 +1,6 @@
 package com.o3dr.services.android.lib.drone.action;
 
-import com.mavlink.enums.MAV_MOUNT_MODE;
+import com.MAVLink.enums.MAV_MOUNT_MODE;
 import com.o3dr.services.android.lib.util.Utils;
 
 public class GimbalActions {

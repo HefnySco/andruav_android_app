@@ -5,8 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.core.util.Pair;
 
-import com.mavlink.MAVLinkPacket;
-import com.mavlink.Parser;
+import com.MAVLink.MAVLinkPacket;
+import com.MAVLink.Parser;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 import com.o3dr.services.android.lib.util.UriUtils;
 

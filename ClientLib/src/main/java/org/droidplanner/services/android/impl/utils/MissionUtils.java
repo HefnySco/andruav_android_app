@@ -3,8 +3,8 @@ package org.droidplanner.services.android.impl.utils;
 import android.content.Context;
 import android.net.Uri;
 
-import com.mavlink.common.msg_mission_item;
-import com.mavlink.enums.MAV_CMD;
+import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.enums.MAV_CMD;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.drone.mission.Mission;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;

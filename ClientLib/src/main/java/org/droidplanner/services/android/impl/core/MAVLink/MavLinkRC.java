@@ -1,7 +1,7 @@
 package org.droidplanner.services.android.impl.core.MAVLink;
 
-import com.mavlink.common.msg_manual_control;
-import com.mavlink.common.msg_rc_channels_override;
+import com.MAVLink.common.msg_manual_control;
+import com.MAVLink.common.msg_rc_channels_override;
 import com.o3dr.services.android.lib.model.ICommandListener;
 
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;

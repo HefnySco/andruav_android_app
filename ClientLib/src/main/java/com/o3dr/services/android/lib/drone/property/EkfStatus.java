@@ -3,7 +3,7 @@ package com.o3dr.services.android.lib.drone.property;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.mavlink.enums.EKF_STATUS_FLAGS;
+import com.MAVLink.enums.EKF_STATUS_FLAGS;
 
 import java.util.BitSet;
 

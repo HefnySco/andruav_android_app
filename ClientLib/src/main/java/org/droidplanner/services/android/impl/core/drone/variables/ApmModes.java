@@ -1,6 +1,6 @@
 package org.droidplanner.services.android.impl.core.drone.variables;
 
-import com.mavlink.enums.MAV_TYPE;
+import com.MAVLink.enums.MAV_TYPE;
 
 import java.util.ArrayList;
 import java.util.List;

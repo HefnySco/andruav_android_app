@@ -11,9 +11,9 @@ import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.mavlink.messages.MAVLinkMessage;
-import com.mavlink.ardupilotmega.msg_mag_cal_progress;
-import com.mavlink.ardupilotmega.msg_mag_cal_report;
+import com.MAVLink.common.msg_mag_cal_report;
+import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.action.CameraActions;
 import com.o3dr.services.android.lib.drone.action.ConnectionActions;

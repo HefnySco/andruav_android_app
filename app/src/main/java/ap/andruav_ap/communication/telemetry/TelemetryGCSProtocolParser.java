@@ -1,6 +1,6 @@
 package ap.andruav_ap.communication.telemetry;
 
-import com.mavlink.MAVLinkPacket;
+import com.MAVLink.MAVLinkPacket;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.andruavUnit.AndruavUnitBase;

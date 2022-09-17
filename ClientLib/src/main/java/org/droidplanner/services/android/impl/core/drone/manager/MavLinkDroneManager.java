@@ -4,11 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.mavlink.MAVLinkPacket;
-import com.mavlink.messages.MAVLinkMessage;
-import com.mavlink.ardupilotmega.msg_mag_cal_progress;
-import com.mavlink.ardupilotmega.msg_mag_cal_report;
-import com.mavlink.common.msg_command_ack;
+import com.MAVLink.MAVLinkPacket;
+import com.MAVLink.common.msg_mag_cal_report;
+import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
+import com.MAVLink.common.msg_command_ack;
 import com.google.android.gms.location.LocationRequest;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.drone.action.GimbalActions;

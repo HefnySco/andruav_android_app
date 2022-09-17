@@ -1,9 +1,9 @@
 package org.droidplanner.services.android.impl.core.MAVLink;
 
-import com.mavlink.common.msg_command_ack;
-import com.mavlink.common.msg_command_long;
-import com.mavlink.enums.MAV_CMD;
-import com.mavlink.enums.MAV_CMD_ACK;
+import com.MAVLink.common.msg_command_ack;
+import com.MAVLink.common.msg_command_long;
+import com.MAVLink.enums.MAV_CMD;
+import com.MAVLink.enums.MAV_CMD_ACK;
 
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import com.o3dr.services.android.lib.model.ICommandListener;

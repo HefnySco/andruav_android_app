@@ -1,16 +1,16 @@
 package ap.andruav_ap.communication.controlBoard.mavlink;
 
-import com.mavlink.MAVLinkPacket;
-import com.mavlink.common.msg_attitude;
-import com.mavlink.common.msg_command_long;
-import com.mavlink.common.msg_heartbeat;
-import com.mavlink.common.msg_rc_channels;
-import com.mavlink.messages.MAVLinkMessage;
-import com.mavlink.ardupilotmega.msg_mount_status;
-import com.mavlink.common.msg_command_ack;
-import com.mavlink.common.msg_nav_controller_output;
-import com.mavlink.common.msg_servo_output_raw;
-import com.mavlink.common.msg_statustext;
+import com.MAVLink.MAVLinkPacket;
+import com.MAVLink.common.msg_attitude;
+import com.MAVLink.common.msg_command_long;
+import com.MAVLink.minimal.msg_heartbeat;
+import com.MAVLink.common.msg_rc_channels;
+import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.ardupilotmega.msg_mount_status;
+import com.MAVLink.common.msg_command_ack;
+import com.MAVLink.common.msg_nav_controller_output;
+import com.MAVLink.common.msg_servo_output_raw;
+import com.MAVLink.common.msg_statustext;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.Constants;

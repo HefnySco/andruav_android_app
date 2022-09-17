@@ -1,9 +1,9 @@
 package org.droidplanner.services.android.impl.core.MAVLink;
 
-import com.mavlink.messages.MAVLinkMessage;
-import com.mavlink.common.msg_heartbeat;
-import com.mavlink.enums.MAV_AUTOPILOT;
-import com.mavlink.enums.MAV_TYPE;
+import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.minimal.msg_heartbeat;
+import com.MAVLink.enums.MAV_AUTOPILOT;
+import com.MAVLink.enums.MAV_TYPE;
 
 import org.droidplanner.services.android.impl.core.drone.manager.MavLinkDroneManager;
 import org.droidplanner.services.android.impl.core.firmware.FirmwareType;

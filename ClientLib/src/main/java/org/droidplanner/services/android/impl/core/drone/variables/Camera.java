@@ -1,7 +1,7 @@
 package org.droidplanner.services.android.impl.core.drone.variables;
 
-import com.mavlink.ardupilotmega.msg_camera_feedback;
-import com.mavlink.ardupilotmega.msg_mount_status;
+import com.MAVLink.ardupilotmega.msg_camera_feedback;
+import com.MAVLink.ardupilotmega.msg_mount_status;
 
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.DroneEventsType;
 import org.droidplanner.services.android.impl.core.drone.DroneVariable;

@@ -3,10 +3,10 @@ package org.droidplanner.services.android.impl.core.drone.manager;
 import android.os.Handler;
 import android.os.RemoteException;
 
-import com.mavlink.messages.MAVLinkMessage;
-import com.mavlink.common.msg_command_ack;
-import com.mavlink.common.msg_command_long;
-import com.mavlink.common.msg_set_mode;
+import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.common.msg_command_ack;
+import com.MAVLink.common.msg_command_long;
+import com.MAVLink.common.msg_set_mode;
 
 import com.o3dr.services.android.lib.model.ICommandListener;
 

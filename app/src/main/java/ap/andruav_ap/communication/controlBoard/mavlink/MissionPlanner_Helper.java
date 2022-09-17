@@ -1,7 +1,7 @@
 package ap.andruav_ap.communication.controlBoard.mavlink;
 
-import com.mavlink.common.msg_mission_item;
-import com.mavlink.enums.MAV_CMD;
+import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.enums.MAV_CMD;
 import com.o3dr.services.android.lib.drone.mission.Mission;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 

@@ -1,26 +1,24 @@
 package ap.andruav_ap.communication.controlBoard.mavlink;
 
-import static com.mavlink.enums.MAV_TYPE.MAV_TYPE_ADSB;
-import static com.mavlink.enums.MAV_TYPE.MAV_TYPE_GIMBAL;
+import static com.MAVLink.enums.MAV_TYPE.MAV_TYPE_GCS;
+import static com.MAVLink.enums.MAV_TYPE.MAV_TYPE_GIMBAL;
 
 import com.andruav.AndruavEngine;
 import com.andruav.andruavUnit.AndruavUnitAllGCS;
 import com.andruav.event.fpv7adath.Event_FPV_CMD;
 import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
-import com.andruav.interfaces.INotification;
-import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_Ctrl_Camera;
-import com.mavlink.ardupilotmega.msg_mount_status;
-import com.mavlink.common.msg_attitude;
-import com.mavlink.common.msg_command_long;
-import com.mavlink.common.msg_heartbeat;
-import com.mavlink.common.msg_nav_controller_output;
-import com.mavlink.common.msg_rc_channels;
-import com.mavlink.common.msg_servo_output_raw;
-import com.mavlink.common.msg_statustext;
+import com.MAVLink.ardupilotmega.msg_mount_status;
+import com.MAVLink.common.msg_attitude;
+import com.MAVLink.common.msg_command_long;
+import com.MAVLink.minimal.msg_heartbeat;
+import com.MAVLink.common.msg_nav_controller_output;
+import com.MAVLink.common.msg_rc_channels;
+import com.MAVLink.common.msg_servo_output_raw;
+import com.MAVLink.common.msg_statustext;
 import com.andruav.AndruavSettings;
 import com.andruav.notification.PanicFacade;
-import com.mavlink.enums.MAV_CMD;
+import com.MAVLink.enums.MAV_CMD;
 
 import ap.andruav_ap.communication.controlBoard.ControlBoard_DroneKit;
 
@@ -102,8 +100,8 @@ public class DroneMavlinkHandler {
      */
     public static void execute_heartbeat_raw( msg_heartbeat msg_heartbeat)
     {
-        if (msg_heartbeat.type>= MAV_TYPE_GIMBAL) return ; // ignore parsing ths ADSB message
-        if (msg_heartbeat.compid==0) return; // ignore parse
+        if ((msg_heartbeat.type>= MAV_TYPE_GIMBAL) && (msg_heartbeat.type!= MAV_TYPE_GCS)) return ; // ignore parsing ths ADSB message
+        //if (msg_heartbeat.compid==0) return; // ignore parse
         if (msg_heartbeat.sysid==255) return; // ignore parse
         final ControlBoard_DroneKit controlBoard_droneKit = (ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard;
 

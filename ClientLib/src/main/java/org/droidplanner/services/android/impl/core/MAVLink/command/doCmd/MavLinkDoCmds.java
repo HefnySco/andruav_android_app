@@ -1,11 +1,11 @@
 package org.droidplanner.services.android.impl.core.MAVLink.command.doCmd;
 
-import com.mavlink.ardupilotmega.msg_digicam_control;
-import com.mavlink.ardupilotmega.msg_mount_control;
-import com.mavlink.common.msg_command_long;
-import com.mavlink.common.msg_mission_set_current;
-import com.mavlink.enums.GRIPPER_ACTIONS;
-import com.mavlink.enums.MAV_CMD;
+import com.MAVLink.ardupilotmega.msg_digicam_control;
+import com.MAVLink.ardupilotmega.msg_mount_control;
+import com.MAVLink.common.msg_command_long;
+import com.MAVLink.common.msg_mission_set_current;
+import com.MAVLink.enums.GRIPPER_ACTIONS;
+import com.MAVLink.enums.MAV_CMD;
 
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;

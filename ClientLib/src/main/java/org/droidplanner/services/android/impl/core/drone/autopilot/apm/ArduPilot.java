@@ -6,22 +6,21 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.mavlink.common.msg_rc_channels;
-import com.mavlink.messages.MAVLinkMessage;
-import com.mavlink.ardupilotmega.msg_camera_feedback;
-import com.mavlink.ardupilotmega.msg_mag_cal_progress;
-import com.mavlink.ardupilotmega.msg_mag_cal_report;
-import com.mavlink.ardupilotmega.msg_mount_configure;
-import com.mavlink.ardupilotmega.msg_mount_status;
-import com.mavlink.ardupilotmega.msg_radio;
-import com.mavlink.common.msg_named_value_int;
-import com.mavlink.common.msg_raw_imu;
-import com.mavlink.common.msg_servo_output_raw;
-import com.mavlink.common.msg_statustext;
-import com.mavlink.common.msg_sys_status;
-import com.mavlink.common.msg_vfr_hud;
-import com.mavlink.enums.MAV_MOUNT_MODE;
-import com.mavlink.enums.MAV_SYS_STATUS_SENSOR;
+import com.MAVLink.common.msg_mag_cal_report;
+import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.ardupilotmega.msg_camera_feedback;
+import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
+
+import com.MAVLink.ardupilotmega.msg_mount_configure;
+import com.MAVLink.ardupilotmega.msg_mount_status;
+import com.MAVLink.ardupilotmega.msg_radio;
+import com.MAVLink.common.msg_named_value_int;
+import com.MAVLink.common.msg_raw_imu;
+import com.MAVLink.common.msg_statustext;
+import com.MAVLink.common.msg_sys_status;
+import com.MAVLink.common.msg_vfr_hud;
+import com.MAVLink.enums.MAV_MOUNT_MODE;
+import com.MAVLink.enums.MAV_SYS_STATUS_SENSOR;
 import com.github.zafarkhaja.semver.Version;
 
 import org.droidplanner.services.android.impl.communication.model.DataLink;

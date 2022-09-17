@@ -2,7 +2,7 @@ package com.o3dr.android.client.utils.geotag;
 
 import android.media.ExifInterface;
 
-import com.mavlink.ardupilotmega.msg_camera_feedback;
+import com.MAVLink.ardupilotmega.msg_camera_feedback;
 import com.o3dr.android.client.utils.data.tlog.TLogParser;
 
 import java.io.File;

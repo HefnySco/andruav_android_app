@@ -1,14 +1,14 @@
 package org.droidplanner.services.android.impl.core.MAVLink;
 
-import com.mavlink.common.msg_command_long;
-import com.mavlink.common.msg_manual_control;
-import com.mavlink.common.msg_mission_item;
-import com.mavlink.common.msg_set_mode;
-import com.mavlink.common.msg_set_position_target_global_int;
-import com.mavlink.common.msg_set_position_target_local_ned;
-import com.mavlink.enums.MAV_CMD;
-import com.mavlink.enums.MAV_FRAME;
-import com.mavlink.enums.MAV_GOTO;
+import com.MAVLink.common.msg_command_long;
+import com.MAVLink.common.msg_manual_control;
+import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_set_mode;
+import com.MAVLink.common.msg_set_position_target_global_int;
+import com.MAVLink.common.msg_set_position_target_local_ned;
+import com.MAVLink.enums.MAV_CMD;
+import com.MAVLink.enums.MAV_FRAME;
+import com.MAVLink.enums.MAV_GOTO;
 import com.o3dr.services.android.lib.model.ICommandListener;
 
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;

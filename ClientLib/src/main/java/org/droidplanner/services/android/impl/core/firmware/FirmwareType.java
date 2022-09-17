@@ -1,6 +1,6 @@
 package org.droidplanner.services.android.impl.core.firmware;
 
-import com.mavlink.enums.MAV_AUTOPILOT;
+import com.MAVLink.enums.MAV_AUTOPILOT;
 
 public enum FirmwareType {
     /* APM firmware types */

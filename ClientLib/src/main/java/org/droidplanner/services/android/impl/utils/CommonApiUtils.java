@@ -5,12 +5,13 @@ import android.os.RemoteException;
 import android.text.TextUtils;
 import android.view.Surface;
 
-import com.mavlink.messages.MAVLinkMessage;
-import com.mavlink.ardupilotmega.msg_ekf_status_report;
-import com.mavlink.ardupilotmega.msg_mag_cal_progress;
-import com.mavlink.ardupilotmega.msg_mag_cal_report;
-import com.mavlink.enums.MAG_CAL_STATUS;
-import com.mavlink.enums.MAV_TYPE;
+import com.MAVLink.common.msg_mag_cal_report;
+import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.ardupilotmega.msg_ekf_status_report;
+import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
+
+import com.MAVLink.enums.MAG_CAL_STATUS;
+import com.MAVLink.enums.MAV_TYPE;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
@@ -63,7 +64,6 @@ import org.droidplanner.services.android.impl.core.mission.survey.SurveyImpl;
 import org.droidplanner.services.android.impl.core.mission.waypoints.StructureScannerImpl;
 import org.droidplanner.services.android.impl.core.survey.Footprint;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

@@ -1,8 +1,8 @@
 package org.droidplanner.services.android.impl.core.mission.survey;
 
-import com.mavlink.common.msg_mission_item;
-import com.mavlink.enums.MAV_CMD;
-import com.mavlink.enums.MAV_FRAME;
+import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.enums.MAV_CMD;
+import com.MAVLink.enums.MAV_FRAME;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;

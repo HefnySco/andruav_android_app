@@ -1,7 +1,8 @@
 package ap.andruav_ap.communication.controlBoard;
 
+import static com.MAVLink.minimal.msg_heartbeat.MAVLINK_MSG_ID_HEARTBEAT;
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_REGISTERED;
-import static com.mavlink.common.msg_heartbeat.MAVLINK_MSG_ID_HEARTBEAT;
+
 
 import android.location.Location;
 import android.os.Build;
@@ -17,13 +18,13 @@ import com.andruav.event.Event_Remote_ChannelsCMD;
 import com.andruav.event.droneReport_Event.Event_GPS_Ready;
 import com.andruav.event.fpv7adath.Event_FPV_CMD;
 import com.andruav.sensors.AndruavIMU;
-import com.mavlink.MAVLinkPacket;
-import com.mavlink.common.msg_attitude;
-import com.mavlink.common.msg_heartbeat;
-import com.mavlink.common.msg_nav_controller_output;
-import com.mavlink.common.msg_param_value;
-import com.mavlink.common.msg_rc_channels_override;
-import com.mavlink.common.msg_servo_output_raw;
+import com.MAVLink.MAVLinkPacket;
+import com.MAVLink.common.msg_attitude;
+import com.MAVLink.minimal.msg_heartbeat;
+import com.MAVLink.common.msg_nav_controller_output;
+import com.MAVLink.common.msg_param_value;
+import com.MAVLink.common.msg_rc_channels_override;
+import com.MAVLink.common.msg_servo_output_raw;
 import com.andruav.AndruavFacade;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
@@ -45,9 +46,9 @@ import com.andruav.controlBoard.shared.missions.MissionRTL;
 import com.andruav.controlBoard.shared.missions.SplineMission;
 import com.andruav.controlBoard.shared.missions.WayPointStep;
 import com.andruav.util.GPSHelper;
-import com.mavlink.enums.MAV_COMPONENT;
-import com.mavlink.enums.MAV_MODE_FLAG;
-import com.mavlink.enums.MAV_STATE;
+import com.MAVLink.enums.MAV_COMPONENT;
+import com.MAVLink.enums.MAV_MODE_FLAG;
+import com.MAVLink.enums.MAV_STATE;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.mission.Mission;

@@ -2,13 +2,13 @@ package org.droidplanner.services.android.impl.core.MAVLink;
 
 import android.os.Handler;
 
-import com.mavlink.messages.MAVLinkMessage;
-import com.mavlink.common.msg_mission_ack;
-import com.mavlink.common.msg_mission_count;
-import com.mavlink.common.msg_mission_current;
-import com.mavlink.common.msg_mission_item;
-import com.mavlink.common.msg_mission_item_reached;
-import com.mavlink.common.msg_mission_request;
+import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.common.msg_mission_ack;
+import com.MAVLink.common.msg_mission_count;
+import com.MAVLink.common.msg_mission_current;
+import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_reached;
+import com.MAVLink.common.msg_mission_request;
 
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.OnWaypointManagerListener;
 import org.droidplanner.services.android.impl.core.drone.DroneVariable;

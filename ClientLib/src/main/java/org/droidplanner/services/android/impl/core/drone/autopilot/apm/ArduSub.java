@@ -3,8 +3,8 @@ package org.droidplanner.services.android.impl.core.drone.autopilot.apm;
 import android.content.Context;
 import android.os.Handler;
 
-import com.mavlink.messages.MAVLinkMessage;
-import com.mavlink.enums.MAV_TYPE;
+import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.enums.MAV_TYPE;
 
 import org.droidplanner.services.android.impl.communication.model.DataLink;
 import org.droidplanner.services.android.impl.core.drone.LogMessageListener;

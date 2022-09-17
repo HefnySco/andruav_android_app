@@ -4,7 +4,7 @@ package ap.andruav_ap.communication.controlBoard.mavlink;
   Created by mhefny on 11/28/15.
  */
 
-import com.mavlink.enums.MAV_TYPE;
+import com.MAVLink.enums.MAV_TYPE;
 
 import java.util.ArrayList;
 import java.util.List;

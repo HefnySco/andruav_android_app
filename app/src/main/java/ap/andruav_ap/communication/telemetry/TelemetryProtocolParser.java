@@ -3,7 +3,7 @@ package ap.andruav_ap.communication.telemetry;
 import android.os.Handler;
 import android.os.HandlerThread;
 
-import com.mavlink.Parser;
+import com.MAVLink.Parser;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.TelemetryProtocol;
