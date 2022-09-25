@@ -67,8 +67,6 @@ public final class UsbId {
     public static final int VENDOR_ARM = 0x0d28;
     public static final int ARM_MBED = 0x0204;
 
-    public static final int VENDOR_ST = 0x0483;
-    public static final int ST_CDC = 0x5740;
 
     public static final int VENDOR_RASPBERRY_PI = 0x2e8a;
     public static final int RASPBERRY_PI_PICO_MICROPYTHON = 0x0005;
@@ -85,30 +83,43 @@ public final class UsbId {
     public static final int DEVICE_SPARKY2 = 0x41D0;
     public static final int DEVICE_CC3D = 0x415D;
 
-    public static final int VENDOR_ARDUPILOT_CHIBIOS1 = 0x0483;
-    public static final int VENDOR_ARDUPILOT_CHIBIOS2 = 0x1209;
-    public static final int DEVICE_ARDUPILOT_CHIBIOS  =  0x5740;
-    public static final int DEVICE_ARDUPILOT_CHIBIOS2 =  0x5741;
-
-    public static final int VENDOR_DRAGONLINK = 0x1fc9;
-    public static final int DEVICE_DRAGONLINK = 0x0083;
-
-    public static final int VENDOR_RADIOLINK_MINI = 0x26ac;
-    public static final int DEVICE_RADIOLINK_MINI = 0x0016;
+    public static final int VENDOR_ARDUPILOT_CHIBIOS1   = 0x0483;
+    public static final int VENDOR_ARDUPILOT_CHIBIOS2   = 0x1209;
+    public static final int DEVICE_ARDUPILOT_CHIBIOS    = 0x5740;
+    public static final int DEVICE_ARDUPILOT_CHIBIOS2   = 0x5741;
+    public static final int DEVICE_AIRLINK              = 0x0037;
+    public static final int DEVICE_MODALAI              = 0xa32f;
+    public static final int ST_CDC                      = 0x5740;
 
 
-    public static final int VENDOR_PX4    = 0x26AC;
-    public static final int DEVICE_PX4FMU = 0x0011;
+    public static final int VENDOR_DRAGONLINK           = 0x1fc9;
+    public static final int DEVICE_DRAGONLINK           = 0x0083;
+    public static final int DEVICE_DRAGONLINKFMUK66     = 0x001c;
 
-    public static final int VENDOR_PX5    = 0x3162;
-    public static final int DEVICE_PX5FMU = 0x0051;
 
-    public static final int VENDOR_ARDUPILOT_FUTURE = 0x16D0;
-    public static final int DEVICE_ARDUPILOT_FUTURE = 0x0E65;
+
+    public static final int VENDOR_PX4                  = 0x26AC;
+    public static final int DEVICE_PX4FMU               = 0x0011;
+    public static final int DEVICE_RADIOLINK_MINI       = 0x0016;
+
+    public static final int VENDOR_AUTERION             = 0x3185;
+    public static final int DEVICE_PX4FMUV5             = 0x0033;
+
+    public static final int VENDOR_UVIFY                = 0x1008;
+    public static final int DEVICE_PX4UVIFY             = 0x0001;
+
+    public static final int VENDOR_PX5                  = 0x3162;
+    public static final int DEVICE_PX5FMU               = 0x0051;
+    public static final int DEVICE_PIX5_32              = 0x004E;
+
+
+
+
 
 
     public static final int VENDOR_CUBE_BOARD       = 0x16D0;
     public static final int VENDOR_CUBE_BOARD2      = 0x2DAE;
+    public static final int DEVICE_Cube_F4          = 0x0001;
     public static final int DEVICE_CubeBlack_PLUS   = 0x1101;
     public static final int DEVICE_CubeBlack        = 0x1011;
     public static final int DEVICE_CubeBlack_BOOT   = 0x1001;
@@ -117,6 +128,7 @@ public final class UsbId {
     public static final int DEVICE_CubePurple_BOOT  = 0x1005;
     public static final int DEVICE_CubeYellow       = 0x1012;
     public static final int DEVICE_CubeYellow_BOOT  = 0x1002;
+    public static final int DEVICE_ARDUPILOT_FUTURE = 0x0E65;
 
 
     public static final int VENDOR_VRBrain_BOARD    = 0x27AC;
@@ -128,6 +140,7 @@ public final class UsbId {
 
     public static final int VENDOR_Holybro_BOARD    = 0x3612;
     public static final int DEVICE_Holybro_Durandal = 0x004B;
+
 
     private UsbId() {
         throw new IllegalAccessError("Non-instantiable class");

@@ -319,10 +319,6 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
                 new int[] {
                     UsbId.ARM_MBED,
                 });
-        supportedDevices.put(UsbId.VENDOR_ST,
-                new int[] {
-                        UsbId.ST_CDC,
-                });
         supportedDevices.put(UsbId.VENDOR_RASPBERRY_PI,
                 new int[] {
                     UsbId.RASPBERRY_PI_PICO_MICROPYTHON,
@@ -347,6 +343,15 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
         supportedDevices.put(Integer.valueOf(UsbId.VENDOR_PX5),
                 new int[] {
                         UsbId.DEVICE_PX5FMU,
+                        UsbId.DEVICE_PIX5_32,
+                });
+        supportedDevices.put(Integer.valueOf(UsbId.VENDOR_AUTERION),
+                new int[] {
+                        UsbId.DEVICE_PX4FMUV5,
+                });
+        supportedDevices.put(Integer.valueOf(UsbId.VENDOR_UVIFY),
+                new int[] {
+                        UsbId.DEVICE_PX4UVIFY,
                 });
         supportedDevices.put(Integer.valueOf(UsbId.VENDOR_UBLOX),
                 new int[] {
@@ -365,6 +370,9 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
         supportedDevices.put(Integer.valueOf(UsbId.VENDOR_ARDUPILOT_CHIBIOS1),
                 new int[] {
                         UsbId.DEVICE_ARDUPILOT_CHIBIOS,
+                        UsbId.DEVICE_AIRLINK,
+                        UsbId.DEVICE_MODALAI,
+                        UsbId.ST_CDC,
                 });
         supportedDevices.put(Integer.valueOf(UsbId.VENDOR_ARDUPILOT_CHIBIOS2),
                 new int[] {
@@ -374,10 +382,7 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
         supportedDevices.put(Integer.valueOf(UsbId.VENDOR_DRAGONLINK),
                 new int[] {
                         UsbId.DEVICE_DRAGONLINK,
-                });
-        supportedDevices.put(Integer.valueOf(UsbId.VENDOR_ARDUPILOT_FUTURE),
-                new int[] {
-                        UsbId.DEVICE_ARDUPILOT_FUTURE,
+                        UsbId.DEVICE_DRAGONLINKFMUK66,
                 });
 
         supportedDevices.put(Integer.valueOf(UsbId.VENDOR_CUBE_BOARD),
@@ -390,10 +395,12 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
                         UsbId.DEVICE_CubePurple_BOOT,
                         UsbId.DEVICE_CubeYellow,
                         UsbId.DEVICE_CubeYellow_BOOT,
+                        UsbId.DEVICE_ARDUPILOT_FUTURE,
                 });
 
         supportedDevices.put(Integer.valueOf(UsbId.VENDOR_CUBE_BOARD2),
                 new int[] {
+                        UsbId.DEVICE_Cube_F4,
                         UsbId.DEVICE_CubeBlack_PLUS,
                         UsbId.DEVICE_CubeBlack,
                         UsbId.DEVICE_CubeBlack_BOOT,
@@ -417,6 +424,7 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
                 new int[] {
                         UsbId.DEVICE_Holybro_Durandal,
                 });
+
         return supportedDevices;
     }
 
