@@ -344,6 +344,10 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
                         UsbId.DEVICE_PX4FMU,
                         UsbId.DEVICE_RADIOLINK_MINI,
                 });
+        supportedDevices.put(Integer.valueOf(UsbId.VENDOR_PX5),
+                new int[] {
+                        UsbId.DEVICE_PX5FMU,
+                });
         supportedDevices.put(Integer.valueOf(UsbId.VENDOR_UBLOX),
                 new int[] {
                         UsbId.DEVICE_UBLOX_5,

@@ -100,6 +100,9 @@ public final class UsbId {
     public static final int VENDOR_PX4    = 0x26AC;
     public static final int DEVICE_PX4FMU = 0x0011;
 
+    public static final int VENDOR_PX5    = 0x3162;
+    public static final int DEVICE_PX5FMU = 0x0051;
+
     public static final int VENDOR_ARDUPILOT_FUTURE = 0x16D0;
     public static final int DEVICE_ARDUPILOT_FUTURE = 0x0E65;
 
