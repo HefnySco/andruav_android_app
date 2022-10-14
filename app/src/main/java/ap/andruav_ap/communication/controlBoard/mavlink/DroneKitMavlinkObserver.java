@@ -3,6 +3,8 @@ package ap.andruav_ap.communication.controlBoard.mavlink;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.common.msg_attitude;
 import com.MAVLink.common.msg_command_long;
+import com.MAVLink.common.msg_open_drone_id_basic_id;
+import com.MAVLink.common.msg_open_drone_id_location;
 import com.MAVLink.minimal.msg_heartbeat;
 import com.MAVLink.common.msg_rc_channels;
 import com.MAVLink.messages.MAVLinkMessage;
@@ -55,6 +57,12 @@ public class DroneKitMavlinkObserver extends MavlinkObserver
 
             switch (mavLinkMessage.msgid)
             {
+//                case msg_open_drone_id_basic_id.MAVLINK_MSG_ID_OPEN_DRONE_ID_BASIC_ID:
+//                    break;
+//
+//                case msg_open_drone_id_location.MAVLINK_MSG_ID_OPEN_DRONE_ID_LOCATION:
+//                    break;
+
                 case msg_heartbeat.MAVLINK_MSG_ID_HEARTBEAT:
                     DroneMavlinkHandler.execute_heartbeat_raw((msg_heartbeat) mavLinkMessage);
                     break;
