@@ -71,17 +71,20 @@ public final class UsbId {
     public static final int VENDOR_RASPBERRY_PI = 0x2e8a;
     public static final int RASPBERRY_PI_PICO_MICROPYTHON = 0x0005;
 
-    public static final int VENDOR_UBLOX = 0x1546;
-    public static final int DEVICE_UBLOX_5 = 0x01a5;
-    public static final int DEVICE_UBLOX_6 = 0x01a6;
-    public static final int DEVICE_UBLOX_7 = 0x01a7;
-    public static final int DEVICE_UBLOX_8 = 0x01a8;
+    public static final int VENDOR_OTHERS               = 0x0483;
+    public static final int DEVICE_OTHERS               = 0x5740;
 
-    public static final int VENDOR_OPENPILOT = 0x20A0;
-    public static final int DEVICE_REVOLUTION = 0x415E;
-    public static final int DEVICE_OPLINK = 0x415C;
-    public static final int DEVICE_SPARKY2 = 0x41D0;
-    public static final int DEVICE_CC3D = 0x415D;
+    public static final int VENDOR_UBLOX                = 0x1546;
+    public static final int DEVICE_UBLOX_5              = 0x01a5;
+    public static final int DEVICE_UBLOX_6              = 0x01a6;
+    public static final int DEVICE_UBLOX_7              = 0x01a7;
+    public static final int DEVICE_UBLOX_8              = 0x01a8;
+
+    public static final int VENDOR_OPENPILOT            = 0x20A0;
+    public static final int DEVICE_REVOLUTION           = 0x415E;
+    public static final int DEVICE_OPLINK               = 0x415C;
+    public static final int DEVICE_SPARKY2              = 0x41D0;
+    public static final int DEVICE_CC3D                 = 0x415D;
 
     public static final int VENDOR_ARDUPILOT_CHIBIOS1   = 0x0483;
     public static final int VENDOR_ARDUPILOT_CHIBIOS2   = 0x1209;
@@ -99,18 +102,30 @@ public final class UsbId {
 
 
     public static final int VENDOR_PX4                  = 0x26AC;
-    public static final int DEVICE_PX4FMU               = 0x0011;
+    public static final int DEVICE_PX4FMU_V3            = 0x0011;
+    public static final int DEVICE_PX4FMU_V4            = 0x0012;
+    public static final int DEVICE_PX4FMU_V4_PRO        = 0x0013;
     public static final int DEVICE_RADIOLINK_MINI       = 0x0016;
+    public static final int DEVICE_MIND_PX_V2           = 0x0030;
+    public static final int DEVICE_PX4FMU_V5            = 0x0032;
+
+
 
     public static final int VENDOR_AUTERION             = 0x3185;
     public static final int DEVICE_PX4FMUV5             = 0x0033;
+    public static final int DEVICE_PX4HOLYBRO6X         = 0x0035;  // HolyBro 6X
+    public static final int DEVICE_PX4HOLYBRO6C         = 0x0038;  // HolyBro 6C
+
 
     public static final int VENDOR_UVIFY                = 0x1008;
     public static final int DEVICE_PX4UVIFY             = 0x0001;
 
-    public static final int VENDOR_PX5                  = 0x3162;
+    public static final int VENDOR_PXH                  = 0x3162;
     public static final int DEVICE_PX5FMU               = 0x0051;
     public static final int DEVICE_PIX5_32              = 0x004E;
+    public static final int DEVICE_PXH4                 = 0x0047;
+    public static final int DEVICE_PH4_MINI             = 0x0049;
+    public static final int DEVICE_DURANDAL             = 0x004B;
 
 
 

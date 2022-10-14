@@ -290,6 +290,10 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
 
     public static Map<Integer, int[]> getSupportedDevices() {
         final Map<Integer, int[]> supportedDevices = new LinkedHashMap<>();
+        supportedDevices.put(UsbId.VENDOR_OTHERS,
+                new int[] {
+                        UsbId.DEVICE_OTHERS,
+                });
         supportedDevices.put(UsbId.VENDOR_ARDUINO,
                 new int[] {
                         UsbId.ARDUINO_UNO,
@@ -337,17 +341,26 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
                 });
         supportedDevices.put(Integer.valueOf(UsbId.VENDOR_PX4),
                 new int[] {
-                        UsbId.DEVICE_PX4FMU,
+                        UsbId.DEVICE_MIND_PX_V2,
+                        UsbId.DEVICE_PX4FMU_V4,
+                        UsbId.DEVICE_PX4FMU_V5,
+                        UsbId.DEVICE_PX4FMU_V3,
                         UsbId.DEVICE_RADIOLINK_MINI,
+                        UsbId.DEVICE_PX4FMU_V4_PRO,
                 });
-        supportedDevices.put(Integer.valueOf(UsbId.VENDOR_PX5),
+        supportedDevices.put(Integer.valueOf(UsbId.VENDOR_PXH),
                 new int[] {
+                        UsbId.DEVICE_PXH4,
+                        UsbId.DEVICE_PH4_MINI,
+                        UsbId.DEVICE_DURANDAL,
                         UsbId.DEVICE_PX5FMU,
                         UsbId.DEVICE_PIX5_32,
                 });
         supportedDevices.put(Integer.valueOf(UsbId.VENDOR_AUTERION),
                 new int[] {
                         UsbId.DEVICE_PX4FMUV5,
+                        UsbId.DEVICE_PX4HOLYBRO6X,
+                        UsbId.DEVICE_PX4HOLYBRO6C,
                 });
         supportedDevices.put(Integer.valueOf(UsbId.VENDOR_UVIFY),
                 new int[] {
