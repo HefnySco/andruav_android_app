@@ -161,12 +161,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
     final MAVLinkPacket  msg_command_ack = new msg_command_ack().pack();
     //////////BUS EVENT
 
-
-    public int getAPM_VehicleType()
-    {
-        return APM_VehicleType;
-    }
-
     @Override
     public void onSocketData(final Event_SocketData event)
     {

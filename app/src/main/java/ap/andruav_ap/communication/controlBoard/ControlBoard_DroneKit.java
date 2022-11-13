@@ -748,7 +748,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
         mAndruavUnitBase.setVehicleType(MavLink_Helpers.setCommonVehicleType (type));
         canFly = MavLink_Helpers.isCanFly (type);
 
-        isArmed = ((base_mode & MAV_MODE_FLAG.MAV_MODE_FLAG_SAFETY_ARMED) == MAV_MODE_FLAG.MAV_MODE_FLAG_SAFETY_ARMED) || (App.droneKitServer.getAPM_VehicleType() == VehicleTypes.VEHICLE_ROVER);
+        isArmed = ((base_mode & MAV_MODE_FLAG.MAV_MODE_FLAG_SAFETY_ARMED) == MAV_MODE_FLAG.MAV_MODE_FLAG_SAFETY_ARMED) || (mAndruavUnitBase.getVehicleType() == VehicleTypes.VEHICLE_ROVER);
         this.mAndruavUnitBase.IsArmed(isArmed);
 
         final int vehicle_type = AndruavSettings.andruavWe7daBase.getVehicleType();
@@ -1149,7 +1149,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     public void onDroneEvent_VehicleMode (final VehicleMode vehicleMode)
     {
 
-        mAndruavUnitBase.setFlightModeFromBoard (MavLink_Helpers.getAndruavStandardFlightMode(App.droneKitServer.getAPM_VehicleType(), (short) vehicleMode.getMode()));
+        mAndruavUnitBase.setFlightModeFromBoard (MavLink_Helpers.getAndruavStandardFlightMode(mType, (short) vehicleMode.getMode()));
 
         mAndruavUnitBase.setManualTXBlockedSubAction(adjustRCActionByMode (mAndruavUnitBase.getManualTXBlockedSubAction(), mAndruavUnitBase.getFlightModeFromBoard()));
     }
@@ -1157,7 +1157,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
     public void onDroneEvent_StateArming (final State vehicleState)
     {
-        isArmed = vehicleState.isArmed() || (App.droneKitServer.getAPM_VehicleType() == VehicleTypes.VEHICLE_ROVER);
+        isArmed = vehicleState.isArmed() || (mType == VehicleTypes.VEHICLE_ROVER);
         this.mAndruavUnitBase.IsArmed(isArmed);
     }
 
