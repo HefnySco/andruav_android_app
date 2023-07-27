@@ -25,7 +25,7 @@
         android:required="false" />
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false" />
+        android:required="true" />
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
@@ -37,7 +37,7 @@
         android:required="false" />
     <uses-feature
         android:name="android.hardware.usb.host"
-        android:required="false" />
+        android:required="true" />
     <uses-feature
         android:name="android.hardware.usb.accessory"
         android:required="false" /> <!-- DJI and reuired = true in sample case -->
@@ -49,7 +49,7 @@
         android:required="false" />
     <uses-feature
         android:name="android.hardware.location"
-        android:required="false" />
+        android:required="true" />
     <uses-feature
         android:name="android.hardware.location.network"
         android:required="false" />
@@ -70,7 +70,8 @@
     <uses-permission android:name="android.permission.CAMERA" /> <!-- I use the permission ! -->
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <!--<uses-permission android:name="andro2.jf.mypermission" /> --> <!-- REGISTRATION -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- Remote Access -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -117,7 +118,8 @@
         <activity
             android:name="ap.andruav_ap.MainActivityBuilder"
             android:launchMode="singleTask"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
@@ -243,7 +245,8 @@
         <receiver
             android:name="ap.andruav_ap.broadcastReceiver.BOOT_Receiver"
             android:enabled="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 

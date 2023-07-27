@@ -2,8 +2,9 @@ package ap.andruavmiddlelibrary.sensors;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.GpsSatellite;
-import android.location.GpsStatus;
+import android.location.GnssStatus;
+//import android.location.GpsSatellite;
+//import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -15,7 +16,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 
 import java.text.NumberFormat;
-import java.util.Iterator;
+//import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -33,7 +34,7 @@ import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_IMU_CMD;
  * Created by M.Hefny on 05-Sep-14.
  */
 
-public  class Sensor_GPS   extends GenericLocationSensor implements GpsStatus.Listener, LocationListener {
+public  class Sensor_GPS   extends GenericLocationSensor implements LocationListener {
 
 
 
@@ -121,9 +122,9 @@ public  class Sensor_GPS   extends GenericLocationSensor implements GpsStatus.Li
     5: Real-Time Kinematic, float integers, OmniSTAR XP/HP or Location RTK
      */
     public int mFixQuality;
-    protected Iterable<GpsSatellite> msatellites;
+    //protected Iterable<GpsSatellite> msatellites;
 
-    public String strGpsStats;
+    //public String strGpsStats;
     public int intSatCount;
     /***
      * minimum time in ms to trigger
@@ -237,7 +238,7 @@ public  class Sensor_GPS   extends GenericLocationSensor implements GpsStatus.Li
      * Implements GpsStatus.Listener
      * @param event
      */
-    @Override
+    /*@Override
     public void onGpsStatusChanged(int event) {
 
         int satcount=0;
@@ -299,7 +300,7 @@ public  class Sensor_GPS   extends GenericLocationSensor implements GpsStatus.Li
                 // new android veriosn ... maybe
                 break;
         }
-    }
+    }*/
 
     /***
      * Implements LocationListener
@@ -362,13 +363,14 @@ public  class Sensor_GPS   extends GenericLocationSensor implements GpsStatus.Li
 
     public int getSatelliteCount()
     {
-        Iterator<GpsSatellite> sat = msatellites.iterator();
+        /*Iterator<GpsSatellite> sat = msatellites.iterator();
         int i = 0;
         while (sat.hasNext()) {
             GpsSatellite satellite = sat.next();
             if (satellite.usedInFix()==true) i+=0;
-        }
-        return i;
+        }*/
+        //Log.d("Sensor_GPS", "getSatelliteCount = " + intSatCount + " Fix ?= " + misFirstFix);
+        return misFirstFix ? intSatCount : 0;
     }
 
 
@@ -521,10 +523,19 @@ public  class Sensor_GPS   extends GenericLocationSensor implements GpsStatus.Li
     {
         //if ((mregisteredSensor == true) || (isSupported() == false)) return ;
         if (mregisteredSensor == true) return ;
-
+        //check permission - start
+        if (ActivityCompat.checkSelfPermission(AndruavEngine.AppContext,
+            Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(AndruavEngine.AppContext,
+                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        {
+            Log.d("Sensor_GPS", "checkSelfPermission failed");
+            return;
+        }
+        //check permission - end
         try {
 
-            mLocationManager.addGpsStatusListener(this);
+            mLocationManager.registerGnssStatusCallback(mStatusCallback);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 OnNmeaMessageListenerlocal = new OnNmeaMessageListenerLocal();
                 mLocationManager.addNmeaListener((OnNmeaMessageListenerLocal)OnNmeaMessageListenerlocal);
@@ -557,11 +568,11 @@ public  class Sensor_GPS   extends GenericLocationSensor implements GpsStatus.Li
     {
         if (mregisteredSensor == false)  return ;
 
-        mLocationManager.removeGpsStatusListener(this);
+        mLocationManager.removeUpdates(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             mLocationManager.removeNmeaListener((OnNmeaMessageListenerLocal)OnNmeaMessageListenerlocal);
         }
-        mLocationManager.removeUpdates(this);
+        mLocationManager.unregisterGnssStatusCallback(mStatusCallback);
         mregisteredSensor = false;
 
     }
@@ -576,4 +587,43 @@ public  class Sensor_GPS   extends GenericLocationSensor implements GpsStatus.Li
         return provider1.equals(provider2);
     }
 
+    // APi >= 24 - start
+    /** Report satellite status */
+    private final GnssStatus.Callback mStatusCallback = new GnssStatus.Callback()
+    {
+        @Override
+        public void onSatelliteStatusChanged(GnssStatus status)
+        {
+            //Log.d("Sensor_GPS",   " has been onSatelliteStatusChanged");
+            if (status == null || !misFirstFix)
+            {
+                Log.d("Sensor_GPS", "onSatelliteStatusChanged = NULL misFirstFix = " + misFirstFix);
+                return;
+            }
+            //Log.v("Sensor_GPS", "GNSS Status: " + status.getSatelliteCount() + " satellites.");
+            intSatCount=status.getSatelliteCount();
+        }
+
+        @Override
+        public void onFirstFix(int ttffMillis)
+        {
+            misFirstFix = true;
+            //Log.d("Sensor_GPS",   " has been onFirstFix " + ttffMillis);
+        }
+
+        @Override
+        public void onStarted()
+        {
+            misFirstFix = false;
+            //Log.d("Sensor_GPS",   " has been onStarted");
+        }
+
+        @Override
+        public void onStopped()
+        {
+            misFirstFix = false;
+            //Log.d("Sensor_GPS",   " has been onStopped");
+        }
+    };
+    // APi >= 24 - end
 }

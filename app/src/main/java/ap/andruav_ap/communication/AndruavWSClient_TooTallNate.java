@@ -487,7 +487,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                 public void onError() {
                     if (merrorRecovery == Boolean.TRUE) {
                         if (mhandler == null) return ; // should fix fatal issue.
-                            mhandler.postDelayed(new Runnable() {
+                        mhandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 if (getSocketState() == SOCKETSTATE_REGISTERED)
@@ -523,30 +523,30 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                         Me.connect(websocketURL);
                     } else {
                         if (merrorRecovery == Boolean.TRUE) {
-                        mhandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                            if (mkillMe) return;
+                            mhandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (mkillMe) return;
 
 
-                            //BUG: if multiservers and server is down retries will focus on one server.... you should query the auth server.
-                            final Emergency emergency = (Emergency) AndruavEngine.getEmergency();
-                            if (emergency != null) {
-                                emergency.triggerEmergencyFlightModeFaileSafe(false);
-                                emergency.sendSMS(false); // still cannot connect
-                                emergency.triggerConnectionEmergency(true);
-                            }
+                                    //BUG: if multiservers and server is down retries will focus on one server.... you should query the auth server.
+                                    final Emergency emergency = (Emergency) AndruavEngine.getEmergency();
+                                    if (emergency != null) {
+                                        emergency.triggerEmergencyFlightModeFaileSafe(false);
+                                        emergency.sendSMS(false); // still cannot connect
+                                        emergency.triggerConnectionEmergency(true);
+                                    }
 
-                            reconnect();
-                            }
-                        }, 4000);
-                        }
+                                    reconnect();
+                                }
+                            }, 4000);
                         }
                     }
-                });
-            }catch(UnsupportedEncodingException e){
-                e.printStackTrace();
-            }
+                }
+            });
+        }catch(UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
     }
 
 

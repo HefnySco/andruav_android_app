@@ -32,7 +32,20 @@ public abstract class CheckAppPermissions {
     {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true;
 
-        boolean permissionsOK = CheckAppPermissions.checkPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        boolean permissionsOK;
+        //https://developer.android.com/reference/android/Manifest.permission#WRITE_EXTERNAL_STORAGE
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) //R == API 30
+        {
+            permissionsOK = CheckAppPermissions.checkPermission(activity,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            //Log.d("CheckAppPermissions", "isPermissionsOK 1a = " + permissionsOK);
+        }
+        else
+        {
+            permissionsOK = CheckAppPermissions.checkPermission(activity,
+                    Manifest.permission.READ_EXTERNAL_STORAGE);
+            //Log.d("CheckAppPermissions", "isPermissionsOK 1b = " + permissionsOK);
+        }
         permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.CAMERA);
         permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION);
         permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.READ_PHONE_STATE);
@@ -43,7 +56,7 @@ public abstract class CheckAppPermissions {
 
     public static boolean checkPermission (final Activity activity,final String permission)
     {
-        return ContextCompat.checkSelfPermission(activity,
+        return ContextCompat.checkSelfPermission(activity.getApplicationContext(),
                 permission) == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -51,7 +64,7 @@ public abstract class CheckAppPermissions {
     {
 
         // permission =  Manifest.permission.READ_CONTACTS
-        if (checkPermission(activity,permission))
+        if (!checkPermission(activity,permission))
         {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {

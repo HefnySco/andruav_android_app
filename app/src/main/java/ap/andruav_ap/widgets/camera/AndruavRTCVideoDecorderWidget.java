@@ -195,7 +195,7 @@ public class AndruavRTCVideoDecorderWidget  extends RelativeLayout implements IR
 
         if (this.isInEditMode()) return ;
 
-            mhandler = new Handler() {
+        mhandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);

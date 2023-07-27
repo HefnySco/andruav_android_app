@@ -468,8 +468,8 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     public static void stopsocketListener () {
         TTS.getInstance().Speak(App.getAppContext().getString(R.string.gen_serialsocket_stopped));
         if (andruavGCSSerialSocketServer == null) return ;
-            andruavGCSSerialSocketServer.stopListening();
-        }
+        andruavGCSSerialSocketServer.stopListening();
+    }
 
     /***
      * This is not UAVOS. So even if UAVOS is disabled this function should be called.

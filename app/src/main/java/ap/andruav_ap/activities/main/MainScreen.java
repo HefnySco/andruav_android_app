@@ -900,7 +900,7 @@ public class MainScreen extends BaseAndruavShasha {
         */
         if (App.MainIntent == null) {
             App.MainIntent = new Intent(this, MainScreen.class);
-            App.MainPendingIntent = PendingIntent.getActivity(this, 0, App.MainIntent, PendingIntent.FLAG_ONE_SHOT);
+            App.MainPendingIntent = PendingIntent.getActivity(this, 0, App.MainIntent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
 
         }
 

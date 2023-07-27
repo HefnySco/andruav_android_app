@@ -31,6 +31,7 @@ def versionCode = 3
 
 android {
     compileSdkVersion android_build_sdk_version
+    buildToolsVersion android_build_tools_version
 
     dexOptions {
         javaMaxHeapSize "4g"
@@ -56,8 +57,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
 

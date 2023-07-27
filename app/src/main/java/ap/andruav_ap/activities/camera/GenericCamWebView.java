@@ -32,6 +32,7 @@ public class GenericCamWebView extends WebView {
      * @param width
      * @deprecated
      */
+    @Deprecated
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public GenericCamWebView(Context me, AttributeSet widgetAppCompatLight, int mChannels, boolean width) {
         super(me, widgetAppCompatLight, mChannels, width);

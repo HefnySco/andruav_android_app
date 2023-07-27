@@ -448,6 +448,10 @@
     <string name="main_activity_btn_MAP">MAP</string>
     <string name="main_activity_btn_FCB">FCB</string>
     <string name="main_activity_btn_DATA">Data</string>
+    <!-- fix string hardcode start -->
+    <string name="main_activity_hint_access">access code</string>
+    <string name="main_activity_hint_telem">Telem:</string>
+    <!-- fix string hardcode end -->
 
     <!--Remote Tracking -->
     <string name="remote_tracking_fragement_X_Section">Horizontal PID</string>

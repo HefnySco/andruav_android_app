@@ -180,7 +180,7 @@ public  class Notification implements INotification{
         mBuilder.setAutoCancel(true);
 
         Intent notificationIntent = new Intent(context, MainScreen.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         mBuilder.setContentIntent(contentIntent);
 
         mNotificationManager.notify(Id, mBuilder.build());

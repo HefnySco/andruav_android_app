@@ -13,7 +13,7 @@ interface IApiListener {
     int getApiVersionCode();
 
     /**
-    * @deprecated
+    * https://source.android.com/docs/core/architecture/aidl/aidl-annotations#deprecated_in_comments
     * Called when the connection attempt fails.
     * @param result Describe why the connection failed.
     */
