@@ -20,7 +20,7 @@
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="IMU"
+                android:text="@string/main_activity_btn_IMU"
                 android:id="@+id/btnIMU"
                 android:layout_weight="0.50"
                 android:layout_margin="2dp"
@@ -31,7 +31,7 @@
             <Button
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="FPV"
+                    android:text="@string/main_activity_btn_FPV"
                     android:id="@+id/btnFPV"
                     android:clickable="false"
                     android:layout_weight="0.50"
@@ -51,7 +51,7 @@
                 <Button
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/gen_commserver"
+                    android:text="@string/main_activity_btn_COM"
                     android:id="@+id/btnCommServer"
                     android:layout_weight="0.50"
                     android:layout_margin="2dp"
@@ -63,7 +63,7 @@
                 <Button
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/gen_map"
+                    android:text="@string/main_activity_btn_MAP"
                     android:id="@+id/btnMap"
                     android:layout_weight="0.50"
                     android:layout_margin="2dp"
@@ -80,7 +80,7 @@
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/gen_flightcontrolboard"
+                android:text="@string/main_activity_btn_FCB"
                 android:id="@+id/btnFCB"
                 android:layout_weight="0.50"
                 android:layout_margin="2dp"
@@ -91,7 +91,7 @@
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/gen_statistics"
+                android:text="@string/main_activity_btn_DATA"
                 android:id="@+id/btnData"
                 android:layout_weight="0.50"
                 android:layout_margin="2dp"
@@ -108,7 +108,7 @@
             android:id="@+id/mainactivity_txtAccessCode"
             android:layout_gravity="bottom"
             android:layout_weight="0.50"
-            android:hint="access code"
+            android:hint="@string/main_activity_hint_access"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp" />
@@ -120,7 +120,7 @@
             android:id="@+id/mainactivity_txtUdpProxy"
             android:layout_gravity="bottom"
             android:layout_weight="0.50"
-            android:hint="Telem:"
+            android:hint="@string/main_activity_hint_telem"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp" />

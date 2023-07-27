@@ -115,7 +115,7 @@
             android:id="@+id/mainactivity_txtAccessCode"
             android:layout_gravity="bottom"
             android:layout_weight="0.50"
-            android:hint="access code"
+            android:hint="@string/main_activity_hint_access"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp" />
@@ -127,7 +127,7 @@
             android:id="@+id/mainactivity_txtUdpProxy"
             android:layout_gravity="bottom"
             android:layout_weight="0.50"
-            android:hint="Telem:"
+            android:hint="@string/main_activity_hint_telem"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp" />

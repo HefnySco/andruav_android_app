@@ -3,6 +3,7 @@ package ap.andruav_ap.activities.main;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,6 +13,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+
+import androidx.annotation.NonNull;
 
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
@@ -116,7 +119,16 @@ public class FirstScreen extends BaseAndruavShasha {
                     return;
                 }
 
-                CheckAppPermissions.checkPermissionAndRequest(Me, Manifest.permission.WRITE_EXTERNAL_STORAGE,"Storage access is needed for log kml files, images and videos.");
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) //R == API 30
+                {
+                    CheckAppPermissions.checkPermissionAndRequest(Me, Manifest.permission.WRITE_EXTERNAL_STORAGE, "Storage access is needed for log kml files, images and videos.");
+                }
+                else
+                {
+                    CheckAppPermissions.checkPermissionAndRequest(Me,
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            "Storage access is needed for log kml files, images and videos.");
+                }
                 CheckAppPermissions.checkPermissionAndRequest(Me, Manifest.permission.CAMERA,"Please Open Camera Permission");
                 CheckAppPermissions.checkPermissionAndRequest(Me, Manifest.permission.ACCESS_FINE_LOCATION,"Mobile GPS is needed for GCS for maps & Drones as a backup.");
                 CheckAppPermissions.checkPermissionAndRequest(Me, Manifest.permission.READ_PHONE_STATE,"Phone state is used to determine network quality & connection status.");
@@ -210,4 +222,14 @@ public class FirstScreen extends BaseAndruavShasha {
             AndruavEngine.log().logException("exception",ex);
         }
     }
+
+    // Jai handle screen rotate - start
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        setContentView(R.layout.activity_first);
+        initGUI();
+    }
+    // Jai handle screen rotate - end
 }

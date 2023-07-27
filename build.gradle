@@ -61,5 +61,8 @@ allprojects {
     repositories {
         jcenter()
         google()
+        // Jai USB serial - start
+        maven { url 'https://jitpack.io' }
+        // Jai USB serial - end
     }
 }
