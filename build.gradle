@@ -6,10 +6,10 @@ ext {
 
     VARIABLE = 1
     play_services_version = '17.0.0'
-    android_build_sdk_version = 30
-    android_build_tools_version = '30.0.0'
-    android_build_target_sdk_version = 30
-    android_build_min_sdk_version = 19
+    android_build_sdk_version = 33
+    android_build_tools_version = '33.0.2'
+    android_build_target_sdk_version = 31
+    android_build_min_sdk_version = 24
 }
 
 
@@ -50,7 +50,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.1'
+        classpath 'com.android.tools.build:gradle:7.2.2'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -61,5 +61,8 @@ allprojects {
     repositories {
         jcenter()
         google()
+        // Jai USB serial - start
+        maven { url 'https://jitpack.io' }
+        // Jai USB serial - end
     }
 }

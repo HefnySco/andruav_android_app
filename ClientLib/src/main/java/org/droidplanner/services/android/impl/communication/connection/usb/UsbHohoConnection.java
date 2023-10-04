@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -83,7 +84,8 @@ public class UsbHohoConnection extends UsbConnection.UsbConnectionImpl {
 
     protected UsbHohoConnection(Context context, UsbConnection parentConn, int baudRate) {
         super(context, parentConn, baudRate);
-        this.usbPermissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), 0);
+        int flags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_MUTABLE : 0;
+        this.usbPermissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), flags);
 
     }
     private void registerUsbPermissionBroadcastReceiver() {
@@ -174,7 +176,8 @@ public class UsbHohoConnection extends UsbConnection.UsbConnectionImpl {
         if(usbConnection == null && usbPermission == UsbPermission.Unknown && !usbManager.hasPermission(driver.getDevice())) {
             // enter here if user has not given permission for accessing USB.
             usbPermission = UsbPermission.Requested;
-            PendingIntent usbPermissionIntent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
+            int flags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_MUTABLE : 0;
+            PendingIntent usbPermissionIntent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), flags);
             usbManager.requestPermission(driver.getDevice(), usbPermissionIntent);
             return;
         }

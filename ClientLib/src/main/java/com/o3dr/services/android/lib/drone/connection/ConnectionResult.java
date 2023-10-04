@@ -10,6 +10,7 @@ import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
  *
  * Conveys information if the connection attempt fails.
  */
+@Deprecated
 public final class ConnectionResult implements Parcelable {
 
     private final int mErrorCode;

@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion android_build_sdk_version
+    buildToolsVersion android_build_tools_version
     defaultConfig {
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
@@ -32,8 +33,8 @@ android {
                 }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 
