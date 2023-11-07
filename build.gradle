@@ -8,7 +8,7 @@ ext {
     play_services_version = '17.0.0'
     android_build_sdk_version = 33
     android_build_tools_version = '33.0.2'
-    android_build_target_sdk_version = 31
+    android_build_target_sdk_version = 33
     android_build_min_sdk_version = 24
 }
 
