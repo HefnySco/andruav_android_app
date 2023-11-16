@@ -40,11 +40,21 @@ public abstract class CheckAppPermissions {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE);
             //Log.d("CheckAppPermissions", "isPermissionsOK 1a = " + permissionsOK);
         }
-        else
+        else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
         {
             permissionsOK = CheckAppPermissions.checkPermission(activity,
                     Manifest.permission.READ_EXTERNAL_STORAGE);
             //Log.d("CheckAppPermissions", "isPermissionsOK 1b = " + permissionsOK);
+        }
+        else
+        {
+            //https://developer.android.com/about/versions/13/behavior-changes-13#granular-media-permissions
+            permissionsOK = CheckAppPermissions.checkPermission(activity,
+                    Manifest.permission.READ_MEDIA_AUDIO);
+            permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity,
+                    Manifest.permission.READ_MEDIA_IMAGES);
+            permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity,
+                    Manifest.permission.READ_MEDIA_IMAGES);
         }
         permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.CAMERA);
         permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION);
