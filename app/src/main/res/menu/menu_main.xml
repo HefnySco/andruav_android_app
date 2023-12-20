@@ -28,26 +28,26 @@
     <item android:id="@+id/mi_main_Settings_gcs"
         android:title="@string/action_settings_gcs"
         android:orderInCategory="100"
-        android:showAsAction="never"/>
+        app:showAsAction="never"/>
     <item android:id="@+id/mi_main_Settings_drone"
         android:title="@string/action_settings_drone"
         android:orderInCategory="100"
-        android:showAsAction="never"/>
+        app:showAsAction="never"/>
     <item android:id="@+id/mi_main_About"
         android:title="@string/gen_about"
         android:orderInCategory="100"
-        android:showAsAction="never"/>
+        app:showAsAction="never"/>
     <item android:id="@+id/mi_main_Exit"
         android:title="@string/action_exit"
         android:orderInCategory="100"
-        android:showAsAction="never"/>
+        app:showAsAction="never"/>
     <item android:id="@+id/mi_main_ResetFactory"
         android:title="@string/gen_FactoryReset"
         android:orderInCategory="100"
-        android:showAsAction="never"/>
+        app:showAsAction="never"/>
     <item android:id="@+id/mi_main_Help"
         android:title="@string/gen_help"
         android:orderInCategory="100"
-        android:showAsAction="never"/>
+        app:showAsAction="never"/>
 
 </menu>
