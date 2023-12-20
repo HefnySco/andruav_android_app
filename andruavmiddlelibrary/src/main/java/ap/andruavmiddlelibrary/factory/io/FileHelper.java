@@ -97,7 +97,11 @@ public class FileHelper {
         {  // get Folder relative to ExternalStorageDirectory root.
             if (externalStorageWriteable)
             {
-                root = new File(Environment.getExternalStorageDirectory() , subFolder);
+                if (Build.VERSION.SDK_INT != Build.VERSION_CODES.Q) {
+                    root = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), subFolder);
+                }else {
+                    root = new File(Environment.getExternalStorageDirectory(), subFolder);
+                }
             }
             else {
                 File docsFolder = null;
@@ -118,7 +122,8 @@ public class FileHelper {
                           root = new File(docsFolder, subFolder);
                 }
                 else {
-                        root = new File(Environment.getExternalStorageDirectory().toString(), subFolder);
+
+                   root = new File(Environment.getExternalStorageDirectory().toString(), subFolder);
                 }
 
 
@@ -181,7 +186,7 @@ public class FileHelper {
                 strFileName = "FPV_IMG";
             }
             strFileName +="_" + System.currentTimeMillis()+".jpg";
-
+            //File img = new File(Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DOWNLOADS , strFileName);
             File img = new File(root, strFileName);
             if (!img.exists())
             {
