@@ -365,6 +365,7 @@
     <string name="login_register_Title">Account Registration</string>
     <string name="login_email">Email</string>
     <string name="login_login">Join</string>
+    <string name="hyper_subscribe">https://cloud.ardupilot.org:8001/accounts.html</string>
     <string name="login_access_code">Access Code</string>
     <string name="login_first_section">Create Account</string>
     <string name="login_action_accontexist">Account already registered.\r\nUse access code direclty.\r\nPress OK to send access code to your email.</string>

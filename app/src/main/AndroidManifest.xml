@@ -216,15 +216,9 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTask"
             android:noHistory="true" />
-        <activity android:name="ap.andruav_ap.activities.main.MainGCSActivity" />
         <activity android:name="ap.andruav_ap.activities.login.drone.MainDroneActiviy" />
         <activity
             android:name="ap.andruav_ap.activities.login.drone.MainDroneActiviy$DroneLoginShasha"
-            android:launchMode="singleTask"
-            android:noHistory="true" />
-        <activity
-            android:name="ap.andruav_ap.activities.login.GCSLoginShasha"
-            android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTask"
             android:noHistory="true" />
         <activity

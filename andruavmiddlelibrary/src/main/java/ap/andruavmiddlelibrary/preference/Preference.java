@@ -1155,7 +1155,7 @@ public class Preference {
         Preference.isLoginAuto(contextWrapper, false);
         Preference.setLoginUserName(contextWrapper, "");
         Preference.setLoginAccessCode(contextWrapper, "");
-        Preference.isGCS(contextWrapper, true);
+        Preference.isGCS(contextWrapper, false);
         Preference.setVehicleType(null, VehicleTypes.VEHICLE_UNKNOWN);
 
     }

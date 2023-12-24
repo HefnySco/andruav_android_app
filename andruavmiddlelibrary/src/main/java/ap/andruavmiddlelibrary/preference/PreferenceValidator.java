@@ -32,7 +32,6 @@ public class PreferenceValidator {
     public static boolean isValidIMU()
     {
         //TODO: FEATURE REVIEW ... you may need to change this later.
-        if (Preference.isGCS(null)) return true; // no need for IMU settings if GCS
 
         if (!Preference.isAccCalibrated(null)) return false;
         if (!Preference.isGyroCalibrated(null)) return false;

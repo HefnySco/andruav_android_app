@@ -9,12 +9,6 @@
         android:title="@string/action_connect"
         android:icon="@drawable/connect_w_32x32"/>
     <item
-        android:id="@+id/mi_main_GCS"
-        android:orderInCategory="100"
-        app:showAsAction="always"
-        android:title="@string/action_signout"
-        android:icon="@drawable/gcs_gr_32x32"/>
-    <item
         android:id="@+id/mi_main_signout"
         android:orderInCategory="100"
         app:showAsAction="always"

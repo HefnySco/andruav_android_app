@@ -1,4 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.drone.IMUShasha">
     <!--<item
@@ -10,5 +11,5 @@
     <item android:id="@+id/mi_imu_Help"
         android:title="@string/gen_help"
         android:orderInCategory="100"
-        android:showAsAction="never"/>
+        app:showAsAction="never" />
 </menu>
