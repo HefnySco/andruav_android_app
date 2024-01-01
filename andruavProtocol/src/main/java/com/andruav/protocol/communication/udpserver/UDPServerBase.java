@@ -19,6 +19,7 @@ import java.net.SocketException;
  * Created by mhefny on 7/10/16.
  */
 public abstract class UDPServerBase {
+    private boolean mIsPaused = false;
 
     private static final int BUFFSIZE = 4096;
 
@@ -119,6 +120,8 @@ public abstract class UDPServerBase {
         public void run() {
             try
             {
+                        if (mIsPaused) return ;
+
                         final byte[] buffer = new byte[BUFFSIZE];
                         final DatagramPacket packet = new DatagramPacket(buffer, BUFFSIZE);
 
@@ -173,6 +176,7 @@ public abstract class UDPServerBase {
     {
         try
         {
+            if (mIsPaused) return ;
             if (mKillMe) return ;
             if (mHandler==null) return;
 
@@ -247,5 +251,14 @@ public abstract class UDPServerBase {
     }
 
 
+    public void setPause(boolean paused)
+    {
+        mIsPaused = paused;
+    }
+
+    public boolean isPaused()
+    {
+        return mIsPaused;
+    }
 
 }
