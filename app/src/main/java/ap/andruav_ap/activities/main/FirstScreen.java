@@ -53,22 +53,6 @@ public class FirstScreen extends BaseAndruavShasha {
                             (dialogInterface, i) -> GMail.sendGMail(Me, getString(R.string.email_title), getString(R.string.email_to), getString(R.string.email_subject2), getString(R.string.email_body2), null));
                     return;
                 }
-
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) //R == API 30
-                {
-                    CheckAppPermissions.checkPermissionAndRequest(Me, Manifest.permission.WRITE_EXTERNAL_STORAGE, "Storage access is needed for log kml files, images and videos.");
-                }
-                else
-                {
-                    CheckAppPermissions.checkPermissionAndRequest(Me,
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            "Storage access is needed for log kml files, images and videos.");
-                }
-                CheckAppPermissions.checkPermissionAndRequest(Me, Manifest.permission.CAMERA,"Please Open Camera Permission");
-                CheckAppPermissions.checkPermissionAndRequest(Me, Manifest.permission.ACCESS_FINE_LOCATION,"Mobile GPS is needed for GCS for maps & Drones as a backup.");
-                CheckAppPermissions.checkPermissionAndRequest(Me, Manifest.permission.READ_PHONE_STATE,"Phone state is used to determine network quality & connection status.");
-                //CheckAppPermissions.checkPermissionAndRequest(Me, Manifest.permission.SEND_SMS,"If you want your drone to sendMessageToModule SOS SMS you need to enable this. It is not an option.");
-
                 finish();
             }
         });

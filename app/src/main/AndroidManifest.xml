@@ -56,7 +56,9 @@
     <uses-feature
         android:name="android.hardware.location.gps"
         android:required="false" />
-
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
     <permission
         android:name=".permission.MAPS_RECEIVE"
         android:protectionLevel="normal" />
@@ -254,6 +256,16 @@
         </receiver>
 
 
+
+        <receiver
+            android:name="ap.andruav_ap.broadcastReceiver.SMSReceiver"
+            android:enabled="true"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED" />
+            </intent-filter>
+        </receiver>
 
         <receiver
             android:name="ap.andruav_ap.broadcastReceiver.USB_Receiver"
