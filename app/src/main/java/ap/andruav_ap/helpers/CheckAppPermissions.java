@@ -34,7 +34,7 @@ public abstract class CheckAppPermissions {
 
         boolean permissionsOK;
         //https://developer.android.com/reference/android/Manifest.permission#WRITE_EXTERNAL_STORAGE
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) //R == API 30
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) //Q == API 29
         {
             permissionsOK = CheckAppPermissions.checkPermission(activity,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE);
