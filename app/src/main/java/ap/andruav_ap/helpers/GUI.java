@@ -21,7 +21,6 @@ import com.andruav.sensors.AndruavIMU;
 
 import java.security.InvalidParameterException;
 
-import ap.andruav_ap.activities.login.GCSLoginShasha;
 import ap.andruav_ap.App;
 import ap.andruav_ap.DeviceManagerFacade;
 import ap.andruav_ap.R;
@@ -46,14 +45,7 @@ public class GUI {
 
     public static Class<?> getLoginActivity ()
     {
-        if (AndruavSettings.andruavWe7daBase.getIsCGS() || App.isFirstRun)
-        {
-            return GCSLoginShasha.class;
-        }
-        else
-        {
-            return MainDroneActiviy.DroneLoginShasha.class;
-        }
+        return MainDroneActiviy.DroneLoginShasha.class;
     }
 
 

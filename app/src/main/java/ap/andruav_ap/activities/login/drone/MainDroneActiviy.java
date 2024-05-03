@@ -2,6 +2,8 @@ package ap.andruav_ap.activities.login.drone;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
@@ -50,6 +53,8 @@ public class MainDroneActiviy extends AppCompatActivity {
         private Handler mhandle;
         protected Button btnJoin;
         protected EditText edtAccessCode;
+
+        protected TextView txtSubscribe;
         private ProgressDialog mprogressDialog;
         private int merrorCode;
         private String email;
@@ -147,6 +152,7 @@ public class MainDroneActiviy extends AppCompatActivity {
         private void initGUI() {
 
             btnJoin         = findViewById(R.id.droneloginactivity_btnSaveAccessCode);
+            txtSubscribe    = findViewById(R.id.droneloginactivity_txtSubscribe);
             edtAccessCode   = findViewById(R.id.droneloginactivity_edtAccessCode);
             edtAccessCode.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -164,6 +170,12 @@ public class MainDroneActiviy extends AppCompatActivity {
                     btnJoin.setEnabled((edtAccessCode.getText().length() > 0));
                 }
             });
+
+            txtSubscribe.setOnClickListener(new View.OnClickListener(){
+                                                public void onClick(View v){
+                                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://cloud.ardupilot.org:8001/accounts.html"));
+                                                    startActivity(browserIntent);
+                                                }});
 
             btnJoin.setOnClickListener(new View.OnClickListener() {
                 @Override

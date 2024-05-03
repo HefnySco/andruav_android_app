@@ -320,7 +320,6 @@ class Camera2Session implements CameraSession {
     isCameraFrontFacing = cameraCharacteristics.get(CameraCharacteristics.LENS_FACING)
         == CameraMetadata.LENS_FACING_FRONT;
 
-    cameraCharacteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM);
     zoomMax = cameraCharacteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM);
 
     findCaptureFormat();

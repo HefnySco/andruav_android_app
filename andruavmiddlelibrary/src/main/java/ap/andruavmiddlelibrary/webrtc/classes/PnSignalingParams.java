@@ -142,31 +142,11 @@ import ap.andruavmiddlelibrary.preference.Preference;
     public static List<PeerConnection.IceServer> defaultIceServers(){
        final  List<PeerConnection.IceServer> iceServers = new ArrayList<PeerConnection.IceServer>(25);
         if (!Preference.useLocalStunServerOnly(null)) {
-//            iceServers.add(new PeerConnection.IceServer("stun:stun.services.mozilla.com"));
-//            iceServers.add(new PeerConnection.IceServer("turn:turn.bistri.com:80", "homeo", "homeo"));
-//            iceServers.add(new PeerConnection.IceServer("turn:turn.anyfirewall.com:443?transport=tcp", "webrtc", "webrtc"));
-//            iceServers.add(new PeerConnection.IceServer("turn:numb.viagenie.ca", "rcMobilestuff@gmail.com", "andruav_turn"));
 
             // Extra Defaults - 19 STUN servers + 4 initial = 23 severs (+2 padding) = Array cap 25
             iceServers.add(new PeerConnection.IceServer("turn:airgap.droneengage.com:3478","airgap","1234"));
             iceServers.add(new PeerConnection.IceServer("turn:104.131.188.164:3478","andruav_ap","1234"));
             iceServers.add(new PeerConnection.IceServer("stun:stun3.l.google.com:19302"));
-            //iceServers.add(new PeerConnection.IceServer("stun:stun4.l.google.com:19302"));
-//            iceServers.add(new PeerConnection.IceServer("stun:23.21.150.121"));
-//            iceServers.add(new PeerConnection.IceServer("stun:stun01.sipphone.com"));
-//            iceServers.add(new PeerConnection.IceServer("stun:stun.ekiga.net"));
-//            iceServers.add(new PeerConnection.IceServer("stun:stun.fwdnet.net"));
-//            iceServers.add(new PeerConnection.IceServer("stun:stun.ideasip.com"));
-//            iceServers.add(new PeerConnection.IceServer("stun:stun.iptel.org"));
-//            iceServers.add(new PeerConnection.IceServer("stun:stun.rixtelecom.se"));
-//            iceServers.add(new PeerConnection.IceServer("stun:stun.schlund.de"));
-//            iceServers.add(new PeerConnection.IceServer("stun:stunserver.org"));
-//            iceServers.add(new PeerConnection.IceServer("stun:stun.softjoys.com"));
-//            iceServers.add(new PeerConnection.IceServer("stun:stun.voiparound.com"));
-//            iceServers.add(new PeerConnection.IceServer("stun:stun.voipbuster.com"));
-//            iceServers.add(new PeerConnection.IceServer("stun:stun.voipstunt.com"));
-//            iceServers.add(new PeerConnection.IceServer("stun:stun.voxgratia.org"));
-//            iceServers.add(new PeerConnection.IceServer("stun:stun.xten.com"));
         }
         return iceServers;
     }
