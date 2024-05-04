@@ -96,13 +96,13 @@ public class SettingsDrone extends PreferenceActivity {
 
         txtRCCamChannelNumber = (EditTextPreference) findPreference("sw_cam_rc_num");
         txtRCCamPMWMinValue = (EditTextPreference) findPreference("sw_cam_rc_pwm");
-        txtMobileNum = (EditTextPreference) findPreference("ZB8vM05KAdg");
-        txtGCSBlockChannelNumber = (EditTextPreference) findPreference("p7wCvhb2Akm");
-        txtGCSBlockPMWMinValue = (EditTextPreference) findPreference("xokpINK9PECd");
+        txtMobileNum = (EditTextPreference) findPreference("key_mobile_recovery");
+        txtGCSBlockChannelNumber = (EditTextPreference) findPreference("key_block_channel");
+        txtGCSBlockPMWMinValue = (EditTextPreference) findPreference("key_block_pwm_min");
         txtBatteryMinPercentage = (EditTextPreference) findPreference("WiDVQ");
-        txtCommModuleIP = (EditTextPreference) findPreference("WXXG2IUCUUzrG1");
+        txtCommModuleIP = (EditTextPreference) findPreference("key_comm_ip");
         chkCommModuleIPAuto = (CheckBoxPreference) findPreference("WSXG2IUCUUzrG1");
-        chkGPSInjection = (CheckBoxPreference) findPreference("LNScs17Oks");
+        chkGPSInjection = (CheckBoxPreference) findPreference("key_gps_inject");
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             chkGPSInjection.setEnabled(false);

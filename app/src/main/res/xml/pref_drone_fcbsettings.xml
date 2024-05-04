@@ -33,7 +33,7 @@
         />
     <CheckBoxPreference
         android:title="@string/pref_gr_fcb_gps_injection"
-        android:key="LNScs17Oks"
+        android:key="key_gps_inject"
         android:summary="@string/pref_gr_fcb_gps_injection_summary"
         android:defaultValue="false"
         />

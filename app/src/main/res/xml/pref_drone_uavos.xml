@@ -14,7 +14,7 @@
         />
     <EditTextPreference
         android:title="@string/pref_gr_uavos_module_comm_ip"
-        android:key="WXXG2IUCUUzrG1"
+        android:key="key_comm_ip"
         android:summary="@string/pref_gr_uavos_module_comm_ip_summary"
         />
 </PreferenceScreen>

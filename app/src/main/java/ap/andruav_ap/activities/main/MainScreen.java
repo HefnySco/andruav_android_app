@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 
+import ap.andruavmiddlelibrary.factory.communication.SMS;
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.activities.HUBCommunication;
 import ap.andruav_ap.activities.remote.RemoteControlSettingGCSActivityTab;
@@ -1203,6 +1204,7 @@ public class MainScreen extends BaseAndruavShasha {
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         EventBus.getDefault().register(this);
+        //SMS.sendSMS("01029000028","HI that is me ANdroid");
 
         if (AndruavSettings.andruavWe7daBase.mIsModule)
         {

@@ -34,7 +34,7 @@
         />
     <EditTextPreference
         android:title="@string/pref_gr_recovery_txt"
-        android:key="ZB8vM05KAdg"
+        android:key="key_mobile_recovery"
         android:inputType="phone"
         />
     <CheckBoxPreference
@@ -47,13 +47,13 @@
         android:textColorHighlight="@color/btn_TXT_ERROR" />
     <EditTextPreference
         android:title="@string/pref_gr_recovery_edt_rcCh_blk_trigger"
-        android:key="p7wCvhb2Akm"
+        android:key="key_block_channel"
         android:summary="@string/pref_gr_recovery_edt_rcCh_blk_trigger_summary"
         android:inputType="phone"
         />
     <EditTextPreference
         android:title="@string/pref_gr_recovery_edt_blk_trigger_min"
-        android:key="xokpINK9PECd"
+        android:key="key_block_pwm_min"
         android:inputType="phone"
         android:summary="@string/pref_gr_recovery_edt_blk_trigger_min_summary"
         />

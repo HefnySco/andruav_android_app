@@ -1,23 +1,5 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
-        android:title="@string/pref_gr_help_analytics"
-        android:key="Rluej0CzDJ"
-        android:summary="@string/pref_gr_help_analytics_summary"
-        android:defaultValue="false"
-        />
-
-
-    <CheckBoxPreference
-        android:title="@string/pref_gr_help_debug"
-        android:key="pref_andr_log"
-        android:summary="@string/pref_gr_help_debug_summary"
-        android:defaultValue="false"
-        />
-
-
-
-
     <Preference
             android:key="pref_visitWeb"
             android:title="@string/pref_gr_help_web" >
