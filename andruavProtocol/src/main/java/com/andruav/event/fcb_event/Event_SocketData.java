@@ -20,7 +20,7 @@ public class Event_SocketData {
      * <br><i>source:</i> FCB e.g. Multiwii or APM board
      * <br><i>target:</i> this message should be forwarded to Drone GCS..
      */
-    public static int SOURCE_LOCAL = 1;
+    public static final int SOURCE_LOCAL = 1;
     /***
      * means that the source of the data comes from a remote Andruav. could be a GCS Andruav or Drone Andruav
      * <br><b>Andruav GCS</b>
@@ -32,20 +32,20 @@ public class Event_SocketData {
      * <br><i>target:</i> this message should be forwarded to any connected FCB. it also could be parsed and modified before forwarding it. e.g. "requested waypoints could be modified based on dynamic geo fencing"
      */
 
-    public static int SOURCE_REMOTE = 2;
+    public static final int SOURCE_REMOTE = 2;
     /***
      * means the source of data is Andruav and it should be forwarded to the current connected FCB or Mission Planner.
      * <br><b>Andruav Drone</b>
      * <br><i>source:</i> Andruav Drone wants to talk or control its own FCB.
      * <br><i>target:</i> local attached FCB only. e.g. retrieve waypoints. start mission.
      */
-    public static int SOURCE_SIMULATED = 3;
+    public static final int SOURCE_SIMULATED = 3;
 
 
     /***
      * This message has to be delivered even if BlockingGCM exist.
      */
-   public boolean byPassBlockedGCS = false;
+   public final boolean byPassBlockedGCS = false;
 
     public byte[]Data;
     public MAVLinkMessage mavLinkMessage;

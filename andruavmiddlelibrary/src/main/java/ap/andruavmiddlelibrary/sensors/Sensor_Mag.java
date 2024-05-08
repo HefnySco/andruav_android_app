@@ -14,7 +14,7 @@ public class Sensor_Mag extends GenericIMUSensor implements SensorEventListener{
     /**
      * Smoothing factor for Mag
      */
-    public float alpha = 0.5f;
+    public final float alpha = 0.5f;
     public long LastTimestamp;
 
 

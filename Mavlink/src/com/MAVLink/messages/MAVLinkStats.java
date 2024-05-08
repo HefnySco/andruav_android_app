@@ -20,7 +20,7 @@ public class MAVLinkStats /* implements Serializable */{
 
     public int lostPacketCount; // total lost packet count for all sources
 
-    public boolean ignoreRadioPackets;
+    public final boolean ignoreRadioPackets;
 
     // stats are nil for a system id until a packet has been received from a system
     public SystemStat[] systemStats; // stats for each system that is known

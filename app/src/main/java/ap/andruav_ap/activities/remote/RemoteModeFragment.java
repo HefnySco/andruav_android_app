@@ -27,7 +27,7 @@ public class RemoteModeFragment extends Fragment implements IFragmentSave {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    protected ImageButton[] mImageButtons = new ImageButton[4];
+    protected final ImageButton[] mImageButtons = new ImageButton[4];
     protected View MeView;
     protected RemoteModeFragment Me;
     protected int mMode;
@@ -57,7 +57,7 @@ public class RemoteModeFragment extends Fragment implements IFragmentSave {
     }
 
 
-    ImageButton.OnClickListener onC = new View.OnClickListener() {
+    final ImageButton.OnClickListener onC = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             mImageButtons[Me.mMode-1].setBackgroundResource(R.drawable.button_shap);

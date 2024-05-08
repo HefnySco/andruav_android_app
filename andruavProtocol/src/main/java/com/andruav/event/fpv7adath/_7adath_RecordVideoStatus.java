@@ -7,7 +7,7 @@ public class _7adath_RecordVideoStatus {
     public static final int CONST_IS_RECORDING      = 2;
     public static final int CONST_STOP_RECORDING    = 3;
     public static final int CONST_ERROR_RECORDING    = 4;
-    public  int status;
+    public final int status;
 
 
     public _7adath_RecordVideoStatus(final int status)

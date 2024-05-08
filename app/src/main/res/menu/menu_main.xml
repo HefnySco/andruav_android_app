@@ -19,10 +19,6 @@
         android:orderInCategory="100"
         app:showAsAction="never"
         android:icon="@drawable/joystick_w_32x32"/>
-    <item android:id="@+id/mi_main_Settings_gcs"
-        android:title="@string/action_settings_gcs"
-        android:orderInCategory="100"
-        app:showAsAction="never"/>
     <item android:id="@+id/mi_main_Settings_drone"
         android:title="@string/action_settings_drone"
         android:orderInCategory="100"

@@ -30,7 +30,7 @@ public class ControlBoardBase {
 
     protected final Object  telemetryBytesObject = new Object();
 
-    protected AndruavUnitBase mAndruavUnitBase;
+    protected final AndruavUnitBase mAndruavUnitBase;
 
 
     protected boolean isRCFailsafe = false;
@@ -120,7 +120,7 @@ public class ControlBoardBase {
      *  in cm
      */
     protected double Altitude;
-    protected double AltitudePerUnit=1.0;
+    protected final double AltitudePerUnit=1.0;
 
     /***
      * in cm / s
@@ -143,7 +143,7 @@ public class ControlBoardBase {
 
     protected double    gps_lnglat_scale = 1.0;  // to avoid divide by zero
     protected double    gps_alt_scale = 1.0;  // to avoid divide by zero
-    protected double    gps_groundspeed_scale=1.0;       // GPS ground speed (m/s). If unknown, set to: UINT16_MAX
+    protected final double    gps_groundspeed_scale=1.0;       // GPS ground speed (m/s). If unknown, set to: UINT16_MAX
     protected double    airspeed_scale=1.0;       // GPS ground speed (m/s). If unknown, set to: UINT16_MAX
     protected double    verticalspeed_scale=1.0;       // GPS ground speed (m/s). If unknown, set to: UINT16_MAX
 

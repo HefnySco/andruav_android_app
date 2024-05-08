@@ -10,7 +10,7 @@ public class Vector3f {
      * an array at run time can cause slowness so instead we use one array and extract the individual variables with get
      * methods.
      */
-    protected float[] points = new float[3];
+    protected final float[] points = new float[3];
 
 
     /**

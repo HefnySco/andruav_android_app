@@ -25,7 +25,7 @@ public class ListUnitItemBase extends RelativeLayout {
 
     protected AndruavUnitShadow mAndruavUnit;
 
-    protected Handler mhandler = new Handler() {
+    protected final Handler mhandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);

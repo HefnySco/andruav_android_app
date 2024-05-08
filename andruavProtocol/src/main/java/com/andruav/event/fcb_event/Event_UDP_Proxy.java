@@ -4,7 +4,7 @@ import com.andruav.andruavUnit.AndruavUnitBase;
 
 public class Event_UDP_Proxy {
 
-    public AndruavUnitBase mAndruavWe7da;
+    public final AndruavUnitBase mAndruavWe7da;
 
 
     public Event_UDP_Proxy(final AndruavUnitBase andruavUnit)

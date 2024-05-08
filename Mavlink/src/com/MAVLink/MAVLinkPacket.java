@@ -115,7 +115,7 @@ public class MAVLinkPacket implements Serializable {
     /**
      * Data of the message, depends on the message id.
      */
-    public MAVLinkPayload payload;
+    public final MAVLinkPayload payload;
 
     /**
     * CRC-16/MCRF4XX hash, excluding packet start sign, so bytes 1..(n+HEADER-LENGTH)
@@ -130,7 +130,7 @@ public class MAVLinkPacket implements Serializable {
     /**
      * Flag to indicate which MAVLink version this packet is
      */
-    public boolean isMavlink2;
+    public final boolean isMavlink2;
 
     /**
      * Flags that must be understood

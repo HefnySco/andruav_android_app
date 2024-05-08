@@ -56,7 +56,7 @@ public class TelemetryDroneProtocolParser  extends TelemetryProtocolParser{
 
     long delayMillis = 2000;
 
-    protected Runnable TestProtocol = new Runnable() {
+    protected final Runnable TestProtocol = new Runnable() {
         @Override
         public void run() {
             boolean brepeat = true;

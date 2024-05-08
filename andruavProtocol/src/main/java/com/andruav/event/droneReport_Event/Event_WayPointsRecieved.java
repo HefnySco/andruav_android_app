@@ -14,7 +14,7 @@ public class Event_WayPointsRecieved {
      * Waypoints belongs to This Unit.
      * <br>Waypoints are already updated for this unot so you can get it from {@link AndruavUnitBase#getMohemmaMapBase}
      */
-    public AndruavUnitBase mAndruavWe7da;
+    public final AndruavUnitBase mAndruavWe7da;
 
 
     public Event_WayPointsRecieved(AndruavUnitBase andruavWe7da)

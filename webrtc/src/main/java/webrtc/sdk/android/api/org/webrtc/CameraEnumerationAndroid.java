@@ -51,8 +51,8 @@ public class CameraEnumerationAndroid {
     // Class to represent a framerate range. The framerate varies because of lightning conditions.
     // The values are multiplied by 1000, so 1000 represents one frame per second.
     public static class FramerateRange {
-      public int min;
-      public int max;
+      public final int min;
+      public final int max;
 
       public FramerateRange(int min, int max) {
         this.min = min;

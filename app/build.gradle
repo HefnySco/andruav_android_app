@@ -21,9 +21,9 @@ android {
         applicationId 'arudpilot.andruav'
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
-        versionName '5.05.01'
+        versionName '6.0.0'
         signingConfig signingConfigs.config
-        versionCode 50501
+        versionCode 60000
         multiDexEnabled true
 
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

@@ -40,7 +40,7 @@ public class RemoteControlSettingGCSActivityTab  extends AppCompatActivity imple
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-    Fragment[] mFragment= new Fragment[2];
+    final Fragment[] mFragment= new Fragment[2];
 
 
     @Override

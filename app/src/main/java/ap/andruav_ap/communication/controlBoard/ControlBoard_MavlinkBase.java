@@ -94,8 +94,8 @@ public class ControlBoard_MavlinkBase extends ControlBoardBase {
      */
     protected Parser parserDrone;
 
-    protected short mSystemId=0;
-    protected short mComponentId=0;
+    protected final short mSystemId=0;
+    protected final short mComponentId=0;
 
     //protected float pitch;
     protected float pitchspeed;
@@ -106,7 +106,7 @@ public class ControlBoard_MavlinkBase extends ControlBoardBase {
     protected long time_boot_ms;
 
 
-    protected CustomCircularBuffer <MAVLinkPacket> commandQueue ;
+    protected final CustomCircularBuffer <MAVLinkPacket> commandQueue ;
 
     public ControlBoard_MavlinkBase(AndruavUnitBase andruavUnitBase) {
         super(andruavUnitBase);

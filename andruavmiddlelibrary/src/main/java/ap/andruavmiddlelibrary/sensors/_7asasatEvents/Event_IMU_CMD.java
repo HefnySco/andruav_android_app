@@ -14,7 +14,7 @@ public class Event_IMU_CMD {
 
 
     public Object tag;
-    public int cmdID ;
+    public final int cmdID ;
     public Event_IMU_CMD(int defaultValue)
     {
         cmdID = defaultValue;

@@ -48,14 +48,14 @@ public class StreamRates extends DroneVariable<MavLinkDrone> implements OnDroneL
 	}
 
     public static class Rates {
-        public int extendedStatus;
-        public int extra1;
-        public int extra2;
-        public int extra3;
-        public int position;
-        public int rcChannels;
-        public int rawSensors;
-        public int rawController;
+        public final int extendedStatus;
+        public final int extra1;
+        public final int extra2;
+        public final int extra3;
+        public final int position;
+        public final int rcChannels;
+        public final int rawSensors;
+        public final int rawController;
 		
 		public Rates(int rate){
 			this.extendedStatus = rate;

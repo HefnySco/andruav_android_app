@@ -94,9 +94,9 @@ import ap.andruavmiddlelibrary.preference.Preference;
  */
 public class DroneKitServer implements DroneListener, TowerListener , ControlApi.ManualControlStateListener, LinkListener, GimbalApi.GimbalOrientationListener, IEvent_SocketData {
 
-    protected DroneKitServer Me;
+    protected final DroneKitServer Me;
 
-    protected Context mContext;
+    protected final Context mContext;
 
     private final static int  HEARTBEAT_FIRST    = 1;
     private final static int  HEARTBEAT_RESTORED = 2;
@@ -154,7 +154,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         return mavObserver.compid;
     }
 
-    private int APM_VehicleType = VehicleTypes.VEHICLE_UNKNOWN;
+    private final int APM_VehicleType = VehicleTypes.VEHICLE_UNKNOWN;
 
 
 

@@ -168,7 +168,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
     }
 
 
-    long sendServoOutputInfo_sent_duration = 5000;
+    final long sendServoOutputInfo_sent_duration = 5000;
     long sendServoOutputInfo_sent_time = 0;
     public void onEvent (final Event_SERVO_Outputs_Ready a7adath_servo_output_ready)
     {

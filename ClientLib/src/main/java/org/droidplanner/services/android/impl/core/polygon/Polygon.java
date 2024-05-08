@@ -62,7 +62,7 @@ public class Polygon {
 
 	public class InvalidPolygon extends Exception {
 		private static final long serialVersionUID = 1L;
-		public int size;
+		public final int size;
 
 		public InvalidPolygon(int size) {
 			this.size = size;

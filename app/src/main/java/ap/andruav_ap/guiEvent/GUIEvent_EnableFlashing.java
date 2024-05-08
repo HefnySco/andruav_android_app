@@ -6,7 +6,7 @@ package ap.andruav_ap.guiEvent;
 
 public class GUIEvent_EnableFlashing {
 
-    public  boolean enableFlashing;
+    public final boolean enableFlashing;
 
 
     public  GUIEvent_EnableFlashing (final boolean enable)

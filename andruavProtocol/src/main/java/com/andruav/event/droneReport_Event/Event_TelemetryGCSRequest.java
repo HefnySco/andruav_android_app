@@ -25,8 +25,8 @@ public class Event_TelemetryGCSRequest {
      */
     public static final int REQUEST_PAUSE   = 5;
 
-    public AndruavUnitBase andruavUnitBase;
-    public int Request;
+    public final AndruavUnitBase andruavUnitBase;
+    public final int Request;
 
     public Event_TelemetryGCSRequest(final AndruavUnitBase andruavUnitBase, final  int add)
     {

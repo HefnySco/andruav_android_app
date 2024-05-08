@@ -8,9 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -31,12 +29,10 @@ import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 
-import ap.andruavmiddlelibrary.factory.communication.SMS;
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.activities.HUBCommunication;
 import ap.andruav_ap.activities.remote.RemoteControlSettingGCSActivityTab;
 import ap.andruav_ap.activities.settings.SettingsDrone;
-import ap.andruav_ap.activities.settings.SettingsGCS;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.activities.data.DataShashaTab;
 import ap.andruav_ap.activities.drone.IMUShasha;
@@ -795,8 +791,6 @@ public class MainScreen extends BaseAndruavShasha {
             mbtnFPV.setEnabled(BigButtonsenabled);
 
             mMenu.findItem(R.id.mi_main_Settings_drone).setEnabled(enabled);
-            mMenu.findItem(R.id.mi_main_Settings_gcs).setEnabled(false);
-
         }
         else
         {
@@ -805,7 +799,6 @@ public class MainScreen extends BaseAndruavShasha {
             mbtnFPV.setEnabled(false);
 
             mMenu.findItem(R.id.mi_main_Settings_drone).setEnabled(false);
-            mMenu.findItem(R.id.mi_main_Settings_gcs).setEnabled(enabled);
         }
         mbtnMap.setEnabled(BigButtonsenabled);
 
@@ -1041,8 +1034,6 @@ public class MainScreen extends BaseAndruavShasha {
             doSignOut();
         } else if (id == R.id.mi_main_Exit) {
             doExit();
-        } else if (id == R.id.mi_main_Settings_gcs) {
-            doSettings_GCS();
         } else if (id == R.id.mi_main_Settings_drone) {
             doSettings_Drone();
         } else if (id == R.id.mi_main_ResetFactory) {
@@ -1148,21 +1139,9 @@ public class MainScreen extends BaseAndruavShasha {
     private void doSettings_Drone() {
         startActivity(new Intent(MainScreen.this, SettingsDrone.class));
     }
-    private void doSettings_GCS() {
-        startActivity(new Intent(MainScreen.this, SettingsGCS.class));
-    }
 
     private void doSettings() {
-        //startActivity(new Intent(MainShasha.this, SettingsActivity.class));
-
-        if (AndruavSettings.andruavWe7daBase.getIsCGS())
-        {
-            doSettings_GCS();
-        }
-        else
-        {
-            doSettings_Drone();
-        }
+       doSettings_Drone();
     }
 
 
@@ -1177,9 +1156,7 @@ public class MainScreen extends BaseAndruavShasha {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // The activity is about to be destroyed.
-//        unregisterReceiver(mUsbDetachReceiver);
-//        unregisterReceiver(mUsbAttachReceiver);
+
         App.shutDown();
     }
 

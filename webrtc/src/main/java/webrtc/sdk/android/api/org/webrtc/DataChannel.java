@@ -16,15 +16,15 @@ import java.nio.ByteBuffer;
 public class DataChannel {
   /** Java wrapper for WebIDL RTCDataChannel. */
   public static class Init {
-    public boolean ordered = true;
+    public final boolean ordered = true;
     // Optional unsigned short in WebIDL, -1 means unspecified.
-    public int maxRetransmitTimeMs = -1;
+    public final int maxRetransmitTimeMs = -1;
     // Optional unsigned short in WebIDL, -1 means unspecified.
-    public int maxRetransmits = -1;
-    public String protocol = "";
+    public final int maxRetransmits = -1;
+    public final String protocol = "";
     public boolean negotiated;
     // Optional unsigned short in WebIDL, -1 means unspecified.
-    public int id = -1;
+    public final int id = -1;
 
     @CalledByNative("Init")
     boolean getOrdered() {

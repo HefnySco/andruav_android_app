@@ -41,7 +41,7 @@ private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-008
 // ==> hardcode your server's MAC address here <==
 public String address = "";
 
-        Context context;
+        final Context context;
 
 public boolean ConnectionLost = false;
 

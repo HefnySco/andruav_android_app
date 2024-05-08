@@ -122,7 +122,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     private int mInternalCommand_Step= 0;
 
     private int[] channelsshared;
-    int[] safeGuidedChannels = new int[8];
+    final int[] safeGuidedChannels = new int[8];
 
     private boolean rc_command =false;
     private long  rc_command_last = 0;

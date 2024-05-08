@@ -25,7 +25,7 @@ public class Adapter_DroneTelemetry extends BaseAdapter{
 
     /*********** Declare Used Variables *********/
     private final Activity activity;
-    ArrayList<ListItem_DroneTelemetry> data = new ArrayList<ListItem_DroneTelemetry>();
+    final ArrayList<ListItem_DroneTelemetry> data = new ArrayList<ListItem_DroneTelemetry>();
     private static LayoutInflater inflater=null;
     private final OnCustomClickListener callback; // This is our activity
 

@@ -32,7 +32,7 @@ public class DroneMavlinkHandler {
 
     private static int rcChannelBlock_trials = 0; // to avoid glitches
 
-    public static int[] channelsRaw = new int[18];
+    public static final int[] channelsRaw = new int[18];
 
 
     public static void execute_StatusMessage(final msg_statustext msg_statustext)

@@ -60,7 +60,7 @@ public class RemoteChannelsSettingFragment extends Fragment implements IFragment
     }
 
 
-    ChannelSettingsWidget[] remoteChannelSetting = new ChannelSettingsWidget[8];
+    final ChannelSettingsWidget[] remoteChannelSetting = new ChannelSettingsWidget[8];
 
     View Me;
 

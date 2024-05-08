@@ -7,17 +7,17 @@ public class Event_CameraZoom {
     /**
      * Zomm In/Out
      */
-    public boolean ZoomIn;
+    public final boolean ZoomIn;
 
     /**
      * Value: 0..1
      */
-    public Double ZoomValue;
+    public final Double ZoomValue;
 
     /**
      * Step to increase or decrease
      */
-    public Double ZoomValueStep;
+    public final Double ZoomValueStep;
 
 
 

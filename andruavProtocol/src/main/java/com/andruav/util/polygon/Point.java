@@ -13,8 +13,8 @@ public class Point
 		this.y = y;
 	}
 
-	public double x;
-	public double y;
+	public final double x;
+	public final double y;
 
 
 	@Override

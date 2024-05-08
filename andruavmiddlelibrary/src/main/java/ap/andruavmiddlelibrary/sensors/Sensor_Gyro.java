@@ -17,14 +17,14 @@ public class Sensor_Gyro extends GenericIMUSensor {
     // IMPORTANT: the axis are 0,1,2 but this index is modified to be compatible with ACC sensor
     // as rotating around Pitch axis is Roll for ACC.
     // also note that Roll direction is negative to Roll in ACC.
-    public float alphaAccCorrection = 0.02f;
-    public float alpha = 0.8f;
+    public final float alphaAccCorrection = 0.02f;
+    public final float alpha = 0.8f;
     private static final float NS2S = 10000.0f; //1.0f / 1000.0f;
     private static final float EPSILON = 0.01f;
 
     private final float[] deltaRotationVector = new float[4];
     public long LastTimestamp=0;
-    public Vector3d vGyro = new Vector3d(0.0,0.0,1.0);
+    public final Vector3d vGyro = new Vector3d(0.0,0.0,1.0);
 
 
 

@@ -5,7 +5,7 @@ package com.andruav.event.systemEvent;
  */
 public class Event_ShutDown_Signalling {
 
-    public int CloseOrder;
+    public final int CloseOrder;
 
     public Event_ShutDown_Signalling(int textAppearanceAppCompatBase)
     {

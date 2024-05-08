@@ -56,5 +56,5 @@ public final class Constants {
     // target all gcs and drones.
     public final static String _all_ = "_GD_";
 
-    public static double INVALID_GPS_LOCATION = 0.0;
+    public static final double INVALID_GPS_LOCATION = 0.0;
 }

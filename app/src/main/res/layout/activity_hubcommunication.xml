@@ -83,11 +83,11 @@
                 android:id="@+id/hubactivity_edtWSPort"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/hubactivity_edtWSIP"
+                android:layout_below="@+id/txtServer"
                 android:layout_alignLeft="@+id/hubactivity_edtWSIP"
                 android:layout_alignParentEnd="false"
                 android:layout_alignParentRight="false"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="15dp"
                 android:background="@drawable/sel_edit_text"
                 android:ems="10"
                 android:enabled="true"
@@ -106,25 +106,7 @@
                 android:contentDescription="separator"
                 />
 
-            <TextView
-                style="@style/generalLabelTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/hub_activity_vehicleType"
-                android:id="@+id/hubactivity_txtVehicleType"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/fpvactivity_imgSnapShot" />
 
-            <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/hubactivity_spinVehicleType"
-                android:layout_toRightOf="@+id/hubactivity_chkEncryption"
-                android:layout_toEndOf="@+id/hubactivity_chkEncryption"
-                android:layout_alignTop="@+id/hubactivity_txtVehicleType"
-                android:layout_alignLeft="@+id/hubactivity_edtWSIP"
-                android:spinnerMode="dialog" />
 
             <TextView
                 style="@style/generalLabelTitle"
@@ -134,6 +116,7 @@
                 android:id="@+id/txtWSUserName"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_alignParentLeft="true"
+                android:layout_below="@+id/fpvactivity_imgSnapShot"
                 android:layout_alignTop="@+id/hubactivity_edtWSUserName" />
 
             <EditText
@@ -142,7 +125,7 @@
                 android:inputType="text"
                 android:ems="10"
                 android:id="@+id/hubactivity_edtWSUserName"
-                android:layout_below="@+id/hubactivity_spinVehicleType"
+                android:layout_below="@+id/fpvactivity_imgSnapShot"
                 android:layout_alignParentEnd="false"
                 android:layout_alignLeft="@+id/hubactivity_edtWSIP"
                 android:background="@drawable/sel_edit_text"
@@ -208,35 +191,37 @@
                 android:layout_below="@+id/hubactivity_edtDescription" />
 
             <CheckBox
+                android:id="@+id/hubactivity_chkEncryption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/websocket_CipherKey"
-                android:id="@+id/hubactivity_chkEncryption"
-                android:layout_toEndOf="@+id/txtWSUserName"
-                android:textColor="@color/btn_TXT_BLUE_DARKEST"
-                android:checked="false"
                 android:layout_below="@+id/imageView2"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_toRightOf="@+id/txtWSUserName" />
+                android:layout_alignParentLeft="true"
+                android:layout_toEndOf="@+id/txtWSUserName"
+                android:layout_toRightOf="@+id/txtWSUserName"
+                android:checked="false"
+                android:text="@string/websocket_CipherKey"
+                android:textColor="@color/btn_TXT_BLUE_DARKEST"
+                tools:visibility="invisible" />
 
             <EditText
+                android:id="@+id/hubactivity_edtEncryptionKey"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:id="@+id/hubactivity_edtEncryptionKey"
-                android:inputType="text"
-                android:background="@drawable/sel_edit_text"
-                android:textColor="@color/btn_TXT_GREY_DARK"
                 android:layout_below="@+id/hubactivity_chkEncryption"
+                android:layout_alignLeft="@+id/login_txtAccessCode"
+                android:layout_marginLeft="3dp"
                 android:layout_marginTop="3dp"
                 android:layout_marginRight="3dp"
-                android:hint=" 18 character key"
-                android:layout_marginLeft="3dp"
-                android:maxLength="18"
                 android:layout_toEndOf="@+id/txtWSUserName"
-                android:layout_alignLeft="@+id/login_txtAccessCode"
-                android:layout_toRightOf="@+id/txtWSUserName" />
+                android:layout_toRightOf="@+id/txtWSUserName"
+                android:background="@drawable/sel_edit_text"
+                android:ems="10"
+                android:hint=" 18 character key"
+                android:inputType="text"
+                android:maxLength="18"
+                android:textColor="@color/btn_TXT_GREY_DARK"
+                tools:visibility="invisible" />
 
             <ImageView
                 android:layout_width="fill_parent"

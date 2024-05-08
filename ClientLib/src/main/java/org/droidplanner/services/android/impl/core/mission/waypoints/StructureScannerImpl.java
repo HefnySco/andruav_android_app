@@ -23,7 +23,7 @@ public class StructureScannerImpl extends SpatialCoordItem {
     private double heightStep = 5;
     private int numberOfSteps = 2;
     private boolean crossHatch = false;
-    SurveyData survey = new SurveyData();
+    final SurveyData survey = new SurveyData();
 
     public StructureScannerImpl(MissionImpl missionImpl, LatLongAlt coord) {
         super(missionImpl, coord);

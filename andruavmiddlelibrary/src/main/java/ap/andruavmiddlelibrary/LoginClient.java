@@ -100,7 +100,7 @@ public class LoginClient {
     public static int LastError;
     public static String LastMessage;
     public static String AccessCode;
-    public static SimpleArrayMap<String,String> Parameters = new SimpleArrayMap<String, String>();
+    public static final SimpleArrayMap<String,String> Parameters = new SimpleArrayMap<String, String>();
 
 
     public static String getPageName ()

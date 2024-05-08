@@ -6,7 +6,7 @@ import com.o3dr.services.android.lib.coordinate.LatLong;
 import java.util.List;
 
 public class Grid {
-    public List<LatLong> gridPoints;
+    public final List<LatLong> gridPoints;
     private final List<LatLong> cameraLocations;
 
     public Grid(List<LatLong> list, List<LatLong> cameraLocations) {

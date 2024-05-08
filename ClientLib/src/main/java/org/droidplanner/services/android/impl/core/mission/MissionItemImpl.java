@@ -8,7 +8,7 @@ import java.util.List;
 
 public abstract class MissionItemImpl implements Comparable<MissionItemImpl> {
 
-	protected MissionImpl missionImpl;
+	protected final MissionImpl missionImpl;
 
 	public MissionItemImpl(MissionImpl missionImpl) {
 		this.missionImpl = missionImpl;

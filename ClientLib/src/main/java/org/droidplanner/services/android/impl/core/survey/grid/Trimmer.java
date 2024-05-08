@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Trimmer {
-	List<LineLatLong> trimedGrid = new ArrayList<LineLatLong>();
+	final List<LineLatLong> trimedGrid = new ArrayList<LineLatLong>();
 
 	public Trimmer(List<LineLatLong> grid, List<LineLatLong> polygon) {
 		for (LineLatLong gridLine : grid) {

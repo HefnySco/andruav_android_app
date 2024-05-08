@@ -8,7 +8,7 @@ import com.andruav.andruavUnit.AndruavUnitBase;
 
 public class GUIEvent_UpdateConnection {
 
-    public AndruavUnitBase andruavUnitBase;
+    public final AndruavUnitBase andruavUnitBase;
 
     public GUIEvent_UpdateConnection (final AndruavUnitBase andruavUnitBase)
     {

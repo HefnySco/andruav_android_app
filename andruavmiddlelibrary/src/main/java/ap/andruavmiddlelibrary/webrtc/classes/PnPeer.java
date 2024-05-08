@@ -40,13 +40,13 @@ public class PnPeer implements SdpObserver, PeerConnection.Observer {
     public static final String TYPE_ANSWER = "answer";
 
     private final PeerConnectionClientBase pcClient;
-    PeerConnection pc;
-    String id;
+    final PeerConnection pc;
+    final String id;
     String type;
     String status;
     boolean dialed;
     boolean received;
-    String mChannel;
+    final String mChannel;
     private final AndruavUnitBase mAndruavUnitBase;
     private MediaStream mMediaStream;
 

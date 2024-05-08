@@ -37,7 +37,7 @@ public class AndruavGCSSerialSocketServer {
     protected Boolean mkillMe = true;
     protected CommunicationThread mClientsocketRunnable;
     protected Event_SocketData mevent_socketData;
-    protected AndruavGCSSerialSocketServer Me;
+    protected final AndruavGCSSerialSocketServer Me;
 
     private long last_sent_time = 0;
     private final long last_sent_time_duration = 1000;

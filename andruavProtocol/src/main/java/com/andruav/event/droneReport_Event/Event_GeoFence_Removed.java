@@ -10,7 +10,7 @@ import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_RemoteE
  */
 public class Event_GeoFence_Removed {
 
-    public String fenceName;
+    public final String fenceName;
 
 
     /***

@@ -9,8 +9,8 @@ import org.json.JSONObject;
  */
 public class Event_Signalling {
 
-    public JSONObject jsonObject;
-    public AndruavUnitBase andruavUnitBase;
+    public final JSONObject jsonObject;
+    public final AndruavUnitBase andruavUnitBase;
 
 
     public Event_Signalling(final JSONObject json, final AndruavUnitBase we7da)

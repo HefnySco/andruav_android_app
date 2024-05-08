@@ -122,7 +122,7 @@ public class TrafficOptimizer {
     static long smarttelemetry_msg_meminfo_last_sent_time =0;
     final static long[] smarttelemetry_time_msg_meminfo_duration = new long[] {0,800,1500,3000};
 
-    static long[] smarttelemetry_msg_scaled_pressure_last_sent_time = {0, 0, 0};
+    static final long[] smarttelemetry_msg_scaled_pressure_last_sent_time = {0, 0, 0};
     final static long[] smarttelemetry_time_msg_scaled_pressure_duration = new long[] {0,800,1500,3000};
 
     static long  smarttelemetry_msg_simstatelast_sent_time =0;

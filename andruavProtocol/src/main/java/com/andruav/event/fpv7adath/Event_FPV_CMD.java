@@ -24,9 +24,9 @@ public class Event_FPV_CMD {
     public final static int FPV_CMD_SWITCHCAM   = 5;
     public final static int FPV_CMD_FLASHCAM    = 6;
 
-    public int CMD_ID;
+    public final int CMD_ID;
     public Boolean ACT;
-    public SimpleArrayMap<String, String> Variables = new SimpleArrayMap<String, String>() ;
+    public final SimpleArrayMap<String, String> Variables = new SimpleArrayMap<String, String>() ;
 
     public AndruavUnitBase Requester;
 

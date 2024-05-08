@@ -325,7 +325,7 @@ public class MediaVideoEncoder extends MediaEncoder {
 	 * color formats that we can use in this class
 	 * Check: https://cs.chromium.org/chromium/src/third_party/webrtc/sdk/android/src/java/org/webrtc/MediaCodecUtils.java?type=cs&g=0
 	 */
-	protected static int[] recognizedFormats;
+	protected static final int[] recognizedFormats;
 	static {
 		recognizedFormats = new int[] {
 				COLOR_QCOM_FORMATYUV420PackedSemiPlanar32m,

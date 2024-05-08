@@ -183,11 +183,6 @@
             android:label="@string/title_activity_imu"
             android:launchMode="singleTask" />
         <activity
-            android:name="ap.andruav_ap.activities.settings.SettingsGCS"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:label="@string/title_activity_settings"
-            android:launchMode="singleTask" />
-        <activity
             android:name="ap.andruav_ap.activities.settings.SettingsDrone"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_settings"

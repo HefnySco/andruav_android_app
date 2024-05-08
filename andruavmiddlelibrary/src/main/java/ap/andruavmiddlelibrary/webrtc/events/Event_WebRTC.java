@@ -14,7 +14,7 @@ public class Event_WebRTC {
     public static final int EVENT_CLOSED_CONNECTION              = 5;
 
 
-    protected int eventType ;
+    protected final int eventType ;
 
     public int getEventType() {
         return eventType;
@@ -23,7 +23,7 @@ public class Event_WebRTC {
     /***
      * Andruav Drone
      */
-    protected AndruavUnitBase andruavUnitBase;
+    protected final AndruavUnitBase andruavUnitBase;
 
     public AndruavUnitBase getAndruavWe7daBase() {
         return andruavUnitBase;

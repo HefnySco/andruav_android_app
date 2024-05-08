@@ -1179,8 +1179,8 @@ public class AndruavImageView extends androidx.appcompat.widget.AppCompatImageVi
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private class CompatScroller {
         Scroller scroller;
-        OverScroller overScroller;
-        boolean isPreGingerbread;
+        final OverScroller overScroller;
+        final boolean isPreGingerbread;
 
         public CompatScroller(Context context) {
 
@@ -1226,10 +1226,10 @@ public class AndruavImageView extends androidx.appcompat.widget.AppCompatImageVi
     }
 
     private class ZoomVariables {
-        public float scale;
-        public float focusX;
-        public float focusY;
-        public ScaleType scaleType;
+        public final float scale;
+        public final float focusX;
+        public final float focusY;
+        public final ScaleType scaleType;
 
         public ZoomVariables(float scale, float focusX, float focusY, ScaleType scaleType) {
             this.scale = scale;

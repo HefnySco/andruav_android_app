@@ -47,7 +47,7 @@ public class Parser {
 
     private MAV_states state = MAV_states.MAVLINK_PARSE_STATE_UNINIT;
 
-    public MAVLinkStats stats;
+    public final MAVLinkStats stats;
     private MAVLinkPacket m;
     private boolean isMavlink2;
 

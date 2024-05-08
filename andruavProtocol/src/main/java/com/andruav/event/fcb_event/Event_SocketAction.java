@@ -9,7 +9,7 @@ public class Event_SocketAction {
     public static final int SOCKETACTION_CLIENT_CONNECTED       = 4;
     public static final int SOCKETACTION_CLIENT_DISCONNECTED    = 5;
 
-    public int socketAction;
+    public final int socketAction;
     public String clientSocketIP;
 
 

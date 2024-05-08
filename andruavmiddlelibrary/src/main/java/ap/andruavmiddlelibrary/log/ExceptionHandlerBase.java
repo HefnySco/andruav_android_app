@@ -18,7 +18,7 @@ public class ExceptionHandlerBase implements
         java.lang.Thread.UncaughtExceptionHandler {
     protected final Context myContext;
     protected static final String LINE_SEPARATOR = "\n";
-    protected Thread.UncaughtExceptionHandler androidDefaultUEH;
+    protected final Thread.UncaughtExceptionHandler androidDefaultUEH;
     protected StringBuilder errorReport;
 
 

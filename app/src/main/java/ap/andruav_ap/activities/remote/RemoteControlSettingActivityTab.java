@@ -37,7 +37,7 @@ public class RemoteControlSettingActivityTab extends AppCompatActivity implement
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-    Fragment[] mFragment= new Fragment[3];
+    final Fragment[] mFragment= new Fragment[3];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

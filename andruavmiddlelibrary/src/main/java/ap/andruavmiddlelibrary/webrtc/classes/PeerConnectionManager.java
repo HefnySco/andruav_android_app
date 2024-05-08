@@ -576,7 +576,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     private class AndruavRTCListener2 extends PnRTCListener {
 
 
-        IRTCListener mIRTCListener;
+        final IRTCListener mIRTCListener;
 
         AndruavRTCListener2(final IRTCListener irtcListener)
         {

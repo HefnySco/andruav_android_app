@@ -12,10 +12,10 @@ public class Event_WayPointsUpdated {
     /***
      * Waypoints belongs to This Unit.
      */
-    AndruavUnitBase mAndruavWe7da;
+    final AndruavUnitBase mAndruavWe7da;
 
 
-    MohemmaMapBase mUpdatedWayPoints;
+    final MohemmaMapBase mUpdatedWayPoints;
 
 
     public Event_WayPointsUpdated(AndruavUnitBase andruavWe7da, MohemmaMapBase mohemmaMapBase)

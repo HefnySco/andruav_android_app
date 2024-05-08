@@ -247,7 +247,7 @@ public class AndruavUnitBase {
     /**
      * extra servos not ones used in plan or rover, but extra ones.
      */
-    protected int[] servoOutputs = new int[SERVO_OUTPUT_NUMBER];
+    protected final int[] servoOutputs = new int[SERVO_OUTPUT_NUMBER];
 
 
 
@@ -394,7 +394,7 @@ public class AndruavUnitBase {
     protected String  permissions;
     protected static String  readOnlyGCS    = "uided";
     protected static String  doAllGCS       = "D1G2T3R4V5C6";
-    protected static String  rootPermssion  = "D1G0T3R4V5C6";
+    protected static final String  rootPermssion  = "D1G0T3R4V5C6";
     protected boolean canControl            = false;
     protected boolean canTelemetry          = false;
     protected boolean canVideo              = false;
@@ -644,7 +644,7 @@ public class AndruavUnitBase {
     protected boolean rcChannelBlock;
 
 
-    protected MohemmaMapBase mMohemmaMapBase = new MohemmaMapBase();
+    protected final MohemmaMapBase mMohemmaMapBase = new MohemmaMapBase();
 
 
 
@@ -673,16 +673,16 @@ public class AndruavUnitBase {
         return mHasGimbal;
     }
 
-    protected   AndruavGimbal    mAndruavGimbal = new AndruavGimbal();
+    protected final AndruavGimbal    mAndruavGimbal = new AndruavGimbal();
 
     public AndruavGimbal getAndruavGimbal()
     {
         return  mAndruavGimbal;
     }
 
-    public  AndruavIMU       LastEvent_IMU;      // IMU from Andruav
-    public  AndruavIMU       LastEvent_FCB_IMU;  // IMU from FCB
-    public  AndruavBattery   LastEvent_Battery;  // Battery from Andruav
+    public final AndruavIMU       LastEvent_IMU;      // IMU from Andruav
+    public final AndruavIMU       LastEvent_FCB_IMU;  // IMU from FCB
+    public final AndruavBattery   LastEvent_Battery;  // Battery from Andruav
 
 
 

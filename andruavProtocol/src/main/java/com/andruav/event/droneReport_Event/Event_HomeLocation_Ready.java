@@ -7,7 +7,7 @@ import com.andruav.andruavUnit.AndruavUnitBase;
  */
 public class Event_HomeLocation_Ready {
 
-    public AndruavUnitBase mAndruavWe7da;
+    public final AndruavUnitBase mAndruavWe7da;
 
     public Event_HomeLocation_Ready(AndruavUnitBase andruavUnit)
     {

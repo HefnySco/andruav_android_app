@@ -29,7 +29,7 @@ public class RtpParameters {
   public static class Encoding {
     // If non-null, this represents the RID that identifies this encoding layer.
     // RIDs are used to identify layers in simulcast.
-    @Nullable public String rid;
+    @Nullable public final String rid;
     // Set to true to cause this encoding to be sent, and false for it not to
     // be sent.
     public boolean active = true;
@@ -45,7 +45,7 @@ public class RtpParameters {
     @Nullable public Integer numTemporalLayers;
     // If non-null, scale the width and height down by this factor for video. If null,
     // implementation default scaling factor will be used.
-    @Nullable public Double scaleResolutionDownBy;
+    @Nullable public final Double scaleResolutionDownBy;
     // SSRC to be used by this encoding.
     // Can't be changed between getParameters/setParameters.
     public Long ssrc;
@@ -119,17 +119,17 @@ public class RtpParameters {
 
   public static class Codec {
     // Payload type used to identify this codec in RTP packets.
-    public int payloadType;
+    public final int payloadType;
     // Name used to identify the codec. Equivalent to MIME subtype.
-    public String name;
+    public final String name;
     // The media type of this codec. Equivalent to MIME top-level type.
-    MediaStreamTrack.MediaType kind;
+    final MediaStreamTrack.MediaType kind;
     // Clock rate in Hertz.
-    public Integer clockRate;
+    public final Integer clockRate;
     // The number of audio channels used. Set to null for video codecs.
-    public Integer numChannels;
+    public final Integer numChannels;
     // The "format specific parameters" field from the "a=fmtp" line in the SDP
-    public Map<String, String> parameters;
+    public final Map<String, String> parameters;
 
     @CalledByNative("Codec")
     Codec(int payloadType, String name, MediaStreamTrack.MediaType kind, Integer clockRate,

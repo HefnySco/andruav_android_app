@@ -12,7 +12,7 @@ import com.andruav.event.droneReport_Event.Event_GeoFence_Hit;
  */
 public class GeoFenceBase {
 
-    protected static int          NOT_TESTED      = -1;
+    protected static final int          NOT_TESTED      = -1;
     protected static int          INZONE          = 1;
     protected static int          OUT_ZONE        = 0;
 
@@ -30,7 +30,7 @@ public class GeoFenceBase {
     /***
      * Array of Andruav units that has ths fence attached to them.
      */
-    public SimpleArrayMap<String, Event_GeoFence_Hit> mAndruavUnits  = new SimpleArrayMap<String, Event_GeoFence_Hit>();
+    public final SimpleArrayMap<String, Event_GeoFence_Hit> mAndruavUnits  = new SimpleArrayMap<String, Event_GeoFence_Hit>();
 
     protected int _isInside = NOT_TESTED;
 
@@ -51,7 +51,7 @@ public class GeoFenceBase {
 
 
 
-    public static double        MAX_DISTANCE    = 50;
+    public static final double        MAX_DISTANCE    = 50;
 
 
 

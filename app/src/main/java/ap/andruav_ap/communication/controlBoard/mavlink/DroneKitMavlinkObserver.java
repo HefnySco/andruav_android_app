@@ -37,7 +37,7 @@ public class DroneKitMavlinkObserver extends MavlinkObserver
     public int compid;
 
 
-    protected DroneKitServer mDroneKitServer;
+    protected final DroneKitServer mDroneKitServer;
 
     public DroneKitMavlinkObserver (final DroneKitServer droneKitServer)
     {
