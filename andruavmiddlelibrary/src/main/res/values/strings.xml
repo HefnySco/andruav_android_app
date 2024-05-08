@@ -52,8 +52,10 @@
     <string name="pref_gr_recovery_flash_chk_summary">change screen color in red and blue to visually locate drone.</string>
     <string name="pref_gr_recovery_siren_chk">Lost Siren</string>
     <string name="pref_gr_recovery_siren_chk_summary">play a siren in high volume to locate drone when lost.</string>
-    <string name="pref_gr_recovery_chk">SMS my location</string>
-    <string name="pref_gr_recovery_chk_summary">sends SMS to a mobile number with GPS longitude and latitude when network connection is lost.</string>
+    <string name="pref_gr_sms_chk">SMS Info</string>
+    <string name="pref_gr_sms_chk_summary">Send info via SMS for emergency.</string>
+    <string name="pref_gr_sms_rx_chk">SMS Commands</string>
+    <string name="pref_gr_sms_rx_chk_summary">Enable execute commands received by SMS.</string>
     <string name="pref_gr_recovery_chk_rc_block">Enable RC Block</string>
     <string name="pref_gr_recovery_chk_rc_block_summary">vehicle accepts Blocking command to mute all control from GCSs.</string>
     <string name="pref_gr_recovery_edt_rcCh_blk_trigger">RC Block TX Channel</string>
@@ -62,7 +64,7 @@
     <string name="pref_gr_recovery_edt_blk_battery_min_summary">Minimum board or mobile battery percentage to activate Fail Safe.</string>
     <string name="pref_gr_recovery_edt_blk_trigger_min">RC Block Channel PMW min</string>
     <string name="pref_gr_recovery_edt_blk_trigger_min_summary">Minimum PMW signal to activate blocking. A typical value is 1800, above which the block mode will be active.</string>
-    <string name="pref_gr_recovery_txt">SMS to Mobile No:</string>
+    <string name="pref_gr_sms_recovery_txt">SMS to Mobile No:</string>
     <string name="pref_feedback_support">Feedback &amp;  Support</string>
     <string name="pref_gr_help_web">Visit www.cloud.ardupilot.org</string>
     <string name="pref_gr_help_weburl">http://www.cloud.ardupilot.org</string>

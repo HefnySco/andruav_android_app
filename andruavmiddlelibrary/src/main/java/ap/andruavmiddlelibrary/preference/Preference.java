@@ -752,12 +752,20 @@ public class Preference {
      * @return
      * @see
      */
-    public static boolean isEmergencySMSGPSEnabled(final android.content.ContextWrapper contextWrapper) {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "ZOHYJWnn", false);
+    public static boolean isSMSTXEnabled(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_chk", false);
     }
 
-    public static void isEmergencySMSGPSEnabled(final android.content.ContextWrapper contextWrapper, final boolean enableSMS) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "ZOHYJWnn", enableSMS);
+    public static void isSMSTXEnabled(final android.content.ContextWrapper contextWrapper, final boolean enableSMS) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_chk", enableSMS);
+    }
+
+    public static boolean isSMSRXEnabled(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_rx_chk", false);
+    }
+
+    public static void isSMSRXEnabled(final android.content.ContextWrapper contextWrapper, final boolean enableSMS) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_rx_chk", enableSMS);
     }
 
 
@@ -1218,9 +1226,9 @@ public class Preference {
     public static void FactoryReset_Misc(final android.content.ContextWrapper contextWrapper) {
         Preference.setRecoveryPhoneNo(contextWrapper, "");
         Preference.setBattery_min_value(contextWrapper, 0);
-        Preference.isEmergencySMSGPSEnabled(contextWrapper, false);
+        Preference.isSMSTXEnabled(contextWrapper, false);
         Preference.isEmergencyFlightModeFailSafeEnabled(contextWrapper, FlightMode.CONST_FLIGHT_CONTROL_RTL);
-        Preference.isEmergencySMSGPSEnabled(contextWrapper, false);
+        Preference.isSMSRXEnabled(contextWrapper, false);
         Preference.isEmergencyFlashEnabled(contextWrapper, false);
         Preference.isEmergencySirenEnabled(contextWrapper, false);
         Preference.enableGroupName(contextWrapper, false);

@@ -9,6 +9,7 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 
 import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
+import ap.andruavmiddlelibrary.preference.Preference;
 
 public class SMSReceiver extends BroadcastReceiver {
 
@@ -16,6 +17,11 @@ public class SMSReceiver extends BroadcastReceiver {
     private static final AndruavSMSClientParser andruavSMSClientParser = new AndruavSMSClientParser();
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (Preference.isSMSRXEnabled(null)==false)
+        {
+            return ; // ModuleFeatures is disabled by user.
+        }
+
         if (intent.getAction() != null && intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
             Bundle extras = intent.getExtras();
             if (extras != null) {

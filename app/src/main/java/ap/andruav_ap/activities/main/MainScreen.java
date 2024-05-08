@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 
+import ap.andruav_ap.Emergency;
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.activities.HUBCommunication;
 import ap.andruav_ap.activities.remote.RemoteControlSettingGCSActivityTab;
@@ -533,6 +534,8 @@ public class MainScreen extends BaseAndruavShasha {
         mbtnData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ((Emergency) AndruavEngine.getEmergency()).sendSMSLocation("+201029000028");
+
                 startActivity(new Intent(MainScreen.this, DataShashaTab.class));
             }
         });

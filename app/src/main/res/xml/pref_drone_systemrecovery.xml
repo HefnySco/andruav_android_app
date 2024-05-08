@@ -27,13 +27,19 @@
         android:defaultValue="false"
         />
     <CheckBoxPreference
-        android:title="@string/pref_gr_recovery_chk"
-        android:key="ZOHYJWnn"
-        android:summary="@string/pref_gr_recovery_chk_summary"
+        android:title="@string/pref_gr_sms_rx_chk"
+        android:key="key_sms_rx_chk"
+        android:summary="@string/pref_gr_sms_rx_chk_summary"
+        android:defaultValue="false"
+        />
+    <CheckBoxPreference
+        android:title="@string/pref_gr_sms_chk"
+        android:key="key_sms_chk"
+        android:summary="@string/pref_gr_sms_chk_summary"
         android:defaultValue="false"
         />
     <EditTextPreference
-        android:title="@string/pref_gr_recovery_txt"
+        android:title="@string/pref_gr_sms_recovery_txt"
         android:key="key_mobile_recovery"
         android:inputType="phone"
         />

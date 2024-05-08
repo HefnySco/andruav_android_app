@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.andruav.AndruavEngine;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /**
@@ -18,8 +19,6 @@ public class SMS {
     public  static void sendSMS (final String phoneNo, final String msg)
     {
         try {
-            // REMOVED AS PER GOOGLE PLAY REQUIREMENT
-
             if (ActivityCompat.checkSelfPermission(AndruavEngine.AppContext, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions

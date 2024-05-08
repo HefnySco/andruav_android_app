@@ -247,7 +247,7 @@ public class Emergency extends EmergencyBase {
                 return;
             }
 
-            if (Preference.isEmergencySMSGPSEnabled(null)==false)
+            if (Preference.isSMSTXEnabled(null)==false)
             {
                 return ; // ModuleFeatures is disabled by user.
             }
@@ -272,7 +272,10 @@ public class Emergency extends EmergencyBase {
                 }
 
             }
-            sendSMSLocation(Preference.getRecoveryPhoneNo(null));
+            String sms_target = Preference.getRecoveryPhoneNo(null);
+            if (sms_target!="") {
+                sendSMSLocation(sms_target);
+            }
 
 
         }
@@ -286,6 +289,11 @@ public class Emergency extends EmergencyBase {
     public  void sendSMSLocation (final String receiver_num) {
         try
         {
+
+            if (Preference.isSMSTXEnabled(null)==false)
+            {
+                return ; // ModuleFeatures is disabled by user.
+            }
 
             Location loc = AndruavDroneFacade.getLastKnownLocation();
 
