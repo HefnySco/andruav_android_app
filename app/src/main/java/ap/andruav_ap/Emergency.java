@@ -272,7 +272,7 @@ public class Emergency extends EmergencyBase {
                 }
 
             }
-            sendActualSMS();
+            sendSMSLocation(Preference.getRecoveryPhoneNo(null));
 
 
         }
@@ -282,46 +282,48 @@ public class Emergency extends EmergencyBase {
         }
     }
 
-    private  void sendActualSMS () {
 
-        Location loc = AndruavDroneFacade.getLastKnownLocation();
+    public  void sendSMSLocation (final String receiver_num) {
+        try
+        {
 
-        if (loc == null) {
-            Toast.makeText(App.getAppContext(),
-                    "No Location to sendMessageToModule in SMS", Toast.LENGTH_LONG).show();
-            return;
-        }
+            Location loc = AndruavDroneFacade.getLastKnownLocation();
 
-        String msg = "http://maps.google.com/?q=" + loc.getLatitude() + "," + loc.getLongitude() + " \r\n " + " acc:" + loc.getAccuracy() + "m";
-        // String msgold = "lng:" + loc.getLongitude() + " lat:" + loc.getLatitude() + " acc:" + loc.getAccuracy() + "m";
-
-        String phoneNo = Preference.getRecoveryPhoneNo(null);
-        if (phoneNo.length() == 0) {
-            // this can be used to support ppl to find their lost planes.
-            AndruavEngine.log().log(AndruavSettings.andruavWe7daBase.UnitID + Preference.getLoginAccessCode(null), "Lost Vehicle", msg);
-            return; // no valid phone
-        }
-
-
-        if (DeviceFeatures.hasSMSCapabilities) {
-
-            Toast.makeText(App.getAppContext(),
-                    "Sending Location SMS", Toast.LENGTH_LONG).show();
-
-
-            if (FeatureSwitch.DEBUG_MODE == false) {
-                // dont cost me money
-                //SMS.sendSMS(Preference.getRecoveryPhoneNo(null), msgold);
-                SMS.sendSMS(Preference.getRecoveryPhoneNo(null), msg);
+            if (loc == null) {
+                Toast.makeText(App.getAppContext(),
+                        "No Location to sendMessageToModule in SMS", Toast.LENGTH_LONG).show();
+                return;
             }
 
+            String msg = "lat:" + loc.getLatitude() + ",lng:" + loc.getLongitude()
+                    + " \r\n " + "alt:" + loc.getAltitude() + " m"
+                    + " \r\n " + "spd:" + loc.getSpeed() + " m/s"
+                    + " \r\n " + "acc:" + loc.getAccuracy() + " m";
+
+            if (DeviceFeatures.hasSMSCapabilities) {
+
+                Toast.makeText(App.getAppContext(),
+                        "Sending Location SMS", Toast.LENGTH_LONG).show();
+
+
+                if (FeatureSwitch.DEBUG_MODE == false) {
+                    // dont cost me money
+                    //SMS.sendSMS(Preference.getRecoveryPhoneNo(null), msgold);
+                    SMS.sendSMS(receiver_num, msg);
+                }
+
+            }
+            else
+            {
+                Toast.makeText(App.getAppContext(),
+                        "Phone does not have SMS Capabilities", Toast.LENGTH_LONG).show();
+
+            }
         }
-        else
+            catch (Exception e)
         {
-            Toast.makeText(App.getAppContext(),
-                    "Phone does not have SMS Capabilities", Toast.LENGTH_LONG).show();
-
+            AndruavEngine.log().logException(AndruavSettings.andruavWe7daBase.UnitID,"exception",e);
         }
-
     }
+
 }

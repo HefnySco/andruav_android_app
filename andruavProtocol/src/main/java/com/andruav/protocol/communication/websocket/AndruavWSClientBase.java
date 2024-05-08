@@ -1726,29 +1726,6 @@ public abstract class AndruavWSClientBase {
         Execute(andruav_2MR);
     }
 
-
-//    /***
-//     * Subscribe in Andruav Server
-//     * @param EnforceName
-//     */
-//    public void addMe (final boolean EnforceName)
-//    {
-//        String CMD;
-//        if (EnforceName)
-//        {
-//            CMD = CMD_SYS_ADD_ENFORCE;
-//        }
-//        else
-//        {
-//            CMD = CMD_SYS_ADD;
-//        }
-//
-//
-//        setSocketAction(SOCKETACTION_CONNECTING);
-//
-//        sendSystemCMD(CMD, false,false);
-//    }
-
     /***
      * Send ping command to Andruav Server
      * should expect a reply with Pong
@@ -1902,13 +1879,6 @@ public abstract class AndruavWSClientBase {
         andruav2MR.partyID = AndruavSettings.andruavWe7daBase.PartyID;
         andruav2MR.groupName   = AndruavSettings.andruavWe7daBase.GroupName;
         andruav2MR.andruavMessageBase = andruavMessageBase;
-//        try {
-//            andruav2MR.setPayloadTextMessage("{'scmd':" + andruavResalaBase + "}");
-//        } catch (Exception e) {
-//            AndruavMo7arek.log().logException("exception-parser", e);
-//            // dont sendMessageToModule bad messages
-//            return ;
-//        }
         sendCMD(andruav2MR, addTime, instant);
 
     }

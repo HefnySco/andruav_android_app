@@ -291,9 +291,7 @@ public class HUBCommunication extends BaseAndruavShasha {
 
     }
 
-    private void startAndruavConnection () {
-        App.startAndruavWS();
-    }
+
 
     private boolean savePreference ()
     {

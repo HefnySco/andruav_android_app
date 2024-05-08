@@ -533,7 +533,6 @@ public class MainScreen extends BaseAndruavShasha {
         mbtnData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 startActivity(new Intent(MainScreen.this, DataShashaTab.class));
             }
         });
@@ -1089,6 +1088,7 @@ public class MainScreen extends BaseAndruavShasha {
         if (App.isAndruavWSConnected() == false) {
             doProgressDialog();
             App.startAndruavWS();
+            App.startAndruavSMS();
         } else {
             App.stopAndruavWS(false);
         }

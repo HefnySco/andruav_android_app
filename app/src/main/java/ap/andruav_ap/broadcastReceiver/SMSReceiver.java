@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
+
 public class SMSReceiver extends BroadcastReceiver {
 
     private static final String TAG = "SMSReceiver";
-
+    private static final AndruavSMSClientParser andruavSMSClientParser = new AndruavSMSClientParser();
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction() != null && intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
@@ -33,6 +35,7 @@ public class SMSReceiver extends BroadcastReceiver {
                         Log.d(TAG, "Received SMS from: " + sender);
                         Log.d(TAG, "Message: " + messageBody);
 
+                        andruavSMSClientParser.executeCommand (sender, messageBody);
                         // Process or display the received SMS as per your app's requirements
                     }
                 }

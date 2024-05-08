@@ -54,6 +54,7 @@ import com.andruav.interfaces.IEventBus;
 import com.andruav.interfaces.INotification;
 import com.andruav.interfaces.IPreference;
 
+import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.communication.AndruavWSClient_TooTallNate;
 import ap.andruav_ap.communication.AndruavUnitMap;
@@ -562,6 +563,11 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
     }
 
+    public static void startAndruavSMS()
+    {
+        AndruavEngine.setAndruavSMSClientParserBase(new AndruavSMSClientParser());
+    }
+
     /**
      * Connect to server.
      * You need to handle registration and other issues.
@@ -589,6 +595,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         }
         AndruavEngine.getAndruavWS().connect(websocketURL);
         TTS.getInstance().Speak(App.getAppContext().getString(R.string.gen_speak_connecting));
+
     }
 
 
