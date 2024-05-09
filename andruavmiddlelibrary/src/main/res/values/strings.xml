@@ -52,8 +52,10 @@
     <string name="pref_gr_recovery_flash_chk_summary">change screen color in red and blue to visually locate drone.</string>
     <string name="pref_gr_recovery_siren_chk">Lost Siren</string>
     <string name="pref_gr_recovery_siren_chk_summary">play a siren in high volume to locate drone when lost.</string>
-    <string name="pref_gr_recovery_chk">SMS my location</string>
-    <string name="pref_gr_recovery_chk_summary">sends SMS to a mobile number with GPS longitude and latitude when network connection is lost.</string>
+    <string name="pref_gr_sms_chk">SMS Info</string>
+    <string name="pref_gr_sms_chk_summary">Send info via SMS for emergency.</string>
+    <string name="pref_gr_sms_rx_chk">SMS Commands</string>
+    <string name="pref_gr_sms_rx_chk_summary">Enable execute commands received by SMS.</string>
     <string name="pref_gr_recovery_chk_rc_block">Enable RC Block</string>
     <string name="pref_gr_recovery_chk_rc_block_summary">vehicle accepts Blocking command to mute all control from GCSs.</string>
     <string name="pref_gr_recovery_edt_rcCh_blk_trigger">RC Block TX Channel</string>
@@ -62,14 +64,10 @@
     <string name="pref_gr_recovery_edt_blk_battery_min_summary">Minimum board or mobile battery percentage to activate Fail Safe.</string>
     <string name="pref_gr_recovery_edt_blk_trigger_min">RC Block Channel PMW min</string>
     <string name="pref_gr_recovery_edt_blk_trigger_min_summary">Minimum PMW signal to activate blocking. A typical value is 1800, above which the block mode will be active.</string>
-    <string name="pref_gr_recovery_txt">SMS to Mobile No:</string>
+    <string name="pref_gr_sms_recovery_txt">SMS to Mobile No:</string>
     <string name="pref_feedback_support">Feedback &amp;  Support</string>
-    <string name="pref_gr_help_analytics">Enable Analytics</string>
-    <string name="pref_gr_help_analytics_summary">Enabling this option helps to develop better updates and better user experience. ONLY anonymous data is sent.</string>
-    <string name="pref_gr_help_debug">Enable Logging</string>
-    <string name="pref_gr_help_debug_summary">Logging Errors, sign-in/out durations. No emails,images,gps or any private data is logged.</string>
-    <string name="pref_gr_help_web">Visit www.Andruav.com</string>
-    <string name="pref_gr_help_weburl">http://www.Andruav.com</string>
+    <string name="pref_gr_help_web">Visit www.cloud.ardupilot.org</string>
+    <string name="pref_gr_help_weburl">http://www.cloud.ardupilot.org</string>
     <string name="pref_gr_general_settings">General Settings</string>
     <string name="pref_gr_advanced_settings">Advanced &amp;  Settings</string>
     <string name="pref_gr_fpv_settings">FPV &amp;  Settings</string>
@@ -183,7 +181,6 @@
     <string name="action_disengaged">Disengaged</string>
     <string name="action_settings">Settings</string>
     <string name="action_settings_drone">Settings as Drone</string>
-    <string name="action_settings_gcs">Settings as GCS</string>
     <string name="action_reset">Reset</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_connect">Connect</string>
@@ -365,6 +362,7 @@
     <string name="login_register_Title">Account Registration</string>
     <string name="login_email">Email</string>
     <string name="login_login">Join</string>
+    <string name="hyper_subscribe">https://cloud.ardupilot.org:8001/accounts.html</string>
     <string name="login_access_code">Access Code</string>
     <string name="login_first_section">Create Account</string>
     <string name="login_action_accontexist">Account already registered.\r\nUse access code direclty.\r\nPress OK to send access code to your email.</string>

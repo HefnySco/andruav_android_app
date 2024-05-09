@@ -64,7 +64,7 @@ public class AndruavMessage_CameraList extends AndruavMessageBase {
      */
     public boolean isReply = false;
 
-    public ArrayList<Event_VideoTrack> videoTracks = new ArrayList<Event_VideoTrack>();
+    public final ArrayList<Event_VideoTrack> videoTracks = new ArrayList<Event_VideoTrack>();
     /***
      * {@link #EXTERNAL_CAMERA_TYPE_IPWEBCAM}, {@link #EXTERNAL_CAMERA_TYPE_UNKNOWN}
      */

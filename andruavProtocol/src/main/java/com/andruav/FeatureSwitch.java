@@ -24,13 +24,13 @@ public class FeatureSwitch {
     /***
      * Should be acending valuesAndruavResala_ID
      */
-    public static int[] cameraWidths    = {176,320,640,800,960};
+    public static final int[] cameraWidths    = {176,320,640,800,960};
 
 
     /***
      * Should be acending values
      */
-    public static int[] cameraHeights   = {144,240,480,480,720};
+    public static final int[] cameraHeights   = {144,240,480,480,720};
 
 
     /***

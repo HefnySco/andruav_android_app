@@ -59,7 +59,8 @@ public abstract class CheckAppPermissions {
         permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.CAMERA);
         permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION);
         permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.READ_PHONE_STATE);
-        //permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.SEND_SMS);
+        permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.READ_SMS);
+
 
         return permissionsOK;
     }

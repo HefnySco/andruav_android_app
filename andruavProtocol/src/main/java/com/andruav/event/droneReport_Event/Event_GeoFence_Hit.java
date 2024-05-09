@@ -9,8 +9,8 @@ import com.andruav.controlBoard.shared.geoFence.GeoFenceManager;
  */
 public class Event_GeoFence_Hit {
 
-    public AndruavUnitBase andruavUnitBase;
-    public String fenceName;
+    public final AndruavUnitBase andruavUnitBase;
+    public final String fenceName;
     public boolean inZone = false;
     public double  distance;
     public boolean shouldKeepOutside;

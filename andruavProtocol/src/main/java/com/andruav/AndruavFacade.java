@@ -380,7 +380,7 @@ public class AndruavFacade extends AndruavFacadeBase{
     public static void sendUdpProxyStatus(final AndruavUnitShadow target)
     {
         final AndruavMessage_UDPProxy_Info andruavMessage_udpProxy_info = new AndruavMessage_UDPProxy_Info(AndruavSettings.andruavWe7daBase.getUdp_socket_ip_3rdparty(), AndruavSettings.andruavWe7daBase.getUdp_socket_port_3rdparty(),
-                AndruavEngine.getPreference().getSmartMavlinkTelemetry(), AndruavSettings.andruavWe7daBase.isUdpProxyEnabled() );
+                AndruavEngine.getPreference().getSmartMavlinkTelemetry(), AndruavSettings.andruavWe7daBase.isUdpProxyEnabled(), AndruavEngine.getUDPProxy().isPaused());
 
         sendMessage(andruavMessage_udpProxy_info,target, Boolean.FALSE);
     }

@@ -1,5 +1,16 @@
 package ap.andruavmiddlelibrary.factory.communication;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.telephony.SmsManager;
+
+import androidx.core.app.ActivityCompat;
+
+import com.andruav.AndruavEngine;
+
+import java.net.URLEncoder;
+import java.util.ArrayList;
+
 /**
  * Created by M.Hefny on 11-Nov-14.
  */
@@ -7,10 +18,8 @@ public class SMS {
 
     public  static void sendSMS (final String phoneNo, final String msg)
     {
-        /*try {
-            // REMOVED AS PER GOOGLE PLAY REQUIREMENT
-
-            *//*if (ActivityCompat.checkSelfPermission(AndruavMo7arek.AppContext, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+        try {
+            if (ActivityCompat.checkSelfPermission(AndruavEngine.AppContext, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
                 // here to request the missing permissions, and then overriding
@@ -23,12 +32,15 @@ public class SMS {
             SmsManager smsManager = SmsManager.getDefault();
             if (smsManager == null) return;
             ArrayList<String> msgArray=smsManager.divideMessage(msg);
-            smsManager.sendMultipartTextMessage(phoneNo, null, msgArray, null, null);*//*
+            smsManager.sendMultipartTextMessage(phoneNo, null, msgArray, null, null);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-        }*/
+        }
     }
+
+
+
 }
 

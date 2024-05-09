@@ -134,7 +134,7 @@ public class Image_Helper {
         }
     }
 
-    static byte[] chunk = new byte[8192];
+    static final byte[] chunk = new byte[8192];
     public static  byte[] downloadUrl(final String imgURL) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -163,7 +163,7 @@ public class Image_Helper {
         return bitmap;
     }
 
-   static  ByteArrayOutputStream output_stream = new ByteArrayOutputStream();
+   static final ByteArrayOutputStream output_stream = new ByteArrayOutputStream();
 
     public static Bitmap createBMPfromYUV (final YuvImage image, final Rect rectangle)
     {

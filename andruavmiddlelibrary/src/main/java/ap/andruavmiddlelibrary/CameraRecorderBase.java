@@ -42,7 +42,7 @@ public abstract class CameraRecorderBase {
     protected String mVideoFile;
     protected Surface mVideoSurface;
     protected DefaultVideoEncoderFactory mDefaultVideoEncoderFactory;
-    protected CameraRecorderBase Me;
+    protected final CameraRecorderBase Me;
 
 
     //////////BUS EVENT

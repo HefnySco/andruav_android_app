@@ -7,8 +7,8 @@ public class GeoFencePoint {
 
 
 
-    public  double  Latitude;
-    public  double  Longitude;
+    public final double  Latitude;
+    public final double  Longitude;
 
     public GeoFencePoint(double lng, double lat)
     {

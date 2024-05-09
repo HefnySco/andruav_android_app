@@ -20,8 +20,8 @@ import java.util.List;
 
 public class SurveyImpl extends MissionItemImpl {
 
-    public Polygon polygon = new Polygon();
-    public SurveyData surveyData = new SurveyData();
+    public final Polygon polygon = new Polygon();
+    public final SurveyData surveyData = new SurveyData();
     public Grid grid;
 
     private boolean startCameraBeforeFirstWaypoint;

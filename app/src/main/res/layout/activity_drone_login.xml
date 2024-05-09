@@ -68,4 +68,19 @@ tools:context=".activities.login.drone.MainDroneActiviy$DroneLoginShasha">
         android:layout_alignRight="@+id/droneloginactivity_edtAccessCode"
         />
 
+    <TextView
+        android:id="@+id/droneloginactivity_txtSubscribe"
+        android:layout_width="376dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/droneloginactivity_btnSaveAccessCode"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="86dp"
+        android:layout_marginRight="3dp"
+        android:text="@string/hyper_subscribe"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/btn_TXT_BLUE_DARKEST" />
+
 </RelativeLayout></ScrollView>

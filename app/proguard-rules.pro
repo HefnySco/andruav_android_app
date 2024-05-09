@@ -150,11 +150,8 @@
 -keep class org.xmlpull.** { *; }
 -keep class com.jogamp.opencl.** { *; }
 -keep class com.jogamp.opengl.** { *; }
--keep class com.coremedia.iso.boxes.Container {*;}
 -keep class com.jcraft.jsch.jce.**  { *; }
--keep class * extends com.jcraft.jsch.KeyExchange
 -keep class com.jcraft.jsch.**  { *; }
--keep class com.jcraft.jzlib.ZStream
 -keep class org.ietf.jgss.**  { *; }
 -keep class com.jcraft.jsch.jce.**
 -keep class com.jcraft.jsch.JSch.**
@@ -162,7 +159,6 @@
 
 -keep class java.nio.file.** {*;}
 -keep interface com.jcraft.jsch.**  { *; }
--keep class * extends com.jcraft.jsch.KeyExchange
 
 -keep class         org.droidplanner.** { *; }
 -keep interface     org.droidplanner.** { *; }

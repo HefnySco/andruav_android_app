@@ -12,9 +12,9 @@ package ap.andruavmiddlelibrary.factory.util;
 
 public class EventObject {
 
-    public long classType;
+    public final long classType;
 
-    public Object object;
+    public final Object object;
 
     public EventObject (long ClassType, Object object)
     {

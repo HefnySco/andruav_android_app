@@ -16,18 +16,20 @@ public class AndruavMessage_UDPProxy_Info extends AndruavMessageBase {
     public int     udp_optimization_level = -1;
     public boolean udp_enabled = false;
 
+    public boolean udp_paused  = false;
 
     public AndruavMessage_UDPProxy_Info () {
         messageTypeID = TYPE_AndruavMessage_UdpProxy_Info;
 
     }
 
-    public AndruavMessage_UDPProxy_Info (final String ip, final int port, final int optimization_level, final boolean enabled) {
+    public AndruavMessage_UDPProxy_Info (final String ip, final int port, final int optimization_level, final boolean enabled, final boolean paused) {
         messageTypeID = TYPE_AndruavMessage_UdpProxy_Info;
 
         udp_ip = ip;
         udp_port = port;
         udp_enabled = enabled;
+        udp_paused = paused;
         udp_optimization_level = optimization_level;
     }
 
@@ -38,6 +40,10 @@ public class AndruavMessage_UDPProxy_Info extends AndruavMessageBase {
         JSONObject server1, server2;
 
         udp_enabled = json_receive_data.getBoolean("en");
+
+        if (json_receive_data.has("z")) {
+            udp_paused = json_receive_data.getBoolean("z");
+        }
 
         if (json_receive_data.has("a")) {
             udp_ip = json_receive_data.getString("a");
@@ -51,8 +57,6 @@ public class AndruavMessage_UDPProxy_Info extends AndruavMessageBase {
             udp_port = json_receive_data.getInt("p");
         }
 
-
-
     }
 
 
@@ -65,6 +69,7 @@ public class AndruavMessage_UDPProxy_Info extends AndruavMessageBase {
         json_data.accumulate("p",udp_port);
         json_data.accumulate("o", udp_optimization_level);
         json_data.accumulate("en", udp_enabled);
+        json_data.accumulate("z", udp_paused);
 
         return json_data.toString();
     }

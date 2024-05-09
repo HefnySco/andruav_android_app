@@ -21,7 +21,7 @@ public class Adapter_BluetoothList extends BaseAdapter {
 
     /*********** Declare Used Variables *********/
     private final Activity activity;
-    ArrayList<ListItem_BluetoothUnit> data = new ArrayList<ListItem_BluetoothUnit>();
+    final ArrayList<ListItem_BluetoothUnit> data = new ArrayList<ListItem_BluetoothUnit>();
     private static LayoutInflater inflater=null;
     private final OnCustomClickListener callback; // This is our activity
 

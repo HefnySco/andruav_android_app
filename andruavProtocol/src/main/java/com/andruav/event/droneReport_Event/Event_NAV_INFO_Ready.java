@@ -12,7 +12,7 @@ import com.andruav.andruavUnit.AndruavUnitBase;
  */
 public class Event_NAV_INFO_Ready {
 
-    public AndruavUnitBase mAndruavWe7da;
+    public final AndruavUnitBase mAndruavWe7da;
 
 
     public Event_NAV_INFO_Ready(final AndruavUnitBase andruavUnit)

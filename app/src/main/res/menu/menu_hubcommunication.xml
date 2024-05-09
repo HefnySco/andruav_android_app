@@ -15,5 +15,5 @@
     <item android:id="@+id/mi_hub_Help"
         android:title="@string/gen_help"
         android:orderInCategory="100"
-        android:showAsAction="never"/>
+        app:showAsAction="never" />
 </menu>

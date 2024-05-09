@@ -77,17 +77,14 @@ public class MainActivityBuilder extends AppCompatActivity {
             }
         }
 
+
         if ((App.isFirstRun) || (!CheckAppPermissions.isPermissionsOK(this))){
             startActivity(new Intent(this, FirstScreen.class));
 
         } else {
-            if (Preference.gui_ShowAndruavModeDialog(null)) {
-                startActivity(new Intent(this, FirstScreen.class));
-            } else {
                     final Intent localIntent = new Intent(this, MainScreen.class);
                     localIntent.putExtra("USBConnect", USBIntent);
                     startActivity(localIntent);
-            }
         }
         finish();
     }

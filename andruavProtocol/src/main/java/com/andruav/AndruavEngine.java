@@ -15,6 +15,7 @@ import com.andruav.interfaces.ILog;
 import com.andruav.interfaces.INotification;
 import com.andruav.interfaces.IPreference;
 import com.andruav.protocol.commands.Andruav_Parser;
+import com.andruav.protocol.communication.sms.AndruavSMSClientParserBase;
 import com.andruav.protocol.communication.uavos.AndruavUDPBase;
 import com.andruav.protocol.communication.uavos.AndruavUDPServerBase;
 import com.andruav.protocol.communication.udpproxy.UDPProxy;
@@ -81,6 +82,8 @@ public class AndruavEngine {
      */
     private static AndruavWSClientBase andruavWSClientBase_autoBohn;
 
+    private static AndruavSMSClientParserBase andruavSMSClientParserBase;
+
     /**
      * This represents {@link AndruavUDPServerBase} or updated version of it.
      */
@@ -106,6 +109,26 @@ public class AndruavEngine {
     }
 
 
+    /**
+     * Set active instance for {@link #andruavWSClientBase_autoBohn}
+     *
+     * @param AndruavWebsocket active instance of {@link AndruavWSClientBase}
+     *                         <br>should be called first to initialize {@link #andruavWSClientBase_autoBohn}
+     */
+    public static void setAndruavWS(AndruavWSClientBase AndruavWebsocket) {
+        andruavWSClientBase_autoBohn = AndruavWebsocket;
+    }
+
+    public static AndruavSMSClientParserBase getAndruavSMSClientParserBase ()
+    {
+        return andruavSMSClientParserBase;
+    }
+
+    public static void  setAndruavSMSClientParserBase (AndruavSMSClientParserBase smsClientParserBase)
+    {
+        andruavSMSClientParserBase = smsClientParserBase;
+    }
+
     public static void setEventBus (IEventBus iEventBus)
     {
         mEventBus = iEventBus;
@@ -116,15 +139,7 @@ public class AndruavEngine {
         return mEventBus;
     }
 
-    /**
-     * Set active instance for {@link #andruavWSClientBase_autoBohn}
-     *
-     * @param AndruavWebsocket active instance of {@link AndruavWSClientBase}
-     *                         <br>should be called first to initialize {@link #andruavWSClientBase_autoBohn}
-     */
-    public static void setAndruavWS(AndruavWSClientBase AndruavWebsocket) {
-        andruavWSClientBase_autoBohn = AndruavWebsocket;
-    }
+
 
     /**
      * Returns the active instance of {@link #andruavAndruavUDPServerBase}

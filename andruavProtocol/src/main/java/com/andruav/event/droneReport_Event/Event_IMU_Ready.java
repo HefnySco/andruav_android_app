@@ -9,7 +9,7 @@ import com.andruav.andruavUnit.AndruavUnitBase;
  */
 public class Event_IMU_Ready {
 
-    public AndruavUnitBase mAndruavWe7da;
+    public final AndruavUnitBase mAndruavWe7da;
 
 
     public Event_IMU_Ready(final AndruavUnitBase andruavUnit)

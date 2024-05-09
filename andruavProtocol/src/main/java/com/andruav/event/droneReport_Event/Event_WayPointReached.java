@@ -8,8 +8,8 @@ import com.andruav.andruavUnit.AndruavUnitBase;
  */
 public class Event_WayPointReached {
 
-    public AndruavUnitBase mAndruavWe7da;
-    public int mWaypointIndex;
+    public final AndruavUnitBase mAndruavWe7da;
+    public final int mWaypointIndex;
 
 
 

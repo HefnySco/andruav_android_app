@@ -101,7 +101,7 @@ public class BaseAndruavShasha extends AppCompatActivity {
     }
 
 
-    protected Handler mbaseAndruavActivityHandler = new Handler() {
+    protected final Handler mbaseAndruavActivityHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
 

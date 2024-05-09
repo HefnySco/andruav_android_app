@@ -15,16 +15,16 @@ public class AndruavSystem_DeleteTasks extends AndruavMessageBase {
     public final static int AndruavSystem_DeleteTasks = 9003;
 
 
-    public int largerThan_SID;
-    public String accessCode;
-    public String accountID;
-    public String party_sid;
-    public String groupName;
-    public String sender;
-    public String receiver;
-    public String messageType;
+    public final int largerThan_SID;
+    public final String accessCode;
+    public final String accountID;
+    public final String party_sid;
+    public final String groupName;
+    public final String sender;
+    public final String receiver;
+    public final String messageType;
     private String task;
-    public boolean isPermanent;
+    public final boolean isPermanent;
 
 
     public AndruavSystem_DeleteTasks (int largerThan_SID,

@@ -8,8 +8,8 @@ import com.andruav.andruavUnit.AndruavUnitBase;
  */
 public class Event_GeoFence_Ready {
 
-    public AndruavUnitBase andruavWe7da;
-    public String fenceName;
+    public final AndruavUnitBase andruavWe7da;
+    public final String fenceName;
 
 
     public Event_GeoFence_Ready(AndruavUnitBase andruavUnit, String fenceName)

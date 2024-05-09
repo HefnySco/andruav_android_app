@@ -9,7 +9,7 @@ import com.andruav.andruavUnit.AndruavUnitBase;
 public class Event_UnitShutDown {
 
 
-    public AndruavUnitBase andruavUnitBase;
+    public final AndruavUnitBase andruavUnitBase;
 
     public Event_UnitShutDown(final AndruavUnitBase unit)
     {

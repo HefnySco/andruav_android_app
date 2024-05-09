@@ -62,8 +62,10 @@ public class PeerConnectionFactory {
     final boolean enableInternalTracer;
     final NativeLibraryLoader nativeLibraryLoader;
     final String nativeLibraryName;
-    @Nullable Loggable loggable;
-    @Nullable Severity loggableSeverity;
+    @Nullable
+    final Loggable loggable;
+    @Nullable
+    final Severity loggableSeverity;
 
     private InitializationOptions(Context applicationContext, String fieldTrials,
         boolean enableInternalTracer, NativeLibraryLoader nativeLibraryLoader,

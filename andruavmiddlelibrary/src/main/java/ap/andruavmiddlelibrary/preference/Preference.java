@@ -87,11 +87,11 @@ public class Preference {
 
 
     public static String getCommModuleIP(final android.content.ContextWrapper contextWrapper) {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "WXXG2IUCUUzrG1", "");
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "key_comm_ip", "");
     }
 
     public static void setCommModuleIP(final android.content.ContextWrapper contextWrapper, String appversion) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "WXXG2IUCUUzrG1", appversion);
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_comm_ip", appversion);
     }
 
     public static boolean isCommModuleIPAutoDetect(final android.content.ContextWrapper contextWrapper) {
@@ -392,11 +392,11 @@ public class Preference {
 
     public static boolean isGPSInjecttionEnabled(final android.content.ContextWrapper contextWrapper) {
         if (FeatureSwitch.Disable_Drone_ExternalCam) return false;
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "LNScs17Oks", true);
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "gps_inject", true);
     }
 
     public static void isGPSInjecttionEnabled(final android.content.ContextWrapper contextWrapper, boolean bEnabled) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "LNScs17Oks", bEnabled);
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "gps_inject", bEnabled);
     }
 
     // a Drone property
@@ -738,11 +738,11 @@ public class Preference {
      *
      */
     public static String getRecoveryPhoneNo(final android.content.ContextWrapper contextWrapper) {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "ZB8vM05KAdg", "");
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "key_mobile_recovery", "");
     }
 
     public static void setRecoveryPhoneNo(final android.content.ContextWrapper contextWrapper, String phoneNum) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "ZB8vM05KAdg", phoneNum);
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_mobile_recovery", phoneNum);
     }
 
     /***
@@ -752,12 +752,20 @@ public class Preference {
      * @return
      * @see
      */
-    public static boolean isEmergencySMSGPSEnabled(final android.content.ContextWrapper contextWrapper) {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "ZOHYJWnn", false);
+    public static boolean isSMSTXEnabled(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_chk", false);
     }
 
-    public static void isEmergencySMSGPSEnabled(final android.content.ContextWrapper contextWrapper, final boolean enableSMS) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "ZOHYJWnn", enableSMS);
+    public static void isSMSTXEnabled(final android.content.ContextWrapper contextWrapper, final boolean enableSMS) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_chk", enableSMS);
+    }
+
+    public static boolean isSMSRXEnabled(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_rx_chk", false);
+    }
+
+    public static void isSMSRXEnabled(final android.content.ContextWrapper contextWrapper, final boolean enableSMS) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_rx_chk", enableSMS);
     }
 
 
@@ -789,13 +797,8 @@ public class Preference {
 
 
 
-    public static boolean isGoogleAnalytics(final android.content.ContextWrapper contextWrapper) {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "Rluej0CzDJ", false);
-    }
 
-    public static void isGoogleAnalytics(final android.content.ContextWrapper contextWrapper, final boolean enableGA) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "Rluej0CzDJ", enableGA);
-    }
+
 
     public static boolean enableGroupName(final android.content.ContextWrapper contextWrapper) {
         return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "DJ6U5tOdtg", false);
@@ -843,20 +846,20 @@ public class Preference {
     }
 
     public static void setChannelRCBlock(final android.content.ContextWrapper contextWrapper, final int channelNumber) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "p7wCvhb2Akm", String.valueOf(channelNumber));
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_block_channel", String.valueOf(channelNumber));
     }
 
     public static int getChannelRCBlock(final android.content.ContextWrapper contextWrapper) {
-        return Integer.parseInt(SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "p7wCvhb2Akm" , "8"));
+        return Integer.parseInt(SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "key_block_channel" , "8"));
     }
 
 
     public static void setChannelRCBlock_min_value(final android.content.ContextWrapper contextWrapper, final int minvalue) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "xokpINK9PECd", String.valueOf(minvalue));
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_block_pwm_min", String.valueOf(minvalue));
     }
 
     public static int getChannelRCBlock_min_value(final android.content.ContextWrapper contextWrapper) {
-        return Integer.parseInt(SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "xokpINK9PECd" , "1800"));
+        return Integer.parseInt(SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "key_block_pwm_min" , "1800"));
     }
 
     public static void setBattery_min_value(final android.content.ContextWrapper contextWrapper, final int minvalue) {
@@ -1155,7 +1158,7 @@ public class Preference {
         Preference.isLoginAuto(contextWrapper, false);
         Preference.setLoginUserName(contextWrapper, "");
         Preference.setLoginAccessCode(contextWrapper, "");
-        Preference.isGCS(contextWrapper, true);
+        Preference.isGCS(contextWrapper, false);
         Preference.setVehicleType(null, VehicleTypes.VEHICLE_UNKNOWN);
 
     }
@@ -1223,12 +1226,11 @@ public class Preference {
     public static void FactoryReset_Misc(final android.content.ContextWrapper contextWrapper) {
         Preference.setRecoveryPhoneNo(contextWrapper, "");
         Preference.setBattery_min_value(contextWrapper, 0);
-        Preference.isEmergencySMSGPSEnabled(contextWrapper, false);
+        Preference.isSMSTXEnabled(contextWrapper, false);
         Preference.isEmergencyFlightModeFailSafeEnabled(contextWrapper, FlightMode.CONST_FLIGHT_CONTROL_RTL);
-        Preference.isEmergencySMSGPSEnabled(contextWrapper, false);
+        Preference.isSMSRXEnabled(contextWrapper, false);
         Preference.isEmergencyFlashEnabled(contextWrapper, false);
         Preference.isEmergencySirenEnabled(contextWrapper, false);
-        Preference.isGoogleAnalytics(contextWrapper, false);
         Preference.enableGroupName(contextWrapper, false);
         Preference.isAndruavLogEnabled(contextWrapper, true);
         Preference.setModuleType(contextWrapper,ProtocolHeaders.UAVOS_COMM_MODULE_CLASS);

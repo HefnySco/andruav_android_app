@@ -11,17 +11,17 @@ public class CompassCalculation {
 
     /////// Attributes
 
-    public float alpha = 0.2f;
+    public final float alpha = 0.2f;
 
     public float azimuthCompass=0;
     public float pitchCompass=0;
     public float rollCompass=0;
-    public float declination = 0;
+    public final float declination = 0;
 
-    protected float[] mrotationMatrix = new float[9];
-    protected float[] Imat = new float[9];
+    protected final float[] mrotationMatrix = new float[9];
+    protected final float[] Imat = new float[9];
 
-    public float[] vOrientation = new float[3];
+    public final float[] vOrientation = new float[3];
     ///////////EOF Attributes
 
 

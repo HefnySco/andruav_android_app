@@ -462,25 +462,25 @@ public class PeerConnection {
   /** Java version of PeerConnectionInterface.RTCConfiguration */
   // TODO(qingsi): Resolve the naming inconsistency of fields with/without units.
   public static class RTCConfiguration {
-    public IceTransportsType iceTransportsType;
-    public List<IceServer> iceServers;
-    public BundlePolicy bundlePolicy;
+    public final IceTransportsType iceTransportsType;
+    public final List<IceServer> iceServers;
+    public final BundlePolicy bundlePolicy;
     @Nullable public RtcCertificatePem certificate;
-    public RtcpMuxPolicy rtcpMuxPolicy;
-    public TcpCandidatePolicy tcpCandidatePolicy;
-    public CandidateNetworkPolicy candidateNetworkPolicy;
-    public int audioJitterBufferMaxPackets;
-    public boolean audioJitterBufferFastAccelerate;
-    public int iceConnectionReceivingTimeout;
-    public int iceBackupCandidatePairPingInterval;
-    public KeyType keyType;
-    public ContinualGatheringPolicy continualGatheringPolicy;
-    public int iceCandidatePoolSize;
+    public final RtcpMuxPolicy rtcpMuxPolicy;
+    public final TcpCandidatePolicy tcpCandidatePolicy;
+    public final CandidateNetworkPolicy candidateNetworkPolicy;
+    public final int audioJitterBufferMaxPackets;
+    public final boolean audioJitterBufferFastAccelerate;
+    public final int iceConnectionReceivingTimeout;
+    public final int iceBackupCandidatePairPingInterval;
+    public final KeyType keyType;
+    public final ContinualGatheringPolicy continualGatheringPolicy;
+    public final int iceCandidatePoolSize;
     @Deprecated // by the turnPortPrunePolicy. See bugs.webrtc.org/11026
-    public boolean pruneTurnPorts;
-    public PortPrunePolicy turnPortPrunePolicy;
-    public boolean presumeWritableWhenFullyRelayed;
-    public boolean surfaceIceCandidatesOnIceTransportTypeChanged;
+    public final boolean pruneTurnPorts;
+    public final PortPrunePolicy turnPortPrunePolicy;
+    public final boolean presumeWritableWhenFullyRelayed;
+    public final boolean surfaceIceCandidatesOnIceTransportTypeChanged;
     // The following fields define intervals in milliseconds at which ICE
     // connectivity checks are sent.
     //
@@ -501,80 +501,80 @@ public class PeerConnection {
     // 3) iceCheckMinInterval defines the minimal interval (equivalently the
     // maximum rate) that overrides the above two intervals when either of them
     // is less.
-    @Nullable public Integer iceCheckIntervalStrongConnectivityMs;
-    @Nullable public Integer iceCheckIntervalWeakConnectivityMs;
-    @Nullable public Integer iceCheckMinInterval;
+    @Nullable public final Integer iceCheckIntervalStrongConnectivityMs;
+    @Nullable public final Integer iceCheckIntervalWeakConnectivityMs;
+    @Nullable public final Integer iceCheckMinInterval;
     // The time period in milliseconds for which a candidate pair must wait for response to
     // connectivitiy checks before it becomes unwritable.
-    @Nullable public Integer iceUnwritableTimeMs;
+    @Nullable public final Integer iceUnwritableTimeMs;
     // The minimum number of connectivity checks that a candidate pair must sent without receiving
     // response before it becomes unwritable.
-    @Nullable public Integer iceUnwritableMinChecks;
+    @Nullable public final Integer iceUnwritableMinChecks;
     // The interval in milliseconds at which STUN candidates will resend STUN binding requests
     // to keep NAT bindings open.
     // The default value in the implementation is used if this field is null.
-    @Nullable public Integer stunCandidateKeepaliveIntervalMs;
-    public boolean disableIPv6OnWifi;
+    @Nullable public final Integer stunCandidateKeepaliveIntervalMs;
+    public final boolean disableIPv6OnWifi;
     // By default, PeerConnection will use a limited number of IPv6 network
     // interfaces, in order to avoid too many ICE candidate pairs being created
     // and delaying ICE completion.
     //
     // Can be set to Integer.MAX_VALUE to effectively disable the limit.
-    public int maxIPv6Networks;
-    @Nullable public IntervalRange iceRegatherIntervalRange;
+    public final int maxIPv6Networks;
+    @Nullable public final IntervalRange iceRegatherIntervalRange;
 
     // These values will be overridden by MediaStream constraints if deprecated constraints-based
     // create peerconnection interface is used.
-    public boolean disableIpv6;
-    public boolean enableDscp;
-    public boolean enableCpuOveruseDetection;
-    public boolean enableRtpDataChannel;
-    public boolean suspendBelowMinBitrate;
-    @Nullable public Integer screencastMinBitrate;
-    @Nullable public Boolean combinedAudioVideoBwe;
-    @Nullable public Boolean enableDtlsSrtp;
+    public final boolean disableIpv6;
+    public final boolean enableDscp;
+    public final boolean enableCpuOveruseDetection;
+    public final boolean enableRtpDataChannel;
+    public final boolean suspendBelowMinBitrate;
+    @Nullable public final Integer screencastMinBitrate;
+    @Nullable public final Boolean combinedAudioVideoBwe;
+    @Nullable public final Boolean enableDtlsSrtp;
     // Use "Unknown" to represent no preference of adapter types, not the
     // preference of adapters of unknown types.
-    public AdapterType networkPreference;
-    public SdpSemantics sdpSemantics;
+    public final AdapterType networkPreference;
+    public final SdpSemantics sdpSemantics;
 
     // This is an optional wrapper for the C++ webrtc::TurnCustomizer.
     @Nullable public TurnCustomizer turnCustomizer;
 
     // Actively reset the SRTP parameters whenever the DTLS transports underneath are reset for
     // every offer/answer negotiation.This is only intended to be a workaround for crbug.com/835958
-    public boolean activeResetSrtpParams;
+    public final boolean activeResetSrtpParams;
 
     // Whether this client is allowed to switch encoding codec mid-stream. This is a workaround for
     // a WebRTC bug where the receiver could get confussed if a codec switch happened mid-call.
     // Null indicates no change to currently configured value.
-    @Nullable public Boolean allowCodecSwitching;
+    @Nullable public final Boolean allowCodecSwitching;
 
     /*
      * Experimental flag that enables a use of media transport. If this is true, the media transport
      * factory MUST be provided to the PeerConnectionFactory.
      */
-    public boolean useMediaTransport;
+    public final boolean useMediaTransport;
 
     /*
      * Experimental flag that enables a use of media transport for data channels. If this is true,
      * the media transport factory MUST be provided to the PeerConnectionFactory.
      */
-    public boolean useMediaTransportForDataChannels;
+    public final boolean useMediaTransportForDataChannels;
 
     /**
      * Defines advanced optional cryptographic settings related to SRTP and
      * frame encryption for native WebRTC. Setting this will overwrite any
      * options set through the PeerConnectionFactory (which is deprecated).
      */
-    @Nullable public CryptoOptions cryptoOptions;
+    @Nullable public final CryptoOptions cryptoOptions;
 
     /**
      * An optional string that if set will be attached to the
      * TURN_ALLOCATE_REQUEST which can be used to correlate client
      * logs with backend logs
      */
-    @Nullable public String turnLoggingId;
+    @Nullable public final String turnLoggingId;
 
     // TODO(deadbeef): Instead of duplicating the defaults here, we should do
     // something to pick up the defaults from C++. The Objective-C equivalent

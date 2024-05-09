@@ -16,17 +16,8 @@ public class LoginScreenFactory {
 
         Intent intent;
 
-
-        if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-             intent = new Intent(context, GCSLoginShasha.class);
-
-
-         } else {  // you cannot use a drone if mobile does not have a cam
-            intent = new Intent(context, MainDroneActiviy.DroneLoginShasha.class);
-
-
-
-        }
+        // you can add a select statement here to display different activities.
+        intent = new Intent(context, MainDroneActiviy.DroneLoginShasha.class);
 
         return intent;
     }

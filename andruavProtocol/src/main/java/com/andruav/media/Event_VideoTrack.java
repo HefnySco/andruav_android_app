@@ -6,9 +6,9 @@ package com.andruav.media;
 
 public class Event_VideoTrack {
 
-    public String mVideoID;
-    public boolean mIsVideo;
-    public String mCameraLocalName;
+    public final String mVideoID;
+    public final boolean mIsVideo;
+    public final String mCameraLocalName;
 
     public Event_VideoTrack (final String videoID, final boolean isVideo, final String cameraLocalName)
     {

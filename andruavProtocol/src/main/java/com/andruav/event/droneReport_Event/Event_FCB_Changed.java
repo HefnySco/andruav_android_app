@@ -9,7 +9,7 @@ import com.andruav.andruavUnit.AndruavUnitBase;
 public class Event_FCB_Changed {
 
 
-    public AndruavUnitBase andruavUnitBase;
+    public final AndruavUnitBase andruavUnitBase;
 
     public Event_FCB_Changed(final AndruavUnitBase andruavUnitBase)
     {

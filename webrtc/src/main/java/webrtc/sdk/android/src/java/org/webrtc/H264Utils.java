@@ -37,9 +37,9 @@ class H264Utils {
     return params;
   }
 
-  public static VideoCodecInfo DEFAULT_H264_BASELINE_PROFILE_CODEC =
+  public static final VideoCodecInfo DEFAULT_H264_BASELINE_PROFILE_CODEC =
       new VideoCodecInfo("H264", getDefaultH264Params(/* isHighProfile= */ false));
-  public static VideoCodecInfo DEFAULT_H264_HIGH_PROFILE_CODEC =
+  public static final VideoCodecInfo DEFAULT_H264_HIGH_PROFILE_CODEC =
       new VideoCodecInfo("H264", getDefaultH264Params(/* isHighProfile= */ true));
 
   public static boolean isSameH264Profile(

@@ -23,7 +23,7 @@ import java.net.UnknownHostException;
 public abstract class AndruavUDPModuleBase extends AndruavUDPBase {
 
     public static int defaultUDPPort = AndruavSettings.DEFAULT_ANDRUAV_LAN_MODULE_UDP_PORT;
-    public static int defaultUDPServerPort = AndruavSettings.DEFAULT_ANDRUAV_LAN_UDP_PORT;
+    public static final int defaultUDPServerPort = AndruavSettings.DEFAULT_ANDRUAV_LAN_UDP_PORT;
     protected static InetAddress defaultUDPIP = null;
 
 

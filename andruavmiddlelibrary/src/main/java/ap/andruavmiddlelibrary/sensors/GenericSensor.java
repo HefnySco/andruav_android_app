@@ -6,8 +6,8 @@ package ap.andruavmiddlelibrary.sensors;
 public class GenericSensor {
 
     /////// Attributes
-    public float[] rawValues = new float[3];
-    public double[] smoothedValues = new double[3];
+    public final float[] rawValues = new float[3];
+    public final double[] smoothedValues = new double[3];
     protected  boolean mregisteredSensor = false;
 
 

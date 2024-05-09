@@ -5,7 +5,7 @@ package ap.andruavmiddlelibrary.eventClasses.remoteControl;
  */
 public class Event_RemoteEngaged_CMD {
     
-    public Boolean mEngaged;
+    public final Boolean mEngaged;
 
     public Event_RemoteEngaged_CMD (boolean abcIcClearDisabledFocusLight)
     {

@@ -10,10 +10,10 @@ import timber.log.Timber;
 
 public class DroneVariable<T extends MavLinkDrone> {
 
-	static int UNSIGNED_BYTE_MIN_VALUE = 0;
-	static int UNSIGNED_BYTE_MAX_VALUE = 255;
+	static final int UNSIGNED_BYTE_MIN_VALUE = 0;
+	static final int UNSIGNED_BYTE_MAX_VALUE = 255;
 
-	protected T myDrone;
+	protected final T myDrone;
 
 	public DroneVariable(T myDrone) {
 		this.myDrone = myDrone;

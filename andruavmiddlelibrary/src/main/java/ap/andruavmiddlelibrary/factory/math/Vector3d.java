@@ -10,7 +10,7 @@ public class Vector3d {
      * an array at run time can cause slowness so instead we use one array and extract the individual variables with get
      * methods.
      */
-    protected double[] points = new double[3];
+    protected final double[] points = new double[3];
 
 
     /**

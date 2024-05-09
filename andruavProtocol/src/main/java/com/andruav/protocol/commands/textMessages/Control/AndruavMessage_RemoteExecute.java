@@ -209,7 +209,7 @@ public class AndruavMessage_RemoteExecute extends AndruavMessage_Control_Base {
     public final static int RemoteCommand_SET_START_MISSION_ITEM = 504;
 
 
-    public SimpleArrayMap<String, String> Variables = new SimpleArrayMap<>();
+    public final SimpleArrayMap<String, String> Variables = new SimpleArrayMap<>();
     //public final static int T
     /***
      * This represents the ID of the command that we need to processInterModuleMessages on remote party

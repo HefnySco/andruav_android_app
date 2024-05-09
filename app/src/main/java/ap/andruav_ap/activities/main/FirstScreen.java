@@ -8,29 +8,21 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
 
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
-import com.andruav.controlBoard.shared.common.VehicleTypes;
 
+import ap.andruavmiddlelibrary.factory.communication.SMS;
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.App;
-import ap.andruav_ap.activities.login.drone.MainDroneActiviy;
-import ap.andruav_ap.activities.login.GCSLoginShasha;
 import ap.andruav_ap.helpers.CheckAppPermissions;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
 import ap.andruavmiddlelibrary.factory.util.DialogHelper;
 import ap.andruavmiddlelibrary.factory.util.GMail;
-import ap.andruavmiddlelibrary.preference.Preference;
-import ap.andruavmiddlelibrary.preference.PreferenceValidator;
 import ap.andruav_ap.R;
 
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_REGISTERED;
@@ -40,65 +32,9 @@ public class FirstScreen extends BaseAndruavShasha {
 
     private FirstScreen Me;
 
-    private Button btnDroneMode;
-    private Button btnGCSMode;
-    private CheckBox chkNoAgain;
 
     private void initGUI ()
     {
-        chkNoAgain = findViewById((R.id.firstactivity_chkNoAgain));
-        btnDroneMode = findViewById(R.id.firstactivity_btnDroneMode);
-        btnGCSMode = findViewById(R.id.firstactivity_btnGCSMode);
-
-
-        chkNoAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Preference.gui_ShowAndruavModeDialog(null, !isChecked);
-            }
-        });
-
-        btnDroneMode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Preference.isGCS(null, false);
-                //AndruavSettings.andruavWe7daBase.IsCGS = false;
-                App.defineAndruavUnit(false);
-                AndruavSettings.andruavWe7daBase.setVehicleType(Preference.getVehicleType(null));
-                if (App.isFirstRun) {
-                    if (PreferenceValidator.isInvalidLoginCode()) {
-                        startActivity(new Intent(Me, MainDroneActiviy.DroneLoginShasha.class));
-                        return;
-                    }
-                }
-
-                startActivity(new Intent(Me, MainScreen.class));
-            }
-        });
-
-
-
-        btnGCSMode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Preference.isGCS(null, true);
-                //AndruavSettings.andruavWe7daBase.IsCGS = true;
-                App.defineAndruavUnit(true);
-                Preference.setVehicleType(null, VehicleTypes.VEHICLE_GCS);
-                AndruavSettings.andruavWe7daBase.setVehicleType(VehicleTypes.VEHICLE_GCS);
-
-
-                if (App.isFirstRun) {
-                    if (PreferenceValidator.isInvalidLoginCode()) {
-                        startActivity(new Intent(Me, GCSLoginShasha.class));
-                        return;
-                    }
-                }
-
-                startActivity(new Intent(Me, MainScreen.class));
-
-            }
-        });
 
         if (AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED))
         {
@@ -118,22 +54,7 @@ public class FirstScreen extends BaseAndruavShasha {
                             (dialogInterface, i) -> GMail.sendGMail(Me, getString(R.string.email_title), getString(R.string.email_to), getString(R.string.email_subject2), getString(R.string.email_body2), null));
                     return;
                 }
-
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) //R == API 30
-                {
-                    CheckAppPermissions.checkPermissionAndRequest(Me, Manifest.permission.WRITE_EXTERNAL_STORAGE, "Storage access is needed for log kml files, images and videos.");
-                }
-                else
-                {
-                    CheckAppPermissions.checkPermissionAndRequest(Me,
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            "Storage access is needed for log kml files, images and videos.");
-                }
-                CheckAppPermissions.checkPermissionAndRequest(Me, Manifest.permission.CAMERA,"Please Open Camera Permission");
-                CheckAppPermissions.checkPermissionAndRequest(Me, Manifest.permission.ACCESS_FINE_LOCATION,"Mobile GPS is needed for GCS for maps & Drones as a backup.");
-                CheckAppPermissions.checkPermissionAndRequest(Me, Manifest.permission.READ_PHONE_STATE,"Phone state is used to determine network quality & connection status.");
-                //CheckAppPermissions.checkPermissionAndRequest(Me, Manifest.permission.SEND_SMS,"If you want your drone to sendMessageToModule SOS SMS you need to enable this. It is not an option.");
-
+                finish();
             }
         });
     }

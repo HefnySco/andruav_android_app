@@ -8,7 +8,7 @@ import com.andruav.andruavUnit.AndruavUnitBase;
 
 public class ControlBoard_Shadow {
 
-    protected AndruavUnitBase mAndruavUnitBase;
+    protected final AndruavUnitBase mAndruavUnitBase;
 
     public ControlBoard_Shadow(AndruavUnitBase andruavUnitBase)
     {

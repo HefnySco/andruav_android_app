@@ -19,13 +19,13 @@ public class Sensor_Accelerometer extends GenericIMUSensor implements SensorEven
     /**
      * Smoothing factor for Acc...represents gravity
      */
-    public double alpha = 0.8f;
-    public double[] linear_acceleration = new double[3];
-    public double[] linear_velocity = new double[3];
+    public final double alpha = 0.8f;
+    public final double[] linear_acceleration = new double[3];
+    public final double[] linear_velocity = new double[3];
     public double[] tiltValues = new double[3];
 
 
-    public Vector3d vAcc = new Vector3d(0.0,0.0,1.0);
+    public final Vector3d vAcc = new Vector3d(0.0,0.0,1.0);
     public Boolean misTilted;
     public long LastTimestamp;
 

@@ -21,9 +21,9 @@ import ap.andruav_ap.R;
 public class BlueToothFCB  implements IEvent_SocketData {
 
 
-    protected BlueToothFCB Me;
+    protected final BlueToothFCB Me;
     protected Boolean mKillMe = true;
-    public Bluetooth Bluetooth;
+    public final Bluetooth Bluetooth;
     protected Thread threadBT;
     protected int log =0;
     protected final Event_FCBData mevent_FCBData = new Event_FCBData();

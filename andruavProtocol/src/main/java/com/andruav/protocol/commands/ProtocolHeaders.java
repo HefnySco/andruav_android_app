@@ -129,6 +129,6 @@ final public  class ProtocolHeaders {
     public static final String UAVOS_CAMERA_MODULE_CLASS = "camera";
     public static final String UAVOS_FCB_MODULE_CLASS = "fcb";
 
-    public static String[]  reserverUnitNames = {SPECIAL_NAME_SYS_NAME,SPECIAL_NAME_ALL_RECEIVERS,SPECIAL_NAME_VEHICLE_RECEIVERS,SPECIAL_NAME_GCS_RECEIVERS};
+    public static final String[]  reserverUnitNames = {SPECIAL_NAME_SYS_NAME,SPECIAL_NAME_ALL_RECEIVERS,SPECIAL_NAME_VEHICLE_RECEIVERS,SPECIAL_NAME_GCS_RECEIVERS};
 
 }

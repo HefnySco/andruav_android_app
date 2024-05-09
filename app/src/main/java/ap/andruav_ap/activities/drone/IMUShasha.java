@@ -127,7 +127,7 @@ public class IMUShasha extends BaseAndruavShasha {
         private String mstepDescription;
         private int mprogressPercentage;
 
-        Handler handle = new Handler() {
+        final Handler handle = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);

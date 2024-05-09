@@ -168,7 +168,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
     }
 
 
-    long sendServoOutputInfo_sent_duration = 5000;
+    final long sendServoOutputInfo_sent_duration = 5000;
     long sendServoOutputInfo_sent_time = 0;
     public void onEvent (final Event_SERVO_Outputs_Ready a7adath_servo_output_ready)
     {
@@ -1043,41 +1043,55 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                         case AndruavMessage_RemoteExecute.RemoteCommand_TELEMETRYCTRL:
                             if (andruavUnit != null)  {
                                 final int request = andruavResala_remoteExecute.getIntValue("Act");
-                                if ( request == Event_TelemetryGCSRequest.REQUEST_END) {
-                                    if (AndruavSettings.mTelemetryRequests.contains(andruavUnit)) {
-                                        AndruavSettings.mTelemetryRequests.remove(andruavUnit);
-                                        AndruavEngine.getEventBus().post(new Event_TelemetryGCSRequest(andruavUnit, Event_TelemetryGCSRequest.REQUEST_END ));
-                                    }
-                                }
-                                else
-                                if ( request == Event_TelemetryGCSRequest.ADJUST_RATE) {
-                                    final int LVL = andruavResala_remoteExecute.getIntValue("LVL", Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
-                                    if (LVL != Constants.SMART_TELEMETRY_LEVEL_NEGLECT) {
-                                        Preference.setSmartMavlinkTelemetry(null, LVL);
-                                    }
-                                }
-                                else
+                                switch (request)
                                 {
-                                    if (andruavUnit.canTelemetry()) {
-                                        // add or resume both make sure they are added in our request list
-                                        if (!AndruavSettings.mTelemetryRequests.contains(andruavUnit)) {
-                                            AndruavSettings.mTelemetryRequests.add(andruavUnit);
-                                            AndruavEngine.getEventBus().post(new Event_TelemetryGCSRequest(andruavUnit, Event_TelemetryGCSRequest.REQUEST_START));
-                                        } else {
-                                            AndruavEngine.getEventBus().post(new Event_TelemetryGCSRequest(andruavUnit, request));
+                                    case Event_TelemetryGCSRequest.REQUEST_END: {
+                                        if (AndruavSettings.mTelemetryRequests.contains(andruavUnit)) {
+                                            AndruavSettings.mTelemetryRequests.remove(andruavUnit);
+                                            AndruavEngine.getEventBus().post(new Event_TelemetryGCSRequest(andruavUnit, Event_TelemetryGCSRequest.REQUEST_END));
                                         }
+                                    }
+                                    break;
 
-                                        // Here Dont SEND ... That is why I replicated [AndruavMo7arek.getEventBus().post(new _7adath_TelemetryGCSRequest(andruavUnit,add ));]  instead of making a bool value
-                                        // AndruavMo7arek.getEventBus().post(new _7adath_TelemetryGCSRequest(andruavUnit,add ));
-                                        //
-
-                                        // Update Smart Telemetry Level if Requested
-                                        // Adjust Rate also if required
+                                    case Event_TelemetryGCSRequest.ADJUST_RATE: {
                                         final int LVL = andruavResala_remoteExecute.getIntValue("LVL", Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
                                         if (LVL != Constants.SMART_TELEMETRY_LEVEL_NEGLECT) {
                                             Preference.setSmartMavlinkTelemetry(null, LVL);
                                         }
                                     }
+                                        break;
+                                    case Event_TelemetryGCSRequest.REQUEST_RESUME: {
+                                        AndruavEngine.getUDPProxy().setPause(false);
+                                    }
+                                    break;
+                                    case Event_TelemetryGCSRequest.REQUEST_PAUSE: {
+                                        AndruavEngine.getUDPProxy().setPause(true);
+                                    }
+                                    break;
+                                    default:
+                                    {
+                                        if (andruavUnit.canTelemetry()) {
+                                            // add or resume both make sure they are added in our request list
+                                            if (!AndruavSettings.mTelemetryRequests.contains(andruavUnit)) {
+                                                AndruavSettings.mTelemetryRequests.add(andruavUnit);
+                                                AndruavEngine.getEventBus().post(new Event_TelemetryGCSRequest(andruavUnit, Event_TelemetryGCSRequest.REQUEST_START));
+                                            } else {
+                                                AndruavEngine.getEventBus().post(new Event_TelemetryGCSRequest(andruavUnit, request));
+                                            }
+
+                                            // Here Dont SEND ... That is why I replicated [AndruavMo7arek.getEventBus().post(new _7adath_TelemetryGCSRequest(andruavUnit,add ));]  instead of making a bool value
+                                            // AndruavMo7arek.getEventBus().post(new _7adath_TelemetryGCSRequest(andruavUnit,add ));
+                                            //
+
+                                            // Update Smart Telemetry Level if Requested
+                                            // Adjust Rate also if required
+                                            final int LVL = andruavResala_remoteExecute.getIntValue("LVL", Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
+                                            if (LVL != Constants.SMART_TELEMETRY_LEVEL_NEGLECT) {
+                                                Preference.setSmartMavlinkTelemetry(null, LVL);
+                                            }
+                                        }
+                                    }
+                                        break;
                                 }
 
                             } else {

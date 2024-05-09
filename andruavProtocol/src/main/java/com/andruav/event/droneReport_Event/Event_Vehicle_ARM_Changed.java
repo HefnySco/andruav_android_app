@@ -8,7 +8,7 @@ import com.andruav.andruavUnit.AndruavUnitBase;
 
 public class Event_Vehicle_ARM_Changed {
 
-    public AndruavUnitBase mAndruavWe7da;
+    public final AndruavUnitBase mAndruavWe7da;
 
     public Event_Vehicle_ARM_Changed(AndruavUnitBase andruavUnit)
     {

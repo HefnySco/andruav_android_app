@@ -9,7 +9,7 @@ import com.andruav.andruavUnit.AndruavUnitBase;
 
 public class Event_GCSBlockedChanged {
 
-    public AndruavUnitBase andruavUnitBase;
+    public final AndruavUnitBase andruavUnitBase;
 
     public Event_GCSBlockedChanged(final AndruavUnitBase unit)
     {

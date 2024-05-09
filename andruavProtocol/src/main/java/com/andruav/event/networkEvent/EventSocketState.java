@@ -7,8 +7,8 @@ public class EventSocketState {
 
     public enum ENUM_SOCKETSTATE  {onConnect,onDisconnect,onError,onMessage}
 
-    public String Message;
-    public ENUM_SOCKETSTATE SocketState;
+    public final String Message;
+    public final ENUM_SOCKETSTATE SocketState;
 
     public EventSocketState (ENUM_SOCKETSTATE blip, String whichButtonColor)
     {

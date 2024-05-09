@@ -15,14 +15,14 @@ public class AndruavSystem_SaveTasks extends AndruavMessageBase {
 
     public final static int TYPE_AndruavSystem_SaveTasks = 9002;
 
-    public int largerThan_SID;
-    public String accessCode;
+    public final int largerThan_SID;
+    public final String accessCode;
     public String accountID;
     public String groupName;
-    public String party_sid;
-    public String sender;
-    public String receiver;
-    public String messageType;
+    public final String party_sid;
+    public final String sender;
+    public final String receiver;
+    public final String messageType;
     private final String task;
     public boolean isPermanent;
 

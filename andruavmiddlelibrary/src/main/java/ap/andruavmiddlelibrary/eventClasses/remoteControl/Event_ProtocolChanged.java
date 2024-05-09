@@ -9,7 +9,7 @@ package ap.andruavmiddlelibrary.eventClasses.remoteControl;
 public class Event_ProtocolChanged {
 
 
-    public boolean mNormalAction;
+    public final boolean mNormalAction;
 
     public Event_ProtocolChanged (final boolean isNormal )
     {

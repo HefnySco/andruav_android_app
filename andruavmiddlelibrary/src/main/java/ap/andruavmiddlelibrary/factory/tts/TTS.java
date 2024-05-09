@@ -35,7 +35,7 @@ public class TTS implements TextToSpeech.OnInitListener {
     private static TTS mTTS;
     private TextToSpeech tts;
     public static final int TTS_CHECK_CODE = 2345;
-    Context context;
+    final Context context;
     public boolean TTSinit = false;
     private boolean initialized = false;
     private String text;

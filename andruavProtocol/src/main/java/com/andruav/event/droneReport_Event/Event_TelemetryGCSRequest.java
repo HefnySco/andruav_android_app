@@ -20,8 +20,13 @@ public class Event_TelemetryGCSRequest {
      * Adjust Rate only. Useful in UDPProxy, but will affect rate on all connected gcs.
      */
     public static final int ADJUST_RATE      = 4;
-    public AndruavUnitBase andruavUnitBase;
-    public int Request;
+    /**
+        Stop sending telemetry data via UDP without closing socket.
+     */
+    public static final int REQUEST_PAUSE   = 5;
+
+    public final AndruavUnitBase andruavUnitBase;
+    public final int Request;
 
     public Event_TelemetryGCSRequest(final AndruavUnitBase andruavUnitBase, final  int add)
     {

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class CircumscribedGrid {
 	private static final int MAX_NUMBER_OF_LINES = 300;
-	List<LineLatLong> grid = new ArrayList<LineLatLong>();
+	final List<LineLatLong> grid = new ArrayList<LineLatLong>();
 	private LatLong gridLowerLeft;
 	private double extrapolatedDiag;
 	private final Double angle;

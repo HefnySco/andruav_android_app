@@ -50,19 +50,19 @@ public class HUDView extends View {
 
     double roll = 0, pitch = 0, yaw = 0;
 
-    Paint grid_paint = new Paint();
-    Paint ground = new Paint();
-    Paint sky = new Paint();
-    Paint white = new Paint();
-    Paint whiteCenter = new Paint();
-    Paint whitebar = new Paint();
-    Paint whiteStroke = new Paint();
-    Paint statusText = new Paint();
-    Paint errorText = new Paint();
+    final Paint grid_paint = new Paint();
+    final Paint ground = new Paint();
+    final Paint sky = new Paint();
+    final Paint white = new Paint();
+    final Paint whiteCenter = new Paint();
+    final Paint whitebar = new Paint();
+    final Paint whiteStroke = new Paint();
+    final Paint statusText = new Paint();
+    final Paint errorText = new Paint();
 
 
-    Paint plane = new Paint();
-    Paint redSolid = new Paint();
+    final Paint plane = new Paint();
+    final Paint redSolid = new Paint();
     private final String altitude = "";
     //private double remainBatt = 0;
     //private double battVolt = 0;
@@ -75,7 +75,7 @@ public class HUDView extends View {
     /***
      * Set True by external control to indicate that Video is being captured.
      */
-    public boolean isRecording=false;
+    public final boolean isRecording=false;
     private long mlastFPS=0;
     private long FPS=0;
     private static final long VIDEO_TIMEOUT =5000;

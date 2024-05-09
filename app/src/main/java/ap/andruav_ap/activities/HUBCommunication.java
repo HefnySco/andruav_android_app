@@ -49,7 +49,6 @@ public class HUBCommunication extends BaseAndruavShasha {
     private EditText    mtxtWebServerIP;
     private EditText    mtxtWebServerPort;
     private EditText    mtxtWebUserName;
-    private Spinner     mspinnerVehicleType;
     private Spinner     mspinnerGroupNo;
 
     private EditText    mtxtWebDescription;
@@ -132,10 +131,8 @@ public class HUBCommunication extends BaseAndruavShasha {
             }
         });
         mtxtWebUserName = findViewById(R.id.hubactivity_edtWSUserName);
-        mspinnerVehicleType = findViewById(R.id.hubactivity_spinVehicleType);
 
-        final ArrayAdapter vt = new ArrayAdapter(this, android.R.layout.simple_spinner_item, VehicleTypes.vechicleTypes);
-        mspinnerVehicleType.setAdapter(vt);
+
 
 
         mspinnerGroupNo     = findViewById(R.id.hubactivity_spinGroupNo);
@@ -294,9 +291,7 @@ public class HUBCommunication extends BaseAndruavShasha {
 
     }
 
-    private void startAndruavConnection () {
-        App.startAndruavWS();
-    }
+
 
     private boolean savePreference ()
     {
@@ -349,10 +344,7 @@ public class HUBCommunication extends BaseAndruavShasha {
 
         }
 
-        if (!AndruavSettings.andruavWe7daBase.getIsCGS())
-        {
-            Preference.setVehicleType(null, (int) mspinnerVehicleType.getSelectedItemId());
-        }
+
         Preference.setWebServerUserDescription(null, mtxtWebDescription.getText().toString());
         Preference.isLocalServer(null, !mcheckAndruavServer.isChecked());
         //Preference.isEnforceName(null,mchkEnforceName.isChecked());
@@ -381,13 +373,7 @@ public class HUBCommunication extends BaseAndruavShasha {
             Preference.setWebServerGroupName(null, App.getAppContext().getString(R.string.pref_groupname).toLowerCase());
         }
         //mtxtWebGroupName.setText(String.valueOf(Preference.getWebServerGroupName(null)));
-       if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-           mspinnerVehicleType.setVisibility(View.INVISIBLE);
-       }
-        else
-       {
-            mspinnerVehicleType.setSelection(Preference.getVehicleType(null));
-       }
+
 
         mspinnerGroupNo.setSelection(Integer.parseInt(Preference.getWebServerGroupName(null))-1);
 

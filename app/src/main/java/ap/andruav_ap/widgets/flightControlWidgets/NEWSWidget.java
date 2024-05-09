@@ -26,7 +26,7 @@ import com.andruav.event.droneReport_Event.Event_IMU_Ready;
 @Deprecated
 public class NEWSWidget extends View {
 
-    NEWSWidget Me;
+    final NEWSWidget Me;
     private AndruavUnitBase mAndruavUnit;
     private Handler mhandle;
 
@@ -35,12 +35,12 @@ public class NEWSWidget extends View {
     private int height;
     double  yaw = 0;
 
-    Paint sky = new Paint();
-    Paint white = new Paint();
-    Paint whiteCenter = new Paint();
-    Paint NEWS = new Paint();
+    final Paint sky = new Paint();
+    final Paint white = new Paint();
+    final Paint whiteCenter = new Paint();
+    final Paint NEWS = new Paint();
 
-    Paint plane = new Paint();
+    final Paint plane = new Paint();
 
 
 

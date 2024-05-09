@@ -23,8 +23,8 @@ public class ROIEstimator implements LocationReceiver {
     protected long timeOfLastLocation;
 
     protected final MavLinkDrone drone;
-    protected Handler watchdog;
-    protected Runnable watchdogCallback = new Runnable() {
+    protected final Handler watchdog;
+    protected final Runnable watchdogCallback = new Runnable() {
         @Override
         public void run() {
             updateROI();

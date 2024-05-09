@@ -9,7 +9,7 @@ import androidx.collection.SimpleArrayMap;
  */
 public class GeoFenceCompositBase extends GeoFenceBase {
 
-    protected SimpleArrayMap<String,GeoFencePoint> mGeoFenceArray = new SimpleArrayMap<>();
+    protected final SimpleArrayMap<String,GeoFencePoint> mGeoFenceArray = new SimpleArrayMap<>();
 
 
 

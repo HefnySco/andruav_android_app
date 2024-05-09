@@ -10,7 +10,7 @@ import com.o3dr.services.android.lib.coordinate.LatLong;
 
 public abstract class FollowHeadingAngle extends FollowWithRadiusAlgorithm {
 
-    protected double angleOffset;
+    protected final double angleOffset;
     protected final MavLinkDrone drone;
 
     protected FollowHeadingAngle(MavLinkDroneManager droneMgr, Handler handler, double radius, double angleOffset) {

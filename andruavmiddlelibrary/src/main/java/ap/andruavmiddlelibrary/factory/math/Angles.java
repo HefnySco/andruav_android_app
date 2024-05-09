@@ -5,7 +5,7 @@ package ap.andruavmiddlelibrary.factory.math;
  */
 public class Angles {
 
-    public static  float PI = 3.1415926535897932384626433832795f;
+    public static final float PI = 3.1415926535897932384626433832795f;
     public static float PI_2 = 1.5707963267948966192313216916398f;
     // Convert Degrees to Radians
     public static final float DEGREES_TO_RADIANS = PI / 180.0f;

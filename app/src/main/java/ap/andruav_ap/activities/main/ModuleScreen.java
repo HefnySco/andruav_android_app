@@ -224,7 +224,6 @@ public class ModuleScreen extends BaseAndruavShasha {
             }
 
         } else if (id == R.id.mi_main_signout) {
-        } else if (id == R.id.mi_main_GCS) {
         } else if (id == R.id.mi_main_Exit) {
             doExit();
         } else if (id == R.id.mi_main_Settings_drone) {

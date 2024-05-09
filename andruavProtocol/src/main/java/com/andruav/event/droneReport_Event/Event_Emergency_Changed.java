@@ -11,7 +11,7 @@ import com.andruav.andruavUnit.AndruavUnitBase;
  */
 public class Event_Emergency_Changed {
 
-    public AndruavUnitBase mAndruavUnitBase;
+    public final AndruavUnitBase mAndruavUnitBase;
 
     public Event_Emergency_Changed(final AndruavUnitBase andruavUnitBase)
     {

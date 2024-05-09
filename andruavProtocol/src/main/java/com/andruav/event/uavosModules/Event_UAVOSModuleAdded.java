@@ -5,7 +5,7 @@ import com.andruav.uavos.modules.UAVOSModuleUnit;
 
 public class Event_UAVOSModuleAdded {
 
-    public UAVOSModuleUnit uavosModuleUnit;
+    public final UAVOSModuleUnit uavosModuleUnit;
 
 
     public Event_UAVOSModuleAdded (final UAVOSModuleUnit uavosModule)
