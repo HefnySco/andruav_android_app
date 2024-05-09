@@ -27,7 +27,7 @@ public class msg_auth_key extends MAVLinkMessage {
      */
     @Description("key")
     @Units("")
-    public byte key[] = new byte[32];
+    public byte[] key = new byte[32];
     
 
     /**

@@ -96,7 +96,8 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     }
     public void doMirror(final boolean mirror)
     {
-        if (!AndruavSettings.andruavWe7daBase.getIsCGS()) return ;
+        if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
+        }
     }
 
     public boolean hasActivePeers ()
@@ -370,7 +371,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     {
         try
         {
-            if (FeatureSwitch.IGNORE_NO_INTERNET_CONNECTION==false) {
+            if (!FeatureSwitch.IGNORE_NO_INTERNET_CONNECTION) {
                 NetInfoAdapter.Update();
                 if ((connected = false)
                         || (!NetInfoAdapter.isHasValidIPAddress())
@@ -397,7 +398,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     {
         try
         {
-            if (FeatureSwitch.IGNORE_NO_INTERNET_CONNECTION==false)
+            if (!FeatureSwitch.IGNORE_NO_INTERNET_CONNECTION)
             {
 
                 if ((connected = false)

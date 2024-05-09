@@ -125,7 +125,6 @@ public class DroneKitMavlinkObserver extends MavlinkObserver
             AndruavEngine.getEventBus().post(event_FCBData);
 
 
-            return;
         }
         catch (Exception e)
         {

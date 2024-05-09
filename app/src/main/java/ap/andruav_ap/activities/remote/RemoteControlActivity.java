@@ -100,7 +100,7 @@ public class RemoteControlActivity extends AppCompatActivity {
 
         EventBus.getDefault().register(this);
 
-        if (DeviceManagerFacade.hasMultitouch() == false)
+        if (!DeviceManagerFacade.hasMultitouch())
         {
             DialogHelper.doModalDialog(Me,getString(R.string.title_activity_remotecontrol),getString(R.string.err_feature_multitouch),null,new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
@@ -135,10 +135,9 @@ public class RemoteControlActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        switch (id) {
-            case R.id.mi_Help:
-                GMail.sendGMail(this, getString(R.string.email_title), getString(R.string.email_to), getString(R.string.email_subject), getString(R.string.email_body), null);
-                return true;
+        if (id == R.id.mi_Help) {
+            GMail.sendGMail(this, getString(R.string.email_title), getString(R.string.email_to), getString(R.string.email_subject), getString(R.string.email_body), null);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

@@ -34,7 +34,7 @@ public class msg_set_attitude_target extends MAVLinkMessage {
      */
     @Description("Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0)")
     @Units("")
-    public float q[] = new float[4];
+    public float[] q = new float[4];
     
     /**
      * Body roll rate

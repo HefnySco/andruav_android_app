@@ -239,7 +239,7 @@ public class HUBCommunication extends BaseAndruavShasha {
 
         alert.setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                if (savePreference()==false)
+                if (!savePreference())
                     return ; // dont exit with values not saved.
                 Toast.makeText(getApplicationContext(), getString(R.string.action_done), Toast.LENGTH_SHORT).show();
                 App.stopAndruavWS(true);
@@ -263,7 +263,7 @@ public class HUBCommunication extends BaseAndruavShasha {
     private void testConnection ()
     {
         NetInfoAdapter.Update();
-        if ((NetInfoAdapter.isWifiInternetEnabled()==false) && (NetInfoAdapter.isMobileNetworkConnected()==false))
+        if ((!NetInfoAdapter.isWifiInternetEnabled()) && (!NetInfoAdapter.isMobileNetworkConnected()))
         {
             DialogHelper.doModalDialog(this,getString(R.string.gen_connection),getString(R.string.err_no_internet),null);
             return ;

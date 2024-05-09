@@ -135,12 +135,12 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
                     if ((index == -1) && hasTelemetry)
                     {   // item not existed as telemetry
                             //add to list
-                            if (andruavUnit.getIsShutdown() == false)
+                            if (!andruavUnit.getIsShutdown())
                             {
                                 // dont add shutdown items
                                 TelemetryUnitsAdapter.add(andruavUnit);
                                 TelemetryUnitsAdapter.notifyDataSetChanged();
-                                if ((AndruavSettings.remoteTelemetryAndruavWe7da != null) && (AndruavSettings.remoteTelemetryAndruavWe7da.Equals(andruavUnit) == false)) { // this is new one
+                                if ((AndruavSettings.remoteTelemetryAndruavWe7da != null) && (!AndruavSettings.remoteTelemetryAndruavWe7da.Equals(andruavUnit))) { // this is new one
 
                                 } else {
                                     mhandle.postDelayed(this, 500); // we need to highlight it fast
@@ -157,7 +157,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
                                 // Enh; put here code for handling Shutdown Drones.
 
                                 // item is selected but it is SHUT DOWN :(
-                                if (andruavUnit.getIsShutdown() == true) { // it is disconnected
+                                if (andruavUnit.getIsShutdown()) { // it is disconnected
                                     Me.selectItem(AndruavSettings.remoteTelemetryAndruavWe7da, false, false);
                                     // reclick selected on
                                     AndruavFacade.StopTelemetry();
@@ -168,7 +168,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
 
                             } else {
                                 // it is not connected as Active Telemetry but available
-                                if (andruavUnit.getIsShutdown() == true) { // it is disconnected
+                                if (andruavUnit.getIsShutdown()) { // it is disconnected
                                     enableItem(index, false);
 
                                 } else {
@@ -188,7 +188,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
 
                 }
             }
-            if (killMe == false) {
+            if (!killMe) {
                 mhandle.postDelayed(this, 4000);
             }
         }
@@ -283,7 +283,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (AndruavSettings.andruavWe7daBase.getIsCGS()== false) this.finish();
+        if (!AndruavSettings.andruavWe7daBase.getIsCGS()) this.finish();
         try {
             Me = this;
             Window win = getWindow();
@@ -455,7 +455,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
 
     private void toggleSocketListener() {
 
-        if (validatePortNumber () ==false)
+        if (!validatePortNumber())
         {
             DialogHelper.doModalDialog(this,getString(R.string.gen_connection),getString(R.string.err_invalid_portnum),getString(android.R.string.ok));
             return ;

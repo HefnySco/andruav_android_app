@@ -97,7 +97,7 @@ public class msg_open_drone_id_system extends MAVLinkMessage {
      */
     @Description("Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ")
     @Units("")
-    public short id_or_mac[] = new short[20];
+    public short[] id_or_mac = new short[20];
     
     /**
      * Specifies the operator location type.

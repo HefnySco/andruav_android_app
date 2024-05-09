@@ -41,7 +41,7 @@ public class msg_data96 extends MAVLinkMessage {
      */
     @Description("Raw data.")
     @Units("")
-    public short data[] = new short[96];
+    public short[] data = new short[96];
     
 
     /**

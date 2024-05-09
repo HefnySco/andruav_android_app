@@ -122,8 +122,6 @@ public class TelemetryDroneProtocolParser  extends TelemetryProtocolParser{
                 return ;
             }
 
-            return;
-
         } catch (Exception e) {
             if (exception_init_counter <= 0) return;
 

@@ -97,7 +97,7 @@ public class msg_adsb_vehicle extends MAVLinkMessage {
      */
     @Description("The callsign, 8+null")
     @Units("")
-    public byte callsign[] = new byte[9];
+    public byte[] callsign = new byte[9];
     
     /**
      * ADSB emitter type.

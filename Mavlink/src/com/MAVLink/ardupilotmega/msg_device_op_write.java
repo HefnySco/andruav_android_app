@@ -69,7 +69,7 @@ public class msg_device_op_write extends MAVLinkMessage {
      */
     @Description("Name of device on bus (for SPI).")
     @Units("")
-    public byte busname[] = new byte[40];
+    public byte[] busname = new byte[40];
     
     /**
      * First register to write.
@@ -90,7 +90,7 @@ public class msg_device_op_write extends MAVLinkMessage {
      */
     @Description("Write data.")
     @Units("")
-    public short data[] = new short[128];
+    public short[] data = new short[128];
     
     /**
      * Bank number.

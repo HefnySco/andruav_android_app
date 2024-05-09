@@ -48,7 +48,7 @@ public class msg_open_drone_id_authentication extends MAVLinkMessage {
      */
     @Description("Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ")
     @Units("")
-    public short id_or_mac[] = new short[20];
+    public short[] id_or_mac = new short[20];
     
     /**
      * Indicates the type of authentication.
@@ -83,7 +83,7 @@ public class msg_open_drone_id_authentication extends MAVLinkMessage {
      */
     @Description("Opaque authentication data. For page 0, the size is only 17 bytes. For other pages, the size is 23 bytes. Shall be filled with nulls in the unused portion of the field.")
     @Units("")
-    public short authentication_data[] = new short[23];
+    public short[] authentication_data = new short[23];
     
 
     /**

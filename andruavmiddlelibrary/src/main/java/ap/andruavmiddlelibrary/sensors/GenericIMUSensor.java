@@ -47,7 +47,6 @@ class GenericIMUSensor extends GenericSensor  implements SensorEventListener {
         calibrationValues[2] = 0.0f;
         misCalibrated = false;
 
-        return ;
     }
 
 
@@ -60,7 +59,7 @@ class GenericIMUSensor extends GenericSensor  implements SensorEventListener {
     @Override
     public void registerSensor()
     {
-        if ((mregisteredSensor == true) || (mSensor == null)) return ;
+        if ((mregisteredSensor) || (mSensor == null)) return ;
         msensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME);
         mregisteredSensor = true;
     }
@@ -68,7 +67,7 @@ class GenericIMUSensor extends GenericSensor  implements SensorEventListener {
     @Override
     public void unregisterSensor()
     {
-        if (mregisteredSensor == false)  return ;
+        if (!mregisteredSensor)  return ;
         msensorManager.unregisterListener(this, mSensor);
         mregisteredSensor = false;
         mSensor = null;

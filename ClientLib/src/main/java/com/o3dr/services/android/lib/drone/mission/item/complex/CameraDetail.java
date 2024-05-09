@@ -3,6 +3,8 @@ package com.o3dr.services.android.lib.drone.mission.item.complex;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Objects;
+
 /**
  * Created by fhuya on 11/6/14.
  */
@@ -108,7 +110,7 @@ public class CameraDetail implements Parcelable {
         if (Double.compare(that.sensorResolution, sensorResolution) != 0) return false;
         if (Double.compare(that.sensorWidth, sensorWidth) != 0) return false;
         if (Double.compare(that.sidelap, sidelap) != 0) return false;
-        return name != null ? name.equals(that.name) : that.name == null;
+        return Objects.equals(name, that.name);
     }
 
     @Override

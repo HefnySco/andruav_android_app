@@ -41,7 +41,7 @@ public class msg_open_drone_id_message_pack extends MAVLinkMessage {
      */
     @Description("Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ")
     @Units("")
-    public short id_or_mac[] = new short[20];
+    public short[] id_or_mac = new short[20];
     
     /**
      * This field must currently always be equal to 25 (bytes), since all encoded OpenDroneID messages are specificed to have this length.
@@ -62,7 +62,7 @@ public class msg_open_drone_id_message_pack extends MAVLinkMessage {
      */
     @Description("Concatenation of encoded OpenDroneID messages. Shall be filled with nulls in the unused portion of the field.")
     @Units("")
-    public short messages[] = new short[225];
+    public short[] messages = new short[225];
     
 
     /**

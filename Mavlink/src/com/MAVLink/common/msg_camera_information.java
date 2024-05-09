@@ -90,14 +90,14 @@ public class msg_camera_information extends MAVLinkMessage {
      */
     @Description("Name of the camera vendor")
     @Units("")
-    public short vendor_name[] = new short[32];
+    public short[] vendor_name = new short[32];
     
     /**
      * Name of the camera model
      */
     @Description("Name of the camera model")
     @Units("")
-    public short model_name[] = new short[32];
+    public short[] model_name = new short[32];
     
     /**
      * Reserved for a lens ID
@@ -111,7 +111,7 @@ public class msg_camera_information extends MAVLinkMessage {
      */
     @Description("Camera definition URI (if any, otherwise only basic functions will be available). HTTP- (http://) and MAVLink FTP- (mavlinkftp://) formatted URIs are allowed (and both must be supported by any GCS that implements the Camera Protocol).")
     @Units("")
-    public byte cam_definition_uri[] = new byte[140];
+    public byte[] cam_definition_uri = new byte[140];
     
 
     /**

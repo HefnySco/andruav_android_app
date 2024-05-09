@@ -27,7 +27,6 @@ public class BOOT_Receiver  extends BroadcastReceiver {
                  //startIntent.putExtra("autoconnect", true);
                  //startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                  //App.getAppContext().startActivity(startIntent);
-                 return;
 
             }
 

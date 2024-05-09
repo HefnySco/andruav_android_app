@@ -55,7 +55,7 @@ public class msg_tunnel extends MAVLinkMessage {
      */
     @Description("Variable length payload. The payload length is defined by payload_length. The entire content of this block is opaque unless you understand the encoding specified by payload_type.")
     @Units("")
-    public short payload[] = new short[128];
+    public short[] payload = new short[128];
     
 
     /**

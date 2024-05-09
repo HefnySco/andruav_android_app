@@ -52,10 +52,8 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
         public void onConnectionStatus(final LinkConnectionStatus connectionStatus) {
             listener.onConnectionStatus(connectionStatus);
 
-            switch (connectionStatus.getStatusCode()) {
-                case LinkConnectionStatus.DISCONNECTED:
-                    closeConnection();
-                    break;
+            if (LinkConnectionStatus.DISCONNECTED.equals(connectionStatus.getStatusCode())) {
+                closeConnection();
             }
         }
     };

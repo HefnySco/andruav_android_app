@@ -48,7 +48,7 @@ public class msg_setup_signing extends MAVLinkMessage {
      */
     @Description("signing key")
     @Units("")
-    public short secret_key[] = new short[32];
+    public short[] secret_key = new short[32];
     
 
     /**

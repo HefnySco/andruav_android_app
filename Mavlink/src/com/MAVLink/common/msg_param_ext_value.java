@@ -41,14 +41,14 @@ public class msg_param_ext_value extends MAVLinkMessage {
      */
     @Description("Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string")
     @Units("")
-    public byte param_id[] = new byte[16];
+    public byte[] param_id = new byte[16];
     
     /**
      * Parameter value
      */
     @Description("Parameter value")
     @Units("")
-    public byte param_value[] = new byte[128];
+    public byte[] param_value = new byte[128];
     
     /**
      * Parameter type.

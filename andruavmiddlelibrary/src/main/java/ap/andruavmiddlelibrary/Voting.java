@@ -22,7 +22,6 @@ public class Voting {
     public static void onConnectToServer()
     {
         ConnectedSuccessfully = true;
-        return ;
     }
 
 
@@ -38,7 +37,6 @@ public class Voting {
             //AndruavMo7arek.log().log(AndruavSettings.AccessCode, "voting", "ConnectedSuccessfully");
 
         }
-        return ;
     }
 
     /***
@@ -49,7 +47,6 @@ public class Voting {
         VideoRecieved = true;
 
         //AndruavMo7arek.log().log(AndruavSettings.AccessCode, "voting-VID", "onVideoRecieved");
-        return ;
     }
 
 
@@ -58,7 +55,6 @@ public class Voting {
         VideoRecieved = false;
 
         AndruavEngine.log().log(AndruavSettings.AccessCode, "Cam-Issue", "onCameraIssue");
-        return ;
     }
 
 
@@ -70,7 +66,6 @@ public class Voting {
         ImageRecieved += 1;
 
         //AndruavMo7arek.log().log(AndruavSettings.AccessCode, "voting-IMG", "onImageRecieved");
-        return ;
     }
 
 
@@ -80,6 +75,5 @@ public class Voting {
     public static void onMapHasObjectsRecieved()
     {
         MapDisplayed = true;
-        return ;
     }
 }

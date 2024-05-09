@@ -48,7 +48,7 @@ public class msg_gps_inject_data extends MAVLinkMessage {
      */
     @Description("Raw data (110 is enough for 12 satellites of RTCMv2)")
     @Units("")
-    public short data[] = new short[110];
+    public short[] data = new short[110];
     
 
     /**

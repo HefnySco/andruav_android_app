@@ -290,7 +290,6 @@ public class AndruavMapEditorWidget extends AndruavMapBaseWidget implements IPat
                         }
 
 
-                        return ;
                     }
                 },100);
 

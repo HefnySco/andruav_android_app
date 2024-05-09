@@ -34,7 +34,7 @@ public class msg_encapsulated_data extends MAVLinkMessage {
      */
     @Description("image data bytes")
     @Units("")
-    public short data[] = new short[253];
+    public short[] data = new short[253];
     
 
     /**

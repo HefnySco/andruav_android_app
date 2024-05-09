@@ -48,7 +48,7 @@ public class msg_memory_vect extends MAVLinkMessage {
      */
     @Description("Memory contents at specified address")
     @Units("")
-    public byte value[] = new byte[32];
+    public byte[] value = new byte[32];
     
 
     /**

@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 
+import java.util.Objects;
+
 /**
  * Location from which the drone took off.
  */
@@ -47,7 +49,7 @@ public class Home implements DroneAttribute {
 
         Home home = (Home) o;
 
-        return !(mCoordinate != null ? !mCoordinate.equals(home.mCoordinate) : home.mCoordinate != null);
+        return !(!Objects.equals(mCoordinate, home.mCoordinate));
 
     }
 

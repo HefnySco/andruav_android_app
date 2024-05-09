@@ -48,7 +48,7 @@ public class msg_change_operator_control extends MAVLinkMessage {
      */
     @Description("Password / Key, depending on version plaintext or encrypted. 25 or less characters, NULL terminated. The characters may involve A-Z, a-z, 0-9, and '!?,.-'")
     @Units("")
-    public byte passkey[] = new byte[25];
+    public byte[] passkey = new byte[25];
     
 
     /**

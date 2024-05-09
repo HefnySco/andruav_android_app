@@ -62,7 +62,7 @@ public class msg_led_control extends MAVLinkMessage {
      */
     @Description("Custom Bytes.")
     @Units("")
-    public short custom_bytes[] = new short[24];
+    public short[] custom_bytes = new short[24];
     
 
     /**

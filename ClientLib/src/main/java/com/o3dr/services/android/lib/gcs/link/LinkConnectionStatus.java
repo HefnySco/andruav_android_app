@@ -9,6 +9,7 @@ import androidx.annotation.StringDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Objects;
 
 /**
  * Conveys information about the link connection state.
@@ -166,10 +167,10 @@ public final class LinkConnectionStatus implements Parcelable {
 
         LinkConnectionStatus that = (LinkConnectionStatus) o;
 
-        if (mStatusCode != null ? !mStatusCode.equals(that.mStatusCode) : that.mStatusCode != null) {
+        if (!Objects.equals(mStatusCode, that.mStatusCode)) {
             return false;
         }
-        return !(mExtras != null ? !mExtras.equals(that.mExtras) : that.mExtras != null);
+        return !(!Objects.equals(mExtras, that.mExtras));
 
     }
 

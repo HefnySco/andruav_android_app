@@ -160,7 +160,7 @@ public class VideoFrameDrawer {
 
     // Multiply with the width and height to get the positions in terms of pixels.
     for (int i = 0; i < 3; ++i) {
-      dstPoints[i * 2 + 0] *= frameWidth;
+      dstPoints[i * 2] *= frameWidth;
       dstPoints[i * 2 + 1] *= frameHeight;
     }
 

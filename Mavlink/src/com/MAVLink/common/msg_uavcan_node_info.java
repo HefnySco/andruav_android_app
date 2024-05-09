@@ -48,7 +48,7 @@ public class msg_uavcan_node_info extends MAVLinkMessage {
      */
     @Description("Node name string. For example, 'sapog.px4.io'.")
     @Units("")
-    public byte name[] = new byte[80];
+    public byte[] name = new byte[80];
     
     /**
      * Hardware major version number.
@@ -69,7 +69,7 @@ public class msg_uavcan_node_info extends MAVLinkMessage {
      */
     @Description("Hardware unique 128-bit ID.")
     @Units("")
-    public short hw_unique_id[] = new short[16];
+    public short[] hw_unique_id = new short[16];
     
     /**
      * Software major version number.

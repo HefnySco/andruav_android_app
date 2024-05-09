@@ -62,7 +62,7 @@ public class msg_logging_data_acked extends MAVLinkMessage {
      */
     @Description("logged data")
     @Units("")
-    public short data[] = new short[249];
+    public short[] data = new short[249];
     
 
     /**

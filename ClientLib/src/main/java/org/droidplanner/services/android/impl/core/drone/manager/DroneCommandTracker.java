@@ -77,10 +77,8 @@ public class DroneCommandTracker {
     }
 
     public void onCommandAck(int commandId, Object ack) {
-        switch (commandId) {
-            case msg_command_ack.MAVLINK_MSG_ID_COMMAND_ACK:
-                onCommandAckImpl((msg_command_ack) ack);
-                break;
+        if (commandId == msg_command_ack.MAVLINK_MSG_ID_COMMAND_ACK) {
+            onCommandAckImpl((msg_command_ack) ack);
         }
     }
 

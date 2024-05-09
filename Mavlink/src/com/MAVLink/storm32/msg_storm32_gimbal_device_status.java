@@ -34,7 +34,7 @@ public class msg_storm32_gimbal_device_status extends MAVLinkMessage {
      */
     @Description("Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). The frame depends on the STORM32_GIMBAL_DEVICE_FLAGS_YAW_ABSOLUTE flag.")
     @Units("")
-    public float q[] = new float[4];
+    public float[] q = new float[4];
     
     /**
      * X component of angular velocity (NaN if unknown).

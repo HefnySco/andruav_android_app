@@ -34,7 +34,7 @@ public class msg_obstacle_distance extends MAVLinkMessage {
      */
     @Description("Distance of obstacles around the vehicle with index 0 corresponding to north + angle_offset, unless otherwise specified in the frame. A value of 0 is valid and means that the obstacle is practically touching the sensor. A value of max_distance +1 means no obstacle is present. A value of UINT16_MAX for unknown/not used. In a array element, one unit corresponds to 1cm.")
     @Units("cm")
-    public int distances[] = new int[72];
+    public int[] distances = new int[72];
     
     /**
      * Minimum distance the sensor can measure.

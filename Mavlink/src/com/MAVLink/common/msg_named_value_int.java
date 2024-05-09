@@ -41,7 +41,7 @@ public class msg_named_value_int extends MAVLinkMessage {
      */
     @Description("Name of the debug variable")
     @Units("")
-    public byte name[] = new byte[10];
+    public byte[] name = new byte[10];
     
 
     /**

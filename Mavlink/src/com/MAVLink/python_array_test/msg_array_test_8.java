@@ -27,7 +27,7 @@ public class msg_array_test_8 extends MAVLinkMessage {
      */
     @Description("Value array")
     @Units("")
-    public double ar_d[] = new double[2];
+    public double[] ar_d = new double[2];
     
     /**
      * Stub field
@@ -41,7 +41,7 @@ public class msg_array_test_8 extends MAVLinkMessage {
      */
     @Description("Value array")
     @Units("")
-    public int ar_u16[] = new int[2];
+    public int[] ar_u16 = new int[2];
     
 
     /**

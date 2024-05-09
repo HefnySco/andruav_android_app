@@ -34,7 +34,7 @@ public class msg_hil_state_quaternion extends MAVLinkMessage {
      */
     @Description("Vehicle attitude expressed as normalized quaternion in w, x, y, z order (with 1 0 0 0 being the null-rotation)")
     @Units("")
-    public float attitude_quaternion[] = new float[4];
+    public float[] attitude_quaternion = new float[4];
     
     /**
      * Body frame roll / phi angular speed

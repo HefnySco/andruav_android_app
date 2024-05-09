@@ -41,14 +41,14 @@ public class msg_debug_float_array extends MAVLinkMessage {
      */
     @Description("Name, for human-friendly display in a Ground Control Station")
     @Units("")
-    public byte name[] = new byte[10];
+    public byte[] name = new byte[10];
     
     /**
      * data
      */
     @Description("data")
     @Units("")
-    public float data[] = new float[58];
+    public float[] data = new float[58];
     
 
     /**

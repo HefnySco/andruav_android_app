@@ -111,21 +111,21 @@ public class msg_gimbal_device_information extends MAVLinkMessage {
      */
     @Description("Name of the gimbal vendor.")
     @Units("")
-    public byte vendor_name[] = new byte[32];
+    public byte[] vendor_name = new byte[32];
     
     /**
      * Name of the gimbal model.
      */
     @Description("Name of the gimbal model.")
     @Units("")
-    public byte model_name[] = new byte[32];
+    public byte[] model_name = new byte[32];
     
     /**
      * Custom name of the gimbal given to it by the user.
      */
     @Description("Custom name of the gimbal given to it by the user.")
     @Units("")
-    public byte custom_name[] = new byte[32];
+    public byte[] custom_name = new byte[32];
     
 
     /**

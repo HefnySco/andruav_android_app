@@ -83,28 +83,28 @@ public class msg_autopilot_version extends MAVLinkMessage {
      */
     @Description("Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases.")
     @Units("")
-    public short flight_custom_version[] = new short[8];
+    public short[] flight_custom_version = new short[8];
     
     /**
      * Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases.
      */
     @Description("Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases.")
     @Units("")
-    public short middleware_custom_version[] = new short[8];
+    public short[] middleware_custom_version = new short[8];
     
     /**
      * Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases.
      */
     @Description("Custom version field, commonly the first 8 bytes of the git hash. This is not an unique identifier, but should allow to identify the commit using the main version number even for very large code bases.")
     @Units("")
-    public short os_custom_version[] = new short[8];
+    public short[] os_custom_version = new short[8];
     
     /**
      * UID if provided by hardware (supersedes the uid field. If this is non-zero, use this field, otherwise use uid)
      */
     @Description("UID if provided by hardware (supersedes the uid field. If this is non-zero, use this field, otherwise use uid)")
     @Units("")
-    public short uid2[] = new short[18];
+    public short[] uid2 = new short[18];
     
 
     /**

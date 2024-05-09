@@ -27,7 +27,7 @@ public class msg_uavionix_adsb_out_cfg_registration extends MAVLinkMessage {
      */
     @Description("Aircraft Registration (ASCII string A-Z, 0-9 only), e.g. 'N8644B '. Trailing spaces (0x20) only. This is null-terminated.")
     @Units("")
-    public byte registration[] = new byte[9];
+    public byte[] registration = new byte[9];
     
 
     /**

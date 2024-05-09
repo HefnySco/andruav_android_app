@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -362,7 +363,7 @@ public class TLogParser {
             if (timestamp != event.timestamp) {
                 return false;
             }
-            return mavLinkMessage != null ? mavLinkMessage.equals(event.mavLinkMessage) : event.mavLinkMessage == null;
+            return Objects.equals(mavLinkMessage, event.mavLinkMessage);
 
         }
 

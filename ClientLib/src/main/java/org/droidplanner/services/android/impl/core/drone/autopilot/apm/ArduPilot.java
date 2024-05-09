@@ -549,17 +549,14 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
         if (message == null)
             return;
 
-        switch (message.getName()) {
-            case "ARMMASK":
-                //Give information about the vehicle's ability to arm successfully.
-                ApmModes vehicleMode = getState().getMode();
-                if (ApmModes.isCopter(vehicleMode.getType())) {
-                    int value = message.value;
-                    boolean isReadyToArm = (value & (1 << vehicleMode.getNumber())) != 0;
-                    String armReadinessMsg = isReadyToArm ? "READY TO ARM" : "UNREADY FOR ARMING";
-                    logMessage(Log.INFO, armReadinessMsg);
-                }
-                break;
+        if ("ARMMASK".equals(message.getName())) {//Give information about the vehicle's ability to arm successfully.
+            ApmModes vehicleMode = getState().getMode();
+            if (ApmModes.isCopter(vehicleMode.getType())) {
+                int value = message.value;
+                boolean isReadyToArm = (value & (1 << vehicleMode.getNumber())) != 0;
+                String armReadinessMsg = isReadyToArm ? "READY TO ARM" : "UNREADY FOR ARMING";
+                logMessage(Log.INFO, armReadinessMsg);
+            }
         }
     }
 

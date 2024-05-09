@@ -41,7 +41,7 @@ public class msg_hil_actuator_controls extends MAVLinkMessage {
      */
     @Description("Control outputs -1 .. 1. Channel assignment depends on the simulated hardware.")
     @Units("")
-    public float controls[] = new float[16];
+    public float[] controls = new float[16];
     
     /**
      * System mode. Includes arming state.

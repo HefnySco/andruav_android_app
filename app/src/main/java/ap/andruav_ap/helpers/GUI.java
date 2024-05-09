@@ -311,7 +311,7 @@ public class GUI {
 
         if (andruavWe7da == null) throw  new InvalidParameterException();
 
-        if (DeviceManagerFacade.hasMultitouch()==false)
+        if (!DeviceManagerFacade.hasMultitouch())
         {
             String err = App.getAppContext().getString(R.string.err_feature_multitouch);
             DialogHelper.doModalDialog(context, App.getAppContext().getString(R.string.title_activity_remotecontrol), err, null);

@@ -116,7 +116,6 @@ public class Andruav_2MR {
             }
         } catch (final BadPaddingException | JSONException e) {
             AndruavEngine.notification().displayNotification(INotification.NOTIFICATION_TYPE_ERROR, "Error", "Bad encryption key", true, INotification.INFO_TYPE_PROTOCOL, false);
-            return ;
         }
     }
 

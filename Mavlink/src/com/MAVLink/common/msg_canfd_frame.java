@@ -62,7 +62,7 @@ public class msg_canfd_frame extends MAVLinkMessage {
      */
     @Description("Frame data")
     @Units("")
-    public short data[] = new short[64];
+    public short[] data = new short[64];
     
 
     /**

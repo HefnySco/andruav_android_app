@@ -282,7 +282,6 @@ public class AndruavRTCVideoDecorderWidget  extends RelativeLayout implements IR
                         channel = event_fpv_videoURL.VideoTracks.get(0).mVideoID;
                     }
                     Me.connectToDroneCamera(event_fpv_videoURL.andruavUnit.PartyID,channel); // this should be a correct Name PeerConnectionManager.getProperName()
-                    return;
                 }
 
             }
@@ -443,13 +442,11 @@ public class AndruavRTCVideoDecorderWidget  extends RelativeLayout implements IR
         // called when Video Connection broken or disconnected due to client or server.
         // called if you press stop video.
         // called if you press back in Drone
-        return ;
 
     }
 
     @Override
     public void onPeerConnected(String userId) {
-        return ;
     }
 
 

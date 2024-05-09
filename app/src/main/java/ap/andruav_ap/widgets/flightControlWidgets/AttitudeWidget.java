@@ -104,7 +104,6 @@ public class AttitudeWidget extends RelativeLayout {
 
                 if (msg.obj instanceof Event_IMU_Ready) {
                     updateAttitude();
-                    return;
                 }
 
 

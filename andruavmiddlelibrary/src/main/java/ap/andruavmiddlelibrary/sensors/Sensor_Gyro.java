@@ -44,7 +44,7 @@ public class Sensor_Gyro extends GenericIMUSensor {
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        if (misCalibrated == false)
+        if (!misCalibrated)
         {
             calibrateSensor(event.values);
 

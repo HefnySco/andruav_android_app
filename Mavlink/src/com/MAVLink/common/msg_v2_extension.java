@@ -55,7 +55,7 @@ public class msg_v2_extension extends MAVLinkMessage {
      */
     @Description("Variable length payload. The length must be encoded in the payload as part of the message_type protocol, e.g. by including the length as payload data, or by terminating the payload data with a non-zero marker. This is required in order to reconstruct zero-terminated payloads that are (or otherwise would be) trimmed by MAVLink 2 empty-byte truncation. The entire content of the payload block is opaque unless you understand the encoding message_type. The particular encoding used can be extension specific and might not always be documented as part of the MAVLink specification.")
     @Units("")
-    public short payload[] = new short[249];
+    public short[] payload = new short[249];
     
 
     /**

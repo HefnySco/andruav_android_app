@@ -114,7 +114,7 @@ public class RemoteChannelsSettingFragment extends Fragment implements IFragment
 
     private boolean saveRemoteSettings()
     {
-        if (validateChannelValues() == false) return false;
+        if (!validateChannelValues()) return false;
 
         for (int i=0;i<8;i=i+1)
         {
@@ -125,7 +125,7 @@ public class RemoteChannelsSettingFragment extends Fragment implements IFragment
             Preference.setChannelDRValues(null, i, remoteChannelSetting[i].getDRRatioValue());
         }
 
-        if (AndruavSettings.andruavWe7daBase.getIsCGS()==false) {
+        if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
             RemoteControl.loadDualRates();
             AndruavSettings.andruavWe7daBase.setRTC(Preference.isChannelReturnToCenter(null));
             AndruavFacade.sendRemoteControlSettingsMessage(Preference.isChannelReturnToCenter(null),null);
@@ -163,7 +163,7 @@ public class RemoteChannelsSettingFragment extends Fragment implements IFragment
             }
         }
 
-        if (res == false)
+        if (!res)
         {
             DialogHelper.doModalDialog(this.getActivity(), getString(R.string.actionremote_settings), getString(R.string.err_remote_range_adjusted), null);
         }

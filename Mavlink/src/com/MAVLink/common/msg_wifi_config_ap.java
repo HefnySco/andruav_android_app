@@ -27,14 +27,14 @@ public class msg_wifi_config_ap extends MAVLinkMessage {
      */
     @Description("Name of Wi-Fi network (SSID). Blank to leave it unchanged when setting. Current SSID when sent back as a response.")
     @Units("")
-    public byte ssid[] = new byte[32];
+    public byte[] ssid = new byte[32];
     
     /**
      * Password. Blank for an open AP. MD5 hash when message is sent back as a response.
      */
     @Description("Password. Blank for an open AP. MD5 hash when message is sent back as a response.")
     @Units("")
-    public byte password[] = new byte[64];
+    public byte[] password = new byte[64];
     
 
     /**

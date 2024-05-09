@@ -187,7 +187,7 @@ public class RemoteControlWidget extends RelativeLayout implements JoystickMoved
             return ;
         }
 
-        if ((mEngaged==true) && (mAndruavUnit.Equals(andruavWe7da)))
+        if ((mEngaged) && (mAndruavUnit.Equals(andruavWe7da)))
         {
             //stopEngage();  I AM ALREADY ENGAGED
             return ;
@@ -341,7 +341,7 @@ public class RemoteControlWidget extends RelativeLayout implements JoystickMoved
 
         if (getRootView().isInEditMode()) return ;
 
-        if (changed == false) return ;
+        if (!changed) return ;
         stickR.setTouchOffset(stickR.getLeft(), stickR.getTop());
         stickL.setTouchOffset(stickL.getLeft(), stickL.getTop());
     }

@@ -27,7 +27,7 @@ public class msg_can_filter_modify extends MAVLinkMessage {
      */
     @Description("filter IDs, length num_ids")
     @Units("")
-    public int ids[] = new int[16];
+    public int[] ids = new int[16];
     
     /**
      * System ID.

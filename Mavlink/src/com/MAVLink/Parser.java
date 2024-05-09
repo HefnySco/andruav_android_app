@@ -20,7 +20,7 @@ public class Parser {
     static final boolean V = false;
 
     static void logv(String tag, String msg) {
-        if(V) System.out.println(String.format("%s: %s", tag, msg));
+        if(V) System.out.printf("%s: %s%n", tag, msg);
     }
 
     /**

@@ -535,13 +535,10 @@ public class MavLink_Helpers {
                 break;
 
             case FlightMode.CONST_FLIGHT_CONTROL_SURFACE:
-                switch  (APM_VehicleType)
-                {
-                    case MAV_TYPE.MAV_TYPE_SUBMARINE:
-                        mode = VehicleMode.SUBMARINE_SURFACE;
-                        break;
-                    default:
-                        mode = VehicleMode.UNKNOWN;
+                if (APM_VehicleType == MAV_TYPE.MAV_TYPE_SUBMARINE) {
+                    mode = VehicleMode.SUBMARINE_SURFACE;
+                } else {
+                    mode = VehicleMode.UNKNOWN;
                 }
                 break;
 

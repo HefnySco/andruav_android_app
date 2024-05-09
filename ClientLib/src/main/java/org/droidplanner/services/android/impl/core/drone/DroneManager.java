@@ -42,10 +42,7 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
     protected final ConnectionParameter connectionParameter;
 
     public static DroneManager generateDroneManager(Context context, ConnectionParameter connParams, Handler handler) {
-        switch (connParams.getConnectionType()) {
-            default:
-                return new MavLinkDroneManager(context, connParams, handler);
-        }
+        return new MavLinkDroneManager(context, connParams, handler);
     }
 
     protected DroneManager(Context context, ConnectionParameter connParams, Handler handler) {
@@ -147,33 +144,26 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
     }
 
     public DroneAttribute getAttribute(DroneApi.ClientInfo clientInfo, String attributeType) {
-        switch (attributeType) {
-            default:
-                return drone == null ? null : drone.getAttribute(attributeType);
-        }
+        return drone == null ? null : drone.getAttribute(attributeType);
     }
 
     protected boolean executeAsyncAction(Action action, ICommandListener listener) {
         String type = action.getType();
 
-        switch (type) {
-
-            //***************** CONTROL ACTIONS *****************//
-            case ControlActions.ACTION_ENABLE_MANUAL_CONTROL:
-                if (drone != null) {
-                    drone.executeAsyncAction(action, listener);
-                } else {
-                    CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
-                }
-                return true;
-
-            default:
-                if (drone != null) {
-                    return drone.executeAsyncAction(action, listener);
-                } else {
-                    CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
-                    return true;
-                }
+        //***************** CONTROL ACTIONS *****************//
+        if (ControlActions.ACTION_ENABLE_MANUAL_CONTROL.equals(type)) {
+            if (drone != null) {
+                drone.executeAsyncAction(action, listener);
+            } else {
+                CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
+            }
+            return true;
+        }
+        if (drone != null) {
+            return drone.executeAsyncAction(action, listener);
+        } else {
+            CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
+            return true;
         }
     }
 
@@ -181,9 +171,7 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
         String type = action.getType();
         Bundle data = action.getData();
 
-        switch (type) {
-            case ControlActions.ACTION_ENABLE_MANUAL_CONTROL:
-                break;
+        if (ControlActions.ACTION_ENABLE_MANUAL_CONTROL.equals(type)) {
         }
         return executeAsyncAction(action, listener);
     }

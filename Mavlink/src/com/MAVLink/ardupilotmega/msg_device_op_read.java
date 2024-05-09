@@ -69,7 +69,7 @@ public class msg_device_op_read extends MAVLinkMessage {
      */
     @Description("Name of device on bus (for SPI).")
     @Units("")
-    public byte busname[] = new byte[40];
+    public byte[] busname = new byte[40];
     
     /**
      * First register to read.

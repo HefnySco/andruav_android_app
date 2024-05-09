@@ -34,7 +34,7 @@ public class msg_autopilot_state_for_gimbal_device extends MAVLinkMessage {
      */
     @Description("Quaternion components of autopilot attitude: w, x, y, z (1 0 0 0 is the null-rotation, Hamilton convention).")
     @Units("")
-    public float q[] = new float[4];
+    public float[] q = new float[4];
     
     /**
      * Estimated delay of the attitude data.

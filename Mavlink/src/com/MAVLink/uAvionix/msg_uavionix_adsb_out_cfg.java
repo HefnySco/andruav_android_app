@@ -41,7 +41,7 @@ public class msg_uavionix_adsb_out_cfg extends MAVLinkMessage {
      */
     @Description("Vehicle identifier (8 characters, null terminated, valid characters are A-Z, 0-9, ' ' only)")
     @Units("")
-    public byte callsign[] = new byte[9];
+    public byte[] callsign = new byte[9];
     
     /**
      * Transmitting vehicle type. See ADSB_EMITTER_TYPE enum

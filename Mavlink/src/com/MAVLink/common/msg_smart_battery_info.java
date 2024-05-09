@@ -97,14 +97,14 @@ public class msg_smart_battery_info extends MAVLinkMessage {
      */
     @Description("Serial number in ASCII characters, 0 terminated. All 0: field not provided.")
     @Units("")
-    public byte serial_number[] = new byte[16];
+    public byte[] serial_number = new byte[16];
     
     /**
      * Static device name in ASCII characters, 0 terminated. All 0: field not provided. Encode as manufacturer name then product name separated using an underscore.
      */
     @Description("Static device name in ASCII characters, 0 terminated. All 0: field not provided. Encode as manufacturer name then product name separated using an underscore.")
     @Units("")
-    public byte device_name[] = new byte[50];
+    public byte[] device_name = new byte[50];
     
     /**
      * Maximum per-cell voltage when charged. 0: field not provided.
@@ -139,7 +139,7 @@ public class msg_smart_battery_info extends MAVLinkMessage {
      */
     @Description("Manufacture date (DD/MM/YYYY) in ASCII characters, 0 terminated. All 0: field not provided.")
     @Units("")
-    public byte manufacture_date[] = new byte[11];
+    public byte[] manufacture_date = new byte[11];
     
 
     /**

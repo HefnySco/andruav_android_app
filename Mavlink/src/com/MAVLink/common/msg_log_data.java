@@ -48,7 +48,7 @@ public class msg_log_data extends MAVLinkMessage {
      */
     @Description("log data")
     @Units("")
-    public short data[] = new short[90];
+    public short[] data = new short[90];
     
 
     /**

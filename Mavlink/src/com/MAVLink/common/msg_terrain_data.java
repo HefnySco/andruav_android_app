@@ -48,7 +48,7 @@ public class msg_terrain_data extends MAVLinkMessage {
      */
     @Description("Terrain data MSL")
     @Units("m")
-    public short data[] = new short[16];
+    public short[] data = new short[16];
     
     /**
      * bit within the terrain request mask

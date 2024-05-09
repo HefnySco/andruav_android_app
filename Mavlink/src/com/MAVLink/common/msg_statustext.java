@@ -34,7 +34,7 @@ public class msg_statustext extends MAVLinkMessage {
      */
     @Description("Status text message, without null termination character")
     @Units("")
-    public byte text[] = new byte[50];
+    public byte[] text = new byte[50];
     
     /**
      * Unique (opaque) identifier for this statustext message.  May be used to reassemble a logical long-statustext message from a sequence of chunks.  A value of zero indicates this is the only chunk in the sequence and the message can be emitted immediately.

@@ -243,15 +243,14 @@ public class KMLFileHandler {
     {
 
         try {
-            StringBuilder point = new StringBuilder();
-            point.append(longitude);
-            point.append(",");
-            point.append(latitude);
-            point.append(",");
-            point.append(altitude);
-            point.append("\r\n");
+            String point = longitude +
+                    "," +
+                    latitude +
+                    "," +
+                    altitude +
+                    "\r\n";
             DaoManager.getGenericDataDao().insert(
-                    new GenericDataRow(null, (long) GenericDataRow.DB_TYPE_KML_POINT, point.toString())
+                    new GenericDataRow(null, (long) GenericDataRow.DB_TYPE_KML_POINT, point)
             );
         }
         catch (Exception ex)

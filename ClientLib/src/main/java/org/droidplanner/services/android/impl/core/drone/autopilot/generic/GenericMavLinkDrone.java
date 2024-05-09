@@ -305,10 +305,8 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
     @Override
     public void notifyDroneEvent(DroneInterfaces.DroneEventsType event) {
-        switch (event) {
-            case DISCONNECTED:
-                signal.setValid(false);
-                break;
+        if (event == DroneInterfaces.DroneEventsType.DISCONNECTED) {
+            signal.setValid(false);
         }
 
         events.notifyDroneEvent(event);

@@ -69,7 +69,7 @@ public class msg_secure_command extends MAVLinkMessage {
      */
     @Description("Signed data.")
     @Units("")
-    public short data[] = new short[220];
+    public short[] data = new short[220];
     
 
     /**

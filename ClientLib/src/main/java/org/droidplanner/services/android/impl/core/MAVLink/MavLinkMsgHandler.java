@@ -26,14 +26,9 @@ public class MavLinkMsgHandler {
             return;
         }
 
-        switch (msg.msgid) {
-            case msg_heartbeat.MAVLINK_MSG_ID_HEARTBEAT:
-                msg_heartbeat msg_heart = (msg_heartbeat) msg;
-                handleHeartbeat(msg_heart);
-                break;
-
-            default:
-                break;
+        if (msg.msgid == msg_heartbeat.MAVLINK_MSG_ID_HEARTBEAT) {
+            msg_heartbeat msg_heart = (msg_heartbeat) msg;
+            handleHeartbeat(msg_heart);
         }
     }
 

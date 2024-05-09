@@ -13,14 +13,10 @@ public abstract class UAVOSModuleBuilderBase {
 
     public static UAVOSModuleUnit getModule (final String moduleClass)
     {
-        switch (moduleClass)
-        {
-            case UAVOS_MODULE_TYPE_CAMERA:
-                return new UAVOSModuleCamera();
-
-            default:
-                return new UAVOSModuleUnit(moduleClass);
+        if (UAVOS_MODULE_TYPE_CAMERA.equals(moduleClass)) {
+            return new UAVOSModuleCamera();
         }
+        return new UAVOSModuleUnit(moduleClass);
     }
 
 }

@@ -97,7 +97,7 @@ public class msg_storage_information extends MAVLinkMessage {
      */
     @Description("Textual storage name to be used in UI (microSD 1, Internal Memory, etc.) This is a NULL terminated string. If it is exactly 32 characters long, add a terminating NULL. If this string is empty, the generic type is shown to the user.")
     @Units("")
-    public byte name[] = new byte[32];
+    public byte[] name = new byte[32];
     
 
     /**

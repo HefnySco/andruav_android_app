@@ -69,7 +69,7 @@ public class msg_home_position extends MAVLinkMessage {
      */
     @Description("World to surface normal and heading transformation of the takeoff position. Used to indicate the heading and slope of the ground")
     @Units("")
-    public float q[] = new float[4];
+    public float[] q = new float[4];
     
     /**
      * Local X position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone.

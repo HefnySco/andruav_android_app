@@ -132,7 +132,7 @@ public class msg_utm_global_position extends MAVLinkMessage {
      */
     @Description("Unique UAS ID.")
     @Units("")
-    public short uas_id[] = new short[18];
+    public short[] uas_id = new short[18];
     
     /**
      * Flight state

@@ -395,8 +395,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
             return;
         }
 
-        return;
-
     }
 
 
@@ -741,7 +739,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         Preference.setFCBBlueToothMAC(null, listItem_bluetoothUnit.getDeviceMAC());
         Preference.setFCBBlueToothName(null, listItem_bluetoothUnit.deviceName);
         lstbluetoothDevices.setVisibility(View.INVISIBLE);
-        return;
     }
 
 

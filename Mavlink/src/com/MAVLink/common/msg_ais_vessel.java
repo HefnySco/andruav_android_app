@@ -132,14 +132,14 @@ public class msg_ais_vessel extends MAVLinkMessage {
      */
     @Description("The vessel callsign")
     @Units("")
-    public byte callsign[] = new byte[7];
+    public byte[] callsign = new byte[7];
     
     /**
      * The vessel name
      */
     @Description("The vessel name")
     @Units("")
-    public byte name[] = new byte[20];
+    public byte[] name = new byte[20];
     
 
     /**

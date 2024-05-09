@@ -55,7 +55,7 @@ public class msg_secure_command_reply extends MAVLinkMessage {
      */
     @Description("Reply data.")
     @Units("")
-    public short data[] = new short[220];
+    public short[] data = new short[220];
     
 
     /**

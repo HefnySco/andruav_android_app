@@ -55,7 +55,7 @@ public class msg_odometry extends MAVLinkMessage {
      */
     @Description("Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation)")
     @Units("")
-    public float q[] = new float[4];
+    public float[] q = new float[4];
     
     /**
      * X linear speed
@@ -104,14 +104,14 @@ public class msg_odometry extends MAVLinkMessage {
      */
     @Description("Row-major representation of a 6x6 pose cross-covariance matrix upper right triangle (states: x, y, z, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.")
     @Units("")
-    public float pose_covariance[] = new float[21];
+    public float[] pose_covariance = new float[21];
     
     /**
      * Row-major representation of a 6x6 velocity cross-covariance matrix upper right triangle (states: vx, vy, vz, rollspeed, pitchspeed, yawspeed; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.
      */
     @Description("Row-major representation of a 6x6 velocity cross-covariance matrix upper right triangle (states: vx, vy, vz, rollspeed, pitchspeed, yawspeed; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.")
     @Units("")
-    public float velocity_covariance[] = new float[21];
+    public float[] velocity_covariance = new float[21];
     
     /**
      * Coordinate frame of reference for the pose data.

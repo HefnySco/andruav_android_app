@@ -34,7 +34,7 @@ public class msg_gimbal_device_attitude_status extends MAVLinkMessage {
      */
     @Description("Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation, the frame is depends on whether the flag GIMBAL_DEVICE_FLAGS_YAW_LOCK is set)")
     @Units("")
-    public float q[] = new float[4];
+    public float[] q = new float[4];
     
     /**
      * X component of angular velocity (NaN if unknown)

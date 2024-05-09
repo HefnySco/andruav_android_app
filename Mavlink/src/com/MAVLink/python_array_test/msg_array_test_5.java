@@ -27,14 +27,14 @@ public class msg_array_test_5 extends MAVLinkMessage {
      */
     @Description("Value array")
     @Units("")
-    public byte c1[] = new byte[5];
+    public byte[] c1 = new byte[5];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public byte c2[] = new byte[5];
+    public byte[] c2 = new byte[5];
     
 
     /**

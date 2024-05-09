@@ -255,7 +255,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
                     toggleHighlight();
                 }
                 else {
-                    if (Me.useMeterUnits == true) {
+                    if (Me.useMeterUnits) {
                         Preference.setPreferredUnits(null, Constants.Preferred_UNIT_IMPERIAL_SYSTEM); // use miles
                         Me.useMeterUnits = false;
                     } else {
@@ -419,7 +419,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
             text.append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append(" n/a").append("</b></font>");
         }
         else {
-            if (isFCB == true)
+            if (isFCB)
             {
                 text.append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append(String.format("%3.0f", andruavBattery.FCB_BatteryRemaining)).append("% ").append(String.format("%2.2f", andruavBattery.FCB_BatteryVoltage / 1000.0)).append("v").append("</b></font>");
                 double cur=andruavBattery.FCB_CurrentConsumed;
@@ -688,13 +688,12 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
        // textFCBMode.append(ActivityMosa3ed.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append("<br>alt: ").append("</b></font>");
        // textFCBMode.append(ActivityMosa3ed.getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), true, false)).append(height).append("</b></font>");
         // Speed & Altitude ActivityMosa3ed
-        final StringBuffer textSpeedAlt = new StringBuffer();
-        textSpeedAlt.append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append("speed: ").append("</b></font>");
-        textSpeedAlt.append(GUI.getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), true, false)).append(speedText).append("</b></font>");
 
-        textSpeedAlt.append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append("<br>alt: ").append("</b></font>");
-        textSpeedAlt.append(GUI.getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), true, false)).append(height).append("</b></font>");
-        mIMUAltitude.setText(Html.fromHtml(textSpeedAlt.toString()));
+        String textSpeedAlt = GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false) + "speed: " + "</b></font>" +
+                GUI.getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), true, false) + speedText + "</b></font>" +
+                GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false) + "<br>alt: " + "</b></font>" +
+                GUI.getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), true, false) + height + "</b></font>";
+        mIMUAltitude.setText(Html.fromHtml(textSpeedAlt));
         mIMUAltitude.setVisibility(View.VISIBLE);
         final Drawable imgalt = App.context.getResources().getDrawable(R.drawable.height_b_32x32);
         mIMUAltitude.setCompoundDrawablesWithIntrinsicBounds(imgalt, null, null, null);
@@ -793,7 +792,6 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
                 {
                     updateInfoStatus();
                     updateIMUStatus();
-                    return;
                 }
 
             }

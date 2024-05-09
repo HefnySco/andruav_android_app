@@ -83,7 +83,7 @@ public class msg_mag_cal_progress extends MAVLinkMessage {
      */
     @Description("Bitmask of sphere sections (see http://en.wikipedia.org/wiki/Geodesic_grid).")
     @Units("")
-    public short completion_mask[] = new short[10];
+    public short[] completion_mask = new short[10];
     
 
     /**

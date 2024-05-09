@@ -34,7 +34,7 @@ public class msg_att_pos_mocap extends MAVLinkMessage {
      */
     @Description("Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0)")
     @Units("")
-    public float q[] = new float[4];
+    public float[] q = new float[4];
     
     /**
      * X position (NED)
@@ -62,7 +62,7 @@ public class msg_att_pos_mocap extends MAVLinkMessage {
      */
     @Description("Row-major representation of a pose 6x6 cross-covariance matrix upper right triangle (states: x, y, z, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.")
     @Units("")
-    public float covariance[] = new float[21];
+    public float[] covariance = new float[21];
     
 
     /**

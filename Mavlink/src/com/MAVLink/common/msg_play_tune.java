@@ -41,14 +41,14 @@ public class msg_play_tune extends MAVLinkMessage {
      */
     @Description("tune in board specific format")
     @Units("")
-    public byte tune[] = new byte[30];
+    public byte[] tune = new byte[30];
     
     /**
      * tune extension (appended to tune)
      */
     @Description("tune extension (appended to tune)")
     @Units("")
-    public byte tune2[] = new byte[200];
+    public byte[] tune2 = new byte[200];
     
 
     /**

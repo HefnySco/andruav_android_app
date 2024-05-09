@@ -183,38 +183,34 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
     public Bundle getAttribute(String type) throws RemoteException {
         Bundle carrier = new Bundle();
 
-        switch (type) {
-            case AttributeType.CAMERA:
-                carrier.putParcelable(type, CommonApiUtils.getCameraProxy(getDrone(), service.getCameraDetails()));
-                break;
+        if (AttributeType.CAMERA.equals(type)) {
+            carrier.putParcelable(type, CommonApiUtils.getCameraProxy(getDrone(), service.getCameraDetails()));
+        } else {
+            if (droneMgr != null) {
+                DroneAttribute attribute = droneMgr.getAttribute(clientInfo, type);
+                if (attribute != null) {
 
-            default:
-                if (droneMgr != null) {
-                    DroneAttribute attribute = droneMgr.getAttribute(clientInfo, type);
-                    if (attribute != null) {
+                    //Check if the client supports the ResetROI mission item.
+                    // Replace it with a RegionOfInterest with coordinate set to 0 if it doesn't.
+                    if (clientInfo.clientVersionCode < RESET_ROI_LIB_VERSION && attribute instanceof Mission) {
+                        Mission proxyMission = (Mission) attribute;
+                        List<MissionItem> missionItems = proxyMission.getMissionItems();
+                        int missionItemsCount = missionItems.size();
+                        for (int i = 0; i < missionItemsCount; i++) {
+                            MissionItem missionItem = missionItems.get(i);
+                            if (missionItem instanceof ResetROI) {
+                                missionItems.remove(i);
 
-                        //Check if the client supports the ResetROI mission item.
-                        // Replace it with a RegionOfInterest with coordinate set to 0 if it doesn't.
-                        if (clientInfo.clientVersionCode < RESET_ROI_LIB_VERSION && attribute instanceof Mission) {
-                            Mission proxyMission = (Mission) attribute;
-                            List<MissionItem> missionItems = proxyMission.getMissionItems();
-                            int missionItemsCount = missionItems.size();
-                            for (int i = 0; i < missionItemsCount; i++) {
-                                MissionItem missionItem = missionItems.get(i);
-                                if (missionItem instanceof ResetROI) {
-                                    missionItems.remove(i);
-
-                                    RegionOfInterest replacement = new RegionOfInterest();
-                                    replacement.setCoordinate(new LatLongAlt(0, 0, 0));
-                                    missionItems.add(i, replacement);
-                                }
+                                RegionOfInterest replacement = new RegionOfInterest();
+                                replacement.setCoordinate(new LatLongAlt(0, 0, 0));
+                                missionItems.add(i, replacement);
                             }
                         }
-
-                        carrier.putParcelable(type, attribute);
                     }
+
+                    carrier.putParcelable(type, attribute);
                 }
-                break;
+            }
         }
         return carrier;
     }

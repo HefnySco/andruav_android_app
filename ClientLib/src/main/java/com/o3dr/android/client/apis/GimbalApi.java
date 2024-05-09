@@ -272,14 +272,12 @@ public final class GimbalApi extends Api implements DroneListener {
 
     @Override
     public void onDroneEvent(String event, Bundle extras) {
-        switch(event){
-            case AttributeEvent.GIMBAL_ORIENTATION_UPDATED:
-                final float pitch = extras.getFloat(AttributeEventExtra.EXTRA_GIMBAL_ORIENTATION_PITCH);
-                final float roll = extras.getFloat(AttributeEventExtra.EXTRA_GIMBAL_ORIENTATION_ROLL);
-                final float yaw = extras.getFloat(AttributeEventExtra.EXTRA_GIMBAL_ORIENTATION_YAW);
-                gimbalOrientation.updateOrientation(pitch, roll, yaw);
-                notifyGimbalOrientationUpdated(gimbalOrientation);
-                break;
+        if (AttributeEvent.GIMBAL_ORIENTATION_UPDATED.equals(event)) {
+            final float pitch = extras.getFloat(AttributeEventExtra.EXTRA_GIMBAL_ORIENTATION_PITCH);
+            final float roll = extras.getFloat(AttributeEventExtra.EXTRA_GIMBAL_ORIENTATION_ROLL);
+            final float yaw = extras.getFloat(AttributeEventExtra.EXTRA_GIMBAL_ORIENTATION_YAW);
+            gimbalOrientation.updateOrientation(pitch, roll, yaw);
+            notifyGimbalOrientationUpdated(gimbalOrientation);
         }
     }
 

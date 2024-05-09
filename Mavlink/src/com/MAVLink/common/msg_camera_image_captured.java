@@ -69,7 +69,7 @@ public class msg_camera_image_captured extends MAVLinkMessage {
      */
     @Description("Quaternion of camera orientation (w, x, y, z order, zero-rotation is 1, 0, 0, 0)")
     @Units("")
-    public float q[] = new float[4];
+    public float[] q = new float[4];
     
     /**
      * Zero based index of this image (i.e. a new image will have index CAMERA_CAPTURE_STATUS.image count -1)
@@ -97,7 +97,7 @@ public class msg_camera_image_captured extends MAVLinkMessage {
      */
     @Description("URL of image taken. Either local storage or http://foo.jpg if camera provides an HTTP interface.")
     @Units("")
-    public byte file_url[] = new byte[205];
+    public byte[] file_url = new byte[205];
     
 
     /**

@@ -693,7 +693,6 @@ public class CommonApiUtils {
                     } else {
                         postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
                     }
-                    return;
                 } else {
                     sendCommandRunnable.run();
                 }

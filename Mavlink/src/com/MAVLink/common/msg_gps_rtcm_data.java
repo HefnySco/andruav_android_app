@@ -41,7 +41,7 @@ public class msg_gps_rtcm_data extends MAVLinkMessage {
      */
     @Description("RTCM message (may be fragmented)")
     @Units("")
-    public short data[] = new short[180];
+    public short[] data = new short[180];
     
 
     /**

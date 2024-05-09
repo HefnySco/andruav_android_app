@@ -120,18 +120,15 @@ public class ArduCopter extends ArduPilot {
 
     @Override
     public void notifyDroneEvent(DroneInterfaces.DroneEventsType event){
-        switch(event){
-            case MODE:
-                //Listen for vehicle mode updates, and update the manual control state listeners appropriately
-                ApmModes currentMode = getState().getMode();
-                if (manualControlState != null) {
-                    if (currentMode == ApmModes.ROTOR_GUIDED) {
-                        CommonApiUtils.postSuccessEvent(manualControlState);
-                    } else {
-                        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, manualControlState);
-                    }
+        if (event == DroneInterfaces.DroneEventsType.MODE) {//Listen for vehicle mode updates, and update the manual control state listeners appropriately
+            ApmModes currentMode = getState().getMode();
+            if (manualControlState != null) {
+                if (currentMode == ApmModes.ROTOR_GUIDED) {
+                    CommonApiUtils.postSuccessEvent(manualControlState);
+                } else {
+                    CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, manualControlState);
                 }
-                break;
+            }
         }
 
         super.notifyDroneEvent(event);

@@ -41,7 +41,7 @@ public class msg_open_drone_id_operator_id extends MAVLinkMessage {
      */
     @Description("Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ")
     @Units("")
-    public short id_or_mac[] = new short[20];
+    public short[] id_or_mac = new short[20];
     
     /**
      * Indicates the type of the operator_id field.
@@ -55,7 +55,7 @@ public class msg_open_drone_id_operator_id extends MAVLinkMessage {
      */
     @Description("Text description or numeric value expressed as ASCII characters. Shall be filled with nulls in the unused portion of the field.")
     @Units("")
-    public byte operator_id[] = new byte[20];
+    public byte[] operator_id = new byte[20];
     
 
     /**

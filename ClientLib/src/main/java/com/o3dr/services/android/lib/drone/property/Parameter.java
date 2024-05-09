@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by fhuya on 10/28/14.
@@ -162,7 +163,7 @@ public class Parameter implements DroneAttribute, Comparable<Parameter> {
 
         Parameter parameter = (Parameter) o;
 
-        return !(name != null ? !name.equals(parameter.name) : parameter.name != null);
+        return !(!Objects.equals(name, parameter.name));
 
     }
 

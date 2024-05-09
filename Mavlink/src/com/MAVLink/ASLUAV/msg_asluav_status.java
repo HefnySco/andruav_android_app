@@ -48,7 +48,7 @@ public class msg_asluav_status extends MAVLinkMessage {
      */
     @Description(" Status vector for up to 8 servos")
     @Units("")
-    public short Servo_status[] = new short[8];
+    public short[] Servo_status = new short[8];
     
 
     /**

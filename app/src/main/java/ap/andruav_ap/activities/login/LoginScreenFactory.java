@@ -29,6 +29,5 @@ public class LoginScreenFactory {
         final Intent intent = getIntentLoginActivity(context);
 
         context.startActivity(intent);
-        return ;
     }
 }

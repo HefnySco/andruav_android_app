@@ -297,11 +297,9 @@ public abstract class MavLinkConnection {
     protected void onConnectionStatus(LinkConnectionStatus connectionStatus) {
         reportConnectionStatus(connectionStatus);
 
-        switch (connectionStatus.getStatusCode()) {
-            case LinkConnectionStatus.FAILED:
-                mLogger.logInfo(TAG, "Unable to establish connection: " + connectionStatus.getStatusCode());
-                disconnect();
-                break;
+        if (LinkConnectionStatus.FAILED.equals(connectionStatus.getStatusCode())) {
+            mLogger.logInfo(TAG, "Unable to establish connection: " + connectionStatus.getStatusCode());
+            disconnect();
         }
     }
 

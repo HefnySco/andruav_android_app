@@ -69,13 +69,10 @@ public class ArduPlane extends ArduPilot {
 
     @Override
     protected boolean isFeatureSupported(String featureId){
-        switch(featureId){
-            case CapabilityApi.FeatureIds.COMPASS_CALIBRATION:
-                return getFirmwareVersionNumber().greaterThanOrEqualTo(COMPASS_CALIBRATION_MIN_VERSION);
-
-            default:
-                return super.isFeatureSupported(featureId);
+        if (CapabilityApi.FeatureIds.COMPASS_CALIBRATION.equals(featureId)) {
+            return getFirmwareVersionNumber().greaterThanOrEqualTo(COMPASS_CALIBRATION_MIN_VERSION);
         }
+        return super.isFeatureSupported(featureId);
     }
 
 

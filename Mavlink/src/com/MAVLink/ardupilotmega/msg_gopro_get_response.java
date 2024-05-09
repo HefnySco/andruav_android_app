@@ -41,7 +41,7 @@ public class msg_gopro_get_response extends MAVLinkMessage {
      */
     @Description("Value.")
     @Units("")
-    public short value[] = new short[4];
+    public short[] value = new short[4];
     
 
     /**

@@ -34,35 +34,35 @@ public class msg_gps_status extends MAVLinkMessage {
      */
     @Description("Global satellite ID")
     @Units("")
-    public short satellite_prn[] = new short[20];
+    public short[] satellite_prn = new short[20];
     
     /**
      * 0: Satellite not used, 1: used for localization
      */
     @Description("0: Satellite not used, 1: used for localization")
     @Units("")
-    public short satellite_used[] = new short[20];
+    public short[] satellite_used = new short[20];
     
     /**
      * Elevation (0: right on top of receiver, 90: on the horizon) of satellite
      */
     @Description("Elevation (0: right on top of receiver, 90: on the horizon) of satellite")
     @Units("deg")
-    public short satellite_elevation[] = new short[20];
+    public short[] satellite_elevation = new short[20];
     
     /**
      * Direction of satellite, 0: 0 deg, 255: 360 deg.
      */
     @Description("Direction of satellite, 0: 0 deg, 255: 360 deg.")
     @Units("deg")
-    public short satellite_azimuth[] = new short[20];
+    public short[] satellite_azimuth = new short[20];
     
     /**
      * Signal to noise ratio of satellite
      */
     @Description("Signal to noise ratio of satellite")
     @Units("dB")
-    public short satellite_snr[] = new short[20];
+    public short[] satellite_snr = new short[20];
     
 
     /**

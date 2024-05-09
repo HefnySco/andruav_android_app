@@ -48,7 +48,7 @@ public class msg_param_value extends MAVLinkMessage {
      */
     @Description("Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string")
     @Units("")
-    public byte param_id[] = new byte[16];
+    public byte[] param_id = new byte[16];
     
     /**
      * Onboard parameter type.

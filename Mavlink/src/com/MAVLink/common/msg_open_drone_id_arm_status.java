@@ -34,7 +34,7 @@ public class msg_open_drone_id_arm_status extends MAVLinkMessage {
      */
     @Description("Text error message, should be empty if status is good to arm. Fill with nulls in unused portion.")
     @Units("")
-    public byte error[] = new byte[50];
+    public byte[] error = new byte[50];
     
 
     /**

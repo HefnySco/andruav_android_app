@@ -55,7 +55,7 @@ public class msg_device_op_read_reply extends MAVLinkMessage {
      */
     @Description("Reply data.")
     @Units("")
-    public short data[] = new short[128];
+    public short[] data = new short[128];
     
     /**
      * Bank number.

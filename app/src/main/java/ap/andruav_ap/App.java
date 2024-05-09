@@ -243,7 +243,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                         App.notification.displayNotification(INotification.NOTIFICATION_TYPE_NORMAL, "Andruav", connection, true, INotification.INFO_TYPE_PROTOCOL, true);
 
                         App.gui_ConnectionIconID = R.drawable.connected_w_32x32;
-                        if (Preference.isAutoUDPProxyConnect(null)==true) {
+                        if (Preference.isAutoUDPProxyConnect(null)) {
                             // Start it if it is not started on server.
                             AndruavFacade.StartUdpProxyTelemetry();
                         }
@@ -326,7 +326,8 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         @Override
         public void onCellLocationChanged(CellLocation mLocation)
         {
-            if (shutdown) return;
+            if (shutdown) {
+            }
         }
 
         @Override
@@ -544,7 +545,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         if (!BuildConfig.DEBUG)
         {
-            return;
         }
 
     }
@@ -556,7 +556,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         if (!BuildConfig.DEBUG)
         {
-            return;
         }
 
 
@@ -683,7 +682,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(App.context));
 
-        if (FeatureSwitch.DEBUG_MODE == true)
+        if (FeatureSwitch.DEBUG_MODE)
         {
             // turn off the log 'No subscribers registered for event class xxx.xxx'
             EventBus.builder().logNoSubscriberMessages(false).installDefaultEventBus();
@@ -853,7 +852,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                    onFirstAndruavRun();
                }
                 // This isthe first run of an updated version.
-                isNewVersion = (Preference.getAppVersion(null).equals(App.versionName) == false);
+                isNewVersion = (!Preference.getAppVersion(null).equals(App.versionName));
 
                 // HEFNY DEBUG
                 //isNewVersion = true;

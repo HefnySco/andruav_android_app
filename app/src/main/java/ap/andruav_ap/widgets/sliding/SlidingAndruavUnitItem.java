@@ -233,7 +233,7 @@ public class SlidingAndruavUnitItem extends ListUnitItemBase {
         if (mAndruavUnit != null) {
             bItIsMe = andruavUnit.IsMe();
 
-            if ((andruavUnit.isGUIActivated == false) && (bItIsMe == false)) {
+            if ((!andruavUnit.isGUIActivated) && (!bItIsMe)) {
                 bRemoteEnable = false;
             }
             setMainButton();

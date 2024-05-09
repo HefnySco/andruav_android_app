@@ -62,7 +62,7 @@ public class msg_serial_control extends MAVLinkMessage {
      */
     @Description("serial data")
     @Units("")
-    public short data[] = new short[70];
+    public short[] data = new short[70];
     
 
     /**

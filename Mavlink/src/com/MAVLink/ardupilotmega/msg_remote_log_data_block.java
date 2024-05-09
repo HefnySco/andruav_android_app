@@ -48,7 +48,7 @@ public class msg_remote_log_data_block extends MAVLinkMessage {
      */
     @Description("Log data block.")
     @Units("")
-    public short data[] = new short[200];
+    public short[] data = new short[200];
     
 
     /**

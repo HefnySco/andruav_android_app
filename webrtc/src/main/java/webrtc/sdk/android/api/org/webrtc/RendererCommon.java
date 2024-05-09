@@ -158,9 +158,9 @@ public class RendererCommon {
   public static android.graphics.Matrix convertMatrixToAndroidGraphicsMatrix(float[] matrix4x4) {
     // clang-format off
     float[] values = {
-        matrix4x4[0 * 4 + 0], matrix4x4[1 * 4 + 0], matrix4x4[3 * 4 + 0],
-        matrix4x4[0 * 4 + 1], matrix4x4[1 * 4 + 1], matrix4x4[3 * 4 + 1],
-        matrix4x4[0 * 4 + 3], matrix4x4[1 * 4 + 3], matrix4x4[3 * 4 + 3],
+        matrix4x4[0], matrix4x4[4], matrix4x4[3 * 4],
+        matrix4x4[1], matrix4x4[4 + 1], matrix4x4[3 * 4 + 1],
+        matrix4x4[3], matrix4x4[4 + 3], matrix4x4[3 * 4 + 3],
     };
     // clang-format on
 
@@ -190,10 +190,10 @@ public class RendererCommon {
     //  w1 w2 0 w3]
     // clang-format off
     float[] matrix4x4 = {
-        values[0 * 3 + 0],  values[1 * 3 + 0], 0,  values[2 * 3 + 0],
-        values[0 * 3 + 1],  values[1 * 3 + 1], 0,  values[2 * 3 + 1],
+        values[0 + 0],  values[3], 0,  values[2 * 3],
+        values[1],  values[3 + 1], 0,  values[2 * 3 + 1],
         0,                  0,                 1,  0,
-        values[0 * 3 + 2],  values[1 * 3 + 2], 0,  values[2 * 3 + 2],
+        values[2],  values[3 + 2], 0,  values[2 * 3 + 2],
     };
     // clang-format on
     return matrix4x4;

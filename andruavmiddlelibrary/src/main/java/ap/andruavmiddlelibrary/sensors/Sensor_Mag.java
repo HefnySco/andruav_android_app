@@ -34,7 +34,7 @@ public class Sensor_Mag extends GenericIMUSensor implements SensorEventListener{
     public void onSensorChanged(SensorEvent event) {
 
 
-        if (misCalibrated == false)
+        if (!misCalibrated)
         {
             calibrateSensor(event.values);
 

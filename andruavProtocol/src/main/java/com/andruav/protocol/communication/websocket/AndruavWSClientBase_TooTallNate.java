@@ -184,7 +184,6 @@ public abstract class AndruavWSClientBase_TooTallNate extends AndruavWSClientBas
                 @Override
                 public void onError(final Exception ex) {
                     Me.onError(1,ex.getMessage());
-                    return ;
                 }
 
 

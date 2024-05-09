@@ -79,47 +79,35 @@ public class MainDroneActiviy extends AppCompatActivity {
                 public void handleMessage(Message msg) {
                     super.handleMessage(msg);
                     final EventLoginClient event_LoginClient = (EventLoginClient)msg.obj;
-                    switch (event_LoginClient.Cmd)
-                    {
+                    if (event_LoginClient.Cmd == LoginClient.CMD_RetrieveAccountName) {
+                        exitProgressDialog();
 
-                        case LoginClient.CMD_RetrieveAccountName:
-                            exitProgressDialog();
+                        if (event_LoginClient.LastError == 0) {
+                            email = event_LoginClient.Parameters.get(CONST_ACCOUNT_NAME_PARAMETER);
 
-                            if (event_LoginClient.LastError==0) {
-                                email = event_LoginClient.Parameters.get(CONST_ACCOUNT_NAME_PARAMETER);
-
-                                AndruavEngine.notification().Speak(getString(R.string.login_action_joined));
-                                savePreference();
-                                DialogHelper.doModalDialog(Me,getString(R.string.login_login),getString(R.string.login_action_joined),null,
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int whichButton) {
-                                                App.restartApp(1000,false);
-                                            }
-                                        });
-                                App.stopAndruavWS(true); // destroy WS
-                                App.defineAndruavUnit(false);
-                                LoginClient.LinkPartyID2AccessCode(AndruavSettings.andruavWe7daBase.PartyID,AndruavSettings.AccountName);
+                            AndruavEngine.notification().Speak(getString(R.string.login_action_joined));
+                            savePreference();
+                            DialogHelper.doModalDialog(Me, getString(R.string.login_login), getString(R.string.login_action_joined), null,
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            App.restartApp(1000, false);
+                                        }
+                                    });
+                            App.stopAndruavWS(true); // destroy WS
+                            App.defineAndruavUnit(false);
+                            LoginClient.LinkPartyID2AccessCode(AndruavSettings.andruavWe7daBase.PartyID, AndruavSettings.AccountName);
 
 
-                            }
-                            else if (event_LoginClient.LastError ==LoginClient.ERR_SERVER_UNREACHABLE)
-                            {
-                                DialogHelper.doModalDialog(Me, getString(R.string.login_login), getString(R.string.login_action_unreachable), null);
-                                AndruavEngine.notification().Speak(getString(R.string.login_action_unreachable));
-                                email="";
-                            }
-                            else
-                            {
-                                DialogHelper.doModalDialog(Me, getString(R.string.login_login), event_LoginClient.Parameters.get(CONST_ERROR_MSG), null);
-                                AndruavEngine.notification().Speak(getString(R.string.login_action_badaccesscode));
-                                email="";
+                        } else if (event_LoginClient.LastError == LoginClient.ERR_SERVER_UNREACHABLE) {
+                            DialogHelper.doModalDialog(Me, getString(R.string.login_login), getString(R.string.login_action_unreachable), null);
+                            AndruavEngine.notification().Speak(getString(R.string.login_action_unreachable));
+                            email = "";
+                        } else {
+                            DialogHelper.doModalDialog(Me, getString(R.string.login_login), event_LoginClient.Parameters.get(CONST_ERROR_MSG), null);
+                            AndruavEngine.notification().Speak(getString(R.string.login_action_badaccesscode));
+                            email = "";
 
-                            }
-
-
-
-                            break;
-
+                        }
                     }
                 }
             };
@@ -198,7 +186,6 @@ public class MainDroneActiviy extends AppCompatActivity {
             if (edtAccessCode.getText().length() == 0)
             {
                 DialogHelper.doModalDialog(this, getString(R.string.login_access_code), getString(R.string.err_nullValue), null);
-                return ;
             }
             else {
                 doProgressDialog();

@@ -132,10 +132,9 @@ class Camera2Session implements CameraSession {
       surface = new Surface(surfaceTextureHelper.getSurfaceTexture());
       try {
         camera.createCaptureSession(
-            Arrays.asList(surface), new CaptureSessionCallback(), cameraThreadHandler);
+                List.of(surface), new CaptureSessionCallback(), cameraThreadHandler);
       } catch (CameraAccessException e) {
         reportError("Failed to create capture session. " + e);
-        return;
       }
     }
 
@@ -507,7 +506,6 @@ class Camera2Session implements CameraSession {
       cameraManager.openCamera(cameraId, new CameraStateCallback(), cameraThreadHandler);
     } catch (CameraAccessException e) {
       reportError("Failed to open camera: " + e);
-      return;
     }
   }
 

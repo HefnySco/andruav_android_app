@@ -55,7 +55,7 @@ public class msg_debug_vect extends MAVLinkMessage {
      */
     @Description("Name")
     @Units("")
-    public byte name[] = new byte[10];
+    public byte[] name = new byte[10];
     
 
     /**
