@@ -62,7 +62,6 @@ import com.andruav.event.networkEvent.EventSocketState;
 
 import ap.andruav_ap.helpers.GUI;
 import ap.andruav_ap.helpers.RemoteControl;
-import ap.andruav_ap.helpers.Voting;
 import com.andruav.FeatureSwitch;
 
 import ap.andruavmiddlelibrary.preference.Preference;
@@ -501,18 +500,7 @@ public class MainScreen extends BaseAndruavShasha {
 
 
 
-                if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                    startActivity(new Intent(MainScreen.this, FCB_TCPShasha.class));
-                    if (App.telemetryProtocolParser == null)
-                    {  // No telemetry initialized and I am a GCS
-                        App.telemetryProtocolParser = new TelemetryGCSProtocolParser();
-                    }else
-                    if (App.telemetryProtocolParser instanceof TelemetryDroneProtocolParser) {
-                        // seems user changed mode from Drone to GCS
-                        App.telemetryProtocolParser.shutDown(); // close drone oarser instance.
-                        App.telemetryProtocolParser = null;
-                    }
-                } else {
+                if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
                     if ((App.telemetryProtocolParser instanceof TelemetryGCSProtocolParser))
                     {
                         App.telemetryProtocolParser.shutDown();
@@ -1235,9 +1223,7 @@ public class MainScreen extends BaseAndruavShasha {
 
 
 
-       Voting.processVotingCriteria();
-
-        writeInfoLabel();
+       writeInfoLabel();
     }
 
     @Override
