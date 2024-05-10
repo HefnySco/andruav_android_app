@@ -17,4 +17,3 @@ public class ATTITUDE_TARGET_TYPEMASK {
    public static final int ATTITUDE_TARGET_TYPEMASK_ATTITUDE_IGNORE = 128; /* Ignore attitude | */
    public static final int ATTITUDE_TARGET_TYPEMASK_ENUM_END = 129; /*  | */
 }
-            

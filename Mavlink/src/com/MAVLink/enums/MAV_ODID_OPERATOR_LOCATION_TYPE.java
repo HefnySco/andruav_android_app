@@ -15,4 +15,3 @@ public class MAV_ODID_OPERATOR_LOCATION_TYPE {
    public static final int MAV_ODID_OPERATOR_LOCATION_TYPE_FIXED = 2; /* The location of the operator is a fixed location. | */
    public static final int MAV_ODID_OPERATOR_LOCATION_TYPE_ENUM_END = 3; /*  | */
 }
-            

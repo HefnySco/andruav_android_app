@@ -148,4 +148,3 @@ public class MAV_COMPONENT {
    public static final int MAV_COMP_ID_SYSTEM_CONTROL = 250; /* Component for handling system messages (e.g. to ARM, takeoff, etc.). | */
    public static final int MAV_COMPONENT_ENUM_END = 251; /*  | */
 }
-            

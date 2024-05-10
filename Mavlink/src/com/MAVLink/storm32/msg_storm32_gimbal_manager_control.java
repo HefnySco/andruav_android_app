@@ -7,10 +7,10 @@
 // MESSAGE STORM32_GIMBAL_MANAGER_CONTROL PACKING
 package com.MAVLink.storm32;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Message to a gimbal manager to control the gimbal attitude. Angles and rates can be set to NaN according to use case. A gimbal device is never to react to this message.
@@ -27,7 +27,7 @@ public class msg_storm32_gimbal_manager_control extends MAVLinkMessage {
      */
     @Description("Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation, the frame is determined by the GIMBAL_MANAGER_FLAGS_ABSOLUTE_YAW flag, set first element to NaN to be ignored).")
     @Units("")
-    public float[] q = new float[4];
+    public float q[] = new float[4];
     
     /**
      * X component of angular velocity (positive: roll to the right, NaN to be ignored).

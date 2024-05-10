@@ -7,10 +7,10 @@
 // MESSAGE LED_CONTROL PACKING
 package com.MAVLink.ardupilotmega;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Control vehicle LEDs.
@@ -62,7 +62,7 @@ public class msg_led_control extends MAVLinkMessage {
      */
     @Description("Custom Bytes.")
     @Units("")
-    public short[] custom_bytes = new short[24];
+    public short custom_bytes[] = new short[24];
     
 
     /**

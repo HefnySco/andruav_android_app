@@ -7,10 +7,10 @@
 // MESSAGE ARRAY_TEST_7 PACKING
 package com.MAVLink.python_array_test;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Array test #7.
@@ -27,63 +27,63 @@ public class msg_array_test_7 extends MAVLinkMessage {
      */
     @Description("Value array")
     @Units("")
-    public double[] ar_d = new double[2];
+    public double ar_d[] = new double[2];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public float[] ar_f = new float[2];
+    public float ar_f[] = new float[2];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public long[] ar_u32 = new long[2];
+    public long ar_u32[] = new long[2];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public int[] ar_i32 = new int[2];
+    public int ar_i32[] = new int[2];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public int[] ar_u16 = new int[2];
+    public int ar_u16[] = new int[2];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public short[] ar_i16 = new short[2];
+    public short ar_i16[] = new short[2];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public short[] ar_u8 = new short[2];
+    public short ar_u8[] = new short[2];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public byte[] ar_i8 = new byte[2];
+    public byte ar_i8[] = new byte[2];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public byte[] ar_c = new byte[32];
+    public byte ar_c[] = new byte[32];
     
 
     /**

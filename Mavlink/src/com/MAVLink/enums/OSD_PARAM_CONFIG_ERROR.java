@@ -16,4 +16,3 @@ public class OSD_PARAM_CONFIG_ERROR {
    public static final int OSD_PARAM_INVALID_PARAMETER = 3; /*  | */
    public static final int OSD_PARAM_CONFIG_ERROR_ENUM_END = 4; /*  | */
 }
-            

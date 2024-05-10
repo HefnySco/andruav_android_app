@@ -1,6 +1,6 @@
 package ap.andruav_ap.communication.controlBoard.mavlink;
 
-import com.MAVLink.enums.MAV_CMD_ACK;
+import com.MAVLink.enums.MAV_RESULT;
 import com.MAVLink.enums.MAV_TYPE;
 import com.andruav.controlBoard.shared.common.FlightMode;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
@@ -728,39 +728,37 @@ public class MavLink_Helpers {
     {
         String err;
         switch (result) {
-            case MAV_CMD_ACK.MAV_CMD_ACK_OK:
+            case MAV_RESULT.MAV_RESULT_ACCEPTED:
                 err = "succeeded";
                 break;
-            case MAV_CMD_ACK.MAV_CMD_ACK_ERR_FAIL:
-                err = "Generic error message if none of the other reasons fails or if no detailed error reporting is implemented.";
+
+            case MAV_RESULT.MAV_RESULT_TEMPORARILY_REJECTED:
+                err = "Command is valid, but cannot be executed at this time. This is used to indicate a problem that should be fixed just by waiting (e.g. a state machine is busy, can't arm because have not got GPS lock, etc.). Retrying later should work.";
                 break;
 
-            case MAV_CMD_ACK.MAV_CMD_ACK_ERR_ACCESS_DENIED:
-                err = "The system is refusing to accept this command from communication partner.";
+            case MAV_RESULT.MAV_RESULT_DENIED:
+                err = "Command is invalid (is supported but has invalid parameters). Retrying same command and parameters will not work.";
                 break;
 
-            case MAV_CMD_ACK.MAV_CMD_ACK_ERR_COORDINATE_FRAME_NOT_SUPPORTED:
-                err = "The coordinate frame of this command or mission item is not supported.";
+            case MAV_RESULT.MAV_RESULT_UNSUPPORTED:
+                err = "Command is not supported (unknown).";
                 break;
 
-            case MAV_CMD_ACK.MAV_CMD_ACK_ERR_NOT_SUPPORTED:
-                err = "Command or mission item is not supported, other commands would be accepted.";
+            case MAV_RESULT.MAV_RESULT_FAILED:
+                err = "Command is valid, but execution has failed. This is used to indicate any non-temporary or unexpected problem, i.e. any problem that must be fixed before the command can succeed/be retried. For example, attempting to write a file when out of memory, attempting to arm when sensors are not calibrated, etc.";
                 break;
 
-            case MAV_CMD_ACK.MAV_CMD_ACK_ERR_COORDINATES_OUT_OF_RANGE:
-                err = "The coordinate frame of this command is ok, but he coordinate values exceed the safety limits of this system. This is a generic error, please use the more specific error messages below if possible.";
+            case MAV_RESULT.MAV_RESULT_IN_PROGRESS:
+                err = "Command is valid and is being executed. This will be followed by further progress updates, i.e. the component may send further COMMAND_ACK messages with result MAV_RESULT_IN_PROGRESS (at a rate decided by the implementation), and must terminate by sending a COMMAND_ACK message with final result of the operation. The COMMAND_ACK.progress field can be used to indicate the progress of the operation. There is no need for the sender to retry the command, but if done during execution, the component will return MAV_RESULT_IN_PROGRESS with an updated progress.";
                 break;
 
-            case MAV_CMD_ACK.MAV_CMD_ACK_ERR_X_LAT_OUT_OF_RANGE:
-                err = "The X or latitude value is out of range.";
-                break;
-            case MAV_CMD_ACK.MAV_CMD_ACK_ERR_Y_LON_OUT_OF_RANGE:
-                err = "The Y or longitude value is out of range.";
-                break;
-            case MAV_CMD_ACK.MAV_CMD_ACK_ERR_Z_ALT_OUT_OF_RANGE:
-                err = "The Z or altitude value is out of range.";
+            case MAV_RESULT.MAV_RESULT_COMMAND_LONG_ONLY:
+                err = "Command is only accepted when sent as a COMMAND_LONG.";
                 break;
 
+            case MAV_RESULT.MAV_RESULT_COMMAND_INT_ONLY:
+                err = "Command is only accepted when sent as a COMMAND_INT.";
+                break;
             default:
                 err = "Unknown";
                 break;

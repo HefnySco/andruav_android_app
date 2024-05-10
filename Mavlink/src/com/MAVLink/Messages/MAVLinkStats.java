@@ -4,7 +4,7 @@
  * java mavlink generator tool. It should not be modified by hand.
  */
 
-package com.MAVLink.messages;
+package com.MAVLink.Messages;
 
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.common.msg_radio_status;
@@ -20,7 +20,7 @@ public class MAVLinkStats /* implements Serializable */{
 
     public int lostPacketCount; // total lost packet count for all sources
 
-    public final boolean ignoreRadioPackets;
+    public boolean ignoreRadioPackets;
 
     // stats are nil for a system id until a packet has been received from a system
     public SystemStat[] systemStats; // stats for each system that is known

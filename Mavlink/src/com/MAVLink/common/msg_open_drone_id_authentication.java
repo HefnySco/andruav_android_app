@@ -7,10 +7,10 @@
 // MESSAGE OPEN_DRONE_ID_AUTHENTICATION PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Data for filling the OpenDroneID Authentication message. The Authentication Message defines a field that can provide a means of authenticity for the identity of the UAS (Unmanned Aircraft System). The Authentication message can have two different formats. For data page 0, the fields PageCount, Length and TimeStamp are present and AuthData is only 17 bytes. For data page 1 through 15, PageCount, Length and TimeStamp are not present and the size of AuthData is 23 bytes.
@@ -48,7 +48,7 @@ public class msg_open_drone_id_authentication extends MAVLinkMessage {
      */
     @Description("Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ")
     @Units("")
-    public short[] id_or_mac = new short[20];
+    public short id_or_mac[] = new short[20];
     
     /**
      * Indicates the type of authentication.
@@ -83,7 +83,7 @@ public class msg_open_drone_id_authentication extends MAVLinkMessage {
      */
     @Description("Opaque authentication data. For page 0, the size is only 17 bytes. For other pages, the size is 23 bytes. Shall be filled with nulls in the unused portion of the field.")
     @Units("")
-    public short[] authentication_data = new short[23];
+    public short authentication_data[] = new short[23];
     
 
     /**

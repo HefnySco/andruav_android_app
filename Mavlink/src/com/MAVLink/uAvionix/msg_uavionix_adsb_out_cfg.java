@@ -7,10 +7,10 @@
 // MESSAGE UAVIONIX_ADSB_OUT_CFG PACKING
 package com.MAVLink.uAvionix;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Static data to configure the ADS-B transponder (send within 10 sec of a POR and every 10 sec thereafter)
@@ -41,7 +41,7 @@ public class msg_uavionix_adsb_out_cfg extends MAVLinkMessage {
      */
     @Description("Vehicle identifier (8 characters, null terminated, valid characters are A-Z, 0-9, ' ' only)")
     @Units("")
-    public byte[] callsign = new byte[9];
+    public byte callsign[] = new byte[9];
     
     /**
      * Transmitting vehicle type. See ADSB_EMITTER_TYPE enum

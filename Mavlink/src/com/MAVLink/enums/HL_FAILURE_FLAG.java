@@ -26,4 +26,3 @@ public class HL_FAILURE_FLAG {
    public static final int HL_FAILURE_FLAG_MISSION = 8192; /* Mission failure. | */
    public static final int HL_FAILURE_FLAG_ENUM_END = 8193; /*  | */
 }
-            

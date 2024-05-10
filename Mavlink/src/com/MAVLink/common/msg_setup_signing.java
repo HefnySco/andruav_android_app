@@ -7,10 +7,10 @@
 // MESSAGE SETUP_SIGNING PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Setup a MAVLink2 signing key. If called with secret_key of all zero and zero initial_timestamp will disable signing
@@ -48,7 +48,7 @@ public class msg_setup_signing extends MAVLinkMessage {
      */
     @Description("signing key")
     @Units("")
-    public short[] secret_key = new short[32];
+    public short secret_key[] = new short[32];
     
 
     /**

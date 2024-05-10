@@ -10,8 +10,7 @@ package com.MAVLink.enums;
  * 
  */
 public class MAV_ODID_ARM_STATUS {
-   public static final int MAV_ODID_GOOD_TO_ARM = 0; /* Passing arming checks. | */
-   public static final int MAV_ODID_PRE_ARM_FAIL_GENERIC = 1; /* Generic arming failure, see error string for details. | */
+   public static final int MAV_ODID_ARM_STATUS_GOOD_TO_ARM = 0; /* Passing arming checks. | */
+   public static final int MAV_ODID_ARM_STATUS_PRE_ARM_FAIL_GENERIC = 1; /* Generic arming failure, see error string for details. | */
    public static final int MAV_ODID_ARM_STATUS_ENUM_END = 2; /*  | */
 }
-            

@@ -14,4 +14,3 @@ public class MAV_REMOTE_LOG_DATA_BLOCK_COMMANDS {
    public static final int MAV_REMOTE_LOG_DATA_BLOCK_START = 2147483646; /* UAV to start sending DataFlash blocks. | */
    public static final int MAV_REMOTE_LOG_DATA_BLOCK_COMMANDS_ENUM_END = 2147483647; /*  | */
 }
-            

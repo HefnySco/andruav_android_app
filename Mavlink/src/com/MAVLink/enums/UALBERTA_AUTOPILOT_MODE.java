@@ -17,4 +17,3 @@ public class UALBERTA_AUTOPILOT_MODE {
    public static final int MODE_AUTO_PID_POS = 5; /*  dfsdfsdfs | */
    public static final int UALBERTA_AUTOPILOT_MODE_ENUM_END = 6; /*  | */
 }
-            

@@ -3,7 +3,7 @@ package org.droidplanner.services.android.impl.core.drone.manager;
 import android.os.Handler;
 import android.os.RemoteException;
 
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_command_ack;
 import com.MAVLink.common.msg_command_long;
 import com.MAVLink.common.msg_set_mode;

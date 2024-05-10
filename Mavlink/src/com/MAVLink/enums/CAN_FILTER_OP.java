@@ -15,4 +15,3 @@ public class CAN_FILTER_OP {
    public static final int CAN_FILTER_REMOVE = 2; /*  | */
    public static final int CAN_FILTER_OP_ENUM_END = 3; /*  | */
 }
-            

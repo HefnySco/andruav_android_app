@@ -37,4 +37,3 @@ public class COPTER_MODE {
    public static final int COPTER_MODE_AUTO_RTL = 27; /*  | */
    public static final int COPTER_MODE_ENUM_END = 28; /*  | */
 }
-            

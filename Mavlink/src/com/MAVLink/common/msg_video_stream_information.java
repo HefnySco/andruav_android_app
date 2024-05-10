@@ -7,10 +7,10 @@
 // MESSAGE VIDEO_STREAM_INFORMATION PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Information about video stream. It may be requested using MAV_CMD_REQUEST_MESSAGE, where param2 indicates the video stream id: 0 for all streams, 1 for first, 2 for second, etc.
@@ -97,14 +97,14 @@ public class msg_video_stream_information extends MAVLinkMessage {
      */
     @Description("Stream name.")
     @Units("")
-    public byte[] name = new byte[32];
+    public byte name[] = new byte[32];
     
     /**
      * Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).
      */
     @Description("Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).")
     @Units("")
-    public byte[] uri = new byte[160];
+    public byte uri[] = new byte[160];
     
 
     /**

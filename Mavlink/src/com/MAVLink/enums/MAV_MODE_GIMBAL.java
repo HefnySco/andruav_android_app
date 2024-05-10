@@ -19,4 +19,3 @@ public class MAV_MODE_GIMBAL {
    public static final int MAV_MODE_GIMBAL_RATE_CMD_TIMEOUT = 6; /* Gimbal is relaxed because it missed more than 10 expected rate command messages in a row. Gimbal will move back to active mode when it receives a new rate command. | */
    public static final int MAV_MODE_GIMBAL_ENUM_END = 7; /*  | */
 }
-            

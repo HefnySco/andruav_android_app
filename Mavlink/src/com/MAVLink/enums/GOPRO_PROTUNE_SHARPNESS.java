@@ -15,4 +15,3 @@ public class GOPRO_PROTUNE_SHARPNESS {
    public static final int GOPRO_PROTUNE_SHARPNESS_HIGH = 2; /* High Sharpness. | */
    public static final int GOPRO_PROTUNE_SHARPNESS_ENUM_END = 3; /*  | */
 }
-            

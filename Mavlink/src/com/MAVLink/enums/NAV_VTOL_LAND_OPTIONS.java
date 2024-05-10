@@ -15,4 +15,3 @@ public class NAV_VTOL_LAND_OPTIONS {
    public static final int NAV_VTOL_LAND_OPTIONS_FW_APPROACH = 2; /* Use a fixed wing approach before detransitioning and landing vertically. | */
    public static final int NAV_VTOL_LAND_OPTIONS_ENUM_END = 3; /*  | */
 }
-            

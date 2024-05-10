@@ -7,10 +7,10 @@
 // MESSAGE GPS_STATUS PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * The positioning status, as reported by GPS. This message is intended to display status information about each satellite visible to the receiver. See message GLOBAL_POSITION for the global position estimate. This message can contain information for up to 20 satellites.
@@ -34,35 +34,35 @@ public class msg_gps_status extends MAVLinkMessage {
      */
     @Description("Global satellite ID")
     @Units("")
-    public short[] satellite_prn = new short[20];
+    public short satellite_prn[] = new short[20];
     
     /**
      * 0: Satellite not used, 1: used for localization
      */
     @Description("0: Satellite not used, 1: used for localization")
     @Units("")
-    public short[] satellite_used = new short[20];
+    public short satellite_used[] = new short[20];
     
     /**
      * Elevation (0: right on top of receiver, 90: on the horizon) of satellite
      */
     @Description("Elevation (0: right on top of receiver, 90: on the horizon) of satellite")
     @Units("deg")
-    public short[] satellite_elevation = new short[20];
+    public short satellite_elevation[] = new short[20];
     
     /**
      * Direction of satellite, 0: 0 deg, 255: 360 deg.
      */
     @Description("Direction of satellite, 0: 0 deg, 255: 360 deg.")
     @Units("deg")
-    public short[] satellite_azimuth = new short[20];
+    public short satellite_azimuth[] = new short[20];
     
     /**
      * Signal to noise ratio of satellite
      */
     @Description("Signal to noise ratio of satellite")
     @Units("dB")
-    public short[] satellite_snr = new short[20];
+    public short satellite_snr[] = new short[20];
     
 
     /**

@@ -7,10 +7,10 @@
 // MESSAGE VISION_POSITION_DELTA PACKING
 package com.MAVLink.ardupilotmega;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Camera vision based attitude and position deltas.
@@ -41,14 +41,14 @@ public class msg_vision_position_delta extends MAVLinkMessage {
      */
     @Description("Defines a rotation vector [roll, pitch, yaw] to the current MAV_FRAME_BODY_FRD from the previous MAV_FRAME_BODY_FRD.")
     @Units("rad")
-    public float[] angle_delta = new float[3];
+    public float angle_delta[] = new float[3];
     
     /**
      * Change in position to the current MAV_FRAME_BODY_FRD from the previous FRAME_BODY_FRD rotated to the current MAV_FRAME_BODY_FRD.
      */
     @Description("Change in position to the current MAV_FRAME_BODY_FRD from the previous FRAME_BODY_FRD rotated to the current MAV_FRAME_BODY_FRD.")
     @Units("m")
-    public float[] position_delta = new float[3];
+    public float position_delta[] = new float[3];
     
     /**
      * Normalised confidence value from 0 to 100.

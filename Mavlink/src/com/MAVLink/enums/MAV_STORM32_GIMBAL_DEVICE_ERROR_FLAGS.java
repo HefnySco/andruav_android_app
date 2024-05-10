@@ -22,4 +22,3 @@ public class MAV_STORM32_GIMBAL_DEVICE_ERROR_FLAGS {
    public static final int MAV_STORM32_GIMBAL_DEVICE_ERROR_FLAGS_NO_MANAGER = 32768; /* Gimbal device is not assigned to a gimbal manager (not an error). | */
    public static final int MAV_STORM32_GIMBAL_DEVICE_ERROR_FLAGS_ENUM_END = 32769; /*  | */
 }
-            

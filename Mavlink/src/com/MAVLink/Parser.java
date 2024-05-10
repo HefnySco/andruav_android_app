@@ -6,7 +6,8 @@
 
 package com.MAVLink;
 
-import com.MAVLink.messages.MAVLinkStats;
+import com.MAVLink.MAVLinkPacket;
+import com.MAVLink.Messages.MAVLinkStats;
 
 /**
  * MAVLink parser that parses @{link MAVLinkPacket}s from a byte stream one byte
@@ -20,7 +21,7 @@ public class Parser {
     static final boolean V = false;
 
     static void logv(String tag, String msg) {
-        if(V) System.out.printf("%s: %s%n", tag, msg);
+        if(V) System.out.println(String.format("%s: %s", tag, msg));
     }
 
     /**
@@ -47,7 +48,7 @@ public class Parser {
 
     private MAV_states state = MAV_states.MAVLINK_PARSE_STATE_UNINIT;
 
-    public final MAVLinkStats stats;
+    public MAVLinkStats stats;
     private MAVLinkPacket m;
     private boolean isMavlink2;
 

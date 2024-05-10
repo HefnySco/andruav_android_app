@@ -7,10 +7,10 @@
 // MESSAGE OPTICAL_FLOW PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Optical flow from a flow sensor (e.g. optical mouse sensor)
@@ -51,17 +51,17 @@ public class msg_optical_flow extends MAVLinkMessage {
     public float ground_distance;
     
     /**
-     * Flow in x-sensor direction
+     * Flow rate around X-axis (deprecated; use flow_rate_x)
      */
-    @Description("Flow in x-sensor direction")
-    @Units("dpix")
+    @Description("Flow rate around X-axis (deprecated; use flow_rate_x)")
+    @Units("rad/s")
     public short flow_x;
     
     /**
-     * Flow in y-sensor direction
+     * Flow rate around Y-axis (deprecated; use flow_rate_y)
      */
-    @Description("Flow in y-sensor direction")
-    @Units("dpix")
+    @Description("Flow rate around Y-axis (deprecated; use flow_rate_y)")
+    @Units("rad/s")
     public short flow_y;
     
     /**

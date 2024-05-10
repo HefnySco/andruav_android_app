@@ -16,4 +16,3 @@ public class SCRIPTING_CMD {
    public static final int SCRIPTING_CMD_STOP_AND_RESTART = 3; /* Stop execution of scripts and restart. | */
    public static final int SCRIPTING_CMD_ENUM_END = 4; /*  | */
 }
-            

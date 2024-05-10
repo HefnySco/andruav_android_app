@@ -24,4 +24,3 @@ public class MAV_STORM32_GIMBAL_MANAGER_FLAGS {
    public static final int MAV_STORM32_GIMBAL_MANAGER_FLAGS_SET_RELEASE = 1024; /* Release supervision. This flag is only for setting, it is not reported. | */
    public static final int MAV_STORM32_GIMBAL_MANAGER_FLAGS_ENUM_END = 1025; /*  | */
 }
-            

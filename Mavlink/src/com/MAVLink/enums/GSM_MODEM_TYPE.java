@@ -14,4 +14,3 @@ public class GSM_MODEM_TYPE {
    public static final int GSM_MODEM_TYPE_HUAWEI_E3372 = 1; /* HUAWEI LTE USB Stick E3372 | */
    public static final int GSM_MODEM_TYPE_ENUM_END = 2; /*  | */
 }
-            

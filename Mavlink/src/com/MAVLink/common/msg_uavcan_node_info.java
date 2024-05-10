@@ -7,10 +7,10 @@
 // MESSAGE UAVCAN_NODE_INFO PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * General information describing a particular UAVCAN node. Please refer to the definition of the UAVCAN service "uavcan.protocol.GetNodeInfo" for the background information. This message should be emitted by the system whenever a new node appears online, or an existing node reboots. Additionally, it can be emitted upon request from the other end of the MAVLink channel (see MAV_CMD_UAVCAN_GET_NODE_INFO). It is also not prohibited to emit this message unconditionally at a low frequency. The UAVCAN specification is available at http://uavcan.org.
@@ -48,7 +48,7 @@ public class msg_uavcan_node_info extends MAVLinkMessage {
      */
     @Description("Node name string. For example, 'sapog.px4.io'.")
     @Units("")
-    public byte[] name = new byte[80];
+    public byte name[] = new byte[80];
     
     /**
      * Hardware major version number.
@@ -69,7 +69,7 @@ public class msg_uavcan_node_info extends MAVLinkMessage {
      */
     @Description("Hardware unique 128-bit ID.")
     @Units("")
-    public short[] hw_unique_id = new short[16];
+    public short hw_unique_id[] = new short[16];
     
     /**
      * Software major version number.

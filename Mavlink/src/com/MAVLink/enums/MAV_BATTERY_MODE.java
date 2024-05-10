@@ -15,4 +15,3 @@ public class MAV_BATTERY_MODE {
    public static final int MAV_BATTERY_MODE_HOT_SWAP = 2; /* Battery in hot-swap mode (current limited to prevent spikes that might damage sensitive electrical circuits). | */
    public static final int MAV_BATTERY_MODE_ENUM_END = 3; /*  | */
 }
-            

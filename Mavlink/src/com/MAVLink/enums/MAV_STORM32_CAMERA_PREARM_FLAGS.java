@@ -13,4 +13,3 @@ public class MAV_STORM32_CAMERA_PREARM_FLAGS {
    public static final int MAV_STORM32_CAMERA_PREARM_FLAGS_CONNECTED = 1; /* The camera has been found and is connected. | */
    public static final int MAV_STORM32_CAMERA_PREARM_FLAGS_ENUM_END = 2; /*  | */
 }
-            

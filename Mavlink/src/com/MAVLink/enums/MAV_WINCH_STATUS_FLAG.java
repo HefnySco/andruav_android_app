@@ -16,4 +16,3 @@ public class MAV_WINCH_STATUS_FLAG {
    public static final int MAV_WINCH_STATUS_CLUTCH_ENGAGED = 8; /* Winch clutch is engaged allowing motor to move freely | */
    public static final int MAV_WINCH_STATUS_FLAG_ENUM_END = 9; /*  | */
 }
-            

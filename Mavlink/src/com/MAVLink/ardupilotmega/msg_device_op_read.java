@@ -7,10 +7,10 @@
 // MESSAGE DEVICE_OP_READ PACKING
 package com.MAVLink.ardupilotmega;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Read registers for a device.
@@ -69,7 +69,7 @@ public class msg_device_op_read extends MAVLinkMessage {
      */
     @Description("Name of device on bus (for SPI).")
     @Units("")
-    public byte[] busname = new byte[40];
+    public byte busname[] = new byte[40];
     
     /**
      * First register to read.

@@ -17,4 +17,3 @@ public class MAV_BATTERY_FUNCTION {
    public static final int MAV_BATTERY_TYPE_PAYLOAD = 4; /* Payload battery | */
    public static final int MAV_BATTERY_FUNCTION_ENUM_END = 5; /*  | */
 }
-            

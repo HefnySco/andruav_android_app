@@ -17,4 +17,3 @@ public class VTOL_TRANSITION_HEADING {
    public static final int VTOL_TRANSITION_HEADING_ANY = 4; /* Use the current heading when reaching takeoff altitude (potentially facing the wind when weather-vaning is active). | */
    public static final int VTOL_TRANSITION_HEADING_ENUM_END = 5; /*  | */
 }
-            

@@ -15,4 +15,3 @@ public class LED_CONTROL_PATTERN {
    public static final int LED_CONTROL_PATTERN_CUSTOM = 255; /* Custom Pattern using custom bytes fields. | */
    public static final int LED_CONTROL_PATTERN_ENUM_END = 256; /*  | */
 }
-            

@@ -7,10 +7,10 @@
 // MESSAGE UAVIONIX_ADSB_OUT_STATUS PACKING
 package com.MAVLink.uAvionix;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Status message with information from UCP Heartbeat and Status messages.
@@ -62,7 +62,7 @@ public class msg_uavionix_adsb_out_status extends MAVLinkMessage {
      */
     @Description("Flight Identification: 8 ASCII characters, '0' through '9', 'A' through 'Z' or space. Spaces (0x20) used as a trailing pad character, or when call sign is unavailable.")
     @Units("")
-    public byte[] flight_id = new byte[8];
+    public byte flight_id[] = new byte[8];
     
 
     /**

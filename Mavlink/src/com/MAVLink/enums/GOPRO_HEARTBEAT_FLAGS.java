@@ -13,4 +13,3 @@ public class GOPRO_HEARTBEAT_FLAGS {
    public static final int GOPRO_FLAG_RECORDING = 1; /* GoPro is currently recording. | */
    public static final int GOPRO_HEARTBEAT_FLAGS_ENUM_END = 2; /*  | */
 }
-            

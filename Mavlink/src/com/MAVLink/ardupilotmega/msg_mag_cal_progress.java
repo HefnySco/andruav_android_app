@@ -7,10 +7,10 @@
 // MESSAGE MAG_CAL_PROGRESS PACKING
 package com.MAVLink.ardupilotmega;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Reports progress of compass calibration.
@@ -83,7 +83,7 @@ public class msg_mag_cal_progress extends MAVLinkMessage {
      */
     @Description("Bitmask of sphere sections (see http://en.wikipedia.org/wiki/Geodesic_grid).")
     @Units("")
-    public short[] completion_mask = new short[10];
+    public short completion_mask[] = new short[10];
     
 
     /**

@@ -3,7 +3,7 @@ package com.o3dr.services.android.lib.mavlink;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 
 
 /**

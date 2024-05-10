@@ -19,4 +19,3 @@ public class MAV_MOUNT_MODE {
    public static final int MAV_MOUNT_MODE_HOME_LOCATION = 6; /* Gimbal tracks home location | */
    public static final int MAV_MOUNT_MODE_ENUM_END = 7; /*  | */
 }
-            

@@ -26,4 +26,3 @@ public class GOPRO_RESOLUTION {
    public static final int GOPRO_RESOLUTION_4k_SUPERVIEW = 13; /* 3840 x 2160 (4k-SuperView). | */
    public static final int GOPRO_RESOLUTION_ENUM_END = 14; /*  | */
 }
-            

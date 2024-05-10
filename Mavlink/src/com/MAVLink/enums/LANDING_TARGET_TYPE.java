@@ -16,4 +16,3 @@ public class LANDING_TARGET_TYPE {
    public static final int LANDING_TARGET_TYPE_VISION_OTHER = 3; /* Landing target represented by a pre-defined visual shape/feature (ex: X-marker, H-marker, square) | */
    public static final int LANDING_TARGET_TYPE_ENUM_END = 4; /*  | */
 }
-            

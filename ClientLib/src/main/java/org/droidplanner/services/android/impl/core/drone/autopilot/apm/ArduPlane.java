@@ -3,7 +3,7 @@ package org.droidplanner.services.android.impl.core.drone.autopilot.apm;
 import android.content.Context;
 import android.os.Handler;
 
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_global_position_int;
 import com.MAVLink.common.msg_vfr_hud;
 import com.MAVLink.enums.MAV_TYPE;

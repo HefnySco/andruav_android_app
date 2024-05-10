@@ -7,10 +7,10 @@
 // MESSAGE CONTROL_SYSTEM_STATE PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * The smoothed, monotonic system state used to feed the control loops of the system.
@@ -104,21 +104,21 @@ public class msg_control_system_state extends MAVLinkMessage {
      */
     @Description("Variance of body velocity estimate")
     @Units("")
-    public float[] vel_variance = new float[3];
+    public float vel_variance[] = new float[3];
     
     /**
      * Variance in local position
      */
     @Description("Variance in local position")
     @Units("")
-    public float[] pos_variance = new float[3];
+    public float pos_variance[] = new float[3];
     
     /**
      * The attitude, represented as Quaternion
      */
     @Description("The attitude, represented as Quaternion")
     @Units("")
-    public float[] q = new float[4];
+    public float q[] = new float[4];
     
     /**
      * Angular rate in roll axis

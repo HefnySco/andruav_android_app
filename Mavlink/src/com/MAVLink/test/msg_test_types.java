@@ -7,10 +7,10 @@
 // MESSAGE TEST_TYPES PACKING
 package com.MAVLink.test;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Test all field types
@@ -48,21 +48,21 @@ public class msg_test_types extends MAVLinkMessage {
      */
     @Description("uint64_t_array")
     @Units("")
-    public long[] u64_array = new long[3];
+    public long u64_array[] = new long[3];
     
     /**
      * int64_t_array
      */
     @Description("int64_t_array")
     @Units("")
-    public long[] s64_array = new long[3];
+    public long s64_array[] = new long[3];
     
     /**
      * double_array
      */
     @Description("double_array")
     @Units("")
-    public double[] d_array = new double[3];
+    public double d_array[] = new double[3];
     
     /**
      * uint32_t
@@ -90,21 +90,21 @@ public class msg_test_types extends MAVLinkMessage {
      */
     @Description("uint32_t_array")
     @Units("")
-    public long[] u32_array = new long[3];
+    public long u32_array[] = new long[3];
     
     /**
      * int32_t_array
      */
     @Description("int32_t_array")
     @Units("")
-    public int[] s32_array = new int[3];
+    public int s32_array[] = new int[3];
     
     /**
      * float_array
      */
     @Description("float_array")
     @Units("")
-    public float[] f_array = new float[3];
+    public float f_array[] = new float[3];
     
     /**
      * uint16_t
@@ -125,14 +125,14 @@ public class msg_test_types extends MAVLinkMessage {
      */
     @Description("uint16_t_array")
     @Units("")
-    public int[] u16_array = new int[3];
+    public int u16_array[] = new int[3];
     
     /**
      * int16_t_array
      */
     @Description("int16_t_array")
     @Units("")
-    public short[] s16_array = new short[3];
+    public short s16_array[] = new short[3];
     
     /**
      * char
@@ -146,7 +146,7 @@ public class msg_test_types extends MAVLinkMessage {
      */
     @Description("string")
     @Units("")
-    public byte[] s = new byte[10];
+    public byte s[] = new byte[10];
     
     /**
      * uint8_t
@@ -167,14 +167,14 @@ public class msg_test_types extends MAVLinkMessage {
      */
     @Description("uint8_t_array")
     @Units("")
-    public short[] u8_array = new short[3];
+    public short u8_array[] = new short[3];
     
     /**
      * int8_t_array
      */
     @Description("int8_t_array")
     @Units("")
-    public byte[] s8_array = new byte[3];
+    public byte s8_array[] = new byte[3];
     
 
     /**

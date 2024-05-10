@@ -20,4 +20,3 @@ public class MAG_CAL_STATUS {
    public static final int MAG_CAL_BAD_RADIUS = 7; /*  | */
    public static final int MAG_CAL_STATUS_ENUM_END = 8; /*  | */
 }
-            

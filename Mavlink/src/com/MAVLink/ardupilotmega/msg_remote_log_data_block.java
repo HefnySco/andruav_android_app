@@ -7,10 +7,10 @@
 // MESSAGE REMOTE_LOG_DATA_BLOCK PACKING
 package com.MAVLink.ardupilotmega;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Send a block of log data to remote location.
@@ -48,7 +48,7 @@ public class msg_remote_log_data_block extends MAVLinkMessage {
      */
     @Description("Log data block.")
     @Units("")
-    public short[] data = new short[200];
+    public short data[] = new short[200];
     
 
     /**

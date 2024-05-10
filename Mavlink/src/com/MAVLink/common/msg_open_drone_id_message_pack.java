@@ -7,10 +7,10 @@
 // MESSAGE OPEN_DRONE_ID_MESSAGE_PACK PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * An OpenDroneID message pack is a container for multiple encoded OpenDroneID messages (i.e. not in the format given for the above message descriptions but after encoding into the compressed OpenDroneID byte format). Used e.g. when transmitting on Bluetooth 5.0 Long Range/Extended Advertising or on WiFi Neighbor Aware Networking or on WiFi Beacon.
@@ -41,7 +41,7 @@ public class msg_open_drone_id_message_pack extends MAVLinkMessage {
      */
     @Description("Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ")
     @Units("")
-    public short[] id_or_mac = new short[20];
+    public short id_or_mac[] = new short[20];
     
     /**
      * This field must currently always be equal to 25 (bytes), since all encoded OpenDroneID messages are specificed to have this length.
@@ -62,7 +62,7 @@ public class msg_open_drone_id_message_pack extends MAVLinkMessage {
      */
     @Description("Concatenation of encoded OpenDroneID messages. Shall be filled with nulls in the unused portion of the field.")
     @Units("")
-    public short[] messages = new short[225];
+    public short messages[] = new short[225];
     
 
     /**

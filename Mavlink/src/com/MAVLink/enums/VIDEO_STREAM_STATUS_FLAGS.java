@@ -14,4 +14,3 @@ public class VIDEO_STREAM_STATUS_FLAGS {
    public static final int VIDEO_STREAM_STATUS_FLAGS_THERMAL = 2; /* Stream is thermal imaging | */
    public static final int VIDEO_STREAM_STATUS_FLAGS_ENUM_END = 3; /*  | */
 }
-            

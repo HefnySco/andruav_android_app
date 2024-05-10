@@ -17,4 +17,3 @@ public class GOPRO_PROTUNE_WHITE_BALANCE {
    public static final int GOPRO_PROTUNE_WHITE_BALANCE_RAW = 4; /* Camera Raw. | */
    public static final int GOPRO_PROTUNE_WHITE_BALANCE_ENUM_END = 5; /*  | */
 }
-            

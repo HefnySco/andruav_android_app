@@ -7,10 +7,10 @@
 // MESSAGE STORM32_GIMBAL_MANAGER_PROFILE PACKING
 package com.MAVLink.storm32;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Message to set a gimbal manager profile. A gimbal device is never to react to this command. The selected profile is reported in the STORM32_GIMBAL_MANAGER_STATUS message.
@@ -55,7 +55,7 @@ public class msg_storm32_gimbal_manager_profile extends MAVLinkMessage {
      */
     @Description("Priorities for custom profile.")
     @Units("")
-    public short[] priorities = new short[8];
+    public short priorities[] = new short[8];
     
     /**
      * Profile flags for custom profile (0 = default).
@@ -76,7 +76,7 @@ public class msg_storm32_gimbal_manager_profile extends MAVLinkMessage {
      */
     @Description("Timeouts for custom profile (0 = infinite, in uints of 100 ms).")
     @Units("")
-    public short[] timeouts = new short[8];
+    public short timeouts[] = new short[8];
     
 
     /**

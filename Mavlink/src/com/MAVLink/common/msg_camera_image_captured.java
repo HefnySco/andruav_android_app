@@ -7,10 +7,10 @@
 // MESSAGE CAMERA_IMAGE_CAPTURED PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Information about a captured image. This is emitted every time a message is captured. It may be re-requested using MAV_CMD_REQUEST_MESSAGE, using param2 to indicate the sequence number for the missing image.
@@ -69,7 +69,7 @@ public class msg_camera_image_captured extends MAVLinkMessage {
      */
     @Description("Quaternion of camera orientation (w, x, y, z order, zero-rotation is 1, 0, 0, 0)")
     @Units("")
-    public float[] q = new float[4];
+    public float q[] = new float[4];
     
     /**
      * Zero based index of this image (i.e. a new image will have index CAMERA_CAPTURE_STATUS.image count -1)
@@ -97,7 +97,7 @@ public class msg_camera_image_captured extends MAVLinkMessage {
      */
     @Description("URL of image taken. Either local storage or http://foo.jpg if camera provides an HTTP interface.")
     @Units("")
-    public byte[] file_url = new byte[205];
+    public byte file_url[] = new byte[205];
     
 
     /**

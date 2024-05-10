@@ -21,4 +21,3 @@ public class OSD_PARAM_CONFIG_TYPE {
    public static final int OSD_PARAM_NUM_TYPES = 8; /*  | */
    public static final int OSD_PARAM_CONFIG_TYPE_ENUM_END = 9; /*  | */
 }
-            

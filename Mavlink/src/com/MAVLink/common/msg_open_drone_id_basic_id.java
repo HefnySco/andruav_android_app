@@ -7,10 +7,10 @@
 // MESSAGE OPEN_DRONE_ID_BASIC_ID PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Data for filling the OpenDroneID Basic ID message. This and the below messages are primarily meant for feeding data to/from an OpenDroneID implementation. E.g. https://github.com/opendroneid/opendroneid-core-c. These messages are compatible with the ASTM F3411 Remote ID standard and the ASD-STAN prEN 4709-002 Direct Remote ID standard. Additional information and usage of these messages is documented at https://mavlink.io/en/services/opendroneid.html.
@@ -41,7 +41,7 @@ public class msg_open_drone_id_basic_id extends MAVLinkMessage {
      */
     @Description("Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ")
     @Units("")
-    public short[] id_or_mac = new short[20];
+    public short id_or_mac[] = new short[20];
     
     /**
      * Indicates the format for the uas_id field of this message.
@@ -62,7 +62,7 @@ public class msg_open_drone_id_basic_id extends MAVLinkMessage {
      */
     @Description("UAS (Unmanned Aircraft System) ID following the format specified by id_type. Shall be filled with nulls in the unused portion of the field.")
     @Units("")
-    public short[] uas_id = new short[20];
+    public short uas_id[] = new short[20];
     
 
     /**

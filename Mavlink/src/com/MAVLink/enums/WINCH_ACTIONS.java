@@ -21,4 +21,3 @@ public class WINCH_ACTIONS {
    public static final int WINCH_ABANDON_LINE = 8; /* Spool out the entire length of the line. Only action and instance command parameters are used, others are ignored. | */
    public static final int WINCH_ACTIONS_ENUM_END = 9; /*  | */
 }
-            

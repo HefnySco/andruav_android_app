@@ -24,4 +24,3 @@ public class ROVER_MODE {
    public static final int ROVER_MODE_INITIALIZING = 16; /*  | */
    public static final int ROVER_MODE_ENUM_END = 17; /*  | */
 }
-            

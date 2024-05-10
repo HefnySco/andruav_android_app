@@ -150,14 +150,28 @@ public class LoginClient {
      */
     public static void ValidateAccount (final String AccountName,final String AccessCode,final String Group, final ILoginClientCallback iLoginClientCallback) throws UnsupportedEncodingException {
 
-        final Pair<String, String>[] urls = new Pair[] {
-                new Pair(CONST_ACCOUNT_NAME_PARAMETER, AccountName.trim()), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
-                new Pair(CONST_ACCESS_CODE_PARAMETER, AccessCode.trim()), // read from preference not from AndruavSettings.andruavwe7da.
-                new Pair(CONST_GROUP_PARAMETER, Group.trim()), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
-                new Pair(CONST_APP_VER_PARAMETER, URLEncoder.encode(AndruavEngine.getPreference().getVersionName(), StandardCharsets.UTF_8)),
-                new Pair(CONST_APP_NAME_PARAMETER, "andruav"),
-                new Pair(CONST_EXTRA_PARAMETER, "Andruav Mobile"),
-        };
+        final Pair<String, String>[] urls;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            urls = new Pair[] {
+                    new Pair(CONST_ACCOUNT_NAME_PARAMETER, AccountName.trim()), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
+                    new Pair(CONST_ACCESS_CODE_PARAMETER, AccessCode.trim()), // read from preference not from AndruavSettings.andruavwe7da.
+                    new Pair(CONST_GROUP_PARAMETER, Group.trim()), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
+                    new Pair(CONST_APP_VER_PARAMETER, URLEncoder.encode(AndruavEngine.getPreference().getVersionName(), StandardCharsets.UTF_8)),
+                    new Pair(CONST_APP_NAME_PARAMETER, "andruav"),
+                    new Pair(CONST_EXTRA_PARAMETER, "Andruav Mobile"),
+            };
+        }
+        else
+        {
+            urls = new Pair[] {
+                    new Pair(CONST_ACCOUNT_NAME_PARAMETER, AccountName.trim()), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
+                    new Pair(CONST_ACCESS_CODE_PARAMETER, AccessCode.trim()), // read from preference not from AndruavSettings.andruavwe7da.
+                    new Pair(CONST_GROUP_PARAMETER, Group.trim()), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
+                    new Pair(CONST_APP_VER_PARAMETER, AndruavEngine.getPreference().getVersionName()),
+                    new Pair(CONST_APP_NAME_PARAMETER, "andruav"),
+                    new Pair(CONST_EXTRA_PARAMETER, "Andruav Mobile"),
+            };
+        }
 
         SendRequest(CMD_ValidateAccount, CONST_AGENT_FUNCTION + CONST_AGENT_LOGIN_COMMAND , urls, iLoginClientCallback);
 

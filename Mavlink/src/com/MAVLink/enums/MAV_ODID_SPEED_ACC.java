@@ -17,4 +17,3 @@ public class MAV_ODID_SPEED_ACC {
    public static final int MAV_ODID_SPEED_ACC_0_3_METERS_PER_SECOND = 4; /* The speed accuracy is smaller than 0.3 meters per second. | */
    public static final int MAV_ODID_SPEED_ACC_ENUM_END = 5; /*  | */
 }
-            

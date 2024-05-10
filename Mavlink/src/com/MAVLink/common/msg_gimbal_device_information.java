@@ -7,10 +7,10 @@
 // MESSAGE GIMBAL_DEVICE_INFORMATION PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Information about a low level gimbal. This message should be requested by the gimbal manager or a ground station using MAV_CMD_REQUEST_MESSAGE. The maximum angles and rates are the limits by hardware. However, the limits by software used are likely different/smaller and dependent on mode/settings/etc..
@@ -18,7 +18,7 @@ import com.MAVLink.messages.Description;
 public class msg_gimbal_device_information extends MAVLinkMessage {
 
     public static final int MAVLINK_MSG_ID_GIMBAL_DEVICE_INFORMATION = 283;
-    public static final int MAVLINK_MSG_LENGTH = 144;
+    public static final int MAVLINK_MSG_LENGTH = 145;
     private static final long serialVersionUID = MAVLINK_MSG_ID_GIMBAL_DEVICE_INFORMATION;
 
     
@@ -51,44 +51,44 @@ public class msg_gimbal_device_information extends MAVLinkMessage {
     public long hardware_version;
     
     /**
-     * Minimum hardware roll angle (positive: rolling to the right, negative: rolling to the left)
+     * Minimum hardware roll angle (positive: rolling to the right, negative: rolling to the left). NAN if unknown.
      */
-    @Description("Minimum hardware roll angle (positive: rolling to the right, negative: rolling to the left)")
+    @Description("Minimum hardware roll angle (positive: rolling to the right, negative: rolling to the left). NAN if unknown.")
     @Units("rad")
     public float roll_min;
     
     /**
-     * Maximum hardware roll angle (positive: rolling to the right, negative: rolling to the left)
+     * Maximum hardware roll angle (positive: rolling to the right, negative: rolling to the left). NAN if unknown.
      */
-    @Description("Maximum hardware roll angle (positive: rolling to the right, negative: rolling to the left)")
+    @Description("Maximum hardware roll angle (positive: rolling to the right, negative: rolling to the left). NAN if unknown.")
     @Units("rad")
     public float roll_max;
     
     /**
-     * Minimum hardware pitch angle (positive: up, negative: down)
+     * Minimum hardware pitch angle (positive: up, negative: down). NAN if unknown.
      */
-    @Description("Minimum hardware pitch angle (positive: up, negative: down)")
+    @Description("Minimum hardware pitch angle (positive: up, negative: down). NAN if unknown.")
     @Units("rad")
     public float pitch_min;
     
     /**
-     * Maximum hardware pitch angle (positive: up, negative: down)
+     * Maximum hardware pitch angle (positive: up, negative: down). NAN if unknown.
      */
-    @Description("Maximum hardware pitch angle (positive: up, negative: down)")
+    @Description("Maximum hardware pitch angle (positive: up, negative: down). NAN if unknown.")
     @Units("rad")
     public float pitch_max;
     
     /**
-     * Minimum hardware yaw angle (positive: to the right, negative: to the left)
+     * Minimum hardware yaw angle (positive: to the right, negative: to the left). NAN if unknown.
      */
-    @Description("Minimum hardware yaw angle (positive: to the right, negative: to the left)")
+    @Description("Minimum hardware yaw angle (positive: to the right, negative: to the left). NAN if unknown.")
     @Units("rad")
     public float yaw_min;
     
     /**
-     * Maximum hardware yaw angle (positive: to the right, negative: to the left)
+     * Maximum hardware yaw angle (positive: to the right, negative: to the left). NAN if unknown.
      */
-    @Description("Maximum hardware yaw angle (positive: to the right, negative: to the left)")
+    @Description("Maximum hardware yaw angle (positive: to the right, negative: to the left). NAN if unknown.")
     @Units("rad")
     public float yaw_max;
     
@@ -111,21 +111,28 @@ public class msg_gimbal_device_information extends MAVLinkMessage {
      */
     @Description("Name of the gimbal vendor.")
     @Units("")
-    public byte[] vendor_name = new byte[32];
+    public byte vendor_name[] = new byte[32];
     
     /**
      * Name of the gimbal model.
      */
     @Description("Name of the gimbal model.")
     @Units("")
-    public byte[] model_name = new byte[32];
+    public byte model_name[] = new byte[32];
     
     /**
      * Custom name of the gimbal given to it by the user.
      */
     @Description("Custom name of the gimbal given to it by the user.")
     @Units("")
-    public byte[] custom_name = new byte[32];
+    public byte custom_name[] = new byte[32];
+    
+    /**
+     * This field is to be used if the gimbal manager and the gimbal device are the same component and hence have the same component ID. This field is then set to a number between 1-6. If the component ID is separate, this field is not required and must be set to 0.
+     */
+    @Description("This field is to be used if the gimbal manager and the gimbal device are the same component and hence have the same component ID. This field is then set to a number between 1-6. If the component ID is separate, this field is not required and must be set to 0.")
+    @Units("")
+    public short gimbal_device_id;
     
 
     /**
@@ -168,6 +175,7 @@ public class msg_gimbal_device_information extends MAVLinkMessage {
                     
         
         if (isMavlink2) {
+             packet.payload.putUnsignedByte(gimbal_device_id);
             
         }
         return packet;
@@ -211,6 +219,7 @@ public class msg_gimbal_device_information extends MAVLinkMessage {
                 
         
         if (isMavlink2) {
+             this.gimbal_device_id = payload.getUnsignedByte();
             
         }
     }
@@ -225,7 +234,7 @@ public class msg_gimbal_device_information extends MAVLinkMessage {
     /**
      * Constructor for a new message, initializes msgid and all payload variables
      */
-    public msg_gimbal_device_information( long uid, long time_boot_ms, long firmware_version, long hardware_version, float roll_min, float roll_max, float pitch_min, float pitch_max, float yaw_min, float yaw_max, int cap_flags, int custom_cap_flags, byte[] vendor_name, byte[] model_name, byte[] custom_name) {
+    public msg_gimbal_device_information( long uid, long time_boot_ms, long firmware_version, long hardware_version, float roll_min, float roll_max, float pitch_min, float pitch_max, float yaw_min, float yaw_max, int cap_flags, int custom_cap_flags, byte[] vendor_name, byte[] model_name, byte[] custom_name, short gimbal_device_id) {
         this.msgid = MAVLINK_MSG_ID_GIMBAL_DEVICE_INFORMATION;
 
         this.uid = uid;
@@ -243,13 +252,14 @@ public class msg_gimbal_device_information extends MAVLinkMessage {
         this.vendor_name = vendor_name;
         this.model_name = model_name;
         this.custom_name = custom_name;
+        this.gimbal_device_id = gimbal_device_id;
         
     }
 
     /**
      * Constructor for a new message, initializes everything
      */
-    public msg_gimbal_device_information( long uid, long time_boot_ms, long firmware_version, long hardware_version, float roll_min, float roll_max, float pitch_min, float pitch_max, float yaw_min, float yaw_max, int cap_flags, int custom_cap_flags, byte[] vendor_name, byte[] model_name, byte[] custom_name, int sysid, int compid, boolean isMavlink2) {
+    public msg_gimbal_device_information( long uid, long time_boot_ms, long firmware_version, long hardware_version, float roll_min, float roll_max, float pitch_min, float pitch_max, float yaw_min, float yaw_max, int cap_flags, int custom_cap_flags, byte[] vendor_name, byte[] model_name, byte[] custom_name, short gimbal_device_id, int sysid, int compid, boolean isMavlink2) {
         this.msgid = MAVLINK_MSG_ID_GIMBAL_DEVICE_INFORMATION;
         this.sysid = sysid;
         this.compid = compid;
@@ -270,6 +280,7 @@ public class msg_gimbal_device_information extends MAVLinkMessage {
         this.vendor_name = vendor_name;
         this.model_name = model_name;
         this.custom_name = custom_name;
+        this.gimbal_device_id = gimbal_device_id;
         
     }
 
@@ -374,13 +385,13 @@ public class msg_gimbal_device_information extends MAVLinkMessage {
         return buf.toString();
 
     }
-                         
+                           
     /**
      * Returns a string with the MSG name and data
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GIMBAL_DEVICE_INFORMATION - sysid:"+sysid+" compid:"+compid+" uid:"+uid+" time_boot_ms:"+time_boot_ms+" firmware_version:"+firmware_version+" hardware_version:"+hardware_version+" roll_min:"+roll_min+" roll_max:"+roll_max+" pitch_min:"+pitch_min+" pitch_max:"+pitch_max+" yaw_min:"+yaw_min+" yaw_max:"+yaw_max+" cap_flags:"+cap_flags+" custom_cap_flags:"+custom_cap_flags+" vendor_name:"+vendor_name+" model_name:"+model_name+" custom_name:"+custom_name+"";
+        return "MAVLINK_MSG_ID_GIMBAL_DEVICE_INFORMATION - sysid:"+sysid+" compid:"+compid+" uid:"+uid+" time_boot_ms:"+time_boot_ms+" firmware_version:"+firmware_version+" hardware_version:"+hardware_version+" roll_min:"+roll_min+" roll_max:"+roll_max+" pitch_min:"+pitch_min+" pitch_max:"+pitch_max+" yaw_min:"+yaw_min+" yaw_max:"+yaw_max+" cap_flags:"+cap_flags+" custom_cap_flags:"+custom_cap_flags+" vendor_name:"+vendor_name+" model_name:"+model_name+" custom_name:"+custom_name+" gimbal_device_id:"+gimbal_device_id+"";
     }
 
     /**

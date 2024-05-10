@@ -7,10 +7,10 @@
 // MESSAGE SET_ATTITUDE_TARGET PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Sets a desired vehicle attitude. Used by an external controller to command the vehicle (manual controller or other system).
@@ -34,7 +34,7 @@ public class msg_set_attitude_target extends MAVLinkMessage {
      */
     @Description("Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0)")
     @Units("")
-    public float[] q = new float[4];
+    public float q[] = new float[4];
     
     /**
      * Body roll rate

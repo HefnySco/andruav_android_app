@@ -20,4 +20,3 @@ public class GOPRO_CAPTURE_MODE {
    public static final int GOPRO_CAPTURE_MODE_UNKNOWN = 255; /* Mode not yet known. | */
    public static final int GOPRO_CAPTURE_MODE_ENUM_END = 256; /*  | */
 }
-            

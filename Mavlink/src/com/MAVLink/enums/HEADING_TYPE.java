@@ -14,4 +14,3 @@ public class HEADING_TYPE {
    public static final int HEADING_TYPE_HEADING = 1; /*  | */
    public static final int HEADING_TYPE_ENUM_END = 2; /*  | */
 }
-            

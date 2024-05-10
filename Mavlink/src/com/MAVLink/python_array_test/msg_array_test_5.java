@@ -7,10 +7,10 @@
 // MESSAGE ARRAY_TEST_5 PACKING
 package com.MAVLink.python_array_test;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Array test #5.
@@ -27,14 +27,14 @@ public class msg_array_test_5 extends MAVLinkMessage {
      */
     @Description("Value array")
     @Units("")
-    public byte[] c1 = new byte[5];
+    public byte c1[] = new byte[5];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public byte[] c2 = new byte[5];
+    public byte c2[] = new byte[5];
     
 
     /**

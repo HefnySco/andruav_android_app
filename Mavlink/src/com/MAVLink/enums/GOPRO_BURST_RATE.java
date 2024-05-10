@@ -21,4 +21,3 @@ public class GOPRO_BURST_RATE {
    public static final int GOPRO_BURST_RATE_30_IN_6_SECOND = 8; /* 30 Shots / 6 Second. | */
    public static final int GOPRO_BURST_RATE_ENUM_END = 9; /*  | */
 }
-            

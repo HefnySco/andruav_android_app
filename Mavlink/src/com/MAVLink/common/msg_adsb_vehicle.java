@@ -7,10 +7,10 @@
 // MESSAGE ADSB_VEHICLE PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * The location and information of an ADSB vehicle
@@ -97,7 +97,7 @@ public class msg_adsb_vehicle extends MAVLinkMessage {
      */
     @Description("The callsign, 8+null")
     @Units("")
-    public byte[] callsign = new byte[9];
+    public byte callsign[] = new byte[9];
     
     /**
      * ADSB emitter type.

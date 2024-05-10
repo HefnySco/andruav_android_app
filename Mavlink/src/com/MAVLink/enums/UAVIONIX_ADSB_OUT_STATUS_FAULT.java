@@ -17,4 +17,3 @@ public class UAVIONIX_ADSB_OUT_STATUS_FAULT {
    public static final int UAVIONIX_ADSB_OUT_STATUS_FAULT_MAINT_REQ = 128; /*  | */
    public static final int UAVIONIX_ADSB_OUT_STATUS_FAULT_ENUM_END = 129; /*  | */
 }
-            

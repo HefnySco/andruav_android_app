@@ -15,4 +15,3 @@ public class LIMIT_MODULE {
    public static final int LIMIT_ALTITUDE = 4; /* Checking limits. | */
    public static final int LIMIT_MODULE_ENUM_END = 5; /*  | */
 }
-            

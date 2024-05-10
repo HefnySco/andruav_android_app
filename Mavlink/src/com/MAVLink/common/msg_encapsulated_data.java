@@ -7,10 +7,10 @@
 // MESSAGE ENCAPSULATED_DATA PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Data packet for images sent using the Image Transmission Protocol: https://mavlink.io/en/services/image_transmission.html.
@@ -34,7 +34,7 @@ public class msg_encapsulated_data extends MAVLinkMessage {
      */
     @Description("image data bytes")
     @Units("")
-    public short[] data = new short[253];
+    public short data[] = new short[253];
     
 
     /**

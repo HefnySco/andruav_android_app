@@ -22,4 +22,3 @@ public class ADSB_FLAGS {
    public static final int ADSB_FLAGS_SOURCE_UAT = 32768; /*  | */
    public static final int ADSB_FLAGS_ENUM_END = 32769; /*  | */
 }
-            

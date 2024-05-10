@@ -24,4 +24,3 @@ public class CAMERA_CAP_FLAGS {
    public static final int CAMERA_CAP_FLAGS_HAS_TRACKING_GEO_STATUS = 2048; /* Camera supports tracking geo status (CAMERA_TRACKING_GEO_STATUS). | */
    public static final int CAMERA_CAP_FLAGS_ENUM_END = 2049; /*  | */
 }
-            

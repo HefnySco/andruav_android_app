@@ -26,4 +26,3 @@ public class MAV_STORM32_GIMBAL_DEVICE_CAP_FLAGS {
    public static final int MAV_STORM32_GIMBAL_DEVICE_CAP_FLAGS_HAS_RC = 131072; /* Gimbal device supports control via an RC input signal. | */
    public static final int MAV_STORM32_GIMBAL_DEVICE_CAP_FLAGS_ENUM_END = 131073; /*  | */
 }
-            

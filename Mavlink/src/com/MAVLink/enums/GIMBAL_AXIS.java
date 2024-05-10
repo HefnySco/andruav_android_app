@@ -15,4 +15,3 @@ public class GIMBAL_AXIS {
    public static final int GIMBAL_AXIS_ROLL = 2; /* Gimbal roll axis. | */
    public static final int GIMBAL_AXIS_ENUM_END = 3; /*  | */
 }
-            

@@ -20,4 +20,3 @@ public class GPS_INPUT_IGNORE_FLAGS {
    public static final int GPS_INPUT_IGNORE_FLAG_VERTICAL_ACCURACY = 128; /* ignore vertical accuracy field | */
    public static final int GPS_INPUT_IGNORE_FLAGS_ENUM_END = 129; /*  | */
 }
-            

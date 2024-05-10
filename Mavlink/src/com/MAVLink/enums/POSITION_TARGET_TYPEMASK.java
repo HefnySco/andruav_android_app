@@ -24,4 +24,3 @@ public class POSITION_TARGET_TYPEMASK {
    public static final int POSITION_TARGET_TYPEMASK_YAW_RATE_IGNORE = 2048; /* Ignore yaw rate | */
    public static final int POSITION_TARGET_TYPEMASK_ENUM_END = 2049; /*  | */
 }
-            

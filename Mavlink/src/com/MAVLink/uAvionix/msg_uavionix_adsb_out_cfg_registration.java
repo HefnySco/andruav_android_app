@@ -7,10 +7,10 @@
 // MESSAGE UAVIONIX_ADSB_OUT_CFG_REGISTRATION PACKING
 package com.MAVLink.uAvionix;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Aircraft Registration.
@@ -27,7 +27,7 @@ public class msg_uavionix_adsb_out_cfg_registration extends MAVLinkMessage {
      */
     @Description("Aircraft Registration (ASCII string A-Z, 0-9 only), e.g. 'N8644B '. Trailing spaces (0x20) only. This is null-terminated.")
     @Units("")
-    public byte[] registration = new byte[9];
+    public byte registration[] = new byte[9];
     
 
     /**

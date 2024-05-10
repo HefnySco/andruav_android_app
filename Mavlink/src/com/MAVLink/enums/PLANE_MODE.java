@@ -36,4 +36,3 @@ public class PLANE_MODE {
    public static final int PLANE_MODE_THERMAL = 24; /*  | */
    public static final int PLANE_MODE_ENUM_END = 25; /*  | */
 }
-            

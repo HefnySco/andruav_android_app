@@ -7,10 +7,10 @@
 // MESSAGE FOLLOW_TARGET PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Current motion information from a designated system
@@ -62,35 +62,35 @@ public class msg_follow_target extends MAVLinkMessage {
      */
     @Description("target velocity (0,0,0) for unknown")
     @Units("m/s")
-    public float[] vel = new float[3];
+    public float vel[] = new float[3];
     
     /**
      * linear target acceleration (0,0,0) for unknown
      */
     @Description("linear target acceleration (0,0,0) for unknown")
     @Units("m/s/s")
-    public float[] acc = new float[3];
+    public float acc[] = new float[3];
     
     /**
      * (1 0 0 0 for unknown)
      */
     @Description("(1 0 0 0 for unknown)")
     @Units("")
-    public float[] attitude_q = new float[4];
+    public float attitude_q[] = new float[4];
     
     /**
      * (0 0 0 for unknown)
      */
     @Description("(0 0 0 for unknown)")
     @Units("")
-    public float[] rates = new float[3];
+    public float rates[] = new float[3];
     
     /**
      * eph epv
      */
     @Description("eph epv")
     @Units("")
-    public float[] position_cov = new float[3];
+    public float position_cov[] = new float[3];
     
     /**
      * bit positions for tracker reporting capabilities (POS = 0, VEL = 1, ACCEL = 2, ATT + RATES = 3)

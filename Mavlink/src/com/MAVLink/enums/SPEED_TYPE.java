@@ -7,11 +7,12 @@
 package com.MAVLink.enums;
 
 /**
- * 
+ * Speed setpoint types used in MAV_CMD_DO_CHANGE_SPEED
  */
 public class SPEED_TYPE {
-   public static final int SPEED_TYPE_AIRSPEED = 0; /*  | */
-   public static final int SPEED_TYPE_GROUNDSPEED = 1; /*  | */
-   public static final int SPEED_TYPE_ENUM_END = 2; /*  | */
+   public static final int SPEED_TYPE_AIRSPEED = 0; /* Airspeed | */
+   public static final int SPEED_TYPE_GROUNDSPEED = 1; /* Groundspeed | */
+   public static final int SPEED_TYPE_CLIMB_SPEED = 2; /* Climb speed | */
+   public static final int SPEED_TYPE_DESCENT_SPEED = 3; /* Descent speed | */
+   public static final int SPEED_TYPE_ENUM_END = 4; /*  | */
 }
-            

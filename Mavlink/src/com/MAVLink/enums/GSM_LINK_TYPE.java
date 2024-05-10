@@ -17,4 +17,3 @@ public class GSM_LINK_TYPE {
    public static final int GSM_LINK_TYPE_4G = 4; /* 4G link (LTE) | */
    public static final int GSM_LINK_TYPE_ENUM_END = 5; /*  | */
 }
-            

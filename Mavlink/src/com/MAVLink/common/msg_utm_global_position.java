@@ -7,10 +7,10 @@
 // MESSAGE UTM_GLOBAL_POSITION PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * The global position resulting from GPS and sensor fusion.
@@ -132,7 +132,7 @@ public class msg_utm_global_position extends MAVLinkMessage {
      */
     @Description("Unique UAS ID.")
     @Units("")
-    public short[] uas_id = new short[18];
+    public short uas_id[] = new short[18];
     
     /**
      * Flight state

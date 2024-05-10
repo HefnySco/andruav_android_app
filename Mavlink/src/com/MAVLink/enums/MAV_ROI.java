@@ -19,4 +19,3 @@ public class MAV_ROI {
    public static final int MAV_ROI_TARGET = 4; /* Point toward of given id. | */
    public static final int MAV_ROI_ENUM_END = 5; /*  | */
 }
-            

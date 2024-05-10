@@ -23,4 +23,3 @@ public class MAV_TUNNEL_PAYLOAD_TYPE {
    public static final int MAV_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED9 = 209; /* Registered for STorM32 gimbal controller. | */
    public static final int MAV_TUNNEL_PAYLOAD_TYPE_ENUM_END = 210; /*  | */
 }
-            

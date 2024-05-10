@@ -7,10 +7,10 @@
 // MESSAGE RESOURCE_REQUEST PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * The autopilot is requesting a resource (file, binary, other type of data)
@@ -41,7 +41,7 @@ public class msg_resource_request extends MAVLinkMessage {
      */
     @Description("The requested unique resource identifier (URI). It is not necessarily a straight domain name (depends on the URI type enum)")
     @Units("")
-    public short[] uri = new short[120];
+    public short uri[] = new short[120];
     
     /**
      * The way the autopilot wants to receive the URI. 0 = MAVLink FTP. 1 = binary stream.
@@ -55,7 +55,7 @@ public class msg_resource_request extends MAVLinkMessage {
      */
     @Description("The storage path the autopilot wants the URI to be stored in. Will only be valid if the transfer_type has a storage associated (e.g. MAVLink FTP).")
     @Units("")
-    public short[] storage = new short[120];
+    public short storage[] = new short[120];
     
 
     /**

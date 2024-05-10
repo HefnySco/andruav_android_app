@@ -15,4 +15,3 @@ public class MAV_AVSS_COMMAND_FAILURE_REASON {
    public static final int PRS_OTM_NOT_ARMED = 3; /* AVSS defined command failure reason. PRS OTM not armed. | */
    public static final int MAV_AVSS_COMMAND_FAILURE_REASON_ENUM_END = 4; /*  | */
 }
-            

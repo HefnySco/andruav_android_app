@@ -43,4 +43,3 @@ public class MAV_SYS_STATUS_SENSOR {
    public static final int MAV_SYS_STATUS_SENSOR_PROPULSION = 1073741824; /* 0x40000000 propulsion (actuator, esc, motor or propellor) | */
    public static final int MAV_SYS_STATUS_SENSOR_ENUM_END = 1073741825; /*  | */
 }
-            

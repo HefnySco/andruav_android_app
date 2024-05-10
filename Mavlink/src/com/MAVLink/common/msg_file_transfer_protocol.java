@@ -7,10 +7,10 @@
 // MESSAGE FILE_TRANSFER_PROTOCOL PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * File transfer message
@@ -48,7 +48,7 @@ public class msg_file_transfer_protocol extends MAVLinkMessage {
      */
     @Description("Variable length payload. The length is defined by the remaining message length when subtracting the header and other fields.  The entire content of this block is opaque unless you understand any the encoding message_type.  The particular encoding used can be extension specific and might not always be documented as part of the mavlink specification.")
     @Units("")
-    public short[] payload = new short[251];
+    public short payload[] = new short[251];
     
 
     /**

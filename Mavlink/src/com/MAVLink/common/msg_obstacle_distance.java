@@ -7,10 +7,10 @@
 // MESSAGE OBSTACLE_DISTANCE PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Obstacle distances in front of the sensor, starting from the left in increment degrees to the right
@@ -34,7 +34,7 @@ public class msg_obstacle_distance extends MAVLinkMessage {
      */
     @Description("Distance of obstacles around the vehicle with index 0 corresponding to north + angle_offset, unless otherwise specified in the frame. A value of 0 is valid and means that the obstacle is practically touching the sensor. A value of max_distance +1 means no obstacle is present. A value of UINT16_MAX for unknown/not used. In a array element, one unit corresponds to 1cm.")
     @Units("cm")
-    public int[] distances = new int[72];
+    public int distances[] = new int[72];
     
     /**
      * Minimum distance the sensor can measure.

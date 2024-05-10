@@ -23,4 +23,3 @@ public class EKF_STATUS_FLAGS {
    public static final int EKF_UNINITIALIZED = 1024; /* Set if EKF has never been healthy. | */
    public static final int EKF_STATUS_FLAGS_ENUM_END = 1025; /*  | */
 }
-            

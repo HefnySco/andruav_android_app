@@ -18,4 +18,3 @@ public class TRACKER_MODE {
    public static final int TRACKER_MODE_INITIALIZING = 16; /*  | */
    public static final int TRACKER_MODE_ENUM_END = 17; /*  | */
 }
-            

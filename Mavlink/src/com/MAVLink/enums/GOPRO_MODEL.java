@@ -17,4 +17,3 @@ public class GOPRO_MODEL {
    public static final int GOPRO_MODEL_HERO_4_BLACK = 4; /* Hero 4 Black. | */
    public static final int GOPRO_MODEL_ENUM_END = 5; /*  | */
 }
-            

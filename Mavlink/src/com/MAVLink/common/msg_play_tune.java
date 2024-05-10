@@ -7,10 +7,10 @@
 // MESSAGE PLAY_TUNE PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Control vehicle tone generation (buzzer).
@@ -41,14 +41,14 @@ public class msg_play_tune extends MAVLinkMessage {
      */
     @Description("tune in board specific format")
     @Units("")
-    public byte[] tune = new byte[30];
+    public byte tune[] = new byte[30];
     
     /**
      * tune extension (appended to tune)
      */
     @Description("tune extension (appended to tune)")
     @Units("")
-    public byte[] tune2 = new byte[200];
+    public byte tune2[] = new byte[200];
     
 
     /**

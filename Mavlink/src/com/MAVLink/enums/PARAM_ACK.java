@@ -16,4 +16,3 @@ public class PARAM_ACK {
    public static final int PARAM_ACK_IN_PROGRESS = 3; /* Parameter value received but not yet set/accepted. A subsequent PARAM_ACK_TRANSACTION or PARAM_EXT_ACK with the final result will follow once operation is completed. This is returned immediately for parameters that take longer to set, indicating taht the the parameter was recieved and does not need to be resent. | */
    public static final int PARAM_ACK_ENUM_END = 4; /*  | */
 }
-            

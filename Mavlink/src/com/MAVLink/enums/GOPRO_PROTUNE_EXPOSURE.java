@@ -33,4 +33,3 @@ public class GOPRO_PROTUNE_EXPOSURE {
    public static final int GOPRO_PROTUNE_EXPOSURE_POS_5_0 = 20; /* +5.0 EV (Hero 3+ Only). | */
    public static final int GOPRO_PROTUNE_EXPOSURE_ENUM_END = 21; /*  | */
 }
-            

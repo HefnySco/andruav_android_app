@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Surface;
 
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_ekf_status_report;
 import com.MAVLink.common.msg_attitude;
 import com.MAVLink.common.msg_global_position_int;

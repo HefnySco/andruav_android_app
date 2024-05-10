@@ -7,10 +7,10 @@
 // MESSAGE WHEEL_DISTANCE PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Cumulative distance traveled for each reported wheel.
@@ -34,7 +34,7 @@ public class msg_wheel_distance extends MAVLinkMessage {
      */
     @Description("Distance reported by individual wheel encoders. Forward rotations increase values, reverse rotations decrease them. Not all wheels will necessarily have wheel encoders; the mapping of encoders to wheel positions must be agreed/understood by the endpoints.")
     @Units("m")
-    public double[] distance = new double[16];
+    public double distance[] = new double[16];
     
     /**
      * Number of wheels reported.

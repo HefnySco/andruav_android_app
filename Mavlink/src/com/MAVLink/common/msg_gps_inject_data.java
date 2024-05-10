@@ -7,10 +7,10 @@
 // MESSAGE GPS_INJECT_DATA PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Data for injecting into the onboard GPS (used for DGPS)
@@ -48,7 +48,7 @@ public class msg_gps_inject_data extends MAVLinkMessage {
      */
     @Description("Raw data (110 is enough for 12 satellites of RTCMv2)")
     @Units("")
-    public short[] data = new short[110];
+    public short data[] = new short[110];
     
 
     /**

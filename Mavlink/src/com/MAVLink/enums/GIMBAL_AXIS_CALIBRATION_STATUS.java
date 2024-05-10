@@ -15,4 +15,3 @@ public class GIMBAL_AXIS_CALIBRATION_STATUS {
    public static final int GIMBAL_AXIS_CALIBRATION_STATUS_FAILED = 2; /* Axis calibration failed. | */
    public static final int GIMBAL_AXIS_CALIBRATION_STATUS_ENUM_END = 3; /*  | */
 }
-            

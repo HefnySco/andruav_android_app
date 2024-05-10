@@ -2,7 +2,7 @@ package org.droidplanner.services.android.impl.core.drone.variables;
 
 import android.os.Handler;
 
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.minimal.msg_heartbeat;
 
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.DroneEventsType;

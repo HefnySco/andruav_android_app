@@ -15,4 +15,3 @@ public class GOPRO_FIELD_OF_VIEW {
    public static final int GOPRO_FIELD_OF_VIEW_NARROW = 2; /* 0x02: Narrow. | */
    public static final int GOPRO_FIELD_OF_VIEW_ENUM_END = 3; /*  | */
 }
-            

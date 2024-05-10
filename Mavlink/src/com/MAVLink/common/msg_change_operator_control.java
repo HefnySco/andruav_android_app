@@ -7,10 +7,10 @@
 // MESSAGE CHANGE_OPERATOR_CONTROL PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Request to control this MAV
@@ -48,7 +48,7 @@ public class msg_change_operator_control extends MAVLinkMessage {
      */
     @Description("Password / Key, depending on version plaintext or encrypted. 25 or less characters, NULL terminated. The characters may involve A-Z, a-z, 0-9, and '!?,.-'")
     @Units("")
-    public byte[] passkey = new byte[25];
+    public byte passkey[] = new byte[25];
     
 
     /**

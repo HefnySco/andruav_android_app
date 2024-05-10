@@ -15,4 +15,3 @@ public class UAVIONIX_ADSB_OUT_RF_SELECT {
    public static final int UAVIONIX_ADSB_OUT_RF_SELECT_TX_ENABLED = 2; /*  | */
    public static final int UAVIONIX_ADSB_OUT_RF_SELECT_ENUM_END = 3; /*  | */
 }
-            

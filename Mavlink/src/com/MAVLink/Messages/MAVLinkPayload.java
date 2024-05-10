@@ -4,7 +4,7 @@
  * java mavlink generator tool. It should not be modified by hand.
  */
 
-package com.MAVLink.messages;
+package com.MAVLink.Messages;
 
 import java.nio.ByteBuffer;
 
@@ -52,14 +52,14 @@ public class MAVLinkPayload {
 
     public byte getByte() {
         byte result = 0;
-        result |= (payload.get(index) & 0xFF);
+        result |= (payload.get(index + 0) & 0xFF);
         index += 1;
         return result;
     }
 
     public short getUnsignedByte() {
         short result = 0;
-        result |= payload.get(index) & 0xFF;
+        result |= payload.get(index + 0) & 0xFF;
         index += 1;
         return result; 
     }
@@ -67,7 +67,7 @@ public class MAVLinkPayload {
     public short getShort() {
         short result = 0;
         result |= (payload.get(index + 1) & 0xFF) << 8;
-        result |= (payload.get(index) & 0xFF);
+        result |= (payload.get(index + 0) & 0xFF);
         index += 2;
         return result;
     }
@@ -75,7 +75,7 @@ public class MAVLinkPayload {
     public int getUnsignedShort() {
         int result = 0;
         result |= (payload.get(index + 1) & 0xFF) << 8;
-        result |= (payload.get(index) & 0xFF);
+        result |= (payload.get(index + 0) & 0xFF);
         index += 2;
         return result;
     }
@@ -85,7 +85,7 @@ public class MAVLinkPayload {
         result |= (payload.get(index + 3) & 0xFF) << 24;
         result |= (payload.get(index + 2) & 0xFF) << 16;
         result |= (payload.get(index + 1) & 0xFF) << 8;
-        result |= (payload.get(index) & 0xFF);
+        result |= (payload.get(index + 0) & 0xFF);
         index += 4;
         return result;
     }
@@ -95,7 +95,7 @@ public class MAVLinkPayload {
         result |= (payload.get(index + 3) & 0xFFL) << 24;
         result |= (payload.get(index + 2) & 0xFFL) << 16;
         result |= (payload.get(index + 1) & 0xFFL) << 8;
-        result |= (payload.get(index) & 0xFFL);
+        result |= (payload.get(index + 0) & 0xFFL);
         index += 4;
         return result;
     }
@@ -109,7 +109,7 @@ public class MAVLinkPayload {
         result |= (payload.get(index + 3) & 0xFFL) << 24;
         result |= (payload.get(index + 2) & 0xFFL) << 16;
         result |= (payload.get(index + 1) & 0xFFL) << 8;
-        result |= (payload.get(index) & 0xFFL);
+        result |= (payload.get(index + 0) & 0xFFL);
         index += 8;
         return result;
     }
@@ -120,7 +120,7 @@ public class MAVLinkPayload {
     
     public long getLongReverse() {
         long result = 0;
-        result |= (payload.get(index) & 0xFFL) << 56;
+        result |= (payload.get(index + 0) & 0xFFL) << 56;
         result |= (payload.get(index + 1) & 0xFFL) << 48;
         result |= (payload.get(index + 2) & 0xFFL) << 40;
         result |= (payload.get(index + 3) & 0xFFL) << 32;

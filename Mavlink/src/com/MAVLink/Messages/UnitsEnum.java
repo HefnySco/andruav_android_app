@@ -1,4 +1,4 @@
-package com.MAVLink.messages;
+package com.MAVLink.Messages;
 
 import java.util.HashMap;
 import java.util.Map;

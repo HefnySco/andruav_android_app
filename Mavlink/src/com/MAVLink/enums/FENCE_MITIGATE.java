@@ -15,4 +15,3 @@ public class FENCE_MITIGATE {
    public static final int FENCE_MITIGATE_VEL_LIMIT = 2; /* Velocity limiting active to prevent breach | */
    public static final int FENCE_MITIGATE_ENUM_END = 3; /*  | */
 }
-            

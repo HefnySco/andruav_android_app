@@ -1,4 +1,4 @@
-package com.MAVLink.messages;
+package com.MAVLink.Messages;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

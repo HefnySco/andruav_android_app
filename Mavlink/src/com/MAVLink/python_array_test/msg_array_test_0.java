@@ -7,10 +7,10 @@
 // MESSAGE ARRAY_TEST_0 PACKING
 package com.MAVLink.python_array_test;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Array test #0.
@@ -27,14 +27,14 @@ public class msg_array_test_0 extends MAVLinkMessage {
      */
     @Description("Value array")
     @Units("")
-    public long[] ar_u32 = new long[4];
+    public long ar_u32[] = new long[4];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public int[] ar_u16 = new int[4];
+    public int ar_u16[] = new int[4];
     
     /**
      * Stub field
@@ -48,14 +48,14 @@ public class msg_array_test_0 extends MAVLinkMessage {
      */
     @Description("Value array")
     @Units("")
-    public byte[] ar_i8 = new byte[4];
+    public byte ar_i8[] = new byte[4];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public short[] ar_u8 = new short[4];
+    public short ar_u8[] = new short[4];
     
 
     /**

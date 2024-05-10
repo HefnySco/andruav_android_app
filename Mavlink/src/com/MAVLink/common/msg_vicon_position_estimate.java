@@ -7,10 +7,10 @@
 // MESSAGE VICON_POSITION_ESTIMATE PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Global position estimate from a Vicon motion system source.
@@ -76,7 +76,7 @@ public class msg_vicon_position_estimate extends MAVLinkMessage {
      */
     @Description("Row-major representation of 6x6 pose cross-covariance matrix upper right triangle (states: x, y, z, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.")
     @Units("")
-    public float[] covariance = new float[21];
+    public float covariance[] = new float[21];
     
 
     /**

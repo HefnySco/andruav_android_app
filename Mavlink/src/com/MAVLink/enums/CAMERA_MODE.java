@@ -15,4 +15,3 @@ public class CAMERA_MODE {
    public static final int CAMERA_MODE_IMAGE_SURVEY = 2; /* Camera is in image survey capture mode. It allows for camera controller to do specific settings for surveys. | */
    public static final int CAMERA_MODE_ENUM_END = 3; /*  | */
 }
-            

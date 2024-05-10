@@ -7,10 +7,10 @@
 // MESSAGE HIL_ACTUATOR_CONTROLS PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Sent from autopilot to simulation. Hardware in the loop control outputs (replacement for HIL_CONTROLS)
@@ -41,7 +41,7 @@ public class msg_hil_actuator_controls extends MAVLinkMessage {
      */
     @Description("Control outputs -1 .. 1. Channel assignment depends on the simulated hardware.")
     @Units("")
-    public float[] controls = new float[16];
+    public float controls[] = new float[16];
     
     /**
      * System mode. Includes arming state.

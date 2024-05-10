@@ -18,4 +18,3 @@ public class UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX {
    public static final int UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX_RTK = 5; /*  | */
    public static final int UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX_ENUM_END = 6; /*  | */
 }
-            

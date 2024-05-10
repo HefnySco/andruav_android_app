@@ -17,4 +17,3 @@ public class FENCE_ACTION {
    public static final int FENCE_ACTION_RTL = 4; /* Switch to RTL (return to launch) mode and head for the return point. | */
    public static final int FENCE_ACTION_ENUM_END = 5; /*  | */
 }
-            

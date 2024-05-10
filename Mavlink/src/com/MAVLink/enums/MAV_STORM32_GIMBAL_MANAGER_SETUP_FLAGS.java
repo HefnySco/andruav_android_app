@@ -14,4 +14,3 @@ public class MAV_STORM32_GIMBAL_MANAGER_SETUP_FLAGS {
    public static final int MAV_STORM32_GIMBAL_MANAGER_SETUP_FLAGS_DISABLE = 32768; /* Disable gimbal manager. This flag is only for setting, is not reported. | */
    public static final int MAV_STORM32_GIMBAL_MANAGER_SETUP_FLAGS_ENUM_END = 32769; /*  | */
 }
-            

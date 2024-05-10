@@ -7,10 +7,10 @@
 // MESSAGE CANFD_FRAME PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * A forwarded CANFD frame as requested by MAV_CMD_CAN_FORWARD. These are separated from CAN_FRAME as they need different handling (eg. TAO handling)
@@ -62,7 +62,7 @@ public class msg_canfd_frame extends MAVLinkMessage {
      */
     @Description("Frame data")
     @Units("")
-    public short[] data = new short[64];
+    public short data[] = new short[64];
     
 
     /**

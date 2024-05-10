@@ -112,4 +112,3 @@ public class AIS_TYPE {
    public static final int AIS_TYPE_OTHER_UNKNOWN = 99; /*  | */
    public static final int AIS_TYPE_ENUM_END = 100; /*  | */
 }
-            

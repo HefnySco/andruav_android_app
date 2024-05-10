@@ -16,4 +16,3 @@ public class MOTOR_TEST_THROTTLE_TYPE {
    public static final int MOTOR_TEST_COMPASS_CAL = 3; /* Per-motor compass calibration test. | */
    public static final int MOTOR_TEST_THROTTLE_TYPE_ENUM_END = 4; /*  | */
 }
-            

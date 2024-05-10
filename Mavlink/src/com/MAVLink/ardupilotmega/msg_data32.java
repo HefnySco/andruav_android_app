@@ -7,10 +7,10 @@
 // MESSAGE DATA32 PACKING
 package com.MAVLink.ardupilotmega;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Data packet, size 32.
@@ -41,7 +41,7 @@ public class msg_data32 extends MAVLinkMessage {
      */
     @Description("Raw data.")
     @Units("")
-    public short[] data = new short[32];
+    public short data[] = new short[32];
     
 
     /**

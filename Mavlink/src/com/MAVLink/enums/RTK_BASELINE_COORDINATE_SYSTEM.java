@@ -14,4 +14,3 @@ public class RTK_BASELINE_COORDINATE_SYSTEM {
    public static final int RTK_BASELINE_COORDINATE_SYSTEM_NED = 1; /* RTK basestation centered, north, east, down | */
    public static final int RTK_BASELINE_COORDINATE_SYSTEM_ENUM_END = 2; /*  | */
 }
-            

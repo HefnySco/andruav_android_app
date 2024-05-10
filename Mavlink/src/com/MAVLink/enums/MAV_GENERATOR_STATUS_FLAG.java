@@ -35,4 +35,3 @@ public class MAV_GENERATOR_STATUS_FLAG {
    public static final int MAV_GENERATOR_STATUS_FLAG_IDLE = 4194304; /* Generator is idle. | */
    public static final int MAV_GENERATOR_STATUS_FLAG_ENUM_END = 4194305; /*  | */
 }
-            

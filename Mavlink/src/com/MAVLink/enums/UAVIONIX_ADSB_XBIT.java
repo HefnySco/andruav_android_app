@@ -13,4 +13,3 @@ public class UAVIONIX_ADSB_XBIT {
    public static final int UAVIONIX_ADSB_XBIT_ENABLED = 128; /*  | */
    public static final int UAVIONIX_ADSB_XBIT_ENUM_END = 129; /*  | */
 }
-            

@@ -36,7 +36,7 @@ import com.MAVLink.common.msg_param_value;
 import com.MAVLink.enums.GPS_INPUT_IGNORE_FLAGS;
 import com.MAVLink.enums.MAV_CMD;
 import com.MAVLink.enums.MAV_MOUNT_MODE;
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.o3dr.android.client.ControlTower;
 import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.apis.ControlApi;

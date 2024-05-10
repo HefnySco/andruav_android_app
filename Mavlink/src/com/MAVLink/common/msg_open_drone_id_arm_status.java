@@ -7,10 +7,10 @@
 // MESSAGE OPEN_DRONE_ID_ARM_STATUS PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Status from the transmitter telling the flight controller if the remote ID system is ready for arming.
@@ -34,7 +34,7 @@ public class msg_open_drone_id_arm_status extends MAVLinkMessage {
      */
     @Description("Text error message, should be empty if status is good to arm. Fill with nulls in unused portion.")
     @Units("")
-    public byte[] error = new byte[50];
+    public byte error[] = new byte[50];
     
 
     /**

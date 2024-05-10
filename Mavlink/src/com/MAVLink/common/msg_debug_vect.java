@@ -7,10 +7,10 @@
 // MESSAGE DEBUG_VECT PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * To debug something using a named 3D vector.
@@ -55,7 +55,7 @@ public class msg_debug_vect extends MAVLinkMessage {
      */
     @Description("Name")
     @Units("")
-    public byte[] name = new byte[10];
+    public byte name[] = new byte[10];
     
 
     /**

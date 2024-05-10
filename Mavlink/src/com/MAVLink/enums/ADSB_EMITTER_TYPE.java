@@ -32,4 +32,3 @@ public class ADSB_EMITTER_TYPE {
    public static final int ADSB_EMITTER_TYPE_POINT_OBSTACLE = 19; /*  | */
    public static final int ADSB_EMITTER_TYPE_ENUM_END = 20; /*  | */
 }
-            

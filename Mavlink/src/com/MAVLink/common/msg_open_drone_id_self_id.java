@@ -7,10 +7,10 @@
 // MESSAGE OPEN_DRONE_ID_SELF_ID PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Data for filling the OpenDroneID Self ID message. The Self ID Message is an opportunity for the operator to (optionally) declare their identity and purpose of the flight. This message can provide additional information that could reduce the threat profile of a UA (Unmanned Aircraft) flying in a particular area or manner. This message can also be used to provide optional additional clarification in an emergency/remote ID system failure situation.
@@ -41,7 +41,7 @@ public class msg_open_drone_id_self_id extends MAVLinkMessage {
      */
     @Description("Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ")
     @Units("")
-    public short[] id_or_mac = new short[20];
+    public short id_or_mac[] = new short[20];
     
     /**
      * Indicates the type of the description field.
@@ -55,7 +55,7 @@ public class msg_open_drone_id_self_id extends MAVLinkMessage {
      */
     @Description("Text description or numeric value expressed as ASCII characters. Shall be filled with nulls in the unused portion of the field.")
     @Units("")
-    public byte[] description = new byte[23];
+    public byte description[] = new byte[23];
     
 
     /**

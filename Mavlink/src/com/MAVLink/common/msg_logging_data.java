@@ -7,10 +7,10 @@
 // MESSAGE LOGGING_DATA PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * A message containing logged data (see also MAV_CMD_LOGGING_START)
@@ -62,7 +62,7 @@ public class msg_logging_data extends MAVLinkMessage {
      */
     @Description("logged data")
     @Units("")
-    public short[] data = new short[249];
+    public short data[] = new short[249];
     
 
     /**

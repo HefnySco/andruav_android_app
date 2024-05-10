@@ -28,4 +28,3 @@ public class AIS_NAV_STATUS {
    public static final int AIS_NAV_UNKNOWN = 15; /* Not available (default). | */
    public static final int AIS_NAV_STATUS_ENUM_END = 16; /*  | */
 }
-            
