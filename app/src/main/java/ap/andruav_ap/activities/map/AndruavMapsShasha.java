@@ -45,7 +45,6 @@ import ap.andruav_ap.helpers.TouchListener;
 import ap.andruav_ap.widgets.camera.AndruavImageView;
 import ap.andruav_ap.widgets.camera.AndruavRTCVideoDecorderWidget;
 import ap.andruav_ap.widgets.camera.CameraControl_Dlg;
-import ap.andruav_ap.activities.remote.RemoteControlWidget;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.App;
 
@@ -111,11 +110,6 @@ public class AndruavMapsShasha extends BaseAndruavShasha implements AndruavRTCVi
 
     //private SimpleArrayMap<String,Button> btnContext= new SimpleArrayMap<String,Button>();
 
-
-
-
-    /////////// Remote Control
-    protected RemoteControlWidget mRemoteControlWidget;
 
 
 
@@ -384,29 +378,7 @@ long lastframecount =0;
                 slidingItemAndruavUnitWidget.enableRemote(false);
             }
         });
-        slidingItemAndruavUnitWidget.setOnRemoteClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                if (!GUI.isRemoteEngaged(mRemoteControlWidget)) {
-                    DialogHelper.doModalDialog(Me, getString(R.string.actionremote_engage)
-                            , getString(R.string.conf_engage_remote), null, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    // make it a prime
-                                    handleSelectedPartyID(msupportmapfragment.markerPlans.getMarker(andruavWe7da.PartyID));
-                                    slidingItemAndruavUnitWidget.enableRemote(GUI.toggleRemote(Me, mRemoteControlWidget, andruavWe7da));
-
-                                }
-                            }, null, null);
-                }
-                else
-                {
-                    handleSelectedPartyID(msupportmapfragment.markerPlans.getMarker(andruavWe7da.PartyID));
-                    slidingItemAndruavUnitWidget.enableRemote(GUI.toggleRemote(Me, mRemoteControlWidget, andruavWe7da));
-                }
-            }
-        });
 
         slidingItemAndruavUnitWidget.setOnCameraClickListener(view -> {
 
@@ -685,17 +657,8 @@ long lastframecount =0;
 
         guiAdjustSideButtons(null);
 
-        mRemoteControlWidget = findViewById(R.id.remotecontrolactivity_remotecontrolwidget);
-
         andruavUnitInfoWidget = findViewById(R.id.fpvactivity_widget_andruavinfo);
         andruavUnitInfoWidget.setParentFragmentManager(getSupportFragmentManager());
-
-
-        if (DeviceManagerFacade.hasMultitouch()) {
-            mRemoteControlWidget.updateSettings();
-        }
-        mRemoteControlWidget.setVisibility(View.INVISIBLE);
-
     }
 
 
@@ -822,10 +785,6 @@ long lastframecount =0;
 
         killme = false;
 
-        if (mRemoteControlWidget !=null)
-        {
-            mRemoteControlWidget.updateSettings();
-        }
         msupportmapfragment.init();
 
         mhandle.postDelayed(ScheduledTasks, 200);
@@ -877,10 +836,6 @@ long lastframecount =0;
         }
 
 
-        // disengaged from Any Remote Drone
-        if (mRemoteControlWidget != null) {
-            mRemoteControlWidget.stopEngage();
-        }
         super.onPause();
 
         msupportmapfragment.unInit();
@@ -945,7 +900,6 @@ long lastframecount =0;
         // 2- unsubscribe old
         if ((msupportmapfragment.andruavUnit_selected != null) && (!msupportmapfragment.andruavUnit_selected.Equals(newContext))){
             AndruavFacade.ControlIMU(false, msupportmapfragment.andruavUnit_selected);
-            GUI.turnOffRemote(mRemoteControlWidget);
             // BUG:  slidingItemAndruavUnitWidget.enableRemote(false); should be called here to disable the remote icon
             closeVideo(msupportmapfragment.andruavUnit_selected);
         }

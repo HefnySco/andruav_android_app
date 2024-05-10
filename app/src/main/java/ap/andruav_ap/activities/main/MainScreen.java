@@ -32,7 +32,6 @@ import java.io.UnsupportedEncodingException;
 import ap.andruav_ap.Emergency;
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.activities.HUBCommunication;
-import ap.andruav_ap.activities.remote.RemoteControlSettingGCSActivityTab;
 import ap.andruav_ap.activities.settings.SettingsDrone;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.activities.data.DataShashaTab;
@@ -41,7 +40,7 @@ import ap.andruav_ap.activities.fcb.drone.FCB_AndruavShashaL2;
 import ap.andruav_ap.activities.fcb.FCB_TCPShasha;
 import ap.andruav_ap.activities.fpv.FPVActivityFactory;
 import ap.andruav_ap.activities.map.AndruavMapsShasha;
-import ap.andruav_ap.activities.remote.RemoteControlSettingActivityTab;
+
 import ap.andruav_ap.App;
 
 
@@ -1056,15 +1055,6 @@ public class MainScreen extends BaseAndruavShasha {
         } else if (id == R.id.mi_main_Help) {
             GMail.sendGMail(this, getString(R.string.email_title), getString(R.string.email_to), getString(R.string.email_subject), getString(R.string.email_body), null);
 
-        } else if (id == R.id.mi_remotesettings) {
-            if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                startActivity(new Intent(MainScreen.this, RemoteControlSettingGCSActivityTab.class));
-            }
-            else
-            {
-                startActivity(new Intent(MainScreen.this, RemoteControlSettingActivityTab.class));
-            }
-            return true;
         } else if (id == R.id.mi_main_About) {
 
             DialogHelper.doModalDialog(Me, getString(R.string.gen_about), Html.fromHtml(String.format("<font color=#75A4D3><b>version:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>email:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>access code:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>pin code:</b></font><font color=#36AB36>%s</font><br>%s",
