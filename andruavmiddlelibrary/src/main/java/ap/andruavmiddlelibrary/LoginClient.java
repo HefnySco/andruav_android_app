@@ -128,15 +128,26 @@ public class LoginClient {
     */
     public static void RetrieveAccountName (String AccessCode) throws UnsupportedEncodingException {
 
-        final Pair<String, String>[] urls = new Pair[] {
-                new Pair(CONST_SUB_COMMAND, CONST_CMD_GET_ACCOUNT_NAME), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
-                new Pair(CONST_ACCESS_CODE_PARAMETER, AccessCode.trim()), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
-                new Pair(CONST_APP_VER_PARAMETER, URLEncoder.encode(AndruavEngine.getPreference().getVersionName(), StandardCharsets.UTF_8)),
-                new Pair(CONST_APP_NAME_PARAMETER, "andruav"),
-                new Pair(CONST_EXTRA_PARAMETER, "Andruav Mobile"),
-        };
-
-
+        final Pair<String, String>[] urls;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            urls = new Pair[] {
+                    new Pair(CONST_SUB_COMMAND, CONST_CMD_GET_ACCOUNT_NAME), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
+                    new Pair(CONST_ACCESS_CODE_PARAMETER, AccessCode.trim()), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
+                    new Pair(CONST_APP_VER_PARAMETER, URLEncoder.encode(AndruavEngine.getPreference().getVersionName(), StandardCharsets.UTF_8)),
+                    new Pair(CONST_APP_NAME_PARAMETER, "andruav"),
+                    new Pair(CONST_EXTRA_PARAMETER, "Andruav Mobile"),
+            };
+        }
+        else
+        {
+            urls = new Pair[] {
+                    new Pair(CONST_SUB_COMMAND, CONST_CMD_GET_ACCOUNT_NAME), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
+                    new Pair(CONST_ACCESS_CODE_PARAMETER, AccessCode.trim()), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
+                    new Pair(CONST_APP_VER_PARAMETER, AndruavEngine.getPreference().getVersionName()),
+                    new Pair(CONST_APP_NAME_PARAMETER, "andruav"),
+                    new Pair(CONST_EXTRA_PARAMETER, "Andruav Mobile"),
+            };
+        }
 
         SendRequest(CMD_RetrieveAccountName, CONST_AGENT_FUNCTION + CONST_AGENT_ACCOUNT_MANAGMENT , urls, null);
 
@@ -177,81 +188,8 @@ public class LoginClient {
 
     }
 
-    /***
-     * Access code is sent to email. The same old access code not a newly generated one.
-     * As this can be one of two scenarios:
-     *  1- user register in a new mobile instead of writing access code.
-     *  2- a 3rd party is trying to hack a current user.
-     * The return here is a message that appears on a dialog box.
-     * @param AccountName
-     */
-    public static void RetrieveAccessCode (String AccountName) throws UnsupportedEncodingException {
-
-
-//SendRequest(CMD_RetrieveAccessCode,AccountName,null,url,null);
-
-    }
-
-
-    /**
-     * Sending Register Account Request
-     * Check @link LastError for result
-     * @param AccountName
-     * @return
-     */
-    public static void RegisterAccount (String AccountName) throws UnsupportedEncodingException {
-
-        final Pair<String, String>[] urls = new Pair[] {
-                new Pair(CONST_SUB_COMMAND, CONST_CMD_CREATE_ACCESSCODE), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
-                new Pair(CONST_ACCOUNT_NAME_PARAMETER, AccountName.trim()), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
-                new Pair(CONST_APP_VER_PARAMETER, URLEncoder.encode(AndruavEngine.getPreference().getVersionName(), StandardCharsets.UTF_8)),
-                new Pair(CONST_APP_NAME_PARAMETER, "andruav"),
-                new Pair(CONST_EXTRA_PARAMETER, "Andruav Mobile"),
-        };
-
-        SendRequest(CMD_RegisterAccount, CONST_AGENT_FUNCTION + CONST_AGENT_ACCOUNT_MANAGMENT , urls, null);
-    }
-
-    /**
-     * Generate new password
-     * Check @link LastError for result
-     * @param AccountName
-     * @return
-     */
-    public static void UpdateAccount (String AccountName) throws UnsupportedEncodingException {
-
-        final Pair<String, String>[] urls = new Pair[] {
-                new Pair(CONST_SUB_COMMAND, CONST_CMD_REGENERATE_ACCESSCODE), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
-                new Pair(CONST_ACCOUNT_NAME_PARAMETER, AccountName.trim()), //URLEncoder.encode(accessCode,"UTF-8").replaceAll("%40","@")),
-                new Pair(CONST_APP_VER_PARAMETER, URLEncoder.encode(AndruavEngine.getPreference().getVersionName(), StandardCharsets.UTF_8)),
-                new Pair(CONST_APP_NAME_PARAMETER, "andruav"),
-                new Pair(CONST_EXTRA_PARAMETER, "Andruav Mobile"),
-        };
-
-        SendRequest(CMD_UpdateAccount, CONST_AGENT_FUNCTION + CONST_AGENT_ACCOUNT_MANAGMENT , urls, null);
-            }
-
-
-    public static void LinkPartyID2AccessCode (final String PID, final String AccountName)
-    {
-        try {
-
-            AndruavEngine.log().log(Preference.getLoginUserName(null), "netType", NetInfoAdapter.getInfoJSON());
-
-            String url = "cmd=l&pid=" + URLEncoder.encode(PID, StandardCharsets.UTF_8) + "&acc=" + URLEncoder.encode(AccountName, StandardCharsets.UTF_8);
-
-            //SendRequest(CMD_LinkPID2Account, AccountName, null, url,null);
-        }
-        catch (Exception e)
-        {
-
-        }
-    }
 
     private static void SendRequest (final int cmd, final String urlRoute, final  Pair<String, String>[] urls, final ILoginClientCallback iLoginClientCallback) throws UnsupportedEncodingException {
-
-
-
 
         final String url;
         url= getPageName() + urlRoute;
