@@ -27,12 +27,7 @@ android {
         multiDexEnabled true
     }
 
-    dexOptions {
-        preDexLibraries true
-        javaMaxHeapSize "2g"
-        //incremental true
-        dexInProcess = true
-    }
+
 
 
     buildTypes {
