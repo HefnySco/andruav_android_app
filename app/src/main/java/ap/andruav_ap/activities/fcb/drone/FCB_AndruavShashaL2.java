@@ -227,6 +227,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
             public void onClick(View v) {
                 bSaved = false;
                 if (!DroneKitServer.isValidAndroidVersion()) {
+                    //rbService_3DR.setEnabled(false);
                     DialogHelper.doModalDialog(Me, getString(R.string.gen_connection), getString(R.string.err_3dr_mobileversion), null);
                     rbService_3DR.setChecked(false);
                     rbNative.setChecked(false);
@@ -404,7 +405,10 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         Preference.setFCBDroneTCPServerPort(null, txtTCPPort.getText().toString());
         Preference.setFCBDroneUDPServerPort(null, txtUDPPort.getText().toString());
 
-        Preference.setFCBTargetLib(null, Preference.FCB_LIB_3DR);
+        int FCBTargetLib = Preference.FCB_LIB_NATIVE;
+        if (rbService_3DR.isChecked()) FCBTargetLib = Preference.FCB_LIB_3DR;
+
+        Preference.setFCBTargetLib(null, FCBTargetLib);
 
 
         int FCBTargetComm = Preference.FCB_COM_BT;
@@ -429,7 +433,17 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         txtTCPPort.setText(Preference.getFCBDroneTCPServerPort(null));
         txtUDPPort.setText(Preference.getFCBDroneUDPServerPort(null));
 
-        rbService_3DR.setChecked(true);
+        switch (Preference.getFCBTargetLib(null))
+        {
+            case Preference.FCB_LIB_3DR:
+                rbService_3DR.setChecked(true);
+                break;
+            case Preference.FCB_LIB_NATIVE:
+            default:
+                //rbNative.setChecked(true);
+                rbService_3DR.setChecked(true);
+                break;
+        }
 
         switch (Preference.getFCBTargetComm(null))
         {

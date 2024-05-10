@@ -13,6 +13,7 @@ import com.andruav.Constants;
 import com.andruav.controlBoard.shared.common.FlightMode;
 
 import ap.andruav_ap.activities.login.drone.MainDroneActiviy;
+import ap.andruav_ap.activities.remote.RemoteControlWidget;
 
 import com.andruav.controlBoard.shared.missions.MissionBase;
 import com.andruav.controlBoard.shared.missions.WayPointStep;
@@ -269,7 +270,13 @@ public class GUI {
     }
 
 
+    public static void turnOffRemote ( RemoteControlWidget remoteControlWidget)
+    {
+        if (remoteControlWidget ==null) return ;
 
+        remoteControlWidget.stopEngage();
+        remoteControlWidget.setVisibility(View.INVISIBLE);
+    }
 
     public static String getFont (final String color, final Boolean isBold, final Boolean isItalic)
     {
@@ -287,6 +294,10 @@ public class GUI {
         return text.toString();
     }
 
+    public static boolean isRemoteEngaged (final RemoteControlWidget remoteControlWidget)
+    {
+        return (remoteControlWidget !=null) && (remoteControlWidget.isEngaged());
+    }
 
     /***
      * Turn Remote on Off
@@ -295,6 +306,39 @@ public class GUI {
      * @param andruavWe7da
      * @return true if remote has been turned on else false.
      */
+    public static boolean toggleRemote(final Context context, final RemoteControlWidget remoteControlWidget, final AndruavUnitShadow andruavWe7da)
+    {
+
+        if (andruavWe7da == null) throw  new InvalidParameterException();
+
+        if (!DeviceManagerFacade.hasMultitouch())
+        {
+            String err = App.getAppContext().getString(R.string.err_feature_multitouch);
+            DialogHelper.doModalDialog(context, App.getAppContext().getString(R.string.title_activity_remotecontrol), err, null);
+            AndruavEngine.notification().Speak(err);
+            return false;
+        }
+
+        if (remoteControlWidget ==null) return false;
+
+        final AndruavUnitBase andruavUnitBase = remoteControlWidget.getEngagedPartyID();
+
+        if ((andruavUnitBase != null) && (andruavWe7da.PartyID.equals(andruavUnitBase.PartyID)))
+        {
+            remoteControlWidget.stopEngage(); // disengage me
+            remoteControlWidget.setVisibility(View.INVISIBLE);
+
+            return false; // act as Toggling Button.
+        }
+        else
+        {
+            // else Turn ON
+            remoteControlWidget.setVisibility(View.VISIBLE);
+            remoteControlWidget.startEngage(andruavWe7da);  // internally disengaged the old one.
+        }
+
+        return true;
+    }
 
     public static final CharSequence[] MAVMFlightModes = {"RTL", "Auto", "Stabilize", "ALT Hold", "Manual", "Cruise", "FBWA", "TakeOff", "init..." };
     public static final int[] MAVMFlightModesNum = {FlightMode.CONST_FLIGHT_CONTROL_RTL,
