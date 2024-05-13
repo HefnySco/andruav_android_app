@@ -17,4 +17,3 @@ public class MAV_LANDED_STATE {
    public static final int MAV_LANDED_STATE_LANDING = 4; /* MAV currently landing | */
    public static final int MAV_LANDED_STATE_ENUM_END = 5; /*  | */
 }
-            

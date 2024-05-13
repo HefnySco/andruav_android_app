@@ -3,7 +3,7 @@ package org.droidplanner.services.android.impl.core.drone.autopilot.apm;
 import android.content.Context;
 import android.os.Handler;
 
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_global_position_int;
 import com.MAVLink.common.msg_vfr_hud;
 import com.MAVLink.enums.MAV_TYPE;
@@ -69,13 +69,10 @@ public class ArduPlane extends ArduPilot {
 
     @Override
     protected boolean isFeatureSupported(String featureId){
-        switch(featureId){
-            case CapabilityApi.FeatureIds.COMPASS_CALIBRATION:
-                return getFirmwareVersionNumber().greaterThanOrEqualTo(COMPASS_CALIBRATION_MIN_VERSION);
-
-            default:
-                return super.isFeatureSupported(featureId);
+        if (CapabilityApi.FeatureIds.COMPASS_CALIBRATION.equals(featureId)) {
+            return getFirmwareVersionNumber().greaterThanOrEqualTo(COMPASS_CALIBRATION_MIN_VERSION);
         }
+        return super.isFeatureSupported(featureId);
     }
 
 

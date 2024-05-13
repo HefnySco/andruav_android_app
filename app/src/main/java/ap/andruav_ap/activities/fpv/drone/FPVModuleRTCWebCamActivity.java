@@ -854,7 +854,6 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
             }
             else {
                 mVideoByteRenderer.onFrame(videoFrame);
-                return;
             }
         }
 

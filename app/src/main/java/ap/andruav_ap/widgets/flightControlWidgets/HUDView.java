@@ -468,7 +468,6 @@ public class HUDView extends View {
 
                 if (msg.obj instanceof Event_IMU_Ready) {
                     newFlightData();
-                    return;
                 }
 
 

@@ -17,7 +17,7 @@ public class SMSReceiver extends BroadcastReceiver {
     private static final AndruavSMSClientParser andruavSMSClientParser = new AndruavSMSClientParser();
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (Preference.isSMSRXEnabled(null)==false)
+        if (!Preference.isSMSRXEnabled(null))
         {
             return ; // ModuleFeatures is disabled by user.
         }

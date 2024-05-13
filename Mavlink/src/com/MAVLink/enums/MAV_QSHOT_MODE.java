@@ -22,4 +22,3 @@ public class MAV_QSHOT_MODE {
    public static final int MAV_QSHOT_MODE_HOME_TARGETING = 9; /* Start gimbal tracking the home location. | */
    public static final int MAV_QSHOT_MODE_ENUM_END = 10; /*  | */
 }
-            

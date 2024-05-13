@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.github.zafarkhaja.semver.Version;
 import com.o3dr.android.client.apis.CapabilityApi;
 import com.o3dr.services.android.lib.drone.action.ControlActions;
@@ -120,18 +120,15 @@ public class ArduCopter extends ArduPilot {
 
     @Override
     public void notifyDroneEvent(DroneInterfaces.DroneEventsType event){
-        switch(event){
-            case MODE:
-                //Listen for vehicle mode updates, and update the manual control state listeners appropriately
-                ApmModes currentMode = getState().getMode();
-                if (manualControlState != null) {
-                    if (currentMode == ApmModes.ROTOR_GUIDED) {
-                        CommonApiUtils.postSuccessEvent(manualControlState);
-                    } else {
-                        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, manualControlState);
-                    }
+        if (event == DroneInterfaces.DroneEventsType.MODE) {//Listen for vehicle mode updates, and update the manual control state listeners appropriately
+            ApmModes currentMode = getState().getMode();
+            if (manualControlState != null) {
+                if (currentMode == ApmModes.ROTOR_GUIDED) {
+                    CommonApiUtils.postSuccessEvent(manualControlState);
+                } else {
+                    CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, manualControlState);
                 }
-                break;
+            }
         }
 
         super.notifyDroneEvent(event);

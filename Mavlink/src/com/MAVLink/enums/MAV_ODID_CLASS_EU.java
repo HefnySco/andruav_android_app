@@ -20,4 +20,3 @@ public class MAV_ODID_CLASS_EU {
    public static final int MAV_ODID_CLASS_EU_CLASS_6 = 7; /* The class for the UA, according to the EU specification, is Class 6. | */
    public static final int MAV_ODID_CLASS_EU_ENUM_END = 8; /*  | */
 }
-            

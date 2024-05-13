@@ -17,4 +17,3 @@ public class GOPRO_PHOTO_RESOLUTION {
    public static final int GOPRO_PHOTO_RESOLUTION_12MP_WIDE = 4; /* 12MP Wide. | */
    public static final int GOPRO_PHOTO_RESOLUTION_ENUM_END = 5; /*  | */
 }
-            

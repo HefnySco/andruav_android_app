@@ -7,10 +7,10 @@
 // MESSAGE STORM32_GIMBAL_DEVICE_STATUS PACKING
 package com.MAVLink.storm32;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Message reporting the current status of a gimbal device. This message should be broadcasted by a gimbal device component at a low regular rate (e.g. 4 Hz). For higher rates it should be emitted with a target.

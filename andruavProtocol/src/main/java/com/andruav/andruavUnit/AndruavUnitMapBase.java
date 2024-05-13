@@ -79,7 +79,6 @@ public class AndruavUnitMapBase extends SimpleArrayMap<String, AndruavUnitBase> 
      * also update its status from alive to lower states.
      */
     public void UpdateExpiredUsers() {
-        return;
     }
 
 
@@ -238,7 +237,6 @@ public class AndruavUnitMapBase extends SimpleArrayMap<String, AndruavUnitBase> 
         andruavWe7da.refreshWayPoints(mohemmaMapBase);
 
 
-        return ;
     }
 
     public void refreshWayPoints(AndruavUnitBase andruavWe7da, AndruavMessage_WayPoints andruavMessage_wayPoints)
@@ -249,7 +247,6 @@ public class AndruavUnitMapBase extends SimpleArrayMap<String, AndruavUnitBase> 
         andruavWe7da.refreshWayPoints(mohemmaMapBase);
 
 
-        return ;
     }
 
     public AndruavUnitBase updateNAV(Andruav_2MR andruavCMD)

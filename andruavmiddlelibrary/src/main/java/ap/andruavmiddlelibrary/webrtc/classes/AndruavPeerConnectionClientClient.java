@@ -93,7 +93,6 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
                     }
                     if (packet.has(PnRTCResala.JSON_ICE)){
                         actionMap.get(AddIceCandidateAction.TRIGGER).execute(peerId,channel,packet);
-                        return;
                     }
                 } catch (JSONException e){
                     e.printStackTrace();
@@ -126,7 +125,7 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
 
 
     public AndruavPeerConnectionClientClient(final PeerConnectionFactory pcFactory , final PnSignalingParams signalingParams, final PnRTCListener rtcListener){
-        if (EventBus.getDefault().isRegistered(this)==false) {
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
         this.signalingParams = signalingParams;
@@ -174,7 +173,7 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
     public static void sendHangUpTo (final String userID)
     {
         try {
-            if (AndruavSettings.andruavWe7daBase.getIsCGS()==true)
+            if (AndruavSettings.andruavWe7daBase.getIsCGS())
             {
                 return ;
             }

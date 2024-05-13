@@ -21,20 +21,13 @@ android {
         applicationId 'arudpilot.andruav'
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
-        versionName '6.0.0'
+        versionName '6.1.0'
         signingConfig signingConfigs.config
         versionCode 60000
         multiDexEnabled true
-
-        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    dexOptions {
-        preDexLibraries true
-        javaMaxHeapSize "2g"
-        //incremental true
-        dexInProcess = true
-    }
+
 
 
     buildTypes {
@@ -47,17 +40,6 @@ android {
             testCoverageEnabled = false
             renderscriptDebuggable true
             signingConfig signingConfigs.config
-            /*android.applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    def flavor = variant.mergedFlavor
-                    def name = "andruav" + flavor.getVersionName()
-                    def versionName = name + '-' + variant.properties.get('flavorName')
-                    if (variant.buildType.isDebuggable()) {
-                        versionName += '-debug';
-                    }
-                    output.versionNameOverride = versionName + "." + releaseTime() + ".apk";
-                }
-            }*/
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
                     outputFileName = "Andruav_debug_" + variant.properties.get('flavorName') + "." + defaultConfig.versionName + "." + releaseTime() + ".apk"
@@ -73,17 +55,6 @@ android {
             minifyEnabled true
             shrinkResources true
             zipAlignEnabled true
-//            android.applicationVariants.all { variant ->
-//                variant.outputs.each { output ->
-//                    def flavor = variant.mergedFlavor
-//                    def name = "andruav" + flavor.getVersionName()
-//                    def versionName = name + '-' + variant.properties.get('flavorName')
-//                    if (variant.buildType.isDebuggable()) {
-//                        versionName += '-debug';
-//                    }
-//                    output.versionNameOverride = versionName + "." + releaseTime() + ".apk";
-//                }
-//            }
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
                     outputFileName = "Andruav_release_" + variant.properties.get('flavorName') + "." + defaultConfig.versionName + "." + releaseTime() + ".apk"

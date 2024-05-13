@@ -17,4 +17,3 @@ public class CAMERA_FEEDBACK_FLAGS {
    public static final int CAMERA_FEEDBACK_OPENLOOP = 4; /* Open loop camera, an image trigger has been requested but we can't know for sure it has successfully taken a picture. | */
    public static final int CAMERA_FEEDBACK_FLAGS_ENUM_END = 5; /*  | */
 }
-            

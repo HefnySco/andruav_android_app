@@ -56,7 +56,7 @@ public class AndruavUnitMe extends AndruavUnitBase {
         AndruavFacade.sendWayPointsReached(null, missionItemIndex, MissionBase.Report_NAV_ItemReached);
     }
 
-    private Long lastaccess_udp_proxy_receive =0l;
+    private Long lastaccess_udp_proxy_receive = 0L;
     /**
      * another vehicle is sending data to me via my udp proxy, I may want to activate telemetry
      * @return

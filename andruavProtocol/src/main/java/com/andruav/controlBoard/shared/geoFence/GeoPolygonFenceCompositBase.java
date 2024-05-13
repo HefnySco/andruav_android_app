@@ -82,6 +82,6 @@ public class GeoPolygonFenceCompositBase extends GeoFenceCompositBase {
             set_isInside(andruavUnitBase, inside,-1);
         }
 
-        return ((inside==true) ?0:Double.NaN);
+        return ((inside) ?0:Double.NaN);
     }
 }

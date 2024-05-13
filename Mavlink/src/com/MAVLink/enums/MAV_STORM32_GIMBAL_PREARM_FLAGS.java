@@ -25,4 +25,3 @@ public class MAV_STORM32_GIMBAL_PREARM_FLAGS {
    public static final int MAV_STORM32_GIMBAL_PREARM_FLAGS_NTLOGGER_WORKING = 4096; /* The NTLogger is working normally. | */
    public static final int MAV_STORM32_GIMBAL_PREARM_FLAGS_ENUM_END = 4097; /*  | */
 }
-            

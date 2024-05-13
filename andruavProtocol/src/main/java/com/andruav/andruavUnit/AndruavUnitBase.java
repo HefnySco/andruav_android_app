@@ -306,7 +306,6 @@ public class AndruavUnitBase {
 
             AndruavFacade.broadcastID();
 
-            return;
         }
 
 
@@ -335,7 +334,6 @@ public class AndruavUnitBase {
 
             AndruavFacade.broadcastID();
 
-            return;
         }
     }
 
@@ -363,7 +361,6 @@ public class AndruavUnitBase {
 
             AndruavFacade.broadcastID();
 
-            return;
         }
     }
 
@@ -811,7 +808,7 @@ public class AndruavUnitBase {
 
             if(IsMe())
             {
-                if (isFlying==true)
+                if (isFlying)
                 {
                     if (changed) {
                         mFlyingTimeTemp = System.currentTimeMillis();
@@ -1255,7 +1252,7 @@ public class AndruavUnitBase {
      */
     protected void disposeFCBBase()
     {
-        if (this.mIsMe==true) {
+        if (this.mIsMe) {
             if (this.FCBoard != null) {
                 FCBoard.ActivateListener(false);
                 FCBoard = null;
@@ -1367,15 +1364,10 @@ public class AndruavUnitBase {
     public void setManualTXBlockedSubAction(final int manualTXBlockedSubAction)
     {
         if (IsMe()) {
-            switch (mManualTXBlockedSubAction) {
-
-                /*
+            /*
                 Add rules here to govern switching modes criteria.
                 for now switching between all modes are allowed.
                  */
-                default:
-                    break;
-            }
         }
         final boolean changed = (mManualTXBlockedSubAction != manualTXBlockedSubAction);
         if (!changed) return ;
@@ -1524,10 +1516,8 @@ public class AndruavUnitBase {
             return  false;
         }
 
-        switch (getTelemetry_protocol()) {
-            case TelemetryProtocol.TelemetryProtocol_DroneKit_Telemetry:
-                res = true;
-                break;
+        if (getTelemetry_protocol() == TelemetryProtocol.TelemetryProtocol_DroneKit_Telemetry) {
+            res = true;
         }
 
 
@@ -1560,10 +1550,7 @@ public class AndruavUnitBase {
     public void setUnitStatus (enum_userStatus status)
     {
 
-        switch (status)
-        {
-            case ALIVE:
-                break;
+        if (status == enum_userStatus.ALIVE) {
         }
 
         this.unitStatus = status;

@@ -7,10 +7,10 @@
 // MESSAGE OPEN_DRONE_ID_MESSAGE_PACK PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * An OpenDroneID message pack is a container for multiple encoded OpenDroneID messages (i.e. not in the format given for the above message descriptions but after encoding into the compressed OpenDroneID byte format). Used e.g. when transmitting on Bluetooth 5.0 Long Range/Extended Advertising or on WiFi Neighbor Aware Networking or on WiFi Beacon.

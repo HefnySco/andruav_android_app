@@ -146,22 +146,18 @@ public class DroneMavlinkHandler {
 
     public static void execute_command_long (msg_command_long mavLinkMessage)
     {
-        switch(mavLinkMessage.command)
-        {
-            case MAV_CMD.MAV_CMD_DO_DIGICAM_CONTROL: {
-                AndruavEngine.getEventBus().post(new _7adath_InitAndroidCamera());
+        if (mavLinkMessage.command == MAV_CMD.MAV_CMD_DO_DIGICAM_CONTROL) {
+            AndruavEngine.getEventBus().post(new _7adath_InitAndroidCamera());
 
-                Event_FPV_CMD event_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_TAKEIMAGE);
-                event_fpv_cmd.CameraSource = AndruavMessage_Ctrl_Camera.CAMERA_SOURCE_MOBILE;
-                event_fpv_cmd.NumberOfImages = 1;
-                event_fpv_cmd.TimeBetweenShotes = 0;
-                event_fpv_cmd.DistanceBetweenShotes = 0;
-                event_fpv_cmd.SendBackImages = true;
-                event_fpv_cmd.SaveImageLocally = true;
-                event_fpv_cmd.Requester = new AndruavUnitAllGCS(); //.getPartyID();
-                AndruavEngine.getEventBus().post(event_fpv_cmd);
-                break;
-            }
+            Event_FPV_CMD event_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_TAKEIMAGE);
+            event_fpv_cmd.CameraSource = AndruavMessage_Ctrl_Camera.CAMERA_SOURCE_MOBILE;
+            event_fpv_cmd.NumberOfImages = 1;
+            event_fpv_cmd.TimeBetweenShotes = 0;
+            event_fpv_cmd.DistanceBetweenShotes = 0;
+            event_fpv_cmd.SendBackImages = true;
+            event_fpv_cmd.SaveImageLocally = true;
+            event_fpv_cmd.Requester = new AndruavUnitAllGCS(); //.getPartyID();
+            AndruavEngine.getEventBus().post(event_fpv_cmd);
         }
     }
 

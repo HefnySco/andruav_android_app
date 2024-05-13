@@ -74,7 +74,6 @@ public class AndruavFacade extends AndruavFacadeBase{
             sendSystemCommandToCommServer(andruavSystem_loadTasks, false,false);
 
         } catch (Exception e) {
-            return;
         }
 
     }
@@ -760,7 +759,6 @@ public class AndruavFacade extends AndruavFacadeBase{
 
         if (andruavUnitBase == null) return ;
 
-        return ;
     }
 
     /**
@@ -775,7 +773,6 @@ public class AndruavFacade extends AndruavFacadeBase{
 
         sendRemoteControlSettings (andruavUnitBase, Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS);
 
-        return ;
     }
 
 
@@ -786,7 +783,6 @@ public class AndruavFacade extends AndruavFacadeBase{
 
         sendRemoteControlSettings (andruavUnitBase, Event_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED);
 
-        return ;
     }
 
 
@@ -799,7 +795,6 @@ public class AndruavFacade extends AndruavFacadeBase{
         andruavMessage_remoteExecute.rcSubAction = rcSubAction;
         sendMessage(andruavMessage_remoteExecute , andruavUnitBase, Boolean.FALSE);
 
-        return ;
     }
 
     /***

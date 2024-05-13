@@ -160,7 +160,7 @@ public class AndruavMapsShasha extends BaseAndruavShasha implements AndruavRTCVi
         final Message msg = mhandle.obtainMessage();
 
 
-        if (event_fpv_image.isVideo==false)
+        if (!event_fpv_image.isVideo)
         {
             msg.obj = event_fpv_image;
             if (mhandle != null)  mhandle.sendMessageAtFrontOfQueue(msg); // sendMessageToModule Fast Message
@@ -171,7 +171,6 @@ public class AndruavMapsShasha extends BaseAndruavShasha implements AndruavRTCVi
             msg.obj = event_fpv_image;
             if (mhandle != null)  mhandle.sendMessageDelayed(msg, 0);
 
-            return;
         }
 
     }
@@ -263,16 +262,11 @@ long lastframecount =0;
                     }
                 } else  if (msg.obj instanceof Event_FPV_VideoURL) {
                     final Event_FPV_VideoURL event_fpv_videoURL = (Event_FPV_VideoURL) msg.obj;
-                    switch (event_fpv_videoURL.ExternalType) {
-                        case AndruavMessage_CameraList.EXTERNAL_CAMERA_TYPE_RTCWEBCAM:
-                            // DroneIP either already exist or sent from Drone as a double check
+                    if (event_fpv_videoURL.ExternalType == AndruavMessage_CameraList.EXTERNAL_CAMERA_TYPE_RTCWEBCAM) {// DroneIP either already exist or sent from Drone as a double check
 
-                            //djiVideoDecoderWidget.setVisibility(View.INVISIBLE);
-                            //imgVideoStreaming.setVisibility(View.INVISIBLE);
-                            andruavRTCVideoDecorderWidget.setVisibility(View.VISIBLE);
-
-
-                            break;
+                        //djiVideoDecoderWidget.setVisibility(View.INVISIBLE);
+                        //imgVideoStreaming.setVisibility(View.INVISIBLE);
+                        andruavRTCVideoDecorderWidget.setVisibility(View.VISIBLE);
                     }
                 }
                 else if (msg.obj instanceof Event_FCB_Changed)
@@ -354,7 +348,7 @@ long lastframecount =0;
                 andruavUnitInfoWidget.setAndruavUnit(msupportmapfragment.andruavUnit_selected);
                 andruavRTCVideoDecorderWidget.setAndruavUnit(msupportmapfragment.andruavUnit_selected);
 
-                if (killme == false) {
+                if (!killme) {
                     mhandle.postDelayed(this, 1000);    // update GPS with rate 1Hz
                 }
             }
@@ -548,7 +542,7 @@ long lastframecount =0;
         btnTakePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ((msupportmapfragment.andruavUnit_selected != null) && (msupportmapfragment.andruavUnit_selected.Equals(AndruavSettings.andruavWe7daBase)==false)) {
+                if ((msupportmapfragment.andruavUnit_selected != null) && (!msupportmapfragment.andruavUnit_selected.Equals(AndruavSettings.andruavWe7daBase))) {
                     // take photos remotely only
                     AndruavFacade.takeImage(msupportmapfragment.andruavUnit_selected.imageTotal, msupportmapfragment.andruavUnit_selected.imageInterval, true, msupportmapfragment.andruavUnit_selected);
 
@@ -563,7 +557,8 @@ long lastframecount =0;
             public void onClick(View view) {
 
                 toggleVideo(msupportmapfragment.andruavUnit_selected);
-                if (msupportmapfragment.andruavUnit_selected == null) return ;
+                if (msupportmapfragment.andruavUnit_selected == null) {
+                }
             }
         });
 
@@ -594,7 +589,7 @@ long lastframecount =0;
         btnSwitchCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ((msupportmapfragment.andruavUnit_selected != null) && (msupportmapfragment.andruavUnit_selected.Equals(AndruavSettings.andruavWe7daBase)==false)) {
+                if ((msupportmapfragment.andruavUnit_selected != null) && (!msupportmapfragment.andruavUnit_selected.Equals(AndruavSettings.andruavWe7daBase))) {
                     // take photos remotely only
                     AndruavFacade.switchCamera(msupportmapfragment.andruavUnit_selected,msupportmapfragment.andruavUnit_selected.PartyID);
                 }
@@ -654,7 +649,7 @@ long lastframecount =0;
 
         llSliding.allowRemoteCGSSelect(true);
         slidingDrawer = findViewById(R.id.fpvactivity_slidingDrawer);
-        if (AndruavSettings.andruavWe7daBase.getIsCGS()==false)
+        if (!AndruavSettings.andruavWe7daBase.getIsCGS())
         {
             slidingDrawer.setVisibility(View.INVISIBLE);
 
@@ -819,7 +814,7 @@ long lastframecount =0;
 
         EventBus.getDefault().register(this);
 
-        if (AndruavSettings.andruavWe7daBase.getIsCGS() == false) {
+        if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
             App.startSensorService();
         }
 
@@ -842,12 +837,10 @@ long lastframecount =0;
        if (slidingDrawer.isOpened())
         {
             slidingDrawer.close();
-            return ;
         }
        else if (imgSnapShot.getVisibility()== View.VISIBLE)
        {
            imgSnapShot.setVisibility(View.GONE);
-           return ;
        }
         else if ((msupportmapfragment.andruavUnit_selected != null)
            && (msupportmapfragment.andruavUnit_selected.VideoStreamingActivated))
@@ -950,7 +943,7 @@ long lastframecount =0;
         }
 
         // 2- unsubscribe old
-        if ((msupportmapfragment.andruavUnit_selected != null) && (msupportmapfragment.andruavUnit_selected.Equals(newContext) == false)){
+        if ((msupportmapfragment.andruavUnit_selected != null) && (!msupportmapfragment.andruavUnit_selected.Equals(newContext))){
             AndruavFacade.ControlIMU(false, msupportmapfragment.andruavUnit_selected);
             GUI.turnOffRemote(mRemoteControlWidget);
             // BUG:  slidingItemAndruavUnitWidget.enableRemote(false); should be called here to disable the remote icon
@@ -1083,7 +1076,6 @@ long lastframecount =0;
                         // It is a null or vehicle.
                         handleSelectedPartyID(mmarker);
 
-                        return ;
                     }
                 },100);
 
@@ -1213,7 +1205,6 @@ long lastframecount =0;
                 photoUri = MediaStore.Images.Media.insertImage(
                         getContentResolver(), savedImageFile.getAbsolutePath(), null, null);
             } catch (FileNotFoundException e) {
-                return;
             }
 
         }

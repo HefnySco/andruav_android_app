@@ -21,4 +21,3 @@ public class SUB_MODE {
    public static final int SUB_MODE_MANUAL = 19; /*  | */
    public static final int SUB_MODE_ENUM_END = 20; /*  | */
 }
-            

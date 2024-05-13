@@ -7,10 +7,10 @@
 // MESSAGE RAW_PRESSURE PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * The RAW pressure readings for the typical setup of one absolute pressure and one differential pressure sensor. The sensor values should be the raw, UNSCALED ADC values.

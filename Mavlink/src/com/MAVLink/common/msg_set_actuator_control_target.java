@@ -7,10 +7,10 @@
 // MESSAGE SET_ACTUATOR_CONTROL_TARGET PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Set the vehicle attitude and body angular rates.

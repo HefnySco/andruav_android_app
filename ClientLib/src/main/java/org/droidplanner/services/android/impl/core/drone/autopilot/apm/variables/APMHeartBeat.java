@@ -22,30 +22,21 @@ public class APMHeartBeat extends HeartBeat {
 
     @Override
     public void onDroneEvent(DroneInterfaces.DroneEventsType event, MavLinkDrone drone){
-        switch(event){
-            case CALIBRATION_IMU:
-                //Set the heartbeat in imu calibration mode.
-                heartbeatState = IMU_CALIBRATION;
-                restartWatchdog(HEARTBEAT_IMU_CALIBRATION_TIMEOUT);
-                break;
-
-            default:
-                super.onDroneEvent(event, drone);
-                break;
+        if (event == DroneInterfaces.DroneEventsType.CALIBRATION_IMU) {//Set the heartbeat in imu calibration mode.
+            heartbeatState = IMU_CALIBRATION;
+            restartWatchdog(HEARTBEAT_IMU_CALIBRATION_TIMEOUT);
+        } else {
+            super.onDroneEvent(event, drone);
         }
     }
 
     @Override
     protected void onHeartbeatTimeout(){
-        switch(heartbeatState){
-            case IMU_CALIBRATION:
-                restartWatchdog(HEARTBEAT_IMU_CALIBRATION_TIMEOUT);
-                myDrone.notifyDroneEvent(DroneInterfaces.DroneEventsType.CALIBRATION_TIMEOUT);
-                break;
-
-            default:
-                super.onHeartbeatTimeout();
-                break;
+        if (heartbeatState == IMU_CALIBRATION) {
+            restartWatchdog(HEARTBEAT_IMU_CALIBRATION_TIMEOUT);
+            myDrone.notifyDroneEvent(DroneInterfaces.DroneEventsType.CALIBRATION_TIMEOUT);
+        } else {
+            super.onHeartbeatTimeout();
         }
     }
 }

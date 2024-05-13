@@ -15,4 +15,3 @@ public class GIMBAL_AXIS_CALIBRATION_REQUIRED {
    public static final int GIMBAL_AXIS_CALIBRATION_REQUIRED_FALSE = 2; /* This axis does not require calibration. | */
    public static final int GIMBAL_AXIS_CALIBRATION_REQUIRED_ENUM_END = 3; /*  | */
 }
-            

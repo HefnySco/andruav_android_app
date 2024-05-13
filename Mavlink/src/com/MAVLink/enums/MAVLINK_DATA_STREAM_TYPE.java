@@ -18,4 +18,3 @@ public class MAVLINK_DATA_STREAM_TYPE {
    public static final int MAVLINK_DATA_STREAM_IMG_PNG = 5; /*  | */
    public static final int MAVLINK_DATA_STREAM_TYPE_ENUM_END = 6; /*  | */
 }
-            

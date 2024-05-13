@@ -20,4 +20,3 @@ public class MAV_MODE_FLAG {
    public static final int MAV_MODE_FLAG_SAFETY_ARMED = 128; /* 0b10000000 MAV safety set to armed. Motors are enabled / running / can start. Ready to fly. Additional note: this flag is to be ignore when sent in the command MAV_CMD_DO_SET_MODE and MAV_CMD_COMPONENT_ARM_DISARM shall be used instead. The flag can still be used to report the armed state. | */
    public static final int MAV_MODE_FLAG_ENUM_END = 129; /*  | */
 }
-            

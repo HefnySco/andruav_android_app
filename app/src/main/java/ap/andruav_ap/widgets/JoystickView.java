@@ -184,7 +184,7 @@ public class JoystickView extends View {
 
         statusText = new Paint((Paint.ANTI_ALIAS_FLAG));
         statusText.setColor(Color.WHITE);
-        if (this.isInEditMode()==false) {
+        if (!this.isInEditMode()) {
             statusText.setTextSize(15.0f * App.getAppContext().getResources().getDisplayMetrics().density);
         }
         statusText.setTextAlign(Paint.Align.CENTER);

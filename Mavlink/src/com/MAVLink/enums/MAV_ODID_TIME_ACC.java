@@ -28,4 +28,3 @@ public class MAV_ODID_TIME_ACC {
    public static final int MAV_ODID_TIME_ACC_1_5_SECOND = 15; /* The timestamp accuracy is smaller than or equal to 1.5 second. | */
    public static final int MAV_ODID_TIME_ACC_ENUM_END = 16; /*  | */
 }
-            

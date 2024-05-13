@@ -34,4 +34,3 @@ public class UAVIONIX_ADSB_OUT_STATUS_NIC_NACP {
    public static final int UAVIONIX_ADSB_NACP_EPU_3_M = 176; /*  | */
    public static final int UAVIONIX_ADSB_OUT_STATUS_NIC_NACP_ENUM_END = 177; /*  | */
 }
-            

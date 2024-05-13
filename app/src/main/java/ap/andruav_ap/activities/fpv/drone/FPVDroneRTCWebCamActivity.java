@@ -842,7 +842,6 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
             }
             else {
                 mVideoByteRenderer.onFrame(videoFrame);
-                return;
             }
         }
 

@@ -1,6 +1,6 @@
 package org.droidplanner.services.android.impl.core.MAVLink;
 
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.minimal.msg_heartbeat;
 import com.MAVLink.enums.MAV_AUTOPILOT;
 import com.MAVLink.enums.MAV_TYPE;
@@ -26,14 +26,9 @@ public class MavLinkMsgHandler {
             return;
         }
 
-        switch (msg.msgid) {
-            case msg_heartbeat.MAVLINK_MSG_ID_HEARTBEAT:
-                msg_heartbeat msg_heart = (msg_heartbeat) msg;
-                handleHeartbeat(msg_heart);
-                break;
-
-            default:
-                break;
+        if (msg.msgid == msg_heartbeat.MAVLINK_MSG_ID_HEARTBEAT) {
+            msg_heartbeat msg_heart = (msg_heartbeat) msg;
+            handleHeartbeat(msg_heart);
         }
     }
 

@@ -239,7 +239,6 @@ public class AndruavGCSSerialSocketServer {
         {
             // socket has been closed externaly
             //************ CAUSE OF ERROR ************ java.lang.NullPointerException at rcmobile.FPV.Communication.Telemetry.SerialSocketServer.AndruavGCSSerialSocketServer$1.handleMessage(AndruavGCSSerialSocketServer.java:256)
-            return ;
         }
     }
 

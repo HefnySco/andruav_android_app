@@ -21,4 +21,3 @@ public class MAV_STATE {
    public static final int MAV_STATE_FLIGHT_TERMINATION = 8; /* System is terminating itself. | */
    public static final int MAV_STATE_ENUM_END = 9; /*  | */
 }
-            

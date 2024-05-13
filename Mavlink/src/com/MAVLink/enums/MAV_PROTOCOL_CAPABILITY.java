@@ -29,4 +29,3 @@ public class MAV_PROTOCOL_CAPABILITY {
    public static final int MAV_PROTOCOL_CAPABILITY_FLIGHT_INFORMATION = 65536; /* Autopilot supports the flight information protocol. | */
    public static final int MAV_PROTOCOL_CAPABILITY_ENUM_END = 65537; /*  | */
 }
-            

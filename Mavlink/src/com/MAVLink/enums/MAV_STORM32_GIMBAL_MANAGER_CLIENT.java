@@ -21,4 +21,3 @@ public class MAV_STORM32_GIMBAL_MANAGER_CLIENT {
    public static final int MAV_STORM32_GIMBAL_MANAGER_CLIENT_CUSTOM2 = 8; /* This is the custom2 client. | */
    public static final int MAV_STORM32_GIMBAL_MANAGER_CLIENT_ENUM_END = 9; /*  | */
 }
-            

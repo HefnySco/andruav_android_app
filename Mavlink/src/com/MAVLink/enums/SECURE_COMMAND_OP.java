@@ -20,4 +20,3 @@ public class SECURE_COMMAND_OP {
    public static final int SECURE_COMMAND_FLASH_BOOTLOADER = 7; /* Flash bootloader from local storage. Data is the filename to use for the bootloader. This is intended to be used with MAVFtp to upload a new bootloader to a microSD before flashing. | */
    public static final int SECURE_COMMAND_OP_ENUM_END = 8; /*  | */
 }
-            

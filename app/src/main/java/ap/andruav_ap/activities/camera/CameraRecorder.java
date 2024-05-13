@@ -192,7 +192,8 @@ public class CameraRecorder extends CameraRecorderBase {
             }
 
         });*/
-        if (mVideoEncoder == null) return;
+        if (mVideoEncoder == null) {
+        }
         //mVideoEncoder.frameAvailableSoon();
 
         //mVideoEncoder.encode(Frame, null);

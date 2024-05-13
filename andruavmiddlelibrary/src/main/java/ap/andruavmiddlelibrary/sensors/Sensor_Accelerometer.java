@@ -48,7 +48,6 @@ public class Sensor_Accelerometer extends GenericIMUSensor implements SensorEven
         tiltValues[2] = 0.0f;
         misTilted = false;
 
-        return ;
     }
 
     public Boolean isZeroTilt()
@@ -69,7 +68,7 @@ public class Sensor_Accelerometer extends GenericIMUSensor implements SensorEven
         // with t, the low-pass filter's time-constant
         // and dT, the event delivery rate
 
-        if (misCalibrated == false)
+        if (!misCalibrated)
         {
 
             calibrateSensor(event.values);
@@ -88,7 +87,7 @@ public class Sensor_Accelerometer extends GenericIMUSensor implements SensorEven
         smoothedValues[1] = alpha * smoothedValues[1] + (1 - alpha) * (rawValues[1] - calibrationValues[1]);
         smoothedValues[2] = alpha * smoothedValues[2] + (1 - alpha) * (rawValues[2] - calibrationValues[2]);
 
-        if (misTilted == false)
+        if (!misTilted)
         {
             tiltSensor(smoothedValues);
 
@@ -133,7 +132,6 @@ public class Sensor_Accelerometer extends GenericIMUSensor implements SensorEven
             calibrationValues[2] /= mcalibrationCount;
         }
 
-        return ;
     }
 
     protected void tiltSensor (double[] values)
@@ -151,6 +149,5 @@ public class Sensor_Accelerometer extends GenericIMUSensor implements SensorEven
             tiltValues[2] /= mcalibrationCount;
         }
 
-        return ;
     }
 }

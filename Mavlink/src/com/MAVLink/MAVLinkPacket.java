@@ -7,10 +7,11 @@
 package com.MAVLink;
 
 import java.io.Serializable;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.all.CRC;
 
+import com.MAVLink.all.*;
 import com.MAVLink.ardupilotmega.*;
 import com.MAVLink.ASLUAV.*;
 import com.MAVLink.common.*;
@@ -18,12 +19,15 @@ import com.MAVLink.development.*;
 import com.MAVLink.icarous.*;
 import com.MAVLink.minimal.*;
 import com.MAVLink.python_array_test.*;
+import com.MAVLink.standard.*;
 import com.MAVLink.test.*;
 import com.MAVLink.ualberta.*;
 import com.MAVLink.uAvionix.*;
 import com.MAVLink.loweheiser.*;
 import com.MAVLink.storm32.*;
 import com.MAVLink.AVSSUAS.*;
+import com.MAVLink.cubepilot.*;
+import com.MAVLink.csAirLink.*;
 
 /**
  * Common interface for all MAVLink Messages
@@ -115,7 +119,7 @@ public class MAVLinkPacket implements Serializable {
     /**
      * Data of the message, depends on the message id.
      */
-    public final MAVLinkPayload payload;
+    public MAVLinkPayload payload;
 
     /**
     * CRC-16/MCRF4XX hash, excluding packet start sign, so bytes 1..(n+HEADER-LENGTH)
@@ -130,7 +134,7 @@ public class MAVLinkPacket implements Serializable {
     /**
      * Flag to indicate which MAVLink version this packet is
      */
-    public final boolean isMavlink2;
+    public boolean isMavlink2;
 
     /**
      * Flags that must be understood
@@ -688,6 +692,18 @@ public class MAVLinkPacket implements Serializable {
                 return  new msg_video_stream_information(this);
                         case msg_video_stream_status.MAVLINK_MSG_ID_VIDEO_STREAM_STATUS:
                 return  new msg_video_stream_status(this);
+                        case msg_camera_fov_status.MAVLINK_MSG_ID_CAMERA_FOV_STATUS:
+                return  new msg_camera_fov_status(this);
+                        case msg_camera_tracking_image_status.MAVLINK_MSG_ID_CAMERA_TRACKING_IMAGE_STATUS:
+                return  new msg_camera_tracking_image_status(this);
+                        case msg_camera_tracking_geo_status.MAVLINK_MSG_ID_CAMERA_TRACKING_GEO_STATUS:
+                return  new msg_camera_tracking_geo_status(this);
+                        case msg_gimbal_manager_information.MAVLINK_MSG_ID_GIMBAL_MANAGER_INFORMATION:
+                return  new msg_gimbal_manager_information(this);
+                        case msg_gimbal_manager_status.MAVLINK_MSG_ID_GIMBAL_MANAGER_STATUS:
+                return  new msg_gimbal_manager_status(this);
+                        case msg_gimbal_manager_set_attitude.MAVLINK_MSG_ID_GIMBAL_MANAGER_SET_ATTITUDE:
+                return  new msg_gimbal_manager_set_attitude(this);
                         case msg_gimbal_device_information.MAVLINK_MSG_ID_GIMBAL_DEVICE_INFORMATION:
                 return  new msg_gimbal_device_information(this);
                         case msg_gimbal_device_set_attitude.MAVLINK_MSG_ID_GIMBAL_DEVICE_SET_ATTITUDE:
@@ -696,6 +712,12 @@ public class MAVLinkPacket implements Serializable {
                 return  new msg_gimbal_device_attitude_status(this);
                         case msg_autopilot_state_for_gimbal_device.MAVLINK_MSG_ID_AUTOPILOT_STATE_FOR_GIMBAL_DEVICE:
                 return  new msg_autopilot_state_for_gimbal_device(this);
+                        case msg_gimbal_manager_set_pitchyaw.MAVLINK_MSG_ID_GIMBAL_MANAGER_SET_PITCHYAW:
+                return  new msg_gimbal_manager_set_pitchyaw(this);
+                        case msg_gimbal_manager_set_manual_control.MAVLINK_MSG_ID_GIMBAL_MANAGER_SET_MANUAL_CONTROL:
+                return  new msg_gimbal_manager_set_manual_control(this);
+                        case msg_airspeed.MAVLINK_MSG_ID_AIRSPEED:
+                return  new msg_airspeed(this);
                         case msg_wifi_config_ap.MAVLINK_MSG_ID_WIFI_CONFIG_AP:
                 return  new msg_wifi_config_ap(this);
                         case msg_ais_vessel.MAVLINK_MSG_ID_AIS_VESSEL:
@@ -732,6 +754,8 @@ public class MAVLinkPacket implements Serializable {
                 return  new msg_generator_status(this);
                         case msg_actuator_output_status.MAVLINK_MSG_ID_ACTUATOR_OUTPUT_STATUS:
                 return  new msg_actuator_output_status(this);
+                        case msg_relay_status.MAVLINK_MSG_ID_RELAY_STATUS:
+                return  new msg_relay_status(this);
                         case msg_tunnel.MAVLINK_MSG_ID_TUNNEL:
                 return  new msg_tunnel(this);
                         case msg_can_frame.MAVLINK_MSG_ID_CAN_FRAME:
@@ -740,6 +764,8 @@ public class MAVLinkPacket implements Serializable {
                 return  new msg_canfd_frame(this);
                         case msg_can_filter_modify.MAVLINK_MSG_ID_CAN_FILTER_MODIFY:
                 return  new msg_can_filter_modify(this);
+                        case msg_radio_rc_channels.MAVLINK_MSG_ID_RADIO_RC_CHANNELS:
+                return  new msg_radio_rc_channels(this);
                         case msg_sens_power.MAVLINK_MSG_ID_SENS_POWER:
                 return  new msg_sens_power(this);
                         case msg_sens_mppt.MAVLINK_MSG_ID_SENS_MPPT:
@@ -882,6 +908,20 @@ public class MAVLinkPacket implements Serializable {
                 return  new msg_icarous_heartbeat(this);
                         case msg_icarous_kinematic_bands.MAVLINK_MSG_ID_ICAROUS_KINEMATIC_BANDS:
                 return  new msg_icarous_kinematic_bands(this);
+                        case msg_cubepilot_raw_rc.MAVLINK_MSG_ID_CUBEPILOT_RAW_RC:
+                return  new msg_cubepilot_raw_rc(this);
+                        case msg_herelink_video_stream_information.MAVLINK_MSG_ID_HERELINK_VIDEO_STREAM_INFORMATION:
+                return  new msg_herelink_video_stream_information(this);
+                        case msg_herelink_telem.MAVLINK_MSG_ID_HERELINK_TELEM:
+                return  new msg_herelink_telem(this);
+                        case msg_cubepilot_firmware_update_start.MAVLINK_MSG_ID_CUBEPILOT_FIRMWARE_UPDATE_START:
+                return  new msg_cubepilot_firmware_update_start(this);
+                        case msg_cubepilot_firmware_update_resp.MAVLINK_MSG_ID_CUBEPILOT_FIRMWARE_UPDATE_RESP:
+                return  new msg_cubepilot_firmware_update_resp(this);
+                        case msg_airlink_auth.MAVLINK_MSG_ID_AIRLINK_AUTH:
+                return  new msg_airlink_auth(this);
+                        case msg_airlink_auth_response.MAVLINK_MSG_ID_AIRLINK_AUTH_RESPONSE:
+                return  new msg_airlink_auth_response(this);
                         case msg_storm32_gimbal_device_status.MAVLINK_MSG_ID_STORM32_GIMBAL_DEVICE_STATUS:
                 return  new msg_storm32_gimbal_device_status(this);
                         case msg_storm32_gimbal_device_control.MAVLINK_MSG_ID_STORM32_GIMBAL_DEVICE_CONTROL:

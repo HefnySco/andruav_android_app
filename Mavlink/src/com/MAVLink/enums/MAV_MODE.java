@@ -24,4 +24,3 @@ public class MAV_MODE {
    public static final int MAV_MODE_AUTO_ARMED = 220; /* System is allowed to be active, under autonomous control and navigation (the trajectory is decided onboard and not pre-programmed by waypoints) | */
    public static final int MAV_MODE_ENUM_END = 221; /*  | */
 }
-            

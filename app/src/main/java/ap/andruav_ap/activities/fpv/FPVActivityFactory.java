@@ -31,7 +31,6 @@ public class FPVActivityFactory {
             return ;
         }
         if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-            return ;
         } else {  // you cannot use a drone if mobile does not have a cam
             if (!CheckAppPermissions.checkPermissionAndRequest((Activity) context,
                     Manifest.permission.CAMERA,"Please grant Camera Permission"))

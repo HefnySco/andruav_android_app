@@ -26,13 +26,10 @@ public enum FollowType implements Parcelable {
     GUIDED_SCAN("Guided Scan") {
         @Override
         public boolean hasParam(String paramKey) {
-            switch (paramKey) {
-                case EXTRA_FOLLOW_ROI_TARGET:
-                    return true;
-
-                default:
-                    return false;
+            if (EXTRA_FOLLOW_ROI_TARGET.equals(paramKey)) {
+                return true;
             }
+            return false;
         }
     },
 

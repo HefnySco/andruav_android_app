@@ -17,4 +17,3 @@ public class MAV_VTOL_STATE {
    public static final int MAV_VTOL_STATE_FW = 4; /* VTOL is in fixed-wing state | */
    public static final int MAV_VTOL_STATE_ENUM_END = 5; /*  | */
 }
-            

@@ -16,4 +16,3 @@ public class GOPRO_HEARTBEAT_STATUS {
    public static final int GOPRO_HEARTBEAT_STATUS_ERROR = 3; /* An unrecoverable error was encountered with the connected GoPro, it may require a power cycle. | */
    public static final int GOPRO_HEARTBEAT_STATUS_ENUM_END = 4; /*  | */
 }
-            

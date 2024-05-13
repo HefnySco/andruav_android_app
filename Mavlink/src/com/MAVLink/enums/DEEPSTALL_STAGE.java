@@ -19,4 +19,3 @@ public class DEEPSTALL_STAGE {
    public static final int DEEPSTALL_STAGE_LAND = 6; /* Stalling and steering towards the land point. | */
    public static final int DEEPSTALL_STAGE_ENUM_END = 7; /*  | */
 }
-            

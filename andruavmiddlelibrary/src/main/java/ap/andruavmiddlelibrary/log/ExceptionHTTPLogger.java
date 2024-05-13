@@ -150,11 +150,6 @@ public class ExceptionHTTPLogger implements ILog {
         {
 
         }
-        finally {
-            //if (genericDataDao != null) {
-            //    genericDataDao.deleteAll();
-
-        }
     }
 
 

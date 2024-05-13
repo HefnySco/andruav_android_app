@@ -672,7 +672,6 @@ public class ControlBoardBase {
      */
     public void setFlightControl (int flightControl, final IControlBoard_Callback lo7Ta7akom_callback)
     {
-       return ;
     }
 
 

@@ -20,4 +20,3 @@ public class UTM_DATA_AVAIL_FLAGS {
    public static final int UTM_DATA_AVAIL_FLAGS_NEXT_WAYPOINT_AVAILABLE = 128; /* The fields next_lat, next_lon and next_alt contain valid data. | */
    public static final int UTM_DATA_AVAIL_FLAGS_ENUM_END = 129; /*  | */
 }
-            

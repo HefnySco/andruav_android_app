@@ -16,7 +16,6 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
     {
         super();
 
-        return ;
     }
     @Override
     public void executeCommand (final String sender, final String sms_msg)

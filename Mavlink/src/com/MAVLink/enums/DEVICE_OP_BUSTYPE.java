@@ -14,4 +14,3 @@ public class DEVICE_OP_BUSTYPE {
    public static final int DEVICE_OP_BUSTYPE_SPI = 1; /* SPI Device operation. | */
    public static final int DEVICE_OP_BUSTYPE_ENUM_END = 2; /*  | */
 }
-            

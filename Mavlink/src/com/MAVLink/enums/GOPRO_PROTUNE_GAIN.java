@@ -17,4 +17,3 @@ public class GOPRO_PROTUNE_GAIN {
    public static final int GOPRO_PROTUNE_GAIN_6400 = 4; /* ISO 6400. | */
    public static final int GOPRO_PROTUNE_GAIN_ENUM_END = 5; /*  | */
 }
-            

@@ -14,4 +14,3 @@ public class MAV_ODID_HEIGHT_REF {
    public static final int MAV_ODID_HEIGHT_REF_OVER_GROUND = 1; /* The height field is relative to ground. | */
    public static final int MAV_ODID_HEIGHT_REF_ENUM_END = 2; /*  | */
 }
-            

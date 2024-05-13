@@ -18,4 +18,3 @@ public class ICAROUS_FMS_STATE {
    public static final int ICAROUS_FMS_STATE_LAND = 5; /*  | */
    public static final int ICAROUS_FMS_STATE_ENUM_END = 6; /*  | */
 }
-            

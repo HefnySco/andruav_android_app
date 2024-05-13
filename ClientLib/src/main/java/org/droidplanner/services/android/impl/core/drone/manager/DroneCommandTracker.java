@@ -3,7 +3,7 @@ package org.droidplanner.services.android.impl.core.drone.manager;
 import android.os.Handler;
 import android.os.RemoteException;
 
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_command_ack;
 import com.MAVLink.common.msg_command_long;
 import com.MAVLink.common.msg_set_mode;
@@ -77,10 +77,8 @@ public class DroneCommandTracker {
     }
 
     public void onCommandAck(int commandId, Object ack) {
-        switch (commandId) {
-            case msg_command_ack.MAVLINK_MSG_ID_COMMAND_ACK:
-                onCommandAckImpl((msg_command_ack) ack);
-                break;
+        if (commandId == msg_command_ack.MAVLINK_MSG_ID_COMMAND_ACK) {
+            onCommandAckImpl((msg_command_ack) ack);
         }
     }
 

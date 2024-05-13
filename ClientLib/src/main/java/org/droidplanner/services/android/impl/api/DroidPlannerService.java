@@ -274,11 +274,8 @@ public class DroidPlannerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
             final String action = intent.getAction();
-            switch (action) {
-
-                case ACTION_RELEASE_API_INSTANCE:
-                    releaseDroneApi();
-                    break;
+            if (ACTION_RELEASE_API_INSTANCE.equals(action)) {
+                releaseDroneApi();
             }
         }
 

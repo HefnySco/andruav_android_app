@@ -3,7 +3,7 @@ package org.droidplanner.services.android.impl.core.drone.autopilot.px4;
 import android.content.Context;
 import android.os.Handler;
 
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 
 import org.droidplanner.services.android.impl.communication.model.DataLink;
 import org.droidplanner.services.android.impl.core.drone.LogMessageListener;

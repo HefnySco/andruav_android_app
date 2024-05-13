@@ -15,4 +15,3 @@ public class MAV_ODID_DESC_TYPE {
    public static final int MAV_ODID_DESC_TYPE_EXTENDED_STATUS = 2; /* Optional additional clarification when status != MAV_ODID_STATUS_EMERGENCY. | */
    public static final int MAV_ODID_DESC_TYPE_ENUM_END = 3; /*  | */
 }
-            

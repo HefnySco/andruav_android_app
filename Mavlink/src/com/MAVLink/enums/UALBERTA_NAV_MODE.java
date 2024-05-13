@@ -16,4 +16,3 @@ public class UALBERTA_NAV_MODE {
    public static final int NAV_INS_GPS = 4; /* INS/GPS mode | */
    public static final int UALBERTA_NAV_MODE_ENUM_END = 5; /*  | */
 }
-            

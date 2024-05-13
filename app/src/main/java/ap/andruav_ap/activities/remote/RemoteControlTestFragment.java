@@ -188,7 +188,7 @@ public class RemoteControlTestFragment extends Fragment implements IFragmentSave
 
         EventBus.getDefault().register(this);
 
-        if (DeviceManagerFacade.hasMultitouch() == false)
+        if (!DeviceManagerFacade.hasMultitouch())
         {
             DialogHelper.doModalDialog(Me, getString(R.string.title_activity_remotecontrol), getString(R.string.err_feature_multitouch), null, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {

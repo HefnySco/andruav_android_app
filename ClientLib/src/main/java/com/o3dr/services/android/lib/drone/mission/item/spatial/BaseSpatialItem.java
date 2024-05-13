@@ -6,6 +6,8 @@ import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 import com.o3dr.services.android.lib.drone.mission.MissionItemType;
 
+import java.util.Objects;
+
 /**
  * Created by fhuya on 11/6/14.
  */
@@ -34,7 +36,7 @@ public abstract class BaseSpatialItem extends MissionItem implements MissionItem
 
         BaseSpatialItem that = (BaseSpatialItem) o;
 
-        return !(coordinate != null ? !coordinate.equals(that.coordinate) : that.coordinate != null);
+        return !(!Objects.equals(coordinate, that.coordinate));
 
     }
 

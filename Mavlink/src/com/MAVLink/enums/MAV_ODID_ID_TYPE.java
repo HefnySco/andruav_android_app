@@ -17,4 +17,3 @@ public class MAV_ODID_ID_TYPE {
    public static final int MAV_ODID_ID_TYPE_SPECIFIC_SESSION_ID = 4; /* A 20 byte ID for a specific flight/session. The exact ID type is indicated by the first byte of uas_id and these type values are managed by ICAO. | */
    public static final int MAV_ODID_ID_TYPE_ENUM_END = 5; /*  | */
 }
-            

@@ -14,4 +14,3 @@ public class MAV_COLLISION_SRC {
    public static final int MAV_COLLISION_SRC_MAVLINK_GPS_GLOBAL_INT = 1; /* ID field references MAVLink SRC ID | */
    public static final int MAV_COLLISION_SRC_ENUM_END = 2; /*  | */
 }
-            

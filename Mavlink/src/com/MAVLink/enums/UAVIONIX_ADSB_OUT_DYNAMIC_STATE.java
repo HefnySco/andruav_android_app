@@ -17,4 +17,3 @@ public class UAVIONIX_ADSB_OUT_DYNAMIC_STATE {
    public static final int UAVIONIX_ADSB_OUT_DYNAMIC_STATE_IDENT = 16; /*  | */
    public static final int UAVIONIX_ADSB_OUT_DYNAMIC_STATE_ENUM_END = 17; /*  | */
 }
-            

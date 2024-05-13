@@ -20,4 +20,3 @@ public class MAV_MODE_FLAG_DECODE_POSITION {
    public static final int MAV_MODE_FLAG_DECODE_POSITION_SAFETY = 128; /* First bit:  10000000 | */
    public static final int MAV_MODE_FLAG_DECODE_POSITION_ENUM_END = 129; /*  | */
 }
-            

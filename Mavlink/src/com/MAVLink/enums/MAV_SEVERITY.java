@@ -20,4 +20,3 @@ public class MAV_SEVERITY {
    public static final int MAV_SEVERITY_DEBUG = 7; /* Useful non-operational messages that can assist in debugging. These should not occur during normal operation. | */
    public static final int MAV_SEVERITY_ENUM_END = 8; /*  | */
 }
-            

@@ -69,10 +69,8 @@ public class Type extends DroneVariable<MavLinkDrone> implements DroneInterfaces
 
     @Override
     public void onDroneEvent(DroneEventsType event, MavLinkDrone drone) {
-        switch(event){
-            case DISCONNECTED:
-                setType(DEFAULT_TYPE);
-                break;
+        if (event == DroneEventsType.DISCONNECTED) {
+            setType(DEFAULT_TYPE);
         }
     }
 }

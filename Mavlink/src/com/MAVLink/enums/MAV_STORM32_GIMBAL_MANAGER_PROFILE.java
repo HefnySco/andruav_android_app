@@ -18,4 +18,3 @@ public class MAV_STORM32_GIMBAL_MANAGER_PROFILE {
    public static final int MAV_STORM32_GIMBAL_MANAGER_PROFILE_PRIORITY_EXCLUSIVE = 5; /* Default priority profile with exclusive behavior for equal priority. Uses STorM32 custom profile with default settings to achieve priority-based behavior. | */
    public static final int MAV_STORM32_GIMBAL_MANAGER_PROFILE_ENUM_END = 6; /*  | */
 }
-            

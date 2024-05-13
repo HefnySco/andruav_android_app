@@ -95,7 +95,7 @@ public class GeoLinearFenceCompositBase extends GeoFenceCompositBase {
     @Override
     public double testPoint(final AndruavUnitBase andruavUnitBase, final double lat, final double lng, boolean fireEvent)  {
 
-        if (mAndruavUnits.containsKey(andruavUnitBase.PartyID)==false) return Double.NaN;
+        if (!mAndruavUnits.containsKey(andruavUnitBase.PartyID)) return Double.NaN;
 
         final int size = this.size();
 

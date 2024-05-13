@@ -27,9 +27,7 @@ android {
             zipAlignEnabled true
         }
     }
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
+
 
 
     flavorDimensions "audience"

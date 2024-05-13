@@ -19,4 +19,3 @@ public class MAV_ODID_VER_ACC {
    public static final int MAV_ODID_VER_ACC_1_METER = 6; /* The vertical accuracy is smaller than 1 meter. | */
    public static final int MAV_ODID_VER_ACC_ENUM_END = 7; /*  | */
 }
-            

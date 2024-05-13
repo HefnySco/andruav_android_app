@@ -522,7 +522,7 @@ public  class Sensor_GPS   extends GenericLocationSensor implements LocationList
     public void registerSensor()
     {
         //if ((mregisteredSensor == true) || (isSupported() == false)) return ;
-        if (mregisteredSensor == true) return ;
+        if (mregisteredSensor) return ;
         //check permission - start
         if (ActivityCompat.checkSelfPermission(AndruavEngine.AppContext,
             Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
@@ -566,7 +566,7 @@ public  class Sensor_GPS   extends GenericLocationSensor implements LocationList
     @Override
     public void unregisterSensor()
     {
-        if (mregisteredSensor == false)  return ;
+        if (!mregisteredSensor)  return ;
 
         mLocationManager.removeUpdates(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

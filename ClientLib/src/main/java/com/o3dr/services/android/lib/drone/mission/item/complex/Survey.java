@@ -9,6 +9,7 @@ import com.o3dr.services.android.lib.util.MathUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  */
@@ -163,13 +164,13 @@ public class Survey extends MissionItem implements MissionItem.ComplexItem<Surve
         if (Double.compare(survey.polygonArea, polygonArea) != 0) return false;
         if (isValid != survey.isValid) return false;
         if (startCameraBeforeFirstWaypoint != survey.startCameraBeforeFirstWaypoint) return false;
-        if (surveyDetail != null ? !surveyDetail.equals(survey.surveyDetail) : survey.surveyDetail != null)
+        if (!Objects.equals(surveyDetail, survey.surveyDetail))
             return false;
-        if (polygonPoints != null ? !polygonPoints.equals(survey.polygonPoints) : survey.polygonPoints != null)
+        if (!Objects.equals(polygonPoints, survey.polygonPoints))
             return false;
-        if (gridPoints != null ? !gridPoints.equals(survey.gridPoints) : survey.gridPoints != null)
+        if (!Objects.equals(gridPoints, survey.gridPoints))
             return false;
-        return !(cameraLocations != null ? !cameraLocations.equals(survey.cameraLocations) : survey.cameraLocations != null);
+        return !(!Objects.equals(cameraLocations, survey.cameraLocations));
 
     }
 

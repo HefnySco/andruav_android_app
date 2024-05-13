@@ -19,4 +19,3 @@ public class CAMERA_STATUS_TYPES {
    public static final int CAMERA_STATUS_TYPE_LOWSTOREV = 6; /* Camera storage low. Parameter p1 shows reported video minutes remaining. | */
    public static final int CAMERA_STATUS_TYPES_ENUM_END = 7; /*  | */
 }
-            

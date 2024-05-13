@@ -82,7 +82,6 @@ public class PeerConnectionClientBase {
                 catch (final Exception ex)
                 {
                     // possibke exception leads to skip removing step.
-                    return ;
                 }
             }
         });
@@ -96,7 +95,6 @@ public class PeerConnectionClientBase {
 
 
     void transmitMessage(final String toID, JSONObject packet, final String channel, final int delay){
-        return;
     }
 
 

@@ -118,7 +118,6 @@ public abstract class AndruavUDPModuleBase extends AndruavUDPBase {
         try {
             final String msg = andruav2MR.getJscon(false);
             send (destAddress,destPort,msg.getBytes(), msg.length());
-            return ;
         }
         catch (Exception ex)
         {
@@ -147,8 +146,6 @@ public abstract class AndruavUDPModuleBase extends AndruavUDPBase {
             }
 
 
-
-            return ;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -171,18 +168,16 @@ public abstract class AndruavUDPModuleBase extends AndruavUDPBase {
     @Override
     protected void processInterModuleMessages(final Andruav_2MR andruav_2MR, final InetAddress moduleAddress, final int port) {
         try {
-            switch (andruav_2MR.andruavMessageBase.messageTypeID) {
+            if (andruav_2MR.andruavMessageBase.messageTypeID == AndruavModule_ID.TYPE_AndruavModule_ID) {
+                final AndruavModule_ID andruavModule_id = (AndruavModule_ID) andruav_2MR.andruavMessageBase;
 
-                case AndruavModule_ID.TYPE_AndruavModule_ID:
-                    final AndruavModule_ID andruavModule_id = (AndruavModule_ID) andruav_2MR.andruavMessageBase;
+                defaultUDPIP = moduleAddress;
+                // dont change preference settings here. as it could be left blank on purpose to allow broadcast discovery.
+                //AndruavMo7arek.getPreference().setCommModuleIP (defaultUDPIP.getHostAddress());
 
-                    defaultUDPIP = moduleAddress;
-                    // dont change preference settings here. as it could be left blank on purpose to allow broadcast discovery.
-                    //AndruavMo7arek.getPreference().setCommModuleIP (defaultUDPIP.getHostAddress());
-
-                    if (andruavModule_id.SendBack) {
-                        //sendMessageToModule(moduleAddress,port,getCommunicatorID());
-                    }
+                if (andruavModule_id.SendBack) {
+                    //sendMessageToModule(moduleAddress,port,getCommunicatorID());
+                }
 
                     /*UAVOSModuleUnit uavosModuleUnit = AndruavMo7arek.getUAVOSMapBase().get(andruavModule_id.ModuleId);
                     if (uavosModuleUnit == null) {
@@ -206,14 +201,10 @@ public abstract class AndruavUDPModuleBase extends AndruavUDPBase {
                         //onModuleUpdated (andruav_2MR, uavosModuleUnit);
                         AndruavMo7arek.getEventBus().post(new Event_UAVOSModuleUpdated(uavosModuleUnit));
                     }*/
-                    break;
-
-                default:
-                    onMessageReceivedFromServerForInternalProcessing(andruav_2MR);
-                    break;
+            } else {
+                onMessageReceivedFromServerForInternalProcessing(andruav_2MR);
             }
 
-            return;
         } catch (final Exception e) {
             e.printStackTrace();
         }

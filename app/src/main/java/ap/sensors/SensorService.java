@@ -316,7 +316,7 @@ public class SensorService extends Service {
     boolean UnRegisterListenersCalled = true;
     private void RegisterListeners()
     {
-        if (UnRegisterListenersCalled == false) return ;
+        if (!UnRegisterListenersCalled) return ;
         UnRegisterListenersCalled = false;
 
         if (!Preference.isMobileSensorsDisabled(null)) {
@@ -332,7 +332,7 @@ public class SensorService extends Service {
 
     private void UnRegisterListeners()
     {
-        if (UnRegisterListenersCalled == true) return ;
+        if (UnRegisterListenersCalled) return ;
         UnRegisterListenersCalled = true;
 
         if (!Preference.isMobileSensorsDisabled(null))

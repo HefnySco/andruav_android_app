@@ -15,4 +15,3 @@ public class MAV_CMD_DO_AUX_FUNCTION_SWITCH_LEVEL {
    public static final int MAV_CMD_DO_AUX_FUNCTION_SWITCH_LEVEL_HIGH = 2; /* Switch High. |Reserved (default:0)| Reserved (default:0)| Reserved (default:0)| Reserved (default:0)| Reserved (default:0)| Reserved (default:0)| Reserved (default:0)|  */
    public static final int MAV_CMD_DO_AUX_FUNCTION_SWITCH_LEVEL_ENUM_END = 3; /*  | */
 }
-            

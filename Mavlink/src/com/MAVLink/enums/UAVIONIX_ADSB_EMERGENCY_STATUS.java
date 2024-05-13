@@ -20,4 +20,3 @@ public class UAVIONIX_ADSB_EMERGENCY_STATUS {
    public static final int UAVIONIX_ADSB_OUT_RESERVED = 7; /*  | */
    public static final int UAVIONIX_ADSB_EMERGENCY_STATUS_ENUM_END = 8; /*  | */
 }
-            

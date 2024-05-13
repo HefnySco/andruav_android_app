@@ -6,7 +6,7 @@ import android.os.Handler;
 
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.common.msg_mag_cal_report;
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
 import com.MAVLink.common.msg_command_ack;
 import com.google.android.gms.location.LocationRequest;

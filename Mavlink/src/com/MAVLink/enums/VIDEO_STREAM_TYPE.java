@@ -16,4 +16,3 @@ public class VIDEO_STREAM_TYPE {
    public static final int VIDEO_STREAM_TYPE_MPEG_TS_H264 = 3; /* Stream is h.264 on MPEG TS (URI gives the port number) | */
    public static final int VIDEO_STREAM_TYPE_ENUM_END = 4; /*  | */
 }
-            

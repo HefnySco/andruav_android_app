@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.connection.ConnectionType;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
@@ -52,10 +52,8 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
         public void onConnectionStatus(final LinkConnectionStatus connectionStatus) {
             listener.onConnectionStatus(connectionStatus);
 
-            switch (connectionStatus.getStatusCode()) {
-                case LinkConnectionStatus.DISCONNECTED:
-                    closeConnection();
-                    break;
+            if (LinkConnectionStatus.DISCONNECTED.equals(connectionStatus.getStatusCode())) {
+                closeConnection();
             }
         }
     };

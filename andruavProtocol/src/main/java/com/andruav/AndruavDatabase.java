@@ -125,7 +125,6 @@ public class AndruavDatabase extends SQLiteOpenHelper  {
         catch (Exception ex)
         {
             AndruavEngine.log().logException(AndruavSettings.Account_SID, "DB", ex);
-            return ;
         }
 
     }

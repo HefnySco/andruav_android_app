@@ -263,11 +263,8 @@ public class GeoFenceManager {
                 final double dis = geoFenceMapBase.testPoint(andruavUnitBase,loc.getLatitude(), loc.getLongitude(), true);
             }
 
-            return ;
-
         } catch (Exception e) {
             // just in case the array changed
-            return ;
         }
     }
 

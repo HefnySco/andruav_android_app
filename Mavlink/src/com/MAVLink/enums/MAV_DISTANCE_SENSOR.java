@@ -17,4 +17,3 @@ public class MAV_DISTANCE_SENSOR {
    public static final int MAV_DISTANCE_SENSOR_UNKNOWN = 4; /* Broken or unknown type, e.g. analog units | */
    public static final int MAV_DISTANCE_SENSOR_ENUM_END = 5; /*  | */
 }
-            

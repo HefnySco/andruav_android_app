@@ -25,4 +25,3 @@ public class AIS_FLAGS {
    public static final int AIS_FLAGS_VALID_NAME = 4096; /*  | */
    public static final int AIS_FLAGS_ENUM_END = 4097; /*  | */
 }
-            

@@ -18,4 +18,3 @@ public class MAV_ARM_AUTH_DENIED_REASON {
    public static final int MAV_ARM_AUTH_DENIED_REASON_BAD_WEATHER = 5; /* Weather is not good to fly | */
    public static final int MAV_ARM_AUTH_DENIED_REASON_ENUM_END = 6; /*  | */
 }
-            

@@ -10,6 +10,7 @@ import com.o3dr.services.android.lib.drone.mission.item.spatial.BaseSpatialItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -145,9 +146,9 @@ public class StructureScanner extends BaseSpatialItem implements MissionItem.Com
         if (Double.compare(that.heightStep, heightStep) != 0) return false;
         if (stepsCount != that.stepsCount) return false;
         if (crossHatch != that.crossHatch) return false;
-        if (surveyDetail != null ? !surveyDetail.equals(that.surveyDetail) : that.surveyDetail != null)
+        if (!Objects.equals(surveyDetail, that.surveyDetail))
             return false;
-        return !(path != null ? !path.equals(that.path) : that.path != null);
+        return !(!Objects.equals(path, that.path));
 
     }
 

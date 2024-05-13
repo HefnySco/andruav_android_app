@@ -18,4 +18,3 @@ public class LIMITS_STATE {
    public static final int LIMITS_RECOVERED = 5; /* We're no longer in breach of a limit. | */
    public static final int LIMITS_STATE_ENUM_END = 6; /*  | */
 }
-            

@@ -29,7 +29,7 @@ public class Emergency extends EmergencyBase {
 
 
     public void triggerBatteryEmergency(final boolean bOnOff) {
-       if ((mBatteryEmergency != bOnOff )&& (bOnOff==true))
+       if ((mBatteryEmergency != bOnOff )&& (bOnOff))
         {
             PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_POWER, App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_lowbattery), null);
         }
@@ -247,12 +247,12 @@ public class Emergency extends EmergencyBase {
                 return;
             }
 
-            if (Preference.isSMSTXEnabled(null)==false)
+            if (!Preference.isSMSTXEnabled(null))
             {
                 return ; // ModuleFeatures is disabled by user.
             }
 
-            if (ignoreTiming == false)
+            if (!ignoreTiming)
             {
                 final long now = System.currentTimeMillis();
                 if (mlatestSMSTime == 0)
@@ -290,7 +290,7 @@ public class Emergency extends EmergencyBase {
         try
         {
 
-            if (Preference.isSMSTXEnabled(null)==false)
+            if (!Preference.isSMSTXEnabled(null))
             {
                 return ; // ModuleFeatures is disabled by user.
             }
@@ -314,7 +314,7 @@ public class Emergency extends EmergencyBase {
                         "Sending Location SMS", Toast.LENGTH_LONG).show();
 
 
-                if (FeatureSwitch.DEBUG_MODE == false) {
+                if (!FeatureSwitch.DEBUG_MODE) {
                     // dont cost me money
                     //SMS.sendSMS(Preference.getRecoveryPhoneNo(null), msgold);
                     SMS.sendSMS(receiver_num, msg);

@@ -162,7 +162,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
         final long now = System.currentTimeMillis();
 
-        if (AndruavSettings.andruavWe7daBase.useFCBIMU()==false) return ; // it should be true
+        if (!AndruavSettings.andruavWe7daBase.useFCBIMU()) return ; // it should be true
 
         AndruavDroneFacade.sendNAVInfo(now);
     }
@@ -181,7 +181,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
         final long now = System.currentTimeMillis();
 
-        if (AndruavSettings.andruavWe7daBase.useFCBIMU()==false) return ; // it should be true
+        if (!AndruavSettings.andruavWe7daBase.useFCBIMU()) return ; // it should be true
 
         if ((a7adath_servo_output_ready.mValuesChanged) || (now-sendServoOutputInfo_sent_time > sendServoOutputInfo_sent_duration)) {
             AndruavDroneFacade.sendServoOutputInfo();
@@ -212,7 +212,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
         /*
         AndruavResala_NAV_INFO is sent instead when useFCBIMU is true
          */
-        if (AndruavSettings.andruavWe7daBase.useFCBIMU()==true) return ; // it should be true
+        if (AndruavSettings.andruavWe7daBase.useFCBIMU()) return ; // it should be true
 
         final long now = System.currentTimeMillis();
         AndruavDroneFacade.sendIMUInfo(now);
@@ -381,7 +381,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
             emergency.triggerConnectionEmergency(false);
         }
 
-        if (Preference.isAutoUDPProxyConnect(null)==true) {
+        if (Preference.isAutoUDPProxyConnect(null)) {
             // Start it if it is not started on server.
             AndruavFacade.StartUdpProxyTelemetry();
         }
@@ -406,28 +406,22 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
             return;
         }
 
-        switch (andruavBinary2MR.andruavResalaBinaryBase.messageTypeID)
-        {
-            case AndruavResalaBinary_IMG.TYPE_AndruavMessage_IMG:
-                final AndruavResalaBinary_IMG andruavMessage_img = (AndruavResalaBinary_IMG) andruavBinary2MR.andruavResalaBinaryBase;
-                final Event_FPV_Image event_fpv_image = new Event_FPV_Image();
-                event_fpv_image.Sender = andruavUnit.PartyID;
-                event_fpv_image.andruavUnit = andruavUnit;
-                event_fpv_image.isLocalImage = false;
-                event_fpv_image.isVideo = false;
-                event_fpv_image.ImageBytes = andruavMessage_img.getImage();
-                event_fpv_image.Description = andruavMessage_img.Description;
-                event_fpv_image.ImageLocation = andruavMessage_img.ImageLocation;
+        if (andruavBinary2MR.andruavResalaBinaryBase.messageTypeID == AndruavResalaBinary_IMG.TYPE_AndruavMessage_IMG) {
+            final AndruavResalaBinary_IMG andruavMessage_img = (AndruavResalaBinary_IMG) andruavBinary2MR.andruavResalaBinaryBase;
+            final Event_FPV_Image event_fpv_image = new Event_FPV_Image();
+            event_fpv_image.Sender = andruavUnit.PartyID;
+            event_fpv_image.andruavUnit = andruavUnit;
+            event_fpv_image.isLocalImage = false;
+            event_fpv_image.isVideo = false;
+            event_fpv_image.ImageBytes = andruavMessage_img.getImage();
+            event_fpv_image.Description = andruavMessage_img.Description;
+            event_fpv_image.ImageLocation = andruavMessage_img.ImageLocation;
 
-                EventBus.getDefault().post(event_fpv_image);
+            EventBus.getDefault().post(event_fpv_image);
 
-                andruavBinary2MR.processed = true;
+            andruavBinary2MR.processed = true;
 
-                return ;
-
-            default:
-                return;
-
+            return;
         }
     }
 
@@ -675,7 +669,6 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
             default:
                 // Other message are either reply, IMU or other info data.
-                return;
         }
 
     }
@@ -828,7 +821,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
                 AndruavMessage_CameraList andruavMessage_cameraList = (AndruavMessage_CameraList) andruav2MR.andruavMessageBase;
 
-                if (andruavMessage_cameraList.isReply == true) {
+                if (andruavMessage_cameraList.isReply) {
                     // UAVIS can sendMessageToModule isReply = false to inform GCS about available cameras.
 
 
@@ -849,7 +842,6 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                 // just update the unit... some commands are not executed here
                 // such as TYPE_AndruavMessage_Telemetry
                 //andruavUnitMap.updateLastActiveTime (andruav2MR.PartyID);
-                return;
         }
     }
 

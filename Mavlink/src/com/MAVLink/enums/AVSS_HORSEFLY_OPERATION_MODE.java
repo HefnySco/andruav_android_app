@@ -17,4 +17,3 @@ public class AVSS_HORSEFLY_OPERATION_MODE {
    public static final int MODE_HORSEFLY_DROP = 4; /* In drop mode | */
    public static final int AVSS_HORSEFLY_OPERATION_MODE_ENUM_END = 5; /*  | */
 }
-            

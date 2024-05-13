@@ -3,7 +3,7 @@ package org.droidplanner.services.android.impl.core.MAVLink;
 import com.MAVLink.common.msg_command_ack;
 import com.MAVLink.common.msg_command_long;
 import com.MAVLink.enums.MAV_CMD;
-import com.MAVLink.enums.MAV_CMD_ACK;
+import com.MAVLink.enums.MAV_RESULT;
 
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import com.o3dr.services.android.lib.model.ICommandListener;
@@ -13,7 +13,7 @@ public class MavLinkCalibration {
 	public static void sendCalibrationAckMessage(MavLinkDrone drone, int count) {
 		msg_command_ack msg = new msg_command_ack();
 		msg.command = count;
-		msg.result = MAV_CMD_ACK.MAV_CMD_ACK_OK;
+		msg.result = MAV_RESULT.MAV_RESULT_ACCEPTED;
 		drone.getMavClient().sendMessage(msg, null);
 	}
 

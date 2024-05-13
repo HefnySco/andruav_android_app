@@ -29,4 +29,3 @@ public class GOPRO_COMMAND {
    public static final int GOPRO_COMMAND_CHARGING = 16; /* (Get/Set). | */
    public static final int GOPRO_COMMAND_ENUM_END = 17; /*  | */
 }
-            

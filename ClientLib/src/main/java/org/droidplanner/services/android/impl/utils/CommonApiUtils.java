@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import android.view.Surface;
 
 import com.MAVLink.common.msg_mag_cal_report;
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_ekf_status_report;
 import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
 
@@ -693,7 +693,6 @@ public class CommonApiUtils {
                     } else {
                         postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
                     }
-                    return;
                 } else {
                     sendCommandRunnable.run();
                 }

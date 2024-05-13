@@ -15,4 +15,3 @@ public class MAV_STORM32_GIMBAL_ACTION {
    public static final int MAV_STORM32_GIMBAL_ACTION_DISCOVER_MANAGER = 3; /* Trigger gimbal device to (re)discover the gimbal manager during run time. | */
    public static final int MAV_STORM32_GIMBAL_ACTION_ENUM_END = 4; /*  | */
 }
-            

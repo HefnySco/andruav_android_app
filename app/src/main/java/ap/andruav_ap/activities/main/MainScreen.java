@@ -62,7 +62,6 @@ import com.andruav.event.networkEvent.EventSocketState;
 
 import ap.andruav_ap.helpers.GUI;
 import ap.andruav_ap.helpers.RemoteControl;
-import ap.andruav_ap.helpers.Voting;
 import com.andruav.FeatureSwitch;
 
 import ap.andruavmiddlelibrary.preference.Preference;
@@ -350,7 +349,7 @@ public class MainScreen extends BaseAndruavShasha {
                     //onFinalConnectionSucceededCalled = false;
                     Andruav_2MR eventWSComm = (Andruav_2MR) msg.obj;
 
-                    if ((eventWSComm.IsReceived) && (eventWSComm.MessageRouting.equals(AndruavWSClientBase.MESSAGE_TYPE_SYSTEM) == true)) { // Pass system messages only as this part is used for login.
+                    if ((eventWSComm.IsReceived) && (eventWSComm.MessageRouting.equals(AndruavWSClientBase.MESSAGE_TYPE_SYSTEM))) { // Pass system messages only as this part is used for login.
                         if (eventWSComm.andruavMessageBase instanceof AndruavSystem_ConnectedCommServer) {
                             onFinalConnectionSucceededCalled = false;
                             if (!eventWSComm.IsErr) {
@@ -360,7 +359,7 @@ public class MainScreen extends BaseAndruavShasha {
                                 AndruavEngine.notification().Speak(getString(R.string.gen_connectionlost));
                             }
                             progressDialogSetMessage(Html.fromHtml(text));
-                            if (eventWSComm.IsErr == false) {
+                            if (!eventWSComm.IsErr) {
                                 text += "<br><font color=#75A4D3>" + getString(R.string.gen_ws_registered) + "</font'>";
                                 updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(),AndruavEngine.getAndruavWSAction());
                                 AndruavEngine.getAndruavWS().sendPing();
@@ -380,7 +379,7 @@ public class MainScreen extends BaseAndruavShasha {
                         text = "<br><font color=#36AB36>" + eventWSComm.groupName + "</font>.<font color=#75A4D3>" + AndruavSettings.andruavWe7daBase.UnitID + "</font>.";
 
                         if ((eventWSComm.andruavMessageBase instanceof AndruavSystem_EnteredChatRoom)) {
-                            if (eventWSComm.IsErr == false) {
+                            if (!eventWSComm.IsErr) {
                                 text += "<br><font color=#75A4D3>" + getString(R.string.gen_ws_registered) + "</font'>";
                                 updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(),AndruavEngine.getAndruavWSAction());
                                 AndruavEngine.getAndruavWS().sendPing();
@@ -393,9 +392,8 @@ public class MainScreen extends BaseAndruavShasha {
 
                             progressDialogSetMessage(Html.fromHtml(text));
 
-                            return;
                         } else if (eventWSComm.andruavMessageBase instanceof AndruavSystem_Ping) {
-                            if (eventWSComm.IsErr == false) {
+                            if (!eventWSComm.IsErr) {
 
 
                                 text += "<br><font color=#75A4D3>" + "msg duration: " + eventWSComm.timeStamp + "ms" + "</font'>";
@@ -413,7 +411,6 @@ public class MainScreen extends BaseAndruavShasha {
 
                             exitProgressDialog();
 
-                            return;
                         }
                     }  // end IsRecieved = true
                 }
@@ -503,18 +500,7 @@ public class MainScreen extends BaseAndruavShasha {
 
 
 
-                if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                    startActivity(new Intent(MainScreen.this, FCB_TCPShasha.class));
-                    if (App.telemetryProtocolParser == null)
-                    {  // No telemetry initialized and I am a GCS
-                        App.telemetryProtocolParser = new TelemetryGCSProtocolParser();
-                    }else
-                    if (App.telemetryProtocolParser instanceof TelemetryDroneProtocolParser) {
-                        // seems user changed mode from Drone to GCS
-                        App.telemetryProtocolParser.shutDown(); // close drone oarser instance.
-                        App.telemetryProtocolParser = null;
-                    }
-                } else {
+                if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
                     if ((App.telemetryProtocolParser instanceof TelemetryGCSProtocolParser))
                     {
                         App.telemetryProtocolParser.shutDown();
@@ -646,7 +632,7 @@ public class MainScreen extends BaseAndruavShasha {
 
             if (PreferenceValidator.isInvalidLoginCode()) {
                 // you need internt connection here to register for the first time
-                if ((FeatureSwitch.IGNORE_NO_INTERNET_CONNECTION==false) && (!NetInfoAdapter.isHasValidIPAddress())) {   // No Internet Access
+                if ((!FeatureSwitch.IGNORE_NO_INTERNET_CONNECTION) && (!NetInfoAdapter.isHasValidIPAddress())) {   // No Internet Access
                     DialogHelper.doModalDialog(this, getString(R.string.gen_connection), getString(R.string.err_no_internet), null);
                     //   AndruavMo7arek.log().log(AndruavSettings.AccessCode, "No-Net", NetInfoAdapter.DebugStr);
 
@@ -672,7 +658,6 @@ public class MainScreen extends BaseAndruavShasha {
                 DialogHelper.doModalDialog(this, getString(R.string.action_login), getString(R.string.err_loginfailed), null);
             }
 
-            return;
         }
     }
 
@@ -854,7 +839,6 @@ public class MainScreen extends BaseAndruavShasha {
 
         App.stopAndruavWS(false);
         startActivity(new Intent(MainScreen.this, GUI.getLoginActivity()));
-        return;
     }
 
 
@@ -1085,10 +1069,10 @@ public class MainScreen extends BaseAndruavShasha {
 
     private void startAndruavConnection() {
 
-        if (PreferenceValidator.isValidWebSocket() == false) {
+        if (!PreferenceValidator.isValidWebSocket()) {
             startActivity(new Intent(MainScreen.this, HUBCommunication.class));
         }
-        if (App.isAndruavWSConnected() == false) {
+        if (!App.isAndruavWSConnected()) {
             doProgressDialog();
             App.startAndruavWS();
             App.startAndruavSMS();
@@ -1239,9 +1223,7 @@ public class MainScreen extends BaseAndruavShasha {
 
 
 
-       Voting.processVotingCriteria();
-
-        writeInfoLabel();
+       writeInfoLabel();
     }
 
     @Override

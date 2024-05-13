@@ -14,4 +14,3 @@ public class RC_TYPE {
    public static final int RC_TYPE_SPEKTRUM_DSMX = 1; /* Spektrum DSMX | */
    public static final int RC_TYPE_ENUM_END = 2; /*  | */
 }
-            

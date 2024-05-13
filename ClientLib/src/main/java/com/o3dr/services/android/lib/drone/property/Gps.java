@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.o3dr.services.android.lib.coordinate.LatLong;
 
+import java.util.Objects;
+
 /**
  * Stores GPS information.
  */
@@ -146,10 +148,10 @@ public class Gps implements DroneAttribute {
         if (fixType != gps.fixType) return false;
         if (Double.compare(gps.gpsEph, gpsEph) != 0) return false;
         if (satCount != gps.satCount) return false;
-        if (position != null ? !position.equals(gps.position) : gps.position != null)
+        if (!Objects.equals(position, gps.position))
             return false;
         if (vehicleArmed != gps.vehicleArmed) return false;
-        return ekfStatus != null ? ekfStatus.equals(gps.ekfStatus) : gps.ekfStatus == null;
+        return Objects.equals(ekfStatus, gps.ekfStatus);
     }
 
     @Override

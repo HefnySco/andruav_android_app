@@ -17,4 +17,3 @@ public class FIRMWARE_VERSION_TYPE {
    public static final int FIRMWARE_VERSION_TYPE_OFFICIAL = 255; /* official stable release | */
    public static final int FIRMWARE_VERSION_TYPE_ENUM_END = 256; /*  | */
 }
-            

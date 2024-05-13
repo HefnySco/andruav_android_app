@@ -21,7 +21,7 @@ public class OS {
         Process ps=null;
         try {
             java.lang.Runtime rt = Runtime.getRuntime();
-            if (isRootCmd == true) {
+            if (isRootCmd) {
                 ps = rt.exec("su");
                 //Causes the calling thread to wait for the native process associated with this object to finish executing.
                 ps.waitFor();

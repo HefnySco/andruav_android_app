@@ -7,7 +7,7 @@ import com.MAVLink.common.msg_open_drone_id_basic_id;
 import com.MAVLink.common.msg_open_drone_id_location;
 import com.MAVLink.minimal.msg_heartbeat;
 import com.MAVLink.common.msg_rc_channels;
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_mount_status;
 import com.MAVLink.common.msg_command_ack;
 import com.MAVLink.common.msg_nav_controller_output;
@@ -125,7 +125,6 @@ public class DroneKitMavlinkObserver extends MavlinkObserver
             AndruavEngine.getEventBus().post(event_FCBData);
 
 
-            return;
         }
         catch (Exception e)
         {

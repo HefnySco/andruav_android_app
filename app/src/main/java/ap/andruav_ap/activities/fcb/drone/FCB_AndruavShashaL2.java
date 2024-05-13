@@ -227,7 +227,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
             public void onClick(View v) {
                 bSaved = false;
                 if (!DroneKitServer.isValidAndroidVersion()) {
-                    //rbService_3DR.setEnabled(false);
                     DialogHelper.doModalDialog(Me, getString(R.string.gen_connection), getString(R.string.err_3dr_mobileversion), null);
                     rbService_3DR.setChecked(false);
                     rbNative.setChecked(false);
@@ -395,8 +394,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
             return;
         }
 
-        return;
-
     }
 
 
@@ -407,10 +404,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         Preference.setFCBDroneTCPServerPort(null, txtTCPPort.getText().toString());
         Preference.setFCBDroneUDPServerPort(null, txtUDPPort.getText().toString());
 
-        int FCBTargetLib = Preference.FCB_LIB_NATIVE;
-        if (rbService_3DR.isChecked()) FCBTargetLib = Preference.FCB_LIB_3DR;
-
-        Preference.setFCBTargetLib(null, FCBTargetLib);
+        Preference.setFCBTargetLib(null, Preference.FCB_LIB_3DR);
 
 
         int FCBTargetComm = Preference.FCB_COM_BT;
@@ -435,17 +429,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         txtTCPPort.setText(Preference.getFCBDroneTCPServerPort(null));
         txtUDPPort.setText(Preference.getFCBDroneUDPServerPort(null));
 
-        switch (Preference.getFCBTargetLib(null))
-        {
-            case Preference.FCB_LIB_3DR:
-                rbService_3DR.setChecked(true);
-                break;
-            case Preference.FCB_LIB_NATIVE:
-            default:
-                //rbNative.setChecked(true);
-                rbService_3DR.setChecked(true);
-                break;
-        }
+        rbService_3DR.setChecked(true);
 
         switch (Preference.getFCBTargetComm(null))
         {
@@ -741,7 +725,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         Preference.setFCBBlueToothMAC(null, listItem_bluetoothUnit.getDeviceMAC());
         Preference.setFCBBlueToothName(null, listItem_bluetoothUnit.deviceName);
         lstbluetoothDevices.setVisibility(View.INVISIBLE);
-        return;
     }
 
 

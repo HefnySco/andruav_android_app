@@ -106,7 +106,7 @@ public final  class UAVOSHelper {
                 final UAVOSModuleUnit uavosModuleUnit = AndruavEngine.getUAVOSMapBase().valueAt(i);
 
                 if ((uavosModuleUnit.ModuleClass.equals(UAVOS_MODULE_TYPE_CAMERA))
-                    && (uavosModuleUnit.BuiltInModule == true))
+                    && (uavosModuleUnit.BuiltInModule))
                 {
                         return (UAVOSModuleCamera) uavosModuleUnit;
                 }

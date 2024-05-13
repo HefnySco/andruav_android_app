@@ -72,8 +72,6 @@ public abstract class AndruavUDPServerBase extends AndruavUDPBase {
 
             sendMessageToModule(destAddress, destPort,andruav_2MR);
 
-            return ;
-
         }
         catch (Exception ex)
         {
@@ -120,7 +118,6 @@ public abstract class AndruavUDPServerBase extends AndruavUDPBase {
             }
 
         } catch (UAVOSException e) {
-            return ;
         }
     }
 
@@ -141,7 +138,6 @@ public abstract class AndruavUDPServerBase extends AndruavUDPBase {
         try {
             final String msg = andruav2MR.getJscon(false);
             send (destAddress,destPort,msg.getBytes(), msg.length());
-            return ;
         }
         catch (Exception ex)
         {
@@ -200,8 +196,6 @@ public abstract class AndruavUDPServerBase extends AndruavUDPBase {
             }
 
 
-
-            return ;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -217,50 +211,41 @@ public abstract class AndruavUDPServerBase extends AndruavUDPBase {
     @Override
     protected void processInterModuleMessages(final Andruav_2MR andruav_2MR, final InetAddress moduleAddress, final int port) {
         try {
-            switch (andruav_2MR.andruavMessageBase.messageTypeID) {
+            if (andruav_2MR.andruavMessageBase.messageTypeID == AndruavModule_ID.TYPE_AndruavModule_ID) {
+                final AndruavModule_ID andruavModule_id = (AndruavModule_ID) andruav_2MR.andruavMessageBase;
 
-                case AndruavModule_ID.TYPE_AndruavModule_ID:
-                    final AndruavModule_ID andruavModule_id = (AndruavModule_ID) andruav_2MR.andruavMessageBase;
+                if (andruavModule_id.SendBack) {
+                    sendMessageToModule(moduleAddress, port, getCommunicatorID());
+                }
 
-                    if (andruavModule_id.SendBack)
-                    {
-                        sendMessageToModule(moduleAddress,port,getCommunicatorID());
-                    }
-
-                    UAVOSModuleUnit uavosModuleUnit =  AndruavEngine.getUAVOSMapBase().get(andruavModule_id.ModuleId);
-                    if (uavosModuleUnit == null)
-                    {
-                        uavosModuleUnit = UAVOSModuleBuilderBase.getModule(andruavModule_id.ModuleClass);
-                        uavosModuleUnit.ModuleId = andruavModule_id.ModuleId;
-                        uavosModuleUnit.ModuleKey = andruavModule_id.ModuleKey;
-                        uavosModuleUnit.ModuleFeatures = andruavModule_id.ModuleFeatures;
-                        uavosModuleUnit.ModuleCapturedMessages = andruavModule_id.ModuleCapturedMessages;
-                        uavosModuleUnit.ModuleAddress = moduleAddress;
-                        uavosModuleUnit.setModuleMessages(andruavModule_id.ModuleMessage);
-                        uavosModuleUnit.Port = port;
-                        uavosModuleUnit.lastActiveTime = System.currentTimeMillis();
-                        AndruavEngine.getUAVOSMapBase().put(andruavModule_id.ModuleId,uavosModuleUnit);
-                        onModuleAdded (andruav_2MR, uavosModuleUnit);
-                    }
-                    else
-                    {
-                        uavosModuleUnit.ModuleKey = andruavModule_id.ModuleKey;
-                        uavosModuleUnit.ModuleFeatures = andruavModule_id.ModuleFeatures;
-                        uavosModuleUnit.ModuleCapturedMessages = andruavModule_id.ModuleCapturedMessages;                        uavosModuleUnit.ModuleAddress = moduleAddress;
-                        uavosModuleUnit.setModuleMessages(andruavModule_id.ModuleMessage);
-                        uavosModuleUnit.Port = port;
-                        uavosModuleUnit.lastActiveTime = System.currentTimeMillis();
-                        onModuleUpdated (andruav_2MR, uavosModuleUnit);
-                        AndruavEngine.getEventBus().post(new Event_UAVOSModuleUpdated(uavosModuleUnit));
-                    }
-                    break;
-
-                default:
-                    onMessageReceivedFromModuleForInternalProcessing(andruav_2MR);
-                    break;
+                UAVOSModuleUnit uavosModuleUnit = AndruavEngine.getUAVOSMapBase().get(andruavModule_id.ModuleId);
+                if (uavosModuleUnit == null) {
+                    uavosModuleUnit = UAVOSModuleBuilderBase.getModule(andruavModule_id.ModuleClass);
+                    uavosModuleUnit.ModuleId = andruavModule_id.ModuleId;
+                    uavosModuleUnit.ModuleKey = andruavModule_id.ModuleKey;
+                    uavosModuleUnit.ModuleFeatures = andruavModule_id.ModuleFeatures;
+                    uavosModuleUnit.ModuleCapturedMessages = andruavModule_id.ModuleCapturedMessages;
+                    uavosModuleUnit.ModuleAddress = moduleAddress;
+                    uavosModuleUnit.setModuleMessages(andruavModule_id.ModuleMessage);
+                    uavosModuleUnit.Port = port;
+                    uavosModuleUnit.lastActiveTime = System.currentTimeMillis();
+                    AndruavEngine.getUAVOSMapBase().put(andruavModule_id.ModuleId, uavosModuleUnit);
+                    onModuleAdded(andruav_2MR, uavosModuleUnit);
+                } else {
+                    uavosModuleUnit.ModuleKey = andruavModule_id.ModuleKey;
+                    uavosModuleUnit.ModuleFeatures = andruavModule_id.ModuleFeatures;
+                    uavosModuleUnit.ModuleCapturedMessages = andruavModule_id.ModuleCapturedMessages;
+                    uavosModuleUnit.ModuleAddress = moduleAddress;
+                    uavosModuleUnit.setModuleMessages(andruavModule_id.ModuleMessage);
+                    uavosModuleUnit.Port = port;
+                    uavosModuleUnit.lastActiveTime = System.currentTimeMillis();
+                    onModuleUpdated(andruav_2MR, uavosModuleUnit);
+                    AndruavEngine.getEventBus().post(new Event_UAVOSModuleUpdated(uavosModuleUnit));
+                }
+            } else {
+                onMessageReceivedFromModuleForInternalProcessing(andruav_2MR);
             }
 
-            return ;
         }
         catch (final Exception e) {
             e.printStackTrace();
@@ -275,17 +260,11 @@ public abstract class AndruavUDPServerBase extends AndruavUDPBase {
      **/
     protected void onMessageReceivedFromModuleForInternalProcessing (final Andruav_2MR andruav_2MR)
     {
-        switch (andruav_2MR.andruavMessageBase.messageTypeID) {
-
-            case AndruavMessage_Signaling.TYPE_AndruavMessage_Signaling:
-                //final AndruavResala_Signaling andruavResala_signaling = (AndruavResala_Signaling) andruav_2MR.andruavResalaBase;
-                // add to video requester for this camera
-                forwardMessageFromModuleToCommServer(andruav_2MR);
-                break;
-
-            default:
-                forwardMessageFromModuleToCommServer(andruav_2MR);
-            break;
+        if (andruav_2MR.andruavMessageBase.messageTypeID == AndruavMessage_Signaling.TYPE_AndruavMessage_Signaling) {//final AndruavResala_Signaling andruavResala_signaling = (AndruavResala_Signaling) andruav_2MR.andruavResalaBase;
+            // add to video requester for this camera
+            forwardMessageFromModuleToCommServer(andruav_2MR);
+        } else {
+            forwardMessageFromModuleToCommServer(andruav_2MR);
         }
     }
 

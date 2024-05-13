@@ -25,9 +25,7 @@ public class StatsReport {
 
     @Override
     public String toString() {
-      StringBuilder builder = new StringBuilder();
-      builder.append("[").append(name).append(": ").append(value).append("]");
-      return builder.toString();
+        return "[" + name + ": " + value + "]";
     }
   }
 

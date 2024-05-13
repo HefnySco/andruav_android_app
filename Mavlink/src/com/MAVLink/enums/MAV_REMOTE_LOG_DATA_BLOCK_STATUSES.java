@@ -14,4 +14,3 @@ public class MAV_REMOTE_LOG_DATA_BLOCK_STATUSES {
    public static final int MAV_REMOTE_LOG_DATA_BLOCK_ACK = 1; /* This block has been received. | */
    public static final int MAV_REMOTE_LOG_DATA_BLOCK_STATUSES_ENUM_END = 2; /*  | */
 }
-            

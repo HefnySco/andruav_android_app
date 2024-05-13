@@ -365,7 +365,7 @@ public abstract class MediaEncoder implements Runnable {
 					// wait 5 counts(=TIMEOUT_USEC x 5 = 50msec) until data/EOS come
 					if (!mIsEOS) {
 						if (++count > 5)
-							break LOOP;        // out of while
+							break;        // out of while
 					}
 				} else if (encoderStatus == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
 					if (DEBUG) Log.v(TAG, "INFO_OUTPUT_BUFFERS_CHANGED");

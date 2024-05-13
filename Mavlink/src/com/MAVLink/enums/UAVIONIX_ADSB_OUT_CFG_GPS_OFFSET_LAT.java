@@ -20,4 +20,3 @@ public class UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT {
    public static final int UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT_RIGHT_6M = 7; /*  | */
    public static final int UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT_ENUM_END = 8; /*  | */
 }
-            

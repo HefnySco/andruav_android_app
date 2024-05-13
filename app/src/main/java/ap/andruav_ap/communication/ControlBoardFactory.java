@@ -14,15 +14,11 @@ public class ControlBoardFactory implements IControlBoardFactory {
     public void getFlightControlBoard(final AndruavUnitBase unit)
     {
 
-        switch (unit.getTelemetry_protocol())
-        {
-            case TelemetryProtocol.TelemetryProtocol_DroneKit_Telemetry:
-                unit.FCBoard = new ControlBoard_DroneKit(unit);
-                unit.useFCBIMU(true);
-                break;
-            default:
-                unit.FCBoard = null;
-                break;
+        if (unit.getTelemetry_protocol() == TelemetryProtocol.TelemetryProtocol_DroneKit_Telemetry) {
+            unit.FCBoard = new ControlBoard_DroneKit(unit);
+            unit.useFCBIMU(true);
+        } else {
+            unit.FCBoard = null;
         }
     }
 

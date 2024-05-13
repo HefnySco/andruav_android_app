@@ -18,4 +18,3 @@ public class MAV_ODID_AUTH_TYPE {
    public static final int MAV_ODID_AUTH_TYPE_SPECIFIC_AUTHENTICATION = 5; /* The exact authentication type is indicated by the first byte of authentication_data and these type values are managed by ICAO. | */
    public static final int MAV_ODID_AUTH_TYPE_ENUM_END = 6; /*  | */
 }
-            

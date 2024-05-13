@@ -25,4 +25,3 @@ public class MAV_ODID_HOR_ACC {
    public static final int MAV_ODID_HOR_ACC_1_METER = 12; /* The horizontal accuracy is smaller than 1 meter. | */
    public static final int MAV_ODID_HOR_ACC_ENUM_END = 13; /*  | */
 }
-            

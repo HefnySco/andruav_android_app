@@ -36,7 +36,7 @@ import com.MAVLink.common.msg_param_value;
 import com.MAVLink.enums.GPS_INPUT_IGNORE_FLAGS;
 import com.MAVLink.enums.MAV_CMD;
 import com.MAVLink.enums.MAV_MOUNT_MODE;
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.o3dr.android.client.ControlTower;
 import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.apis.ControlApi;
@@ -538,7 +538,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             }
         },2000);
 
-        return ;
     }
 
 
@@ -554,7 +553,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         EventBus.getDefault().post(new Event_ProtocolChanged(disCOnnectOnPurpose));
         AndruavFacade.broadcastID();
 
-        return ;
     }
 
 
@@ -1198,8 +1196,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         final Home droneHome =   mDrone.getAttribute(AttributeType.HOME);
         if (AndruavSettings.andruavWe7daBase.FCBoard !=null)   ((ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard).onDroneEvent_HomeUpdated(droneHome);
 
-        return ;
-
     }
 
 
@@ -1729,7 +1725,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
         int mode = FlightMode.CONST_FLIGHT_CONTROL_RTL;
-        if (isSmartRTL==true)
+        if (isSmartRTL)
         {
             mode = FlightMode.CONST_FLIGHT_CONTROL_SMART_RTL;
         }

@@ -2,7 +2,7 @@ package org.droidplanner.services.android.impl.core.drone.variables;
 
 import android.os.Handler;
 
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.minimal.msg_heartbeat;
 
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.DroneEventsType;
@@ -102,13 +102,8 @@ public class HeartBeat extends DroneVariable implements OnDroneListener<MavLinkD
 
     @Override
     public void onDroneEvent(DroneEventsType event, MavLinkDrone drone) {
-        switch (event) {
-            case DISCONNECTED:
-                notifyDisconnected();
-                break;
-
-            default:
-                break;
+        if (event == DroneEventsType.DISCONNECTED) {
+            notifyDisconnected();
         }
     }
 
@@ -119,17 +114,13 @@ public class HeartBeat extends DroneVariable implements OnDroneListener<MavLinkD
     }
 
     protected void onHeartbeatTimeout() {
-        switch (heartbeatState) {
-            case FIRST_HEARTBEAT:
-                Timber.i("First heartbeat timeout.");
-                myDrone.notifyDroneEvent(DroneEventsType.HEARTBEAT_TIMEOUT);
-                break;
-
-            default:
-                heartbeatState = LOST_HEARTBEAT;
-                restartWatchdog(HEARTBEAT_LOST_TIMEOUT);
-                myDrone.notifyDroneEvent(DroneEventsType.HEARTBEAT_TIMEOUT);
-                break;
+        if (heartbeatState == FIRST_HEARTBEAT) {
+            Timber.i("First heartbeat timeout.");
+            myDrone.notifyDroneEvent(DroneEventsType.HEARTBEAT_TIMEOUT);
+        } else {
+            heartbeatState = LOST_HEARTBEAT;
+            restartWatchdog(HEARTBEAT_LOST_TIMEOUT);
+            myDrone.notifyDroneEvent(DroneEventsType.HEARTBEAT_TIMEOUT);
         }
     }
 

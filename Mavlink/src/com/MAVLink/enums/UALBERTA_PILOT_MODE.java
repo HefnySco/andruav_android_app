@@ -15,4 +15,3 @@ public class UALBERTA_PILOT_MODE {
    public static final int PILOT_ROTO = 3; /*  Rotomotion mode  | */
    public static final int UALBERTA_PILOT_MODE_ENUM_END = 4; /*  | */
 }
-            

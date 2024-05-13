@@ -7,10 +7,10 @@
 // MESSAGE SET_POSITION_TARGET_GLOBAL_INT PACKING
 package com.MAVLink.common;
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.messages.MAVLinkMessage;
-import com.MAVLink.messages.MAVLinkPayload;
-import com.MAVLink.messages.Units;
-import com.MAVLink.messages.Description;
+import com.MAVLink.Messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkPayload;
+import com.MAVLink.Messages.Units;
+import com.MAVLink.Messages.Description;
 
 /**
  * Sets a desired vehicle position, velocity, and/or acceleration in a global coordinate system (WGS84). Used by an external controller to command the vehicle (manual controller or other system).
@@ -30,16 +30,16 @@ public class msg_set_position_target_global_int extends MAVLinkMessage {
     public long time_boot_ms;
     
     /**
-     * X Position in WGS84 frame
+     * Latitude in WGS84 frame
      */
-    @Description("X Position in WGS84 frame")
+    @Description("Latitude in WGS84 frame")
     @Units("degE7")
     public int lat_int;
     
     /**
-     * Y Position in WGS84 frame
+     * Longitude in WGS84 frame
      */
-    @Description("Y Position in WGS84 frame")
+    @Description("Longitude in WGS84 frame")
     @Units("degE7")
     public int lon_int;
     
@@ -128,9 +128,9 @@ public class msg_set_position_target_global_int extends MAVLinkMessage {
     public short target_component;
     
     /**
-     * Valid options are: MAV_FRAME_GLOBAL_INT = 5, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT = 6, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT = 11
+     * Valid options are: MAV_FRAME_GLOBAL = 0, MAV_FRAME_GLOBAL_RELATIVE_ALT = 3, MAV_FRAME_GLOBAL_TERRAIN_ALT = 10 (MAV_FRAME_GLOBAL_INT, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT are allowed synonyms, but have been deprecated)
      */
-    @Description("Valid options are: MAV_FRAME_GLOBAL_INT = 5, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT = 6, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT = 11")
+    @Description("Valid options are: MAV_FRAME_GLOBAL = 0, MAV_FRAME_GLOBAL_RELATIVE_ALT = 3, MAV_FRAME_GLOBAL_TERRAIN_ALT = 10 (MAV_FRAME_GLOBAL_INT, MAV_FRAME_GLOBAL_RELATIVE_ALT_INT, MAV_FRAME_GLOBAL_TERRAIN_ALT_INT are allowed synonyms, but have been deprecated)")
     @Units("")
     public short coordinate_frame;
     

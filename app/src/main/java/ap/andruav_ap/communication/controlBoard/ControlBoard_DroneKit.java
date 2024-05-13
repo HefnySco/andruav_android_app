@@ -1164,7 +1164,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
     public void onDroneEvent_GuidedUpdated (final GuidedState guidedState)
     {
-        if (guidedState.isActive()==false)
+        if (!guidedState.isActive())
         {
             guided_LngLat = null;
             target_gps_lat = -1.0;
@@ -1652,7 +1652,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
         if (rcChannelBlock) return ;
 
         double turn=turnRate;
-        if (isClockwise == false)
+        if (!isClockwise)
         {
             turn = turnRate * -1;
         }
@@ -1660,7 +1660,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
         App.droneKitServer.ctrl_Yaw(targetAngle,turn,isRelative, new AbstractCommandListener() {
             @Override
             public void onSuccess() {
-                return ;
 
             }
 
@@ -1727,7 +1726,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
                              final double leader_drone_lng, final double leader_drone_lat, final double leader_drone_alt, final double leader_linear_speed)
     {
 
-        return ;
     }
 
     /***

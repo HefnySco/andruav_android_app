@@ -16,4 +16,3 @@ public class AUTOTUNE_AXIS {
    public static final int AUTOTUNE_AXIS_YAW = 4; /* Autotune yaw axis. | */
    public static final int AUTOTUNE_AXIS_ENUM_END = 5; /*  | */
 }
-            

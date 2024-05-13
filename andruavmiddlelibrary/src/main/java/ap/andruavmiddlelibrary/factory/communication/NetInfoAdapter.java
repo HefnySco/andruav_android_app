@@ -541,8 +541,7 @@ public class NetInfoAdapter {
         if (en == null) return null;
 
         StringBuilder DebugStr = new StringBuilder("Net");  // used in debugging
-        for (;en.hasMoreElements();)
-        {
+        while (en.hasMoreElements()) {
             NetworkInterface intf = en.nextElement();
 
 
@@ -577,8 +576,7 @@ public class NetInfoAdapter {
         }
         if (en == null) return null;
 
-        for (;en.hasMoreElements();)
-        {
+        while (en.hasMoreElements()) {
             NetworkInterface intf = en.nextElement();
 
 
@@ -610,8 +608,7 @@ public class NetInfoAdapter {
         }
         if (en == null) return null;
 
-        for (;en.hasMoreElements();)
-        {
+        while (en.hasMoreElements()) {
             NetworkInterface intf = en.nextElement();
             try {
                 if (!intf.isLoopback()) {

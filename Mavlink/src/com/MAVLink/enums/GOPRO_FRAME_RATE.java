@@ -26,4 +26,3 @@ public class GOPRO_FRAME_RATE {
    public static final int GOPRO_FRAME_RATE_12_5 = 13; /* 12.5 FPS. | */
    public static final int GOPRO_FRAME_RATE_ENUM_END = 14; /*  | */
 }
-            

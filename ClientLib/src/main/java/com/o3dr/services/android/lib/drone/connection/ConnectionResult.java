@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 
+import java.util.Objects;
+
 /**
  * @deprecated Use {@link LinkConnectionStatus} instead.
  *
@@ -63,7 +65,7 @@ public final class ConnectionResult implements Parcelable {
         ConnectionResult that = (ConnectionResult) o;
 
         if (mErrorCode != that.mErrorCode) return false;
-        return mErrorMessage != null ? mErrorMessage.equals(that.mErrorMessage) : that.mErrorMessage == null;
+        return Objects.equals(mErrorMessage, that.mErrorMessage);
     }
 
     @Override

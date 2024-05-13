@@ -1,6 +1,6 @@
 package ap.andruav_ap.communication.telemetry.DroneKit;
 
-import com.MAVLink.messages.MAVLinkMessage;
+import com.MAVLink.Messages.MAVLinkMessage;
 
 /**
  * Created by mhefny on 1/20/16.

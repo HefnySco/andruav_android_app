@@ -1273,7 +1273,6 @@ public abstract class AndruavWSClientBase {
         // such as TYPE_AndruavMessage_Telemetry
         AndruavEngine.getAndruavWe7daMapBase().updateLastActiveTime (andruav_2MR.partyID);
         executeInternalCommand(andruav_2MR);
-        return;
     }
 
 
@@ -1392,139 +1391,133 @@ public abstract class AndruavWSClientBase {
     {
         final AndruavUnitBase andruavUnit = AndruavEngine.getAndruavWe7daMapBase().get(andruav2MR.partyID);
 
-        switch (andruav2MR.andruavMessageBase.messageTypeID) {
+        // this is data from Another Andruav
+        if (andruav2MR.andruavMessageBase.messageTypeID == AndruavMessage_RemoteExecute.TYPE_AndruavMessage_RemoteExecute) {
+            AndruavMessage_RemoteExecute andruavResala_remoteExecute = ((AndruavMessage_RemoteExecute) (andruav2MR.andruavMessageBase));
+            int CMD_ID = andruavResala_remoteExecute.RemoteCommandID;
+            switch (CMD_ID) {
+                case AndruavMessage_RemoteExecute.RemoteCommand_REQUEST_ID:
+                    AndruavFacade.sendID(andruav2MR.partyID); // you cannot replace this with AndruavWe7da object because you dont have one yet and this could lead to echo
+                    break;
 
-            // this is data from Another Andruav
-            case AndruavMessage_RemoteExecute.TYPE_AndruavMessage_RemoteExecute: {
+                case AndruavMessage_RemoteExecute.RemoteControl_RequestRemoteControlSettings:
+                    AndruavFacade.sendRemoteControlSettingsMessage(AndruavSettings.andruavWe7daBase.getRTC(), andruavUnit);
+                    break;
 
-                AndruavMessage_RemoteExecute andruavResala_remoteExecute = ((AndruavMessage_RemoteExecute) (andruav2MR.andruavMessageBase));
-                int CMD_ID = andruavResala_remoteExecute.RemoteCommandID;
-                switch (CMD_ID) {
-                    case AndruavMessage_RemoteExecute.RemoteCommand_REQUEST_ID:
-                        AndruavFacade.sendID(andruav2MR.partyID); // you cannot replace this with AndruavWe7da object because you dont have one yet and this could lead to echo
-                        break;
+                case AndruavMessage_RemoteExecute.RemoteCommand_REQUEST_POW:
+                    sendMessageToIndividual(AndruavDroneFacade.createPowerInfoMessage(), andruav2MR.partyID, false, false);
 
-                    case AndruavMessage_RemoteExecute.RemoteControl_RequestRemoteControlSettings:
-                        AndruavFacade.sendRemoteControlSettingsMessage(AndruavSettings.andruavWe7daBase.getRTC(), andruavUnit);
-                        break;
+                    break;
 
-                    case AndruavMessage_RemoteExecute.RemoteCommand_REQUEST_POW:
-                        sendMessageToIndividual(AndruavDroneFacade.createPowerInfoMessage(), andruav2MR.partyID, false, false);
+                case AndruavMessage_RemoteExecute.RemoteCommand_GET_WAY_POINTS:
+                    if ((andruavUnit == null) || AndruavSettings.andruavWe7daBase.getIsCGS())
+                        break; // this command is broadcasted from a drone.
+                    AndruavFacade.sendHomeLocation(andruavUnit);
+                    AndruavFacade.sendWayPoints(andruavUnit);
+                    break;
 
-                        break;
-
-                    case AndruavMessage_RemoteExecute.RemoteCommand_GET_WAY_POINTS:
-                        if ((andruavUnit == null) || AndruavSettings.andruavWe7daBase.getIsCGS())
-                            break; // this command is broadcasted from a drone.
+                case AndruavMessage_RemoteExecute.RemoteCommand_RELOAD_WAY_POINTS_FROM_FCB:
+                    if ((andruavUnit == null) || (AndruavSettings.andruavWe7daBase.getIsCGS()))
+                        break; // this command is broadcasted from a drone.
+                    if (AndruavSettings.andruavWe7daBase.useFCBIMU()) {
+                        AndruavSettings.andruavWe7daBase.doReloadMissionfromFCB();
+                    } else {
                         AndruavFacade.sendHomeLocation(andruavUnit);
                         AndruavFacade.sendWayPoints(andruavUnit);
-                        break;
-
-                    case AndruavMessage_RemoteExecute.RemoteCommand_RELOAD_WAY_POINTS_FROM_FCB:
-                        if ((andruavUnit == null) || (AndruavSettings.andruavWe7daBase.getIsCGS()))
-                            break; // this command is broadcasted from a drone.
-                        if (AndruavSettings.andruavWe7daBase.useFCBIMU()) {
-                            AndruavSettings.andruavWe7daBase.doReloadMissionfromFCB();
-                        } else {
-                            AndruavFacade.sendHomeLocation(andruavUnit);
-                            AndruavFacade.sendWayPoints(andruavUnit);
-                        }
-
-                        break;
-
-                    case AndruavMessage_RemoteExecute.RemoteCommand_CLEAR_WAY_POINTS:
-                        if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                            break; // this command is broadcasted from a drone.
-                        AndruavSettings.andruavWe7daBase.doClearMission();
-                        break;
-                    case AndruavMessage_RemoteExecute.RemoteCommand_SET_START_MISSION_ITEM: {
-                        if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                            break; // this command is broadcasted from a drone.
-                        int missionItemNumber = 1;
-                        if (andruavResala_remoteExecute.Variables.containsKey("n")) {
-                            missionItemNumber = Integer.parseInt(andruavResala_remoteExecute.Variables.get("n")); // n not fn
-                        }
-
-                        AndruavSettings.andruavWe7daBase.doSetCurrentMission(missionItemNumber);
                     }
+
                     break;
 
-                    case AndruavMessage_RemoteExecute.RemoteCommand_CLEAR_FENCE_DATA: {
-                        //if (AndruavSettings.andruavWe7daBase.IsCGS) break; ALL Vehicles should clear fence as it is invalid
-                        // this is different that sending deattach or attached remote command to fence ... which does not exist now
-
-                        String fenceName = null;
-
-                        if (andruavResala_remoteExecute.Variables.containsKey("fn")) {
-                            fenceName = andruavResala_remoteExecute.Variables.get("fn"); // n not fn
-                        }
-
-                        GeoFenceManager.removeGeoFence(fenceName);
-
-                    }
+                case AndruavMessage_RemoteExecute.RemoteCommand_CLEAR_WAY_POINTS:
+                    if (AndruavSettings.andruavWe7daBase.getIsCGS())
+                        break; // this command is broadcasted from a drone.
+                    AndruavSettings.andruavWe7daBase.doClearMission();
                     break;
-
-
-                    // Request attached fences. called when a new Unit is online, it asks others for fences names.
-                    // as many of fences names are replicated.
-                    case AndruavMessage_GeoFenceAttachStatus.TYPE_AndruavResala_GeoFenceAttachStatus: {
-                        if (andruavUnit == null) {
-                            AndruavFacade.requestID(andruav2MR.partyID);
-                            break;
-                        }
-
-                        String fenceName = null;
-
-                        if (andruavResala_remoteExecute.Variables.containsKey("fn")) {
-                            fenceName = andruavResala_remoteExecute.Variables.get("fn"); // n not fn
-                        }
-
-                        GeoFenceManager.sendAttachedStatusToTarget(fenceName, andruavUnit);
-
-
+                case AndruavMessage_RemoteExecute.RemoteCommand_SET_START_MISSION_ITEM: {
+                    if (AndruavSettings.andruavWe7daBase.getIsCGS())
+                        break; // this command is broadcasted from a drone.
+                    int missionItemNumber = 1;
+                    if (andruavResala_remoteExecute.Variables.containsKey("n")) {
+                        missionItemNumber = Integer.parseInt(andruavResala_remoteExecute.Variables.get("n")); // n not fn
                     }
 
-                    // A remote units is RequestING a GeoFencePoint Status of Me
-                    case AndruavMessage_GeoFence.TYPE_AndruavMessage_GeoFence: {// This is a request from outside [Drone or GCS] to all or a specific
-                        // fence detail. fencename is specific is sent in a variable "fn" -fence name-.
-                        if ((andruavUnit != null) && (!AndruavSettings.andruavWe7daBase.getIsCGS())) {
-                            final String fenceName = andruavResala_remoteExecute.Variables.get("fn");
-                            if (fenceName != null) {
-                                final GeoFenceBase geoFenceMapBase = GeoFenceManager.get(fenceName);
-                                if (geoFenceMapBase != null) {
-                                    AndruavFacade.sendGeoFence(andruavUnit, geoFenceMapBase);
-                                    AndruavFacade.sendGeoFenceHit(andruavUnit, geoFenceMapBase.mAndruavUnits.get(AndruavSettings.andruavWe7daBase.PartyID));
-                                }
-                            } else {
-                                AndruavFacade.sendGeoFence(andruavUnit);
-                                AndruavFacade.sendMyGeoFenceHitStatus(andruavUnit);
-                            }
-                        }
+                    AndruavSettings.andruavWe7daBase.doSetCurrentMission(missionItemNumber);
+                }
+                break;
+
+                case AndruavMessage_RemoteExecute.RemoteCommand_CLEAR_FENCE_DATA: {
+                    //if (AndruavSettings.andruavWe7daBase.IsCGS) break; ALL Vehicles should clear fence as it is invalid
+                    // this is different that sending deattach or attached remote command to fence ... which does not exist now
+
+                    String fenceName = null;
+
+                    if (andruavResala_remoteExecute.Variables.containsKey("fn")) {
+                        fenceName = andruavResala_remoteExecute.Variables.get("fn"); // n not fn
                     }
-                    break;
+
+                    GeoFenceManager.removeGeoFence(fenceName);
+
+                }
+                break;
 
 
-                    case AndruavSystem_LoadTasks.TYPE_AndruavSystem_LoadTasks:
-                        if ((andruavUnit != null) && (!AndruavSettings.andruavWe7daBase.getIsCGS())) {
-                            int taskscope = 0;
-                            if (andruavResala_remoteExecute.Variables.containsKey("ts")) {
-                                taskscope = andruavResala_remoteExecute.getIntValue("ts"); // task scope {
-                            }
-
-                            String taskType = null;
-                            if (andruavResala_remoteExecute.Variables.containsKey("tp")) {
-                                taskType = andruavResala_remoteExecute.Variables.get("tp"); // task Type {
-                            }
-
-
-                            AndruavTaskManager.loadTasksByScope(taskscope, taskType);
-                        }
+                // Request attached fences. called when a new Unit is online, it asks others for fences names.
+                // as many of fences names are replicated.
+                case AndruavMessage_GeoFenceAttachStatus.TYPE_AndruavResala_GeoFenceAttachStatus: {
+                    if (andruavUnit == null) {
+                        AndruavFacade.requestID(andruav2MR.partyID);
                         break;
+                    }
+
+                    String fenceName = null;
+
+                    if (andruavResala_remoteExecute.Variables.containsKey("fn")) {
+                        fenceName = andruavResala_remoteExecute.Variables.get("fn"); // n not fn
+                    }
+
+                    GeoFenceManager.sendAttachedStatusToTarget(fenceName, andruavUnit);
+
 
                 }
 
-            }
+                // A remote units is RequestING a GeoFencePoint Status of Me
+                case AndruavMessage_GeoFence.TYPE_AndruavMessage_GeoFence: {// This is a request from outside [Drone or GCS] to all or a specific
+                    // fence detail. fencename is specific is sent in a variable "fn" -fence name-.
+                    if ((andruavUnit != null) && (!AndruavSettings.andruavWe7daBase.getIsCGS())) {
+                        final String fenceName = andruavResala_remoteExecute.Variables.get("fn");
+                        if (fenceName != null) {
+                            final GeoFenceBase geoFenceMapBase = GeoFenceManager.get(fenceName);
+                            if (geoFenceMapBase != null) {
+                                AndruavFacade.sendGeoFence(andruavUnit, geoFenceMapBase);
+                                AndruavFacade.sendGeoFenceHit(andruavUnit, geoFenceMapBase.mAndruavUnits.get(AndruavSettings.andruavWe7daBase.PartyID));
+                            }
+                        } else {
+                            AndruavFacade.sendGeoFence(andruavUnit);
+                            AndruavFacade.sendMyGeoFenceHitStatus(andruavUnit);
+                        }
+                    }
+                }
+                break;
 
+
+                case AndruavSystem_LoadTasks.TYPE_AndruavSystem_LoadTasks:
+                    if ((andruavUnit != null) && (!AndruavSettings.andruavWe7daBase.getIsCGS())) {
+                        int taskscope = 0;
+                        if (andruavResala_remoteExecute.Variables.containsKey("ts")) {
+                            taskscope = andruavResala_remoteExecute.getIntValue("ts"); // task scope {
+                        }
+
+                        String taskType = null;
+                        if (andruavResala_remoteExecute.Variables.containsKey("tp")) {
+                            taskType = andruavResala_remoteExecute.Variables.get("tp"); // task Type {
+                        }
+
+
+                        AndruavTaskManager.loadTasksByScope(taskscope, taskType);
+                    }
+                    break;
+
+            }
         }
 
 
@@ -1541,7 +1534,6 @@ public abstract class AndruavWSClientBase {
 
                 if (executeSystemCommand(andruav_2MR)) return ; // all system messages are text
 
-                return;
             }
             else
             if ((andruav_2MR.MessageRouting.equals(CMD_COM_INDIVIDUAL)) ||(andruav_2MR.MessageRouting.equals(CMD_COMM_GROUP)))
@@ -1574,7 +1566,8 @@ public abstract class AndruavWSClientBase {
     protected final void Execute(AndruavBinary_2MR andruavBinary2MR) {
 
         try {
-            if (!andruavBinary2MR.IsReceived) return; // these are my messages
+            if (!andruavBinary2MR.IsReceived) {
+            } // these are my messages
             else if ((andruavBinary2MR.MessageRouting.equals(CMD_COM_INDIVIDUAL)) || (andruavBinary2MR.MessageRouting.equals(CMD_COMM_GROUP))) {  // process internal commands.
 
                 // TODO: IMPROVEMENT ... You update the record with each message...the value here is that you update the last message time check @link andruavCMD
@@ -1928,7 +1921,6 @@ public abstract class AndruavWSClientBase {
             // TODO: Send event here to say that you cannot sendMessageToModule.... maybe also you need to disconnect.
             AndruavEngine.log().logException(AndruavSettings.Account_SID, "exception_ws3", e);
 
-            return ;
         }
     }
 
@@ -1972,7 +1964,6 @@ public abstract class AndruavWSClientBase {
         {
             // TODO: Send event here to say that you cannot sendMessageToModule.... maybe also you need to disconnect.
             AndruavEngine.log().logException(AndruavSettings.Account_SID, "exception_ws3", e);
-            return ;
         }
     }
 

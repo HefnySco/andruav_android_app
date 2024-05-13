@@ -54,4 +54,3 @@ public class MAV_SENSOR_ORIENTATION {
    public static final int MAV_SENSOR_ROTATION_CUSTOM = 100; /* Custom orientation | */
    public static final int MAV_SENSOR_ORIENTATION_ENUM_END = 101; /*  | */
 }
-            

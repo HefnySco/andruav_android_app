@@ -24,4 +24,3 @@ public class ESTIMATOR_STATUS_FLAGS {
    public static final int ESTIMATOR_ACCEL_ERROR = 2048; /* True if the EKF has detected bad accelerometer data | */
    public static final int ESTIMATOR_STATUS_FLAGS_ENUM_END = 2049; /*  | */
 }
-            

@@ -22,4 +22,3 @@ public class MAV_STORM32_GIMBAL_DEVICE_FLAGS {
    public static final int MAV_STORM32_GIMBAL_DEVICE_FLAGS_NONE = 65535; /* UINT16_MAX = ignore. | */
    public static final int MAV_STORM32_GIMBAL_DEVICE_FLAGS_ENUM_END = 65536; /*  | */
 }
-            

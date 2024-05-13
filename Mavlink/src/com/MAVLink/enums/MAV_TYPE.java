@@ -55,4 +55,3 @@ public class MAV_TYPE {
    public static final int MAV_TYPE_WINCH = 42; /* Winch | */
    public static final int MAV_TYPE_ENUM_END = 43; /*  | */
 }
-            

@@ -20,4 +20,3 @@ public class UAVIONIX_ADSB_OUT_STATUS_STATE {
    public static final int UAVIONIX_ADSB_OUT_STATUS_STATE_1090ES_TX_ENABLED = 128; /*  | */
    public static final int UAVIONIX_ADSB_OUT_STATUS_STATE_ENUM_END = 129; /*  | */
 }
-            

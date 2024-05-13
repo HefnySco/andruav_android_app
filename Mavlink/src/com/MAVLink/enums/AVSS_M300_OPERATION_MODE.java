@@ -26,4 +26,3 @@ public class AVSS_M300_OPERATION_MODE {
    public static final int MODE_M300_ENGINE_START = 41; /* In engine mode | */
    public static final int AVSS_M300_OPERATION_MODE_ENUM_END = 42; /*  | */
 }
-            

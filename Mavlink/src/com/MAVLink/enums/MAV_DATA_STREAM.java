@@ -23,4 +23,3 @@ public class MAV_DATA_STREAM {
    public static final int MAV_DATA_STREAM_EXTRA3 = 12; /* Dependent on the autopilot | */
    public static final int MAV_DATA_STREAM_ENUM_END = 13; /*  | */
 }
-            
