@@ -21,9 +21,9 @@ android {
         applicationId 'arudpilot.andruav'
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
-        versionName '6.1.0'
+        versionName '6.2.0'
         signingConfig signingConfigs.config
-        versionCode 60000
+        versionCode 60200
         multiDexEnabled true
     }
 
