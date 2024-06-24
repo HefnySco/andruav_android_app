@@ -125,12 +125,10 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
      */
     public static Activity activeActivity = null;
     public static int gui_ConnectionIconID;
-    public static Time timeApp;
     public boolean D = false; // debug
     public final static String TAG = "RCMOB";
     public static Context context;
     public static IEvent_SocketData iEvent_socketData;
-   // public static AndruavWSClient andruavWSClient;
     public static SoundManager soundManager;
     public static Intent iSensorService;
     /***
@@ -744,8 +742,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         //exceptionHTTPLogger.Logentris(AndruavSettings.AccessCode,"INFO","Started");
 
 
-
-        timeApp = new Time();
 
         gui_ConnectionIconID = R.drawable.connect_w_32x32;
 

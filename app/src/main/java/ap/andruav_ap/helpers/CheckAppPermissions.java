@@ -61,7 +61,11 @@ public abstract class CheckAppPermissions {
         permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.READ_PHONE_STATE);
         permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.READ_SMS);
 
-
+        //if (ContextCompat.checkSelfPermission(App.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+        //}
         return permissionsOK;
     }
 
@@ -110,5 +114,7 @@ public abstract class CheckAppPermissions {
         return true;
 
     }
+
+
 
 }

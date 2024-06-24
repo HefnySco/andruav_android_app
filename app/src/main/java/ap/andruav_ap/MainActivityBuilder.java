@@ -1,9 +1,12 @@
 package ap.andruav_ap;
 
+import android.Manifest;
 import android.content.Intent;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import android.os.Bundle;
 import android.util.Log;
 
@@ -94,6 +97,8 @@ public class MainActivityBuilder extends AppCompatActivity {
     protected void onResume() {
         // The activity has become visible (it is now "resumed").
         super.onResume();
+
+
 
     }
 }

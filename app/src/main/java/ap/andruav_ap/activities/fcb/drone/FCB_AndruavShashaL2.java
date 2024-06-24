@@ -701,6 +701,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
     }
 
     public void scanforDevices() {
+
         if (!App.BT.Bluetooth.isEnabled()) return ;
 
             //killThread();
