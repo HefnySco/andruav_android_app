@@ -40,6 +40,7 @@ import com.andruav.protocol.commands.textMessages.AndruavMessage_DroneReport;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_CameraList;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_ServoChannel;
+import com.andruav.protocol.commands.textMessages.AndruavMessage_Sound_TextToSpeech;
 import com.andruav.protocol.commands.textMessages.Andruav_2MR;
 import com.andruav.protocol.commands.textMessages.Configuration.AndruavMessage_Config_COM;
 import com.andruav.protocol.commands.textMessages.Configuration.AndruavMessage_Config_Preference;
@@ -835,6 +836,12 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                 }
             }
             break;
+
+            case AndruavMessage_Sound_TextToSpeech.TYPE_AndruavMessage_Sound_TextToSpeech:
+                andruav2MR.processed = true;
+                AndruavMessage_Sound_TextToSpeech andruavMessage_textToSpeech = (AndruavMessage_Sound_TextToSpeech) andruav2MR.andruavMessageBase;
+                AndruavEngine.notification().SpeakNow(andruavMessage_textToSpeech.text);
+                break;
 
             default:
                 // Other message are either reply, IMU or other info data.
