@@ -100,7 +100,8 @@ public class DroneMavlinkHandler {
      */
     public static void execute_heartbeat_raw( msg_heartbeat msg_heartbeat)
     {
-        if ((msg_heartbeat.type>= MAV_TYPE_GIMBAL) && (msg_heartbeat.type!= MAV_TYPE_GCS)) return ; // ignore parsing ths ADSB message
+        if ((msg_heartbeat.type >= MAV_TYPE_GIMBAL) || (msg_heartbeat.type == MAV_TYPE_GCS)) return ; // ignore parsing ths ADSB message
+
         //if (msg_heartbeat.compid==0) return; // ignore parse
         if (msg_heartbeat.sysid==255) return; // ignore parse
         final ControlBoard_DroneKit controlBoard_droneKit = (ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard;
