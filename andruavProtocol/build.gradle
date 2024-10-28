@@ -7,6 +7,12 @@ android {
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
     }
+    // Jai - update for gradle 8.x
+    buildFeatures {
+        buildConfig = true
+    }
+    namespace 'ap.andruav_ap'
+    // Jai - update for gradle 8.x
     buildTypes {
         release {
             minifyEnabled true

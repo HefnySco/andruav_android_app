@@ -6,9 +6,9 @@ ext {
 
     VARIABLE = 1
     play_services_version = '17.0.0'
-    android_build_sdk_version = 33
-    android_build_tools_version = '33.0.2'
-    android_build_target_sdk_version = 33
+    android_build_sdk_version = 34
+    android_build_tools_version = '34.0.0'
+    android_build_target_sdk_version = 34
     android_build_min_sdk_version = 24
 }
 
@@ -46,11 +46,14 @@ static def releaseTime() {
 
 buildscript {
     repositories {
-        jcenter()
+        // Jai - update for gradle 8.x
+        mavenCentral()
+        // jcenter()
+        // Jai
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.2'
+        classpath 'com.android.tools.build:gradle:8.4.2'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -59,7 +62,10 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
+        // Jai - update for gradle 8.x
+        mavenCentral()
+        // jcenter()
+        // Jai
         google()
         // Jai USB serial - start
         maven { url 'https://jitpack.io' }

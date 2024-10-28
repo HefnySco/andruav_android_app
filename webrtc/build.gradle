@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
 
 
     defaultConfig {
@@ -14,6 +14,12 @@ android {
         consumerProguardFiles 'consumer-rules.pro'
     }
 
+    // Jai - update for gradle 8.x
+    buildFeatures {
+        buildConfig = true
+    }
+    namespace 'ap.andruav_ap'
+    // Jai - update for gradle 8.x
     buildTypes {
         release {
             minifyEnabled false
