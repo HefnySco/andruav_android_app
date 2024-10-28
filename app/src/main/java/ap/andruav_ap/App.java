@@ -125,12 +125,10 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
      */
     public static Activity activeActivity = null;
     public static int gui_ConnectionIconID;
-    public static Time timeApp;
     public boolean D = false; // debug
     public final static String TAG = "RCMOB";
     public static Context context;
     public static IEvent_SocketData iEvent_socketData;
-   // public static AndruavWSClient andruavWSClient;
     public static SoundManager soundManager;
     public static Intent iSensorService;
     /***
@@ -496,7 +494,10 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                 camera.put(UAVOSConstants.CAMERA_SUPPORT_FLASH, supportFlash);
                 camera.put(UAVOSConstants.CAMERA_UNIQUE_NAME, AndruavSettings.andruavWe7daBase.PartyID);
                 camera.put(UAVOSConstants.CAMERA_TYPE, AndruavMessage_CameraList.EXTERNAL_CAMERA_TYPE_RTCWEBCAM);
-                camera.put(UAVOSConstants.CAMERA_ANDROID_DUAL_CAM, true);
+                //camera.put(UAVOSConstants.CAMERA_ANDROID_DUAL_CAM, true);
+                camera.put(UAVOSConstants.CAMERA_SPECIFICATION, UAVOSConstants.CAMERA_SPECIFICATION_SUPPORT_ZOOMING | UAVOSConstants.CAMERA_SPECIFICATION_SUPPORT_PHOTO
+                        | UAVOSConstants.CAMERA_SPECIFICATION_SUPPORT_RECORDING | UAVOSConstants.CAMERA_SPECIFICATION_DUAL_CAM
+                        | UAVOSConstants.CAMERA_SPECIFICATION_SUPPORT_FLASHING);
                 camera.put(UAVOSConstants.CAMERA_RECORDING_NOW, false);
                 camera.put(UAVOSConstants.CAMERA_ACTIVE, 1);
                 if (AndruavEngine.getPreference().getModuleType().contains(ProtocolHeaders.UAVOS_CAMERA_MODULE_CLASS)) {
@@ -741,8 +742,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         //exceptionHTTPLogger.Logentris(AndruavSettings.AccessCode,"INFO","Started");
 
 
-
-        timeApp = new Time();
 
         gui_ConnectionIconID = R.drawable.connect_w_32x32;
 

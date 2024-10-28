@@ -1,10 +1,14 @@
 package ap.andruav_ap.communication.telemetry.BlueTooth;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Handler;
+
+import androidx.core.app.ActivityCompat;
 
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
@@ -24,121 +28,100 @@ import com.andruav.notification.PanicFacade;
  */
 
 public class Bluetooth {
-public boolean Connected = false;
+    public boolean Connected = false;
 
-private BluetoothAdapter mBluetoothAdapter = null;
-private BluetoothSocket btSocket = null;
-private OutputStream outStream = null;
-private BufferedInputStream inStream = null;
-private final Object sync_outStream = new Object();
-private final Object sync_inStream = new Object();
-// Well known SPP UUID (will *probably* map to
+    private BluetoothAdapter mBluetoothAdapter = null;
+    private BluetoothSocket btSocket = null;
+    private OutputStream outStream = null;
+    private BufferedInputStream inStream = null;
+    private final Object sync_outStream = new Object();
+    private final Object sync_inStream = new Object();
+    // Well known SPP UUID (will *probably* map to
 // RFCOMM channel 1 (default) if not in use);
 // see comments in onResume().
-private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
 
-// ==> hardcode your server's MAC address here <==
-public String address = "";
+    // ==> hardcode your server's MAC address here <==
+    public String address = "";
 
-        final Context context;
+    final Context context;
 
-public boolean ConnectionLost = false;
+    public boolean ConnectionLost = false;
 
-public int ReconnectTry = 0;
+    public int ReconnectTry = 0;
 
-        Handler handler;
-
-
+    Handler handler;
 
 
-public Bluetooth(Context con) {
+    public Bluetooth(Context con) {
         context = con;
 
-       ////M.Hefny GetAdapter();
+        ////M.Hefny GetAdapter();
+    }
+
+    public Boolean GetAdapter() {
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        return mBluetoothAdapter != null;
+    }
+
+    public void Enable() {
+        if (!mBluetoothAdapter.isEnabled()) {
+            mBluetoothAdapter.enable();
         }
-
-public Boolean GetAdapter() {
-    mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-    return mBluetoothAdapter != null;
-
-
-}
-
-public void Enable()
-{
-   /* if (!mBluetoothAdapter.isEnabled()) {
-        Intent turnOnIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivityForResult(turnOnIntent, REQUEST_ENABLE_BT);
-
-        Toast.makeText(getApplicationContext(),"Bluetooth turned on" ,
-                Toast.LENGTH_LONG).show();
     }
-    else{
-        Toast.makeText(getApplicationContext(),"Bluetooth is already on",
-                Toast.LENGTH_LONG).show();
+
+    public synchronized boolean isEnabled() {
+        if (mBluetoothAdapter == null)
+            return false;
+
+        return mBluetoothAdapter.isEnabled();
     }
-     */
 
-    if (!mBluetoothAdapter.isEnabled()) {
-        mBluetoothAdapter.enable();
-    }
-}
-
-public synchronized boolean isEnabled ()
-{
-    if (mBluetoothAdapter==null)
-        return false;
-
-    return mBluetoothAdapter.isEnabled();
-}
-
-public synchronized void disable() {
+    public synchronized void disable() {
 
         if (mBluetoothAdapter == null) return;
         try {
-             cancelDiscovery(); // safe to call
-             mBluetoothAdapter.disable();
+            cancelDiscovery(); // safe to call
+            mBluetoothAdapter.disable();
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
-}
-
-public synchronized Boolean isConnected()
-{
-    return Connected;
-}
-
-public Boolean isDiscovering() {
-    try {
-           if (isEnabled()) return false;
-
-       return  mBluetoothAdapter.isDiscovering();
-    } catch (Exception e) {
-        return false;
     }
 
-}
+    public synchronized Boolean isConnected() {
+        return Connected;
+    }
 
-public Boolean cancelDiscovery() {
-    try {
-        if (isDiscovering())
-        {
-            return  mBluetoothAdapter.cancelDiscovery();
+    public Boolean isDiscovering() {
+        try {
+            if (isEnabled()) return false;
+
+            return mBluetoothAdapter.isDiscovering();
+        } catch (Exception e) {
+            return false;
         }
-        return true;
-    } catch (Exception e) {
-        return false;
+
     }
 
-}
+    public Boolean cancelDiscovery() {
+        try {
+            if (isDiscovering()) {
+                return mBluetoothAdapter.cancelDiscovery();
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
 
-public Boolean startDiscovery() {
-    try {
-        return  mBluetoothAdapter.startDiscovery();
+    }
+
+    public Boolean startDiscovery() {
+        try {
+            return mBluetoothAdapter.startDiscovery();
     } catch (Exception e) {
         return false;
     }
@@ -179,6 +162,8 @@ public void GetRemoteDevice(String MAC) {
         try {
         btSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
         } catch (IOException e) {
+
+            e.printStackTrace();
        ///////// Toast.makeText(context, context.getString(R.string.Unabletoconnect), Toast.LENGTH_LONG).show();
         }
 
@@ -293,6 +278,8 @@ public synchronized void Connect(String MAC) {
                 outStream.flush();
             }
         } catch (IOException e) {
+
+            e.printStackTrace();
         }
         }
 

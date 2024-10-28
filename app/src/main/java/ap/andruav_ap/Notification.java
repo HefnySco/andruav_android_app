@@ -203,6 +203,12 @@ public  class Notification implements INotification{
             return ;
         }
         last_speek_time = now;
+        SpeakNow(message);
+    }
+
+
+    @Override
+    public void SpeakNow(final String message) {
         TTS.getInstance().Speak(message);
     }
 
