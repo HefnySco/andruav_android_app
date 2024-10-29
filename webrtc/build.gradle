@@ -10,8 +10,7 @@ android {
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles 'consumer-rules.pro'
+
     }
 
     // Jai - update for gradle 8.x

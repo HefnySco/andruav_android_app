@@ -38,9 +38,7 @@ import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.activities.data.DataShashaTab;
 import ap.andruav_ap.activities.drone.IMUShasha;
 import ap.andruav_ap.activities.fcb.drone.FCB_AndruavShashaL2;
-import ap.andruav_ap.activities.fcb.FCB_TCPShasha;
 import ap.andruav_ap.activities.fpv.FPVActivityFactory;
-import ap.andruav_ap.activities.map.AndruavMapsShasha;
 import ap.andruav_ap.activities.remote.RemoteControlSettingActivityTab;
 import ap.andruav_ap.App;
 
@@ -51,7 +49,6 @@ import com.andruav.AndruavFacade;
 import ap.andruav_ap.helpers.CheckAppPermissions;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_ProtocolChanged;
 import ap.andruavmiddlelibrary.LoginClient;
-import ap.andruav_ap.communication.telemetry.TelemetryDroneProtocolParser;
 import ap.andruav_ap.communication.telemetry.TelemetryGCSProtocolParser;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 import ap.andruav_ap.DeviceManagerFacade;
