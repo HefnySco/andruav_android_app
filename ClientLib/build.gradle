@@ -71,6 +71,9 @@ android {
     // Jai - update for gradle 8.x
     buildFeatures {
         buildConfig = true
+        // Jai fix default disable, enable for gradle 8.x - start
+        aidl = true
+        // Jai fix default disable, enable for gradle 8.x - end
     }
     namespace 'com.o3dr.android.client'
     // Jai - update for gradle 8.x
