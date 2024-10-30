@@ -72,7 +72,7 @@ android {
     buildFeatures {
         buildConfig = true
     }
-    namespace 'ap.andruav_ap'
+    namespace 'com.o3dr.android.client'
     // Jai - update for gradle 8.x
     buildTypes {
         debug {

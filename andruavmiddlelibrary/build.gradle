@@ -12,7 +12,7 @@ android {
     buildFeatures {
         buildConfig = true
     }
-    namespace 'ap.andruav_ap'
+    namespace 'ap.andruavmiddlelibrary'
     // Jai - update for gradle 8.x
     buildTypes {
         release {
