@@ -1,0 +1,6 @@
+<resources>
+
+    <dimen name="radius">3dp</dimen>
+    <dimen name="stroke_width">2dp</dimen>
+
+</resources>
