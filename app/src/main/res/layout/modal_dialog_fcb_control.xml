@@ -217,12 +217,12 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginStart="1dp"
         android:layout_marginLeft="1dp"
-        app:snp_arrowColor="@color/btn_TXT_GREYLIGHT"
-        app:snp_backgroundColor="@color/btn_TXT_BLUE_DARKEST"
-        app:snp_max="1000"
-        app:snp_min="0"
-        app:snp_numberColor="@color/btn_TXT_GREYLIGHT"
-        app:snp_value="0" />
+        app:arrowColor="@color/btn_TXT_GREYLIGHT"
+        app:backgroundColor="@color/btn_TXT_BLUE_DARKEST"
+        app:max="1000"
+        app:min="0"
+        app:numberColor="@color/btn_TXT_GREYLIGHT"
+        app:value="0" />
 
     <TextView
         android:id="@+id/mdlgcam_text03"
@@ -249,10 +249,10 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="1dp"
         android:layout_marginRight="1dp"
-        app:snp_arrowColor="@color/btn_TXT_GREYLIGHT"
-        app:snp_backgroundColor="@color/btn_TXT_BLUE_DARKEST"
-        app:snp_max="1000"
-        app:snp_min="0"
-        app:snp_numberColor="@color/btn_TXT_GREYLIGHT"
-        app:snp_value="0" />
+        app:arrowColor="@color/btn_TXT_GREYLIGHT"
+        app:backgroundColor="@color/btn_TXT_BLUE_DARKEST"
+        app:max="1000"
+        app:min="0"
+        app:numberColor="@color/btn_TXT_GREYLIGHT"
+        app:value="0" />
 </RelativeLayout>

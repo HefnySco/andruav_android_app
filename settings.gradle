@@ -1,2 +1,2 @@
-include ':app', ':andruavProtocol', ':andruavmiddlelibrary', ':ClientLib', ':Mavlink', ':rangebar', ':rangebar-release', ':webrtc'
+include ':app', ':andruavProtocol', ':andruavmiddlelibrary', ':ClientLib', ':Mavlink', ':rangebar', ':rangebar-release', ':webrtc', ':swipenumberpicker'
 project(':rangebar').projectDir = new File('MaterialBar/rangebar')

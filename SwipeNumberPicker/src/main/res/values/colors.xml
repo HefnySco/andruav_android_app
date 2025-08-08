@@ -1,0 +1,6 @@
+<resources>
+    <!--Default colors-->
+    <color name="background">#E5E5E5</color>
+    <color name="arrows">#757575</color>
+    <color name="text">#212121</color>
+</resources>
