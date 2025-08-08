@@ -1533,7 +1533,6 @@ public abstract class AndruavWSClientBase {
             if (andruav_2MR.MessageRouting.equals(MESSAGE_TYPE_SYSTEM)) { // SYSTEM MESSAGES
 
                 executeSystemCommand(andruav_2MR);
-                return ;
 
             }
             else

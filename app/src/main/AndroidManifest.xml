@@ -173,12 +173,6 @@
             android:label="@string/title_activity_hubcommunication"
             android:launchMode="singleTask" />
         <activity
-            android:name="ap.andruav_ap.activities.map.AndruavMapsShasha"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:label="@string/title_activity_maps"
-            android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name="ap.andruav_ap.activities.drone.IMUShasha"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_imu"

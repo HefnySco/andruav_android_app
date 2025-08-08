@@ -25,7 +25,7 @@ import ap.andruav_ap.R;
 /**
  * Created by Vitalii.Ishchuk on 25-Jun-15
  */
-public class SwipeNumberPicker extends TextView {
+public class SwipeNumberPicker extends androidx.appcompat.widget.AppCompatTextView {
 
 	private static final String TAG = "SwpNumPicker";
 

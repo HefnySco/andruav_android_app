@@ -688,19 +688,16 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
 
         if (!App.BT.Bluetooth.isEnabled()) return ;
 
-            //killThread();
-            App.BT.StopPersistentConnection();
+        App.BT.StopPersistentConnection();
 
-            if (App.BT.Bluetooth.isDiscovering()) {
-                App.BT.Bluetooth.cancelDiscovery();
-            }
-
-            BTArrayAdapter.clear();
-            App.BT.Bluetooth.startDiscovery();
-
-
-
+        if (App.BT.Bluetooth.isDiscovering()) {
+            App.BT.Bluetooth.cancelDiscovery();
         }
+
+        BTArrayAdapter.clear();
+        App.BT.Bluetooth.startDiscovery();
+
+    }
 
     @Override
     public void onItemClick(View aView, int position) {

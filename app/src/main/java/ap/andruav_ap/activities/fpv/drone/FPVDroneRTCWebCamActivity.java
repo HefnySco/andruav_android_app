@@ -50,7 +50,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import de.greenrobot.event.EventBus;
-//import georegression.struct.shapes.Quadrilateral_F64;
 import ap.andruav_ap.guiEvent.GUIEvent_EnableFlashing;
 import ap.andruav_ap.activities.camera.Event_RecordVideoStatus;
 import ap.andruav_ap.widgets.AlarmWidget;
@@ -82,9 +81,7 @@ import com.andruav.uavos.modules.UAVOSModuleCamera;
 
 import ap.andruavmiddlelibrary.preference.Preference;
 import ap.andruavmiddlelibrary.webrtc.classes.PnPeer;
-//import rcmobile.boof.BoofMosa3ed;
-//import rcmobile.boof.BoofSurfaceView;
-//import rcmobile.boof.TLD_Tracker;
+
 
 public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener, VideoSink, VSink {
 

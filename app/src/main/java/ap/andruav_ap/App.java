@@ -35,7 +35,6 @@ import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
-import android.text.format.Time;
 import android.view.Surface;
 
 import com.andruav.AndruavDroneFacade;
@@ -57,7 +56,6 @@ import com.andruav.interfaces.IPreference;
 import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.communication.AndruavWSClient_TooTallNate;
-import ap.andruav_ap.communication.AndruavUnitMap;
 import ap.andruav_ap.communication.ControlBoardFactory;
 import ap.andruav_ap.communication.telemetry.IEvent_SocketData;
 import ap.andruav_ap.communication.telemetry.SerialSocketServer.AndruavGCSSerialSocketServer;
@@ -84,9 +82,7 @@ import ap.andruavmiddlelibrary.factory.tts.TTS;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
 import com.andruav.protocol.commands.ProtocolHeaders;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_CameraList;
-import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_Ping;
 import com.andruav.protocol.communication.udpproxy.UDPProxy;
-import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
 import com.andruav.uavos.modules.UAVOSConstants;
 import com.andruav.uavos.modules.UAVOSException;
 import com.andruav.uavos.modules.UAVOSModuleCamera;
@@ -734,7 +730,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         AndruavEngine.setLo7etTa7akomMasna(new ControlBoardFactory());
         AndruavEngine.setAndruavWe7daMasna3(new AndruavUnitFactory());
-        AndruavEngine.setAndruavWe7daMapBase(new AndruavUnitMap());
 
 
 

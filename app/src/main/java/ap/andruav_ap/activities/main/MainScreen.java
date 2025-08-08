@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 
-import ap.andruav_ap.Emergency;
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.activities.HUBCommunication;
 import ap.andruav_ap.activities.remote.RemoteControlSettingGCSActivityTab;
@@ -38,9 +37,8 @@ import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.activities.data.DataShashaTab;
 import ap.andruav_ap.activities.drone.IMUShasha;
 import ap.andruav_ap.activities.fcb.drone.FCB_AndruavShashaL2;
-import ap.andruav_ap.activities.fcb.FCB_TCPShasha;
 import ap.andruav_ap.activities.fpv.FPVActivityFactory;
-import ap.andruav_ap.activities.map.AndruavMapsShasha;
+
 import ap.andruav_ap.activities.remote.RemoteControlSettingActivityTab;
 import ap.andruav_ap.App;
 
@@ -105,7 +103,6 @@ public class MainScreen extends BaseAndruavShasha {
     private Button mbtnIMU;
     private Button mbtnFPV;
     private Button mbtnConnection;
-    private Button mbtnMap;
     private Button mbtnFCB;
     private Button mbtnData;
     private TextView mtxtAccessCode;
@@ -482,15 +479,7 @@ public class MainScreen extends BaseAndruavShasha {
         mbtnConnection = findViewById(R.id.btnCommServer);
         mbtnConnection.setOnClickListener(arg0 -> startActivity(new Intent(MainScreen.this, HUBCommunication.class)));
 
-        mbtnMap = findViewById(R.id.btnMap);
-        mbtnMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-
-                startActivity(new Intent(MainScreen.this, AndruavMapsShasha.class));
-            }
-        });
 
         mbtnFCB = findViewById(R.id.btnFCB);
         mbtnFCB.setOnClickListener(new View.OnClickListener() {
@@ -788,7 +777,6 @@ public class MainScreen extends BaseAndruavShasha {
 
             mMenu.findItem(R.id.mi_main_Settings_drone).setEnabled(false);
         }
-        mbtnMap.setEnabled(BigButtonsenabled);
 
 
 
