@@ -391,11 +391,12 @@ public class Preference {
 
 
     public static boolean isGPSInjecttionEnabled(final android.content.ContextWrapper contextWrapper) {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "key_gps_inject", true);
+        if (FeatureSwitch.Disable_Drone_ExternalCam) return false;
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "gps_inject", true);
     }
 
     public static void isGPSInjecttionEnabled(final android.content.ContextWrapper contextWrapper, boolean bEnabled) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_gps_inject", bEnabled);
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "gps_inject", bEnabled);
     }
 
     // a Drone property

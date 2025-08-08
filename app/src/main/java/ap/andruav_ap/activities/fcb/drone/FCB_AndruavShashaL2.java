@@ -227,7 +227,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
             public void onClick(View v) {
                 bSaved = false;
                 if (!DroneKitServer.isValidAndroidVersion()) {
-                    DialogHelper.doModalDialog(Me, getString(R.string.gen_connection), getString(R.string.err_3dr_mobileversion), null);
+                    DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.gen_connection), getString(ap.andruavmiddlelibrary.R.string.err_3dr_mobileversion), null);
                     rbService_3DR.setChecked(false);
                     rbNative.setChecked(false);
                 }
@@ -483,72 +483,57 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
 
         int id = item.getItemId();
 
+        if (id == R.id.mi_fcb_drone_connect) {
+            if ((TelemetryModeer.getConnectionInfo() != TelemetryModeer.CURRENTCONNECTION_NON) || (App.droneKitServer != null)) {
+                // DroneKitServer != null means it is active, but does not mean it is connected. i.e. could be waiting for UDP connection.
 
-        switch (id)
-        {
-            case R.id.mi_fcb_drone_connect:
-                if ((TelemetryModeer.getConnectionInfo()!= TelemetryModeer.CURRENTCONNECTION_NON) || (App.droneKitServer != null))
-                {
-                    // DroneKitServer != null means it is active, but does not mean it is connected. i.e. could be waiting for UDP connection.
+                // TTS.getInstance().Speak("Disconnecting");
+                final String connstr = getString(ap.andruavmiddlelibrary.R.string.gen_bluetooth_disconnecting);
+                final ProgressDialog progress = DialogHelper.doModalProgressDialog(this, "FCB", connstr);
+                App.mScheduleHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        progress.dismiss();
+                    }
+                }, 1500);
 
-                   // TTS.getInstance().Speak("Disconnecting");
-                    final String connstr = getString(R.string.gen_bluetooth_disconnecting);
-                    final ProgressDialog progress = DialogHelper.doModalProgressDialog(this,"FCB",connstr);
-                    App.mScheduleHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            progress.dismiss();
-                        }
-                    },1500);
-
-                    Toast.makeText(App.getAppContext(),connstr, Toast.LENGTH_SHORT).show();
-                    TelemetryModeer.closeAllConnections();
-                    savePreference();
+                Toast.makeText(App.getAppContext(), connstr, Toast.LENGTH_SHORT).show();
+                TelemetryModeer.closeAllConnections();
+                savePreference();
 
 
-                }
-                else
-                {
-                    final String connstr = getString(R.string.gen_bluetooth_connecting);
-                    final ProgressDialog progress = DialogHelper.doModalProgressDialog(this,"FCB",connstr);
-                    App.mScheduleHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            progress.dismiss();
-                        }
-                    },1500);
+            } else {
+                final String connstr = getString(ap.andruavmiddlelibrary.R.string.gen_bluetooth_connecting);
+                final ProgressDialog progress = DialogHelper.doModalProgressDialog(this, "FCB", connstr);
+                App.mScheduleHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        progress.dismiss();
+                    }
+                }, 1500);
 
-                    TTS.getInstance().Speak(connstr);
-                    Toast.makeText(App.getAppContext(),connstr, Toast.LENGTH_SHORT).show();
-                    savePreference();
-                    TelemetryModeer.connectToPreferredConnection(Me,false);
+                TTS.getInstance().Speak(connstr);
+                Toast.makeText(App.getAppContext(), connstr, Toast.LENGTH_SHORT).show();
+                savePreference();
+                TelemetryModeer.connectToPreferredConnection(Me, false);
 
-                }
-                updateFloatingButton();
-                break;
-
-            case R.id.mi_fcb_dualband:
-                NetInfoAdapter.Dual3GAccess(!NetInfoAdapter.getDual3GAccess());
-                updateFloatingButton();
-                break;
-            case R.id.mi_fcb_Help:
-                GMail.sendGMail(this, getString(R.string.email_title), getString(R.string.email_to), getString(R.string.email_subject),  getString(R.string.email_body), null);
-                break;
-            case R.id.mi_fcb_autofcbconnect:
-                Preference.isAutoFCBConnect(null,!Preference.isAutoFCBConnect(null));
-                item.setChecked(Preference.isAutoFCBConnect(null));
-                break;
-
-            case R.id.mi_fcb_smarttelemetry:
-                SmartOptimization_Dlg smartOptimization_dlg = SmartOptimization_Dlg.newInstance(AndruavSettings.andruavWe7daBase.UnitID);
-                smartOptimization_dlg.show(fragmentManager,"fragment_edit_name");
-                break;
-
+            }
+            updateFloatingButton();
+        } else if (id == R.id.mi_fcb_dualband) {
+            NetInfoAdapter.Dual3GAccess(!NetInfoAdapter.getDual3GAccess());
+            updateFloatingButton();
+        } else if (id == R.id.mi_fcb_Help) {
+            GMail.sendGMail(this, getString(ap.andruavmiddlelibrary.R.string.email_title), getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject), getString(ap.andruavmiddlelibrary.R.string.email_body), null);
+        } else if (id == R.id.mi_fcb_autofcbconnect) {
+            Preference.isAutoFCBConnect(null, !Preference.isAutoFCBConnect(null));
+            item.setChecked(Preference.isAutoFCBConnect(null));
+        } else if (id == R.id.mi_fcb_smarttelemetry) {
+            SmartOptimization_Dlg smartOptimization_dlg = SmartOptimization_Dlg.newInstance(AndruavSettings.andruavWe7daBase.UnitID);
+            smartOptimization_dlg.show(fragmentManager, "fragment_edit_name");
         }
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override
@@ -588,13 +573,13 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
 
         if (!bSaved) {
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setTitle(getString(R.string.action_savebeforeexit));
+            alert.setTitle(getString(ap.andruavmiddlelibrary.R.string.action_savebeforeexit));
 
 
             alert.setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     savePreference();
-                    Toast.makeText(getApplicationContext(), getString(R.string.action_done), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(ap.andruavmiddlelibrary.R.string.action_done), Toast.LENGTH_SHORT).show();
                     finish();
                 }
             });
@@ -636,7 +621,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
             if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action))
             {
                 ProgressDialogHelper.doProgressDialog(Me,"Bluetooth");
-                TTS.getInstance().Speak(getString(R.string.gen_bluetooth_disconnected));
+                TTS.getInstance().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_bluetooth_disconnected));
             }
             /*
             else
@@ -759,7 +744,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
                 if (!turnOnBlueTooth()) {
                     ProgressDialogHelper.exitProgressDialog();
                     this.cancel(true);
-                    DialogHelper.doModalDialog(Me, getString(R.string.gen_connection), getString(R.string.err_no_bluetooth), null);
+                    DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.gen_connection), getString(ap.andruavmiddlelibrary.R.string.err_no_bluetooth), null);
                 }
 
 

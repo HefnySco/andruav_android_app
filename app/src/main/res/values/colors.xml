@@ -3,6 +3,9 @@
     <!-- http://www.colorsontheweb.com/colorwizard.asp -->
 
 
+    <color name="background">#E5E5E5</color>
+    <color name="arrows">#757575</color>
+    <color name="text">#212121</color>
 
     <integer-array name="androidcolors">
         <item>@color/btn_TXT_BLUE</item>

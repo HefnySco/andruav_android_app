@@ -19,4 +19,8 @@
 
     <dimen name="toolbar_min_height">56dp</dimen>
     <dimen name="action_bar_telem_height">96dp</dimen>
+
+
+    <dimen name="radius">3dp</dimen>
+    <dimen name="stroke_width">2dp</dimen>
 </resources>

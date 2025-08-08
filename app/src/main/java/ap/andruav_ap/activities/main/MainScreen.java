@@ -209,8 +209,8 @@ public class MainScreen extends BaseAndruavShasha {
     private void doProgressDialog() {
 
         mprogressDialog = new ProgressDialog(MainScreen.this);
-        mprogressDialog.setMessage(getString(R.string.gen_step1) + getString(R.string.action_init));
-        mprogressDialog.setTitle(getString(R.string.action_connect));
+        mprogressDialog.setMessage(getString(ap.andruavmiddlelibrary.R.string.gen_step1) + getString(ap.andruavmiddlelibrary.R.string.action_init));
+        mprogressDialog.setTitle(getString(ap.andruavmiddlelibrary.R.string.action_connect));
         mprogressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mprogressDialog.show();
     }
@@ -246,11 +246,11 @@ public class MainScreen extends BaseAndruavShasha {
                 {
                     Event_UDP_Proxy event_udp_proxy = (Event_UDP_Proxy) msg.obj;
                     if (AndruavSettings.andruavWe7daBase.isUdpProxyEnabled()) {
-                        AndruavEngine.notification().Speak(getString(R.string.udp_proxy_en));
+                        AndruavEngine.notification().Speak(getString(com.andruav.protocol.R.string.udp_proxy_en));
                     }
                     else
                     {
-                        AndruavEngine.notification().Speak(getString(R.string.udp_proxy_dis));
+                        AndruavEngine.notification().Speak(getString(com.andruav.protocol.R.string.udp_proxy_dis));
                     }
 
                     writeUDPProxy();
@@ -273,8 +273,8 @@ public class MainScreen extends BaseAndruavShasha {
                                 || (!AndruavSettings.andruavWe7daBase.canBeDrone() && !AndruavSettings.andruavWe7daBase.getIsCGS()))
                             {
                                 // cannot be in this Mode
-                                progressDialogSetMessage(getString(R.string.gen_step2) + getString(R.string.err_per_bad_mode));
-                                AndruavEngine.notification().Speak(getString(R.string.err_per_bad_mode));
+                                progressDialogSetMessage(getString(ap.andruavmiddlelibrary.R.string.gen_step2) + getString(ap.andruavmiddlelibrary.R.string.err_per_bad_mode));
+                                AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.err_per_bad_mode));
                                 return ;
                             }
 
@@ -284,14 +284,14 @@ public class MainScreen extends BaseAndruavShasha {
                             AndruavSettings.WebServerPort = eventLoginClient.Parameters.get(LoginClient.CONST_COMM_SERVER_PORT);
                             AndruavSettings.WEBMOFTA7 = eventLoginClient.Parameters.get(LoginClient.CONST_COMM_SERVER_LOGIN_TEMP_KEY);
 
-                            progressDialogSetMessage(getString(R.string.gen_step2) + getString(R.string.gen_accesscodevalid));
-                            AndruavEngine.notification().Speak(getString(R.string.gen_accesscodevalid));
+                            progressDialogSetMessage(getString(ap.andruavmiddlelibrary.R.string.gen_step2) + getString(ap.andruavmiddlelibrary.R.string.gen_accesscodevalid));
+                            AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_accesscodevalid));
                             startAndruavConnection();
                             writeInfoLabel();
                             break;
                         case LoginClient.ERR_OLD_APP_VERSION:
                             exitProgressDialog();
-                            AndruavEngine.notification().Speak(getString(R.string.err_old_app_version));
+                            AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.err_old_app_version));
                             final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
                             try {
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
@@ -331,7 +331,7 @@ public class MainScreen extends BaseAndruavShasha {
                     EventSocketState eventSocketState = (EventSocketState) msg.obj;
                     if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onConnect) {
                         updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(), AndruavEngine.getAndruavWSAction());
-                        progressDialogSetMessage(getString(R.string.gen_step3) + getString(R.string.gen_hostfound));
+                        progressDialogSetMessage(getString(ap.andruavmiddlelibrary.R.string.gen_step3) + getString(ap.andruavmiddlelibrary.R.string.gen_hostfound));
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onDisconnect) {
                         exitProgressDialog();
                         updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(), AndruavEngine.getAndruavWSAction());
@@ -353,20 +353,20 @@ public class MainScreen extends BaseAndruavShasha {
                         if (eventWSComm.andruavMessageBase instanceof AndruavSystem_ConnectedCommServer) {
                             onFinalConnectionSucceededCalled = false;
                             if (!eventWSComm.IsErr) {
-                                text = getString(R.string.gen_step4) + getString(R.string.gen_hostfound);
+                                text = getString(ap.andruavmiddlelibrary.R.string.gen_step4) + getString(ap.andruavmiddlelibrary.R.string.gen_hostfound);
                             } else {
-                                text = "<br><font color=#F75050>" + getString(R.string.err_hostnotfound) + "</font>";
-                                AndruavEngine.notification().Speak(getString(R.string.gen_connectionlost));
+                                text = "<br><font color=#F75050>" + getString(ap.andruavmiddlelibrary.R.string.err_hostnotfound) + "</font>";
+                                AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_connectionlost));
                             }
                             progressDialogSetMessage(Html.fromHtml(text));
                             if (!eventWSComm.IsErr) {
-                                text += "<br><font color=#75A4D3>" + getString(R.string.gen_ws_registered) + "</font'>";
+                                text += "<br><font color=#75A4D3>" + getString(ap.andruavmiddlelibrary.R.string.gen_ws_registered) + "</font'>";
                                 updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(),AndruavEngine.getAndruavWSAction());
                                 AndruavEngine.getAndruavWS().sendPing();
 
                             } else {
-                                text += "<br><font color=#F75050>" + getString(R.string.err_ws_replicatedid) + "</font'>";
-                                AndruavEngine.notification().Speak(getString(R.string.err_ws_replicatedid));
+                                text += "<br><font color=#F75050>" + getString(ap.andruavmiddlelibrary.R.string.err_ws_replicatedid) + "</font'>";
+                                AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.err_ws_replicatedid));
                                 AndruavEngine.getAndruavWS().disconnect();
                             }
 
@@ -380,13 +380,13 @@ public class MainScreen extends BaseAndruavShasha {
 
                         if ((eventWSComm.andruavMessageBase instanceof AndruavSystem_EnteredChatRoom)) {
                             if (!eventWSComm.IsErr) {
-                                text += "<br><font color=#75A4D3>" + getString(R.string.gen_ws_registered) + "</font'>";
+                                text += "<br><font color=#75A4D3>" + getString(ap.andruavmiddlelibrary.R.string.gen_ws_registered) + "</font'>";
                                 updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(),AndruavEngine.getAndruavWSAction());
                                 AndruavEngine.getAndruavWS().sendPing();
 
                             } else {
-                                text += "<br><font color=#F75050>" + getString(R.string.err_ws_replicatedid) + "</font'>";
-                                AndruavEngine.notification().Speak(getString(R.string.err_ws_replicatedid));
+                                text += "<br><font color=#F75050>" + getString(ap.andruavmiddlelibrary.R.string.err_ws_replicatedid) + "</font'>";
+                                AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.err_ws_replicatedid));
                                 AndruavEngine.getAndruavWS().disconnect();
                             }
 
@@ -404,7 +404,7 @@ public class MainScreen extends BaseAndruavShasha {
                                     App.startSensorService();
                                 }*/
                             } else {
-                                text += "<br><font color=F75050>" + getString(R.string.err_ws_cmd_ping) + "</font'>";
+                                text += "<br><font color=F75050>" + getString(ap.andruavmiddlelibrary.R.string.err_ws_cmd_ping) + "</font'>";
                             }
 
                             progressDialogSetMessage(Html.fromHtml(text));
@@ -603,7 +603,7 @@ public class MainScreen extends BaseAndruavShasha {
 
         if (!PreferenceValidator.isValidWebRTC())
         {
-            DialogHelper.doModalDialog(this, getString(R.string.pref_gr_fpv_stunserver), getString(R.string.err_rtc_nostunserver), null,
+            DialogHelper.doModalDialog(this, getString(ap.andruavmiddlelibrary.R.string.pref_gr_fpv_stunserver), getString(ap.andruavmiddlelibrary.R.string.err_rtc_nostunserver), null,
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
 
@@ -620,7 +620,7 @@ public class MainScreen extends BaseAndruavShasha {
 
         if (!NetInfoAdapter.isConnected()) {   // No Internet Access
             Log.d("ws","isConnected is false");
-            DialogHelper.doModalDialog(this, getString(R.string.gen_connection), getString(R.string.err_no_internet), null);
+            DialogHelper.doModalDialog(this, getString(ap.andruavmiddlelibrary.R.string.gen_connection), getString(ap.andruavmiddlelibrary.R.string.err_no_internet), null);
             return;
         }
 
@@ -633,7 +633,7 @@ public class MainScreen extends BaseAndruavShasha {
             if (PreferenceValidator.isInvalidLoginCode()) {
                 // you need internt connection here to register for the first time
                 if ((!FeatureSwitch.IGNORE_NO_INTERNET_CONNECTION) && (!NetInfoAdapter.isHasValidIPAddress())) {   // No Internet Access
-                    DialogHelper.doModalDialog(this, getString(R.string.gen_connection), getString(R.string.err_no_internet), null);
+                    DialogHelper.doModalDialog(this, getString(ap.andruavmiddlelibrary.R.string.gen_connection), getString(ap.andruavmiddlelibrary.R.string.err_no_internet), null);
                     //   AndruavMo7arek.log().log(AndruavSettings.AccessCode, "No-Net", NetInfoAdapter.DebugStr);
 
                     return;
@@ -655,7 +655,7 @@ public class MainScreen extends BaseAndruavShasha {
                 doProgressDialog();
             } catch (UnsupportedEncodingException e) {
                 AndruavEngine.log().logException("exception_log", e);
-                DialogHelper.doModalDialog(this, getString(R.string.action_login), getString(R.string.err_loginfailed), null);
+                DialogHelper.doModalDialog(this, getString(ap.andruavmiddlelibrary.R.string.action_login), getString(ap.andruavmiddlelibrary.R.string.err_loginfailed), null);
             }
 
         }
@@ -689,14 +689,14 @@ public class MainScreen extends BaseAndruavShasha {
               break;
             case SOCKETSTATE_DISCONNECTED:
                 miConnect.setIcon(R.drawable.connect_w_32x32);
-                AndruavEngine.notification().Speak(getString(R.string.gen_connectiondisconnected));
+                AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_connectiondisconnected));
                 break;
             case SOCKETSTATE_ERROR:
                 if (!isDisconnect) {
                     miConnect.setIcon(R.drawable.connected_error_32x32);
                } else {
                     miConnect.setIcon(R.drawable.connect_w_32x32);
-                    AndruavEngine.notification().Speak(getString(R.string.gen_connectiondisconnected));
+                    AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_connectiondisconnected));
                 }
                 break;
             case SOCKETSTATE_FREASH:
@@ -897,7 +897,7 @@ public class MainScreen extends BaseAndruavShasha {
 
 
         ////// Set Content View Here
-        AndruavEngine.notification().Speak(getString(R.string.hello_world));
+        AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.hello_world));
         init();
         initGUI();
 
@@ -956,7 +956,7 @@ public class MainScreen extends BaseAndruavShasha {
         if (DeviceManagerFacade.canBeDroneAndruav()) {
             activateDroneMode();
         } else {
-            final String msg = getString(R.string.err_config_drone);
+            final String msg = getString(ap.andruavmiddlelibrary.R.string.err_config_drone);
             AndruavEngine.notification().Speak(msg);
             DialogHelper.doModalDialog(this, "Limitation", msg, null);
         }
@@ -1024,7 +1024,7 @@ public class MainScreen extends BaseAndruavShasha {
             doSettings_Drone();
         } else if (id == R.id.mi_main_ResetFactory) {
             AlertDialog.Builder builder = new AlertDialog.Builder(Me);
-            builder.setMessage(getString(R.string.conf_factoryReset))
+            builder.setMessage(getString(ap.andruavmiddlelibrary.R.string.conf_factoryReset))
                     .setCancelable(false)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -1042,7 +1042,7 @@ public class MainScreen extends BaseAndruavShasha {
 
 
         } else if (id == R.id.mi_main_Help) {
-            GMail.sendGMail(this, getString(R.string.email_title), getString(R.string.email_to), getString(R.string.email_subject), getString(R.string.email_body), null);
+            GMail.sendGMail(this, getString(ap.andruavmiddlelibrary.R.string.email_title), getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject), getString(ap.andruavmiddlelibrary.R.string.email_body), null);
 
         } else if (id == R.id.mi_remotesettings) {
             if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
@@ -1055,7 +1055,7 @@ public class MainScreen extends BaseAndruavShasha {
             return true;
         } else if (id == R.id.mi_main_About) {
 
-            DialogHelper.doModalDialog(Me, getString(R.string.gen_about), Html.fromHtml(String.format("<font color=#75A4D3><b>version:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>email:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>access code:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>pin code:</b></font><font color=#36AB36>%s</font><br>%s",
+            DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.gen_about), Html.fromHtml(String.format("<font color=#75A4D3><b>version:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>email:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>access code:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>pin code:</b></font><font color=#36AB36>%s</font><br>%s",
                     App.versionName,
                     GUI.writeTextEmail(),
                     GUI.writeTextAccessCode(),
@@ -1100,7 +1100,7 @@ public class MainScreen extends BaseAndruavShasha {
             AndruavSettings.andruavWe7daBase.setVehicleType(Preference.getVehicleType(null));
         }
 
-        AndruavEngine.notification().Speak(getString(R.string.gen_speak_droneactivated));
+        AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_speak_droneactivated));
     }
 
 
@@ -1114,7 +1114,7 @@ public class MainScreen extends BaseAndruavShasha {
             if (DeviceManagerFacade.canBeDroneAndruav()) {
                 activateDroneMode();
             } else {
-                final String msg = getString(R.string.err_config_drone);
+                final String msg = getString(ap.andruavmiddlelibrary.R.string.err_config_drone);
                 AndruavEngine.notification().Speak(msg);
                 DialogHelper.doModalDialog(this, "Device Limitation", msg, null);
             }
@@ -1172,7 +1172,7 @@ public class MainScreen extends BaseAndruavShasha {
 
         if (AndruavSettings.andruavWe7daBase.mIsModule)
         {
-            doExit(true, getString(R.string.gen_must_exit));
+            doExit(true, getString(ap.andruavmiddlelibrary.R.string.gen_must_exit));
         }
 
        if (autoConnect)

@@ -244,7 +244,7 @@ public class HUDView extends View {
         canvas.drawColor(Color.TRANSPARENT);
             if (isRecording)
             {
-                drawText(canvas, 3, App.getAppContext().getString(R.string.action_video_shoot),errorText,  false);
+                drawText(canvas, 3, App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.action_video_shoot),errorText,  false);
             }
 
 

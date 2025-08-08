@@ -157,7 +157,7 @@ public class ModuleScreen extends BaseAndruavShasha {
 
         if (!AndruavSettings.andruavWe7daBase.mIsModule)
         {
-            doExit(true, getString(R.string.gen_must_exit));
+            doExit(true, getString(ap.andruavmiddlelibrary.R.string.gen_must_exit));
         }
     }
 
@@ -209,7 +209,7 @@ public class ModuleScreen extends BaseAndruavShasha {
 
             if (!AndruavSettings.andruavWe7daBase.mIsModule)
             {
-                doExit(true, getString(R.string.gen_must_exit));
+                doExit(true, getString(ap.andruavmiddlelibrary.R.string.gen_must_exit));
             }
 
             if (App.isAndruavUDPOn())
@@ -230,7 +230,7 @@ public class ModuleScreen extends BaseAndruavShasha {
             doSettings_Drone();
         } else if (id == R.id.mi_main_ResetFactory) {
             AlertDialog.Builder builder = new AlertDialog.Builder(Me);
-            builder.setMessage(getString(R.string.conf_factoryReset))
+            builder.setMessage(getString(ap.andruavmiddlelibrary.R.string.conf_factoryReset))
                     .setCancelable(false)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -248,7 +248,7 @@ public class ModuleScreen extends BaseAndruavShasha {
 
 
         } else if (id == R.id.mi_main_Help) {
-            GMail.sendGMail(this, getString(R.string.email_title), getString(R.string.email_to), getString(R.string.email_subject), getString(R.string.email_body), null);
+            GMail.sendGMail(this, getString(ap.andruavmiddlelibrary.R.string.email_title), getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject), getString(ap.andruavmiddlelibrary.R.string.email_body), null);
 
         } else if (id == R.id.mi_remotesettings) {
             if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
@@ -261,7 +261,7 @@ public class ModuleScreen extends BaseAndruavShasha {
             return true;
         } else if (id == R.id.mi_main_About) {
 
-            DialogHelper.doModalDialog(Me, getString(R.string.gen_about), Html.fromHtml(String.format("<font color=#75A4D3><b>version:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>email:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>access code:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>pin code:</b></font><font color=#36AB36>%s</font>", App.versionName, GUI.writeTextEmail(),GUI.writeTextAccessCode(),AndruavSettings.andruavWe7daBase.PartyID)), null);
+            DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.gen_about), Html.fromHtml(String.format("<font color=#75A4D3><b>version:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>email:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>access code:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>pin code:</b></font><font color=#36AB36>%s</font>", App.versionName, GUI.writeTextEmail(),GUI.writeTextAccessCode(),AndruavSettings.andruavWe7daBase.PartyID)), null);
         }
 
         updateConnectionIconsStatus();
@@ -294,7 +294,7 @@ public class ModuleScreen extends BaseAndruavShasha {
     protected void doExit(final boolean mandatoryExit, final String exitMessage) {
         pauseToExit = true;
         AlertDialog.Builder builder = new AlertDialog.Builder(Me);
-        String exitString = getString(R.string.gen_exit);
+        String exitString = getString(ap.andruavmiddlelibrary.R.string.gen_exit);
         if ((exitMessage != null) && (!exitMessage.isEmpty()))
         {
             exitString = exitMessage;
@@ -312,7 +312,7 @@ public class ModuleScreen extends BaseAndruavShasha {
                 });
 
         if (!mandatoryExit) {
-            builder.setNeutralButton(R.string.main_action_hide, new DialogInterface.OnClickListener() {
+            builder.setNeutralButton(ap.andruavmiddlelibrary.R.string.main_action_hide, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     moveTaskToBack(true);
                     pauseToExit = true;
@@ -351,6 +351,6 @@ public class ModuleScreen extends BaseAndruavShasha {
             AndruavSettings.andruavWe7daBase.setVehicleType(Preference.getVehicleType(null));
         }
 
-        AndruavEngine.notification().Speak(getString(R.string.gen_speak_droneactivated));
+        AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_speak_droneactivated));
     }
 }

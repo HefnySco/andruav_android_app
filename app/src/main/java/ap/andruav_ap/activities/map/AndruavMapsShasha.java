@@ -389,8 +389,8 @@ long lastframecount =0;
             public void onClick(View view) {
 
                 if (!GUI.isRemoteEngaged(mRemoteControlWidget)) {
-                    DialogHelper.doModalDialog(Me, getString(R.string.actionremote_engage)
-                            , getString(R.string.conf_engage_remote), null, new DialogInterface.OnClickListener() {
+                    DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.actionremote_engage)
+                            , getString(ap.andruavmiddlelibrary.R.string.conf_engage_remote), null, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     // make it a prime

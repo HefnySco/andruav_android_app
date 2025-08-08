@@ -74,7 +74,7 @@ public class TelemetryDroneProtocolParser  extends TelemetryProtocolParser{
                         case 1:
                             protocolTestSwitch = 0;
                             delayMillis = delayMillis + 1500;
-                            String serr = App.getAppContext().getString(R.string.andruav_error_telemetryprotocol_undef);
+                            String serr = App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_telemetryprotocol_undef);
                             App.notification.displayNotification(INotification.NOTIFICATION_TYPE_WARNING, "Warning", serr, true, INotification.INFO_TYPE_TELEMETRY, false);
                             AndruavEngine.notification().Speak(serr);
                             brepeat = true;

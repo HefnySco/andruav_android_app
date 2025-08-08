@@ -725,7 +725,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             {
                 heartBeatStatus = HEARTBEAT_RESTORED;
 
-                PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_NORMAL, AndruavMessage_Error.ERROR_Lo7etTa7akom, App.getAppContext().getString(R.string.andruav_error_dronekitconnection_res), null);
+                PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_NORMAL, AndruavMessage_Error.ERROR_Lo7etTa7akom, App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_dronekitconnection_res), null);
 
                 final EmergencyBase em = AndruavEngine.getEmergency();
                 if (em != null) {
@@ -742,7 +742,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
                 if (heartBeatStatus != HEARTBEAT_TIMEOUT) {
                     heartBeatStatus = HEARTBEAT_TIMEOUT;
 
-                    PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_Lo7etTa7akom, App.getAppContext().getString(R.string.andruav_error_dronekitconnection), null);
+                    PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_Lo7etTa7akom, App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_dronekitconnection), null);
                     AndruavSettings.andruavWe7daBase.setTelemetry_protocol(TelemetryProtocol.TelemetryProtocol_No_Telemetry);
                     TelemetryModeer.setConnected(TelemetryModeer.CURRENTCONNECTION_NON);
                     EventBus.getDefault().post(new Event_ProtocolChanged(false));

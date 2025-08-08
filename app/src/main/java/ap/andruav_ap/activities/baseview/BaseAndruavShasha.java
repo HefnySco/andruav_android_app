@@ -145,7 +145,7 @@ public class BaseAndruavShasha extends AppCompatActivity {
 
     protected void doExit()
     {
-        doExit(false,getString(R.string.gen_exit));
+        doExit(false,getString(ap.andruavmiddlelibrary.R.string.gen_exit));
     }
 
     protected void doExit(final boolean mandatoryExit, final String exitMessage) {
@@ -163,7 +163,7 @@ public class BaseAndruavShasha extends AppCompatActivity {
                 });
 
         if (!mandatoryExit) {
-            builder.setNeutralButton(R.string.main_action_hide, new DialogInterface.OnClickListener() {
+            builder.setNeutralButton(ap.andruavmiddlelibrary.R.string.main_action_hide, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     moveTaskToBack(true);
                     pauseToExit = true;

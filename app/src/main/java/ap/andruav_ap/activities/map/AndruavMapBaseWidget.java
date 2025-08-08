@@ -428,7 +428,7 @@ public class AndruavMapBaseWidget extends SupportMapFragment {
 
         mrkUser.setAnchor(0.5f,0.5f);
         markerPlans.put(andruavWe7da.PartyID, mrkUser);
-        AndruavEngine.notification().Speak(andruavWe7da.UnitID + " " + getString(R.string.action_drone_added));
+        AndruavEngine.notification().Speak(andruavWe7da.UnitID + " " + getString(ap.andruavmiddlelibrary.R.string.action_drone_added));
         if (AndruavSettings.andruavWe7daBase.getIsCGS())
         {
             Voting.onMapHasObjectsRecieved();
@@ -614,11 +614,11 @@ public class AndruavMapBaseWidget extends SupportMapFragment {
                 WayPointStep wayPointStep = (WayPointStep) missionBase;
                 switch (wayPointStep.Status) {
                     case MissionBase.Report_NAV_ItemExecuting:
-                        speak = R.string.action_waypoint_reached_going;
+                        speak = ap.andruavmiddlelibrary.R.string.action_waypoint_reached_going;
 
                         break;
                     case MissionBase.Report_NAV_ItemReached:
-                        speak = R.string.action_waypoint_reached_charging;
+                        speak = ap.andruavmiddlelibrary.R.string.action_waypoint_reached_charging;
                         break;
                     case MissionBase.Report_NAV_Unknown:
                     default:
@@ -644,7 +644,7 @@ public class AndruavMapBaseWidget extends SupportMapFragment {
         if ((andruavUnit_selected != null) && (andruavUnit_selected.Equals(a7adath_wayPointsRecieved.mAndruavWe7da))) {
             // this is the current selected one.
             showWayPoints(a7adath_wayPointsRecieved.mAndruavWe7da);
-            AndruavEngine.notification().Speak(getString(R.string.action_waypoint_waypoints_received));
+            AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.action_waypoint_waypoints_received));
         }
     }
 

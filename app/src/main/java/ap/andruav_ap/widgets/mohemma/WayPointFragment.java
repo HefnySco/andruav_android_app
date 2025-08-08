@@ -76,7 +76,7 @@ public class WayPointFragment extends Fragment {
 
         missionNumber.setText(String.valueOf(mWayPointStep.Sequence));
 
-        final String altitude =getString(R.string.gen_altitude);
+        final String altitude =getString(ap.andruavmiddlelibrary.R.string.gen_altitude);
         double altitudevalue = mWayPointStep.Altitude;
         if ( preferredUnit == Constants.Preferred_UNIT_METRIC_SYSTEM) {
             altitudeAttribute.setAttributeName(altitude+ " (m)");
@@ -90,7 +90,7 @@ public class WayPointFragment extends Fragment {
 
         altitudeAttribute.setAttributeValue(0,FeatureSwitch.Default_MAX_ALTITUDE,(int)altitudevalue);
 
-        delayAttribute.setAttributeName(R.string.gen_delay);
+        delayAttribute.setAttributeName(ap.andruavmiddlelibrary.R.string.gen_delay);
         delayAttribute.setAttributeValue(0,FeatureSwitch.Default_MAX_Delay,(int)mWayPointStep.TimeToStay);
 
 

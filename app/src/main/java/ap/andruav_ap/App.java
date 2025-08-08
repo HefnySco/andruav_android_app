@@ -236,7 +236,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                     //Socket Status
                     EventSocketState eventSocketState = (EventSocketState) msg.obj;
                     if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onConnect) {
-                        String connection = getString(R.string.gen_connected);
+                        String connection = getString(ap.andruavmiddlelibrary.R.string.gen_connected);
                         connection += " to Internet Server";
                         App.notification.displayNotification(INotification.NOTIFICATION_TYPE_NORMAL, "Andruav", connection, true, INotification.INFO_TYPE_PROTOCOL, true);
 
@@ -255,11 +255,11 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onDisconnect) {
                         App.gui_ConnectionIconID = R.drawable.connect_w_32x32;
                         App.soundManager.playSound(SoundManager.SND_ERR);
-                        TTS.getInstance().Speak(getString(R.string.gen_connectionlost));
+                        TTS.getInstance().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_connectionlost));
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onError) {
                         App.gui_ConnectionIconID = R.drawable.connected_error_32x32;
                         App.soundManager.playSound(SoundManager.SND_ERR);
-                        TTS.getInstance().Speak(getString(R.string.gen_connectionlost));
+                        TTS.getInstance().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_connectionlost));
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onMessage) {
                         // MenuItem mi = mMenu.findItem(R.id.action_main_wsconnect);
                         // mi.setIcon(R.drawable.connected_color_32x32);
@@ -275,7 +275,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                     if ((andruavWe7da.FCBoard!= null)  && (AndruavSettings.remoteTelemetryAndruavWe7da != null) && andruavWe7da.IsMe()) {   // it is already connected to me
 
                         AndruavFacade.ResumeTelemetry(Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
-                        TTS.getInstance().Speak(getString(R.string.action_res_tel));
+                        TTS.getInstance().Speak(getString(ap.andruavmiddlelibrary.R.string.action_res_tel));
                     }
                 }
                 else if (msg.obj instanceof _7adath_FCB_2AMR) {
@@ -455,7 +455,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     public static void startsocketListener ()
     {
 
-        TTS.getInstance().Speak(App.getAppContext().getString(R.string.gen_serialsocket_started));
+        TTS.getInstance().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_serialsocket_started));
         if (andruavGCSSerialSocketServer ==null)
         {
             andruavGCSSerialSocketServer = new AndruavGCSSerialSocketServer();
@@ -466,7 +466,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
 
     public static void stopsocketListener () {
-        TTS.getInstance().Speak(App.getAppContext().getString(R.string.gen_serialsocket_stopped));
+        TTS.getInstance().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_serialsocket_stopped));
         if (andruavGCSSerialSocketServer == null) return ;
         andruavGCSSerialSocketServer.stopListening();
     }
@@ -594,7 +594,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         }
         AndruavEngine.getAndruavWS().connect(websocketURL);
-        TTS.getInstance().Speak(App.getAppContext().getString(R.string.gen_speak_connecting));
+        TTS.getInstance().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_speak_connecting));
 
     }
 

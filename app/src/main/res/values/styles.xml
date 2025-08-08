@@ -1,4 +1,12 @@
 <resources>
+    <declare-styleable name="SwipeNumberPicker">
+        <attr name="min" format="integer"/>
+        <attr name="max" format="integer"/>
+        <attr name="value" format="integer"/>
+        <attr name="arrowColor" format="color"/>
+        <attr name="backgroundColor" format="color"/>
+        <attr name="numberColor" format="color"/>
+    </declare-styleable>
 
     <style name="DialogFragmentStyle" parent="@android:style/Theme.Dialog">
         <item name="android:windowSoftInputMode">stateHidden|adjustResize</item>

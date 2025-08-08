@@ -205,7 +205,7 @@ public class RemoteControlWidget extends RelativeLayout implements JoystickMoved
         updateSettings();
         loadPreference();
         initHandler();
-        AndruavEngine.notification().Speak(App.getAppContext().getString(R.string.action_engaged));
+        AndruavEngine.notification().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.action_engaged));
 
         if (!EventBus.getDefault().isRegistered(this)) {
             // FATAL ISSUE - Just Sainty check ... but it should have been correcting by stopEngane previous connection            EventBus.getDefault().register(this);
@@ -221,7 +221,7 @@ public class RemoteControlWidget extends RelativeLayout implements JoystickMoved
         AndruavFacade.disengageGamePad(mAndruavUnit);
         mAndruavUnit = null;
 
-        AndruavEngine.notification().Speak(App.getAppContext().getString(R.string.action_disengaged));
+        AndruavEngine.notification().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.action_disengaged));
 
         EventBus.getDefault().unregister(this);
     }

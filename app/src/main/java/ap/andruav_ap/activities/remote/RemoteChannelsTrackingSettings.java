@@ -121,7 +121,7 @@ public class RemoteChannelsTrackingSettings extends Fragment implements IFragmen
 
         if (!validateValues ())
         {
-            DialogHelper.doModalDialog(this.getActivity(), getString(R.string.actionremote_settings), getString(R.string.err_remote_range_adjusted), null);
+            DialogHelper.doModalDialog(this.getActivity(), getString(ap.andruavmiddlelibrary.R.string.actionremote_settings), getString(ap.andruavmiddlelibrary.R.string.err_remote_range_adjusted), null);
 
             return false ;
         }
@@ -202,8 +202,8 @@ public class RemoteChannelsTrackingSettings extends Fragment implements IFragmen
 
     @Override
     public boolean Refresh() {
-        DialogHelper.doModalDialog(this.getActivity(), getString(R.string.actionremote_settings)
-                , getString(R.string.conf_Refresh), null, new DialogInterface.OnClickListener() {
+        DialogHelper.doModalDialog(this.getActivity(), getString(ap.andruavmiddlelibrary.R.string.actionremote_settings)
+                , getString(ap.andruavmiddlelibrary.R.string.conf_Refresh), null, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Preference.FactoryReset_RC(null);

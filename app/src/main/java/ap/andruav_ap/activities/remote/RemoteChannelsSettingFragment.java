@@ -134,7 +134,7 @@ public class RemoteChannelsSettingFragment extends Fragment implements IFragment
             RemoteControl.loadRTC();
         }
 
-        Toast.makeText(this.getActivity(),getString(R.string.action_saved),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getActivity(),getString(ap.andruavmiddlelibrary.R.string.action_saved),Toast.LENGTH_SHORT).show();
         return true;
     }
 
@@ -165,7 +165,7 @@ public class RemoteChannelsSettingFragment extends Fragment implements IFragment
 
         if (!res)
         {
-            DialogHelper.doModalDialog(this.getActivity(), getString(R.string.actionremote_settings), getString(R.string.err_remote_range_adjusted), null);
+            DialogHelper.doModalDialog(this.getActivity(), getString(ap.andruavmiddlelibrary.R.string.actionremote_settings), getString(ap.andruavmiddlelibrary.R.string.err_remote_range_adjusted), null);
         }
 
         for (int i=4;i<8;i=i+1) {
@@ -182,12 +182,12 @@ public class RemoteChannelsSettingFragment extends Fragment implements IFragment
             if (min >= max)
             {
                 // value range is inverted
-                DialogHelper.doModalDialog(this.getActivity(),getString(R.string.actionremote_settings),getString(R.string.err_remote_min_max),null);
+                DialogHelper.doModalDialog(this.getActivity(),getString(ap.andruavmiddlelibrary.R.string.actionremote_settings),getString(ap.andruavmiddlelibrary.R.string.err_remote_min_max),null);
                 return false;
             }
             if (max-min < 200)
             {
-                DialogHelper.doModalDialog(this.getActivity(), getString(R.string.actionremote_settings), getString(R.string.err_remote_min_max_range), null);
+                DialogHelper.doModalDialog(this.getActivity(), getString(ap.andruavmiddlelibrary.R.string.actionremote_settings), getString(ap.andruavmiddlelibrary.R.string.err_remote_min_max_range), null);
                 return false;
             }
         }
@@ -274,8 +274,8 @@ public class RemoteChannelsSettingFragment extends Fragment implements IFragment
 
     @Override
     public boolean Refresh() {
-        DialogHelper.doModalDialog(this.getActivity(), getString(R.string.actionremote_settings)
-                , getString(R.string.conf_Refresh), null, new DialogInterface.OnClickListener() {
+        DialogHelper.doModalDialog(this.getActivity(), getString(ap.andruavmiddlelibrary.R.string.actionremote_settings)
+                , getString(ap.andruavmiddlelibrary.R.string.conf_Refresh), null, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Preference.FactoryReset_RC(null);

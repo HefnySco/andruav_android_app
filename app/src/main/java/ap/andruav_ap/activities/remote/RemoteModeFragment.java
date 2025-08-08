@@ -104,7 +104,7 @@ public class RemoteModeFragment extends Fragment implements IFragmentSave {
     {
 
         Preference.setRemoteFlightMode(null,mMode);
-        Toast.makeText(this.getActivity(), getString(R.string.action_saved), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getActivity(), getString(ap.andruavmiddlelibrary.R.string.action_saved), Toast.LENGTH_SHORT).show();
 
         return true;
     }
