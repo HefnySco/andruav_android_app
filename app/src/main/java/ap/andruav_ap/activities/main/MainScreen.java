@@ -509,10 +509,7 @@ public class MainScreen extends BaseAndruavShasha {
         mbtnData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: fix this
-                // AndruavEngine.getEmergency().sendSMSLocation("ADD NUMBER HERE");
-
-                startActivity(new Intent(MainScreen.this, DataShashaTab.class));
+               startActivity(new Intent(MainScreen.this, DataShashaTab.class));
             }
         });
 
