@@ -119,7 +119,6 @@ public class TelemetryDroneProtocolParser  extends TelemetryProtocolParser{
             if ((telemetry_protocol == TelemetryProtocol.TelemetryProtocol_Unknown_Telemetry) || (telemetry_protocol == TelemetryProtocol.TelemetryProtocol_DroneKit_Telemetry))
             {
                 parseDroneKit(event_FCBData);
-                return ;
             }
 
         } catch (Exception e) {

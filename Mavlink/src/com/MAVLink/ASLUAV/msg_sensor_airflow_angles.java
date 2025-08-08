@@ -159,7 +159,7 @@ public class msg_sensor_airflow_angles extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_SENSOR_AIRFLOW_ANGLES - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" angleofattack:"+angleofattack+" sideslip:"+sideslip+" angleofattack_valid:"+angleofattack_valid+" sideslip_valid:"+sideslip_valid+"";
+        return "MAVLINK_MSG_ID_SENSOR_AIRFLOW_ANGLES - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" angleofattack:"+angleofattack+" sideslip:"+sideslip+" angleofattack_valid:"+angleofattack_valid+" sideslip_valid:"+sideslip_valid;
     }
 
     /**

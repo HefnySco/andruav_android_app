@@ -192,7 +192,7 @@ public class msg_gimbal_manager_set_pitchyaw extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GIMBAL_MANAGER_SET_PITCHYAW - sysid:"+sysid+" compid:"+compid+" flags:"+flags+" pitch:"+pitch+" yaw:"+yaw+" pitch_rate:"+pitch_rate+" yaw_rate:"+yaw_rate+" target_system:"+target_system+" target_component:"+target_component+" gimbal_device_id:"+gimbal_device_id+"";
+        return "MAVLINK_MSG_ID_GIMBAL_MANAGER_SET_PITCHYAW - sysid:"+sysid+" compid:"+compid+" flags:"+flags+" pitch:"+pitch+" yaw:"+yaw+" pitch_rate:"+pitch_rate+" yaw_rate:"+yaw_rate+" target_system:"+target_system+" target_component:"+target_component+" gimbal_device_id:"+gimbal_device_id;
     }
 
     /**

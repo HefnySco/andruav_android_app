@@ -137,7 +137,7 @@ public class msg_debug extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_DEBUG - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" value:"+value+" ind:"+ind+"";
+        return "MAVLINK_MSG_ID_DEBUG - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" value:"+value+" ind:"+ind;
     }
 
     /**

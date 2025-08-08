@@ -170,7 +170,7 @@ public class msg_open_drone_id_system_update extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_OPEN_DRONE_ID_SYSTEM_UPDATE - sysid:"+sysid+" compid:"+compid+" operator_latitude:"+operator_latitude+" operator_longitude:"+operator_longitude+" operator_altitude_geo:"+operator_altitude_geo+" timestamp:"+timestamp+" target_system:"+target_system+" target_component:"+target_component+"";
+        return "MAVLINK_MSG_ID_OPEN_DRONE_ID_SYSTEM_UPDATE - sysid:"+sysid+" compid:"+compid+" operator_latitude:"+operator_latitude+" operator_longitude:"+operator_longitude+" operator_altitude_geo:"+operator_altitude_geo+" timestamp:"+timestamp+" target_system:"+target_system+" target_component:"+target_component;
     }
 
     /**

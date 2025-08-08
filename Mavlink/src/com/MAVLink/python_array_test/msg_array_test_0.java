@@ -27,14 +27,14 @@ public class msg_array_test_0 extends MAVLinkMessage {
      */
     @Description("Value array")
     @Units("")
-    public long ar_u32[] = new long[4];
+    public long[] ar_u32 = new long[4];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public int ar_u16[] = new int[4];
+    public int[] ar_u16 = new int[4];
     
     /**
      * Stub field
@@ -48,14 +48,14 @@ public class msg_array_test_0 extends MAVLinkMessage {
      */
     @Description("Value array")
     @Units("")
-    public byte ar_i8[] = new byte[4];
+    public byte[] ar_i8 = new byte[4];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public short ar_u8[] = new short[4];
+    public short[] ar_u8 = new short[4];
     
 
     /**
@@ -191,7 +191,7 @@ public class msg_array_test_0 extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ARRAY_TEST_0 - sysid:"+sysid+" compid:"+compid+" ar_u32:"+ar_u32+" ar_u16:"+ar_u16+" v1:"+v1+" ar_i8:"+ar_i8+" ar_u8:"+ar_u8+"";
+        return "MAVLINK_MSG_ID_ARRAY_TEST_0 - sysid:"+sysid+" compid:"+compid+" ar_u32:"+ar_u32+" ar_u16:"+ar_u16+" v1:"+v1+" ar_i8:"+ar_i8+" ar_u8:"+ar_u8;
     }
 
     /**

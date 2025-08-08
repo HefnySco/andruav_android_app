@@ -41,7 +41,7 @@ public class msg_actuator_output_status extends MAVLinkMessage {
      */
     @Description("Servo / motor output array values. Zero values indicate unused channels.")
     @Units("")
-    public float actuator[] = new float[32];
+    public float[] actuator = new float[32];
     
 
     /**
@@ -145,7 +145,7 @@ public class msg_actuator_output_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ACTUATOR_OUTPUT_STATUS - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" active:"+active+" actuator:"+actuator+"";
+        return "MAVLINK_MSG_ID_ACTUATOR_OUTPUT_STATUS - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" active:"+active+" actuator:"+actuator;
     }
 
     /**

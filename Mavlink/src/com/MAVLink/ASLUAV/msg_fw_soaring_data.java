@@ -379,7 +379,7 @@ public class msg_fw_soaring_data extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_FW_SOARING_DATA - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" timestampModeChanged:"+timestampModeChanged+" xW:"+xW+" xR:"+xR+" xLat:"+xLat+" xLon:"+xLon+" VarW:"+VarW+" VarR:"+VarR+" VarLat:"+VarLat+" VarLon:"+VarLon+" LoiterRadius:"+LoiterRadius+" LoiterDirection:"+LoiterDirection+" DistToSoarPoint:"+DistToSoarPoint+" vSinkExp:"+vSinkExp+" z1_LocalUpdraftSpeed:"+z1_LocalUpdraftSpeed+" z2_DeltaRoll:"+z2_DeltaRoll+" z1_exp:"+z1_exp+" z2_exp:"+z2_exp+" ThermalGSNorth:"+ThermalGSNorth+" ThermalGSEast:"+ThermalGSEast+" TSE_dot:"+TSE_dot+" DebugVar1:"+DebugVar1+" DebugVar2:"+DebugVar2+" ControlMode:"+ControlMode+" valid:"+valid+"";
+        return "MAVLINK_MSG_ID_FW_SOARING_DATA - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" timestampModeChanged:"+timestampModeChanged+" xW:"+xW+" xR:"+xR+" xLat:"+xLat+" xLon:"+xLon+" VarW:"+VarW+" VarR:"+VarR+" VarLat:"+VarLat+" VarLon:"+VarLon+" LoiterRadius:"+LoiterRadius+" LoiterDirection:"+LoiterDirection+" DistToSoarPoint:"+DistToSoarPoint+" vSinkExp:"+vSinkExp+" z1_LocalUpdraftSpeed:"+z1_LocalUpdraftSpeed+" z2_DeltaRoll:"+z2_DeltaRoll+" z1_exp:"+z1_exp+" z2_exp:"+z2_exp+" ThermalGSNorth:"+ThermalGSNorth+" ThermalGSEast:"+ThermalGSEast+" TSE_dot:"+TSE_dot+" DebugVar1:"+DebugVar1+" DebugVar2:"+DebugVar2+" ControlMode:"+ControlMode+" valid:"+valid;
     }
 
     /**

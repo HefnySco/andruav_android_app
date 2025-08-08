@@ -97,14 +97,14 @@ public class msg_video_stream_information extends MAVLinkMessage {
      */
     @Description("Stream name.")
     @Units("")
-    public byte name[] = new byte[32];
+    public byte[] name = new byte[32];
     
     /**
      * Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).
      */
     @Description("Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).")
     @Units("")
-    public byte uri[] = new byte[160];
+    public byte[] uri = new byte[160];
     
 
     /**
@@ -310,7 +310,7 @@ public class msg_video_stream_information extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_VIDEO_STREAM_INFORMATION - sysid:"+sysid+" compid:"+compid+" framerate:"+framerate+" bitrate:"+bitrate+" flags:"+flags+" resolution_h:"+resolution_h+" resolution_v:"+resolution_v+" rotation:"+rotation+" hfov:"+hfov+" stream_id:"+stream_id+" count:"+count+" type:"+type+" name:"+name+" uri:"+uri+"";
+        return "MAVLINK_MSG_ID_VIDEO_STREAM_INFORMATION - sysid:"+sysid+" compid:"+compid+" framerate:"+framerate+" bitrate:"+bitrate+" flags:"+flags+" resolution_h:"+resolution_h+" resolution_v:"+resolution_v+" rotation:"+rotation+" hfov:"+hfov+" stream_id:"+stream_id+" count:"+count+" type:"+type+" name:"+name+" uri:"+uri;
     }
 
     /**

@@ -170,7 +170,7 @@ public class msg_compassmot_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_COMPASSMOT_STATUS - sysid:"+sysid+" compid:"+compid+" current:"+current+" CompensationX:"+CompensationX+" CompensationY:"+CompensationY+" CompensationZ:"+CompensationZ+" throttle:"+throttle+" interference:"+interference+"";
+        return "MAVLINK_MSG_ID_COMPASSMOT_STATUS - sysid:"+sysid+" compid:"+compid+" current:"+current+" CompensationX:"+CompensationX+" CompensationY:"+CompensationY+" CompensationZ:"+CompensationZ+" throttle:"+throttle+" interference:"+interference;
     }
 
     /**

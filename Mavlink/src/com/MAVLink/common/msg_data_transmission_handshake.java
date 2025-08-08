@@ -181,7 +181,7 @@ public class msg_data_transmission_handshake extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_DATA_TRANSMISSION_HANDSHAKE - sysid:"+sysid+" compid:"+compid+" size:"+size+" width:"+width+" height:"+height+" packets:"+packets+" type:"+type+" payload:"+payload+" jpg_quality:"+jpg_quality+"";
+        return "MAVLINK_MSG_ID_DATA_TRANSMISSION_HANDSHAKE - sysid:"+sysid+" compid:"+compid+" size:"+size+" width:"+width+" height:"+height+" packets:"+packets+" type:"+type+" payload:"+payload+" jpg_quality:"+jpg_quality;
     }
 
     /**

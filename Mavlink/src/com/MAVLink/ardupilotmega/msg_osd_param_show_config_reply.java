@@ -62,7 +62,7 @@ public class msg_osd_param_show_config_reply extends MAVLinkMessage {
      */
     @Description("Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string")
     @Units("")
-    public byte param_id[] = new byte[16];
+    public byte[] param_id = new byte[16];
     
     /**
      * Config type.
@@ -218,7 +218,7 @@ public class msg_osd_param_show_config_reply extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_OSD_PARAM_SHOW_CONFIG_REPLY - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" min_value:"+min_value+" max_value:"+max_value+" increment:"+increment+" result:"+result+" param_id:"+param_id+" config_type:"+config_type+"";
+        return "MAVLINK_MSG_ID_OSD_PARAM_SHOW_CONFIG_REPLY - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" min_value:"+min_value+" max_value:"+max_value+" increment:"+increment+" result:"+result+" param_id:"+param_id+" config_type:"+config_type;
     }
 
     /**

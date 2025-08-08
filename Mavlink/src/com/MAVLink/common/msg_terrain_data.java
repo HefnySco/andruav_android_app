@@ -48,7 +48,7 @@ public class msg_terrain_data extends MAVLinkMessage {
      */
     @Description("Terrain data MSL")
     @Units("m")
-    public short data[] = new short[16];
+    public short[] data = new short[16];
     
     /**
      * bit within the terrain request mask
@@ -167,7 +167,7 @@ public class msg_terrain_data extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_TERRAIN_DATA - sysid:"+sysid+" compid:"+compid+" lat:"+lat+" lon:"+lon+" grid_spacing:"+grid_spacing+" data:"+data+" gridbit:"+gridbit+"";
+        return "MAVLINK_MSG_ID_TERRAIN_DATA - sysid:"+sysid+" compid:"+compid+" lat:"+lat+" lon:"+lon+" grid_spacing:"+grid_spacing+" data:"+data+" gridbit:"+gridbit;
     }
 
     /**

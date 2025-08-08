@@ -126,7 +126,7 @@ public class msg_qshot_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_QSHOT_STATUS - sysid:"+sysid+" compid:"+compid+" mode:"+mode+" shot_state:"+shot_state+"";
+        return "MAVLINK_MSG_ID_QSHOT_STATUS - sysid:"+sysid+" compid:"+compid+" mode:"+mode+" shot_state:"+shot_state;
     }
 
     /**

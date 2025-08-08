@@ -170,7 +170,7 @@ public class msg_fence_point extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_FENCE_POINT - sysid:"+sysid+" compid:"+compid+" lat:"+lat+" lng:"+lng+" target_system:"+target_system+" target_component:"+target_component+" idx:"+idx+" count:"+count+"";
+        return "MAVLINK_MSG_ID_FENCE_POINT - sysid:"+sysid+" compid:"+compid+" lat:"+lat+" lng:"+lng+" target_system:"+target_system+" target_component:"+target_component+" idx:"+idx+" count:"+count;
     }
 
     /**

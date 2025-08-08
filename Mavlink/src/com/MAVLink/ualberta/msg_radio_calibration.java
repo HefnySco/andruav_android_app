@@ -27,42 +27,42 @@ public class msg_radio_calibration extends MAVLinkMessage {
      */
     @Description("Aileron setpoints: left, center, right")
     @Units("")
-    public int aileron[] = new int[3];
+    public int[] aileron = new int[3];
     
     /**
      * Elevator setpoints: nose down, center, nose up
      */
     @Description("Elevator setpoints: nose down, center, nose up")
     @Units("")
-    public int elevator[] = new int[3];
+    public int[] elevator = new int[3];
     
     /**
      * Rudder setpoints: nose left, center, nose right
      */
     @Description("Rudder setpoints: nose left, center, nose right")
     @Units("")
-    public int rudder[] = new int[3];
+    public int[] rudder = new int[3];
     
     /**
      * Tail gyro mode/gain setpoints: heading hold, rate mode
      */
     @Description("Tail gyro mode/gain setpoints: heading hold, rate mode")
     @Units("")
-    public int gyro[] = new int[2];
+    public int[] gyro = new int[2];
     
     /**
      * Pitch curve setpoints (every 25%)
      */
     @Description("Pitch curve setpoints (every 25%)")
     @Units("")
-    public int pitch[] = new int[5];
+    public int[] pitch = new int[5];
     
     /**
      * Throttle curve setpoints (every 25%)
      */
     @Description("Throttle curve setpoints (every 25%)")
     @Units("")
-    public int throttle[] = new int[5];
+    public int[] throttle = new int[5];
     
 
     /**
@@ -218,7 +218,7 @@ public class msg_radio_calibration extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_RADIO_CALIBRATION - sysid:"+sysid+" compid:"+compid+" aileron:"+aileron+" elevator:"+elevator+" rudder:"+rudder+" gyro:"+gyro+" pitch:"+pitch+" throttle:"+throttle+"";
+        return "MAVLINK_MSG_ID_RADIO_CALIBRATION - sysid:"+sysid+" compid:"+compid+" aileron:"+aileron+" elevator:"+elevator+" rudder:"+rudder+" gyro:"+gyro+" pitch:"+pitch+" throttle:"+throttle;
     }
 
     /**

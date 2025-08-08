@@ -41,7 +41,7 @@ public class msg_data64 extends MAVLinkMessage {
      */
     @Description("Raw data.")
     @Units("")
-    public short data[] = new short[64];
+    public short[] data = new short[64];
     
 
     /**
@@ -145,7 +145,7 @@ public class msg_data64 extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_DATA64 - sysid:"+sysid+" compid:"+compid+" type:"+type+" len:"+len+" data:"+data+"";
+        return "MAVLINK_MSG_ID_DATA64 - sysid:"+sysid+" compid:"+compid+" type:"+type+" len:"+len+" data:"+data;
     }
 
     /**

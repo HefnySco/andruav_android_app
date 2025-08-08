@@ -148,7 +148,7 @@ public class msg_ping extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_PING - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" seq:"+seq+" target_system:"+target_system+" target_component:"+target_component+"";
+        return "MAVLINK_MSG_ID_PING - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" seq:"+seq+" target_system:"+target_system+" target_component:"+target_component;
     }
 
     /**

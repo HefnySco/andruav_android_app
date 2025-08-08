@@ -135,7 +135,7 @@ public class msg_mission_checksum extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_MISSION_CHECKSUM - sysid:"+sysid+" compid:"+compid+" checksum:"+checksum+" mission_type:"+mission_type+"";
+        return "MAVLINK_MSG_ID_MISSION_CHECKSUM - sysid:"+sysid+" compid:"+compid+" checksum:"+checksum+" mission_type:"+mission_type;
     }
 
     /**

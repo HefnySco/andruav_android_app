@@ -159,7 +159,7 @@ public class msg_storm32_gimbal_manager_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_STATUS - sysid:"+sysid+" compid:"+compid+" device_flags:"+device_flags+" manager_flags:"+manager_flags+" gimbal_id:"+gimbal_id+" supervisor:"+supervisor+" profile:"+profile+"";
+        return "MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_STATUS - sysid:"+sysid+" compid:"+compid+" device_flags:"+device_flags+" manager_flags:"+manager_flags+" gimbal_id:"+gimbal_id+" supervisor:"+supervisor+" profile:"+profile;
     }
 
     /**

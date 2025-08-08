@@ -280,7 +280,7 @@ public class msg_icarous_kinematic_bands extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ICAROUS_KINEMATIC_BANDS - sysid:"+sysid+" compid:"+compid+" min1:"+min1+" max1:"+max1+" min2:"+min2+" max2:"+max2+" min3:"+min3+" max3:"+max3+" min4:"+min4+" max4:"+max4+" min5:"+min5+" max5:"+max5+" numBands:"+numBands+" type1:"+type1+" type2:"+type2+" type3:"+type3+" type4:"+type4+" type5:"+type5+"";
+        return "MAVLINK_MSG_ID_ICAROUS_KINEMATIC_BANDS - sysid:"+sysid+" compid:"+compid+" min1:"+min1+" max1:"+max1+" min2:"+min2+" max2:"+max2+" min3:"+min3+" max3:"+max3+" min4:"+min4+" max4:"+max4+" min5:"+min5+" max5:"+max5+" numBands:"+numBands+" type1:"+type1+" type2:"+type2+" type3:"+type3+" type4:"+type4+" type5:"+type5;
     }
 
     /**

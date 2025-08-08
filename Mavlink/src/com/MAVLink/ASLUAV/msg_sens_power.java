@@ -148,7 +148,7 @@ public class msg_sens_power extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_SENS_POWER - sysid:"+sysid+" compid:"+compid+" adc121_vspb_volt:"+adc121_vspb_volt+" adc121_cspb_amp:"+adc121_cspb_amp+" adc121_cs1_amp:"+adc121_cs1_amp+" adc121_cs2_amp:"+adc121_cs2_amp+"";
+        return "MAVLINK_MSG_ID_SENS_POWER - sysid:"+sysid+" compid:"+compid+" adc121_vspb_volt:"+adc121_vspb_volt+" adc121_cspb_amp:"+adc121_cspb_amp+" adc121_cs1_amp:"+adc121_cs1_amp+" adc121_cs2_amp:"+adc121_cs2_amp;
     }
 
     /**

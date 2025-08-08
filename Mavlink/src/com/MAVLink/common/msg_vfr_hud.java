@@ -170,7 +170,7 @@ public class msg_vfr_hud extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_VFR_HUD - sysid:"+sysid+" compid:"+compid+" airspeed:"+airspeed+" groundspeed:"+groundspeed+" alt:"+alt+" climb:"+climb+" heading:"+heading+" throttle:"+throttle+"";
+        return "MAVLINK_MSG_ID_VFR_HUD - sysid:"+sysid+" compid:"+compid+" airspeed:"+airspeed+" groundspeed:"+groundspeed+" alt:"+alt+" climb:"+climb+" heading:"+heading+" throttle:"+throttle;
     }
 
     /**

@@ -97,7 +97,7 @@ public class msg_storage_information extends MAVLinkMessage {
      */
     @Description("Textual storage name to be used in UI (microSD 1, Internal Memory, etc.) This is a NULL terminated string. If it is exactly 32 characters long, add a terminating NULL. If this string is empty, the generic type is shown to the user.")
     @Units("")
-    public byte name[] = new byte[32];
+    public byte[] name = new byte[32];
     
 
     /**
@@ -262,7 +262,7 @@ public class msg_storage_information extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_STORAGE_INFORMATION - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" total_capacity:"+total_capacity+" used_capacity:"+used_capacity+" available_capacity:"+available_capacity+" read_speed:"+read_speed+" write_speed:"+write_speed+" storage_id:"+storage_id+" storage_count:"+storage_count+" status:"+status+" type:"+type+" name:"+name+"";
+        return "MAVLINK_MSG_ID_STORAGE_INFORMATION - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" total_capacity:"+total_capacity+" used_capacity:"+used_capacity+" available_capacity:"+available_capacity+" read_speed:"+read_speed+" write_speed:"+write_speed+" storage_id:"+storage_id+" storage_count:"+storage_count+" status:"+status+" type:"+type+" name:"+name;
     }
 
     /**

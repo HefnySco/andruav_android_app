@@ -38,7 +38,7 @@ public class msg_gimbal_device_set_attitude extends MAVLinkMessage {
      */
     @Description("Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). The frame is described in the message description. Set fields to NaN to be ignored.")
     @Units("")
-    public float q[] = new float[4];
+    public float[] q = new float[4];
     
     /**
      * X component of angular velocity (positive: rolling to the right). The frame is described in the message description. NaN to be ignored.
@@ -200,7 +200,7 @@ public class msg_gimbal_device_set_attitude extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GIMBAL_DEVICE_SET_ATTITUDE - sysid:"+sysid+" compid:"+compid+" q:"+q+" angular_velocity_x:"+angular_velocity_x+" angular_velocity_y:"+angular_velocity_y+" angular_velocity_z:"+angular_velocity_z+" flags:"+flags+" target_system:"+target_system+" target_component:"+target_component+"";
+        return "MAVLINK_MSG_ID_GIMBAL_DEVICE_SET_ATTITUDE - sysid:"+sysid+" compid:"+compid+" q:"+q+" angular_velocity_x:"+angular_velocity_x+" angular_velocity_y:"+angular_velocity_y+" angular_velocity_z:"+angular_velocity_z+" flags:"+flags+" target_system:"+target_system+" target_component:"+target_component;
     }
 
     /**

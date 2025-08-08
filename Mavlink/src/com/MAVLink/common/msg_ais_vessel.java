@@ -132,14 +132,14 @@ public class msg_ais_vessel extends MAVLinkMessage {
      */
     @Description("The vessel callsign")
     @Units("")
-    public byte callsign[] = new byte[7];
+    public byte[] callsign = new byte[7];
     
     /**
      * The vessel name
      */
     @Description("The vessel name")
     @Units("")
-    public byte name[] = new byte[20];
+    public byte[] name = new byte[20];
     
 
     /**
@@ -365,7 +365,7 @@ public class msg_ais_vessel extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_AIS_VESSEL - sysid:"+sysid+" compid:"+compid+" MMSI:"+MMSI+" lat:"+lat+" lon:"+lon+" COG:"+COG+" heading:"+heading+" velocity:"+velocity+" dimension_bow:"+dimension_bow+" dimension_stern:"+dimension_stern+" tslc:"+tslc+" flags:"+flags+" turn_rate:"+turn_rate+" navigational_status:"+navigational_status+" type:"+type+" dimension_port:"+dimension_port+" dimension_starboard:"+dimension_starboard+" callsign:"+callsign+" name:"+name+"";
+        return "MAVLINK_MSG_ID_AIS_VESSEL - sysid:"+sysid+" compid:"+compid+" MMSI:"+MMSI+" lat:"+lat+" lon:"+lon+" COG:"+COG+" heading:"+heading+" velocity:"+velocity+" dimension_bow:"+dimension_bow+" dimension_stern:"+dimension_stern+" tslc:"+tslc+" flags:"+flags+" turn_rate:"+turn_rate+" navigational_status:"+navigational_status+" type:"+type+" dimension_port:"+dimension_port+" dimension_starboard:"+dimension_starboard+" callsign:"+callsign+" name:"+name;
     }
 
     /**

@@ -159,7 +159,7 @@ public class msg_airspeed extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_AIRSPEED - sysid:"+sysid+" compid:"+compid+" airspeed:"+airspeed+" raw_press:"+raw_press+" temperature:"+temperature+" id:"+id+" flags:"+flags+"";
+        return "MAVLINK_MSG_ID_AIRSPEED - sysid:"+sysid+" compid:"+compid+" airspeed:"+airspeed+" raw_press:"+raw_press+" temperature:"+temperature+" id:"+id+" flags:"+flags;
     }
 
     /**

@@ -55,7 +55,7 @@ public class msg_uavionix_adsb_out_control extends MAVLinkMessage {
      */
     @Description("Flight Identification: 8 ASCII characters, '0' through '9', 'A' through 'Z' or space. Spaces (0x20) used as a trailing pad character, or when call sign is unavailable.")
     @Units("")
-    public byte flight_id[] = new byte[8];
+    public byte[] flight_id = new byte[8];
     
     /**
      * X-Bit enable (military transponders only)
@@ -207,7 +207,7 @@ public class msg_uavionix_adsb_out_control extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_UAVIONIX_ADSB_OUT_CONTROL - sysid:"+sysid+" compid:"+compid+" baroAltMSL:"+baroAltMSL+" squawk:"+squawk+" state:"+state+" emergencyStatus:"+emergencyStatus+" flight_id:"+flight_id+" x_bit:"+x_bit+"";
+        return "MAVLINK_MSG_ID_UAVIONIX_ADSB_OUT_CONTROL - sysid:"+sysid+" compid:"+compid+" baroAltMSL:"+baroAltMSL+" squawk:"+squawk+" state:"+state+" emergencyStatus:"+emergencyStatus+" flight_id:"+flight_id+" x_bit:"+x_bit;
     }
 
     /**

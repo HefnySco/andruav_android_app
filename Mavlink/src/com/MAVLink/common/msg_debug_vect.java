@@ -55,7 +55,7 @@ public class msg_debug_vect extends MAVLinkMessage {
      */
     @Description("Name")
     @Units("")
-    public byte name[] = new byte[10];
+    public byte[] name = new byte[10];
     
 
     /**
@@ -196,7 +196,7 @@ public class msg_debug_vect extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_DEBUG_VECT - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" x:"+x+" y:"+y+" z:"+z+" name:"+name+"";
+        return "MAVLINK_MSG_ID_DEBUG_VECT - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" x:"+x+" y:"+y+" z:"+z+" name:"+name;
     }
 
     /**

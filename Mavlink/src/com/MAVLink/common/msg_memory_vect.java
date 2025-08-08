@@ -48,7 +48,7 @@ public class msg_memory_vect extends MAVLinkMessage {
      */
     @Description("Memory contents at specified address")
     @Units("")
-    public byte value[] = new byte[32];
+    public byte[] value = new byte[32];
     
 
     /**
@@ -156,7 +156,7 @@ public class msg_memory_vect extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_MEMORY_VECT - sysid:"+sysid+" compid:"+compid+" address:"+address+" ver:"+ver+" type:"+type+" value:"+value+"";
+        return "MAVLINK_MSG_ID_MEMORY_VECT - sysid:"+sysid+" compid:"+compid+" address:"+address+" ver:"+ver+" type:"+type+" value:"+value;
     }
 
     /**

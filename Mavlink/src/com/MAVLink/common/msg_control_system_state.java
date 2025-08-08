@@ -104,21 +104,21 @@ public class msg_control_system_state extends MAVLinkMessage {
      */
     @Description("Variance of body velocity estimate")
     @Units("")
-    public float vel_variance[] = new float[3];
+    public float[] vel_variance = new float[3];
     
     /**
      * Variance in local position
      */
     @Description("Variance in local position")
     @Units("")
-    public float pos_variance[] = new float[3];
+    public float[] pos_variance = new float[3];
     
     /**
      * The attitude, represented as Quaternion
      */
     @Description("The attitude, represented as Quaternion")
     @Units("")
-    public float q[] = new float[4];
+    public float[] q = new float[4];
     
     /**
      * Angular rate in roll axis
@@ -315,7 +315,7 @@ public class msg_control_system_state extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_CONTROL_SYSTEM_STATE - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" x_acc:"+x_acc+" y_acc:"+y_acc+" z_acc:"+z_acc+" x_vel:"+x_vel+" y_vel:"+y_vel+" z_vel:"+z_vel+" x_pos:"+x_pos+" y_pos:"+y_pos+" z_pos:"+z_pos+" airspeed:"+airspeed+" vel_variance:"+vel_variance+" pos_variance:"+pos_variance+" q:"+q+" roll_rate:"+roll_rate+" pitch_rate:"+pitch_rate+" yaw_rate:"+yaw_rate+"";
+        return "MAVLINK_MSG_ID_CONTROL_SYSTEM_STATE - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" x_acc:"+x_acc+" y_acc:"+y_acc+" z_acc:"+z_acc+" x_vel:"+x_vel+" y_vel:"+y_vel+" z_vel:"+z_vel+" x_pos:"+x_pos+" y_pos:"+y_pos+" z_pos:"+z_pos+" airspeed:"+airspeed+" vel_variance:"+vel_variance+" pos_variance:"+pos_variance+" q:"+q+" roll_rate:"+roll_rate+" pitch_rate:"+pitch_rate+" yaw_rate:"+yaw_rate;
     }
 
     /**

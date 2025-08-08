@@ -838,7 +838,7 @@ public class MediaCodecVideoDecoder {
           break;
         case MediaCodec.INFO_OUTPUT_FORMAT_CHANGED:
           MediaFormat format = mediaCodec.getOutputFormat();
-          Logging.d(TAG, "Decoder format changed: " + format.toString());
+          Logging.d(TAG, "Decoder format changed: " + format);
           final int newWidth;
           final int newHeight;
           if (format.containsKey(FORMAT_KEY_CROP_LEFT) && format.containsKey(FORMAT_KEY_CROP_RIGHT)

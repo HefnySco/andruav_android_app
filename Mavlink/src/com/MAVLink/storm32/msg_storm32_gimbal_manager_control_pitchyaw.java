@@ -214,7 +214,7 @@ public class msg_storm32_gimbal_manager_control_pitchyaw extends MAVLinkMessage 
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_CONTROL_PITCHYAW - sysid:"+sysid+" compid:"+compid+" pitch:"+pitch+" yaw:"+yaw+" pitch_rate:"+pitch_rate+" yaw_rate:"+yaw_rate+" device_flags:"+device_flags+" manager_flags:"+manager_flags+" target_system:"+target_system+" target_component:"+target_component+" gimbal_id:"+gimbal_id+" client:"+client+"";
+        return "MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_CONTROL_PITCHYAW - sysid:"+sysid+" compid:"+compid+" pitch:"+pitch+" yaw:"+yaw+" pitch_rate:"+pitch_rate+" yaw_rate:"+yaw_rate+" device_flags:"+device_flags+" manager_flags:"+manager_flags+" target_system:"+target_system+" target_component:"+target_component+" gimbal_id:"+gimbal_id+" client:"+client;
     }
 
     /**

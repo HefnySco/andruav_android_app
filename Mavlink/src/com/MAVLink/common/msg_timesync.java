@@ -126,7 +126,7 @@ public class msg_timesync extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_TIMESYNC - sysid:"+sysid+" compid:"+compid+" tc1:"+tc1+" ts1:"+ts1+"";
+        return "MAVLINK_MSG_ID_TIMESYNC - sysid:"+sysid+" compid:"+compid+" tc1:"+tc1+" ts1:"+ts1;
     }
 
     /**

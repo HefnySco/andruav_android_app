@@ -159,7 +159,7 @@ public class msg_osd_param_show_config extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_OSD_PARAM_SHOW_CONFIG - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" target_system:"+target_system+" target_component:"+target_component+" osd_screen:"+osd_screen+" osd_index:"+osd_index+"";
+        return "MAVLINK_MSG_ID_OSD_PARAM_SHOW_CONFIG - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" target_system:"+target_system+" target_component:"+target_component+" osd_screen:"+osd_screen+" osd_index:"+osd_index;
     }
 
     /**

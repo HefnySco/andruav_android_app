@@ -225,7 +225,7 @@ public class msg_generator_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GENERATOR_STATUS - sysid:"+sysid+" compid:"+compid+" status:"+status+" battery_current:"+battery_current+" load_current:"+load_current+" power_generated:"+power_generated+" bus_voltage:"+bus_voltage+" bat_current_setpoint:"+bat_current_setpoint+" runtime:"+runtime+" time_until_maintenance:"+time_until_maintenance+" generator_speed:"+generator_speed+" rectifier_temperature:"+rectifier_temperature+" generator_temperature:"+generator_temperature+"";
+        return "MAVLINK_MSG_ID_GENERATOR_STATUS - sysid:"+sysid+" compid:"+compid+" status:"+status+" battery_current:"+battery_current+" load_current:"+load_current+" power_generated:"+power_generated+" bus_voltage:"+bus_voltage+" bat_current_setpoint:"+bat_current_setpoint+" runtime:"+runtime+" time_until_maintenance:"+time_until_maintenance+" generator_speed:"+generator_speed+" rectifier_temperature:"+rectifier_temperature+" generator_temperature:"+generator_temperature;
     }
 
     /**

@@ -170,7 +170,7 @@ public class msg_uavcan_node_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_UAVCAN_NODE_STATUS - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" uptime_sec:"+uptime_sec+" vendor_specific_status_code:"+vendor_specific_status_code+" health:"+health+" mode:"+mode+" sub_mode:"+sub_mode+"";
+        return "MAVLINK_MSG_ID_UAVCAN_NODE_STATUS - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" uptime_sec:"+uptime_sec+" vendor_specific_status_code:"+vendor_specific_status_code+" health:"+health+" mode:"+mode+" sub_mode:"+sub_mode;
     }
 
     /**

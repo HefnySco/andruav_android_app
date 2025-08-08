@@ -170,7 +170,7 @@ public final class LinkConnectionStatus implements Parcelable {
         if (!Objects.equals(mStatusCode, that.mStatusCode)) {
             return false;
         }
-        return !(!Objects.equals(mExtras, that.mExtras));
+        return Objects.equals(mExtras, that.mExtras);
 
     }
 

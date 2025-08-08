@@ -48,7 +48,7 @@ public class msg_asluav_status extends MAVLinkMessage {
      */
     @Description(" Status vector for up to 8 servos")
     @Units("")
-    public short Servo_status[] = new short[8];
+    public short[] Servo_status = new short[8];
     
 
     /**
@@ -156,7 +156,7 @@ public class msg_asluav_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ASLUAV_STATUS - sysid:"+sysid+" compid:"+compid+" Motor_rpm:"+Motor_rpm+" LED_status:"+LED_status+" SATCOM_status:"+SATCOM_status+" Servo_status:"+Servo_status+"";
+        return "MAVLINK_MSG_ID_ASLUAV_STATUS - sysid:"+sysid+" compid:"+compid+" Motor_rpm:"+Motor_rpm+" LED_status:"+LED_status+" SATCOM_status:"+SATCOM_status+" Servo_status:"+Servo_status;
     }
 
     /**

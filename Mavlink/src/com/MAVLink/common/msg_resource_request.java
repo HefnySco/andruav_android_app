@@ -41,7 +41,7 @@ public class msg_resource_request extends MAVLinkMessage {
      */
     @Description("The requested unique resource identifier (URI). It is not necessarily a straight domain name (depends on the URI type enum)")
     @Units("")
-    public short uri[] = new short[120];
+    public short[] uri = new short[120];
     
     /**
      * The way the autopilot wants to receive the URI. 0 = MAVLink FTP. 1 = binary stream.
@@ -55,7 +55,7 @@ public class msg_resource_request extends MAVLinkMessage {
      */
     @Description("The storage path the autopilot wants the URI to be stored in. Will only be valid if the transfer_type has a storage associated (e.g. MAVLink FTP).")
     @Units("")
-    public short storage[] = new short[120];
+    public short[] storage = new short[120];
     
 
     /**
@@ -175,7 +175,7 @@ public class msg_resource_request extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_RESOURCE_REQUEST - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" uri_type:"+uri_type+" uri:"+uri+" transfer_type:"+transfer_type+" storage:"+storage+"";
+        return "MAVLINK_MSG_ID_RESOURCE_REQUEST - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" uri_type:"+uri_type+" uri:"+uri+" transfer_type:"+transfer_type+" storage:"+storage;
     }
 
     /**

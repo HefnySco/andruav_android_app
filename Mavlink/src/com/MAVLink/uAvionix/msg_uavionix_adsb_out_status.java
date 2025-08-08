@@ -62,7 +62,7 @@ public class msg_uavionix_adsb_out_status extends MAVLinkMessage {
      */
     @Description("Flight Identification: 8 ASCII characters, '0' through '9', 'A' through 'Z' or space. Spaces (0x20) used as a trailing pad character, or when call sign is unavailable.")
     @Units("")
-    public byte flight_id[] = new byte[8];
+    public byte[] flight_id = new byte[8];
     
 
     /**
@@ -207,7 +207,7 @@ public class msg_uavionix_adsb_out_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_UAVIONIX_ADSB_OUT_STATUS - sysid:"+sysid+" compid:"+compid+" squawk:"+squawk+" state:"+state+" NIC_NACp:"+NIC_NACp+" boardTemp:"+boardTemp+" fault:"+fault+" flight_id:"+flight_id+"";
+        return "MAVLINK_MSG_ID_UAVIONIX_ADSB_OUT_STATUS - sysid:"+sysid+" compid:"+compid+" squawk:"+squawk+" state:"+state+" NIC_NACp:"+NIC_NACp+" boardTemp:"+boardTemp+" fault:"+fault+" flight_id:"+flight_id;
     }
 
     /**

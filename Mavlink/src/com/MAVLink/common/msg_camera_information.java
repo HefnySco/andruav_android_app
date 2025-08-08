@@ -90,14 +90,14 @@ public class msg_camera_information extends MAVLinkMessage {
      */
     @Description("Name of the camera vendor")
     @Units("")
-    public short vendor_name[] = new short[32];
+    public short[] vendor_name = new short[32];
     
     /**
      * Name of the camera model
      */
     @Description("Name of the camera model")
     @Units("")
-    public short model_name[] = new short[32];
+    public short[] model_name = new short[32];
     
     /**
      * Reserved for a lens ID.  Use 0 if not known.
@@ -111,7 +111,7 @@ public class msg_camera_information extends MAVLinkMessage {
      */
     @Description("Camera definition URI (if any, otherwise only basic functions will be available). HTTP- (http://) and MAVLink FTP- (mavlinkftp://) formatted URIs are allowed (and both must be supported by any GCS that implements the Camera Protocol). The definition file may be xz compressed, which will be indicated by the file extension .xml.xz (a GCS that implements the protocol must support decompressing the file). The string needs to be zero terminated.  Use a zero-length string if not known.")
     @Units("")
-    public byte cam_definition_uri[] = new byte[140];
+    public byte[] cam_definition_uri = new byte[140];
     
     /**
      * Gimbal id of a gimbal associated with this camera. This is the component id of the gimbal device, or 1-6 for non mavlink gimbals. Use 0 if no gimbal is associated with the camera.
@@ -311,7 +311,7 @@ public class msg_camera_information extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_CAMERA_INFORMATION - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" firmware_version:"+firmware_version+" focal_length:"+focal_length+" sensor_size_h:"+sensor_size_h+" sensor_size_v:"+sensor_size_v+" flags:"+flags+" resolution_h:"+resolution_h+" resolution_v:"+resolution_v+" cam_definition_version:"+cam_definition_version+" vendor_name:"+vendor_name+" model_name:"+model_name+" lens_id:"+lens_id+" cam_definition_uri:"+cam_definition_uri+" gimbal_device_id:"+gimbal_device_id+"";
+        return "MAVLINK_MSG_ID_CAMERA_INFORMATION - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" firmware_version:"+firmware_version+" focal_length:"+focal_length+" sensor_size_h:"+sensor_size_h+" sensor_size_v:"+sensor_size_v+" flags:"+flags+" resolution_h:"+resolution_h+" resolution_v:"+resolution_v+" cam_definition_version:"+cam_definition_version+" vendor_name:"+vendor_name+" model_name:"+model_name+" lens_id:"+lens_id+" cam_definition_uri:"+cam_definition_uri+" gimbal_device_id:"+gimbal_device_id;
     }
 
     /**

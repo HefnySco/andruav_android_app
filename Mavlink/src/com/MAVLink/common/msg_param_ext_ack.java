@@ -27,14 +27,14 @@ public class msg_param_ext_ack extends MAVLinkMessage {
      */
     @Description("Parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string")
     @Units("")
-    public byte param_id[] = new byte[16];
+    public byte[] param_id = new byte[16];
     
     /**
      * Parameter value (new value if PARAM_ACK_ACCEPTED, current value otherwise)
      */
     @Description("Parameter value (new value if PARAM_ACK_ACCEPTED, current value otherwise)")
     @Units("")
-    public byte param_value[] = new byte[128];
+    public byte[] param_value = new byte[128];
     
     /**
      * Parameter type.
@@ -222,7 +222,7 @@ public class msg_param_ext_ack extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_PARAM_EXT_ACK - sysid:"+sysid+" compid:"+compid+" param_id:"+param_id+" param_value:"+param_value+" param_type:"+param_type+" param_result:"+param_result+"";
+        return "MAVLINK_MSG_ID_PARAM_EXT_ACK - sysid:"+sysid+" compid:"+compid+" param_id:"+param_id+" param_value:"+param_value+" param_type:"+param_type+" param_result:"+param_result;
     }
 
     /**

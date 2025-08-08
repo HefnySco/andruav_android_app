@@ -181,7 +181,7 @@ public class msg_gimbal_manager_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GIMBAL_MANAGER_STATUS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" flags:"+flags+" gimbal_device_id:"+gimbal_device_id+" primary_control_sysid:"+primary_control_sysid+" primary_control_compid:"+primary_control_compid+" secondary_control_sysid:"+secondary_control_sysid+" secondary_control_compid:"+secondary_control_compid+"";
+        return "MAVLINK_MSG_ID_GIMBAL_MANAGER_STATUS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" flags:"+flags+" gimbal_device_id:"+gimbal_device_id+" primary_control_sysid:"+primary_control_sysid+" primary_control_compid:"+primary_control_compid+" secondary_control_sysid:"+secondary_control_sysid+" secondary_control_compid:"+secondary_control_compid;
     }
 
     /**

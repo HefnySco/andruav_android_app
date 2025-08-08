@@ -192,7 +192,7 @@ public class msg_isbd_link_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ISBD_LINK_STATUS - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" last_heartbeat:"+last_heartbeat+" failed_sessions:"+failed_sessions+" successful_sessions:"+successful_sessions+" signal_quality:"+signal_quality+" ring_pending:"+ring_pending+" tx_session_pending:"+tx_session_pending+" rx_session_pending:"+rx_session_pending+"";
+        return "MAVLINK_MSG_ID_ISBD_LINK_STATUS - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" last_heartbeat:"+last_heartbeat+" failed_sessions:"+failed_sessions+" successful_sessions:"+successful_sessions+" signal_quality:"+signal_quality+" ring_pending:"+ring_pending+" tx_session_pending:"+tx_session_pending+" rx_session_pending:"+rx_session_pending;
     }
 
     /**

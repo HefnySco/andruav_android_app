@@ -159,7 +159,7 @@ public class msg_scaled_pressure extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_SCALED_PRESSURE - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" press_abs:"+press_abs+" press_diff:"+press_diff+" temperature:"+temperature+" temperature_press_diff:"+temperature_press_diff+"";
+        return "MAVLINK_MSG_ID_SCALED_PRESSURE - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" press_abs:"+press_abs+" press_diff:"+press_diff+" temperature:"+temperature+" temperature_press_diff:"+temperature_press_diff;
     }
 
     /**

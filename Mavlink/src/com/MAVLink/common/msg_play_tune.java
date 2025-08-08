@@ -41,14 +41,14 @@ public class msg_play_tune extends MAVLinkMessage {
      */
     @Description("tune in board specific format")
     @Units("")
-    public byte tune[] = new byte[30];
+    public byte[] tune = new byte[30];
     
     /**
      * tune extension (appended to tune)
      */
     @Description("tune extension (appended to tune)")
     @Units("")
-    public byte tune2[] = new byte[200];
+    public byte[] tune2 = new byte[200];
     
 
     /**
@@ -222,7 +222,7 @@ public class msg_play_tune extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_PLAY_TUNE - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" tune:"+tune+" tune2:"+tune2+"";
+        return "MAVLINK_MSG_ID_PLAY_TUNE - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" tune:"+tune+" tune2:"+tune2;
     }
 
     /**

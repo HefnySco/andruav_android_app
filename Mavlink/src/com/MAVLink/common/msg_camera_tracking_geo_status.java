@@ -247,7 +247,7 @@ public class msg_camera_tracking_geo_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_CAMERA_TRACKING_GEO_STATUS - sysid:"+sysid+" compid:"+compid+" lat:"+lat+" lon:"+lon+" alt:"+alt+" h_acc:"+h_acc+" v_acc:"+v_acc+" vel_n:"+vel_n+" vel_e:"+vel_e+" vel_d:"+vel_d+" vel_acc:"+vel_acc+" dist:"+dist+" hdg:"+hdg+" hdg_acc:"+hdg_acc+" tracking_status:"+tracking_status+"";
+        return "MAVLINK_MSG_ID_CAMERA_TRACKING_GEO_STATUS - sysid:"+sysid+" compid:"+compid+" lat:"+lat+" lon:"+lon+" alt:"+alt+" h_acc:"+h_acc+" v_acc:"+v_acc+" vel_n:"+vel_n+" vel_e:"+vel_e+" vel_d:"+vel_d+" vel_acc:"+vel_acc+" dist:"+dist+" hdg:"+hdg+" hdg_acc:"+hdg_acc+" tracking_status:"+tracking_status;
     }
 
     /**

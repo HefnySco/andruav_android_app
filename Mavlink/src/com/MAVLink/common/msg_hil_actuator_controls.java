@@ -41,7 +41,7 @@ public class msg_hil_actuator_controls extends MAVLinkMessage {
      */
     @Description("Control outputs -1 .. 1. Channel assignment depends on the simulated hardware.")
     @Units("")
-    public float controls[] = new float[16];
+    public float[] controls = new float[16];
     
     /**
      * System mode. Includes arming state.
@@ -156,7 +156,7 @@ public class msg_hil_actuator_controls extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_HIL_ACTUATOR_CONTROLS - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" flags:"+flags+" controls:"+controls+" mode:"+mode+"";
+        return "MAVLINK_MSG_ID_HIL_ACTUATOR_CONTROLS - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" flags:"+flags+" controls:"+controls+" mode:"+mode;
     }
 
     /**

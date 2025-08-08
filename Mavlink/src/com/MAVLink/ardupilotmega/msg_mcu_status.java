@@ -159,7 +159,7 @@ public class msg_mcu_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_MCU_STATUS - sysid:"+sysid+" compid:"+compid+" MCU_temperature:"+MCU_temperature+" MCU_voltage:"+MCU_voltage+" MCU_voltage_min:"+MCU_voltage_min+" MCU_voltage_max:"+MCU_voltage_max+" id:"+id+"";
+        return "MAVLINK_MSG_ID_MCU_STATUS - sysid:"+sysid+" compid:"+compid+" MCU_temperature:"+MCU_temperature+" MCU_voltage:"+MCU_voltage+" MCU_voltage_min:"+MCU_voltage_min+" MCU_voltage_max:"+MCU_voltage_max+" id:"+id;
     }
 
     /**

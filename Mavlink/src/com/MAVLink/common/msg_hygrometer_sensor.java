@@ -137,7 +137,7 @@ public class msg_hygrometer_sensor extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_HYGROMETER_SENSOR - sysid:"+sysid+" compid:"+compid+" temperature:"+temperature+" humidity:"+humidity+" id:"+id+"";
+        return "MAVLINK_MSG_ID_HYGROMETER_SENSOR - sysid:"+sysid+" compid:"+compid+" temperature:"+temperature+" humidity:"+humidity+" id:"+id;
     }
 
     /**

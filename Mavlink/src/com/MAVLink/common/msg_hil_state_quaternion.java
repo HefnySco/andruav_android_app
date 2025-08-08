@@ -34,7 +34,7 @@ public class msg_hil_state_quaternion extends MAVLinkMessage {
      */
     @Description("Vehicle attitude expressed as normalized quaternion in w, x, y, z order (with 1 0 0 0 being the null-rotation)")
     @Units("")
-    public float attitude_quaternion[] = new float[4];
+    public float[] attitude_quaternion = new float[4];
     
     /**
      * Body frame roll / phi angular speed
@@ -288,7 +288,7 @@ public class msg_hil_state_quaternion extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_HIL_STATE_QUATERNION - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" attitude_quaternion:"+attitude_quaternion+" rollspeed:"+rollspeed+" pitchspeed:"+pitchspeed+" yawspeed:"+yawspeed+" lat:"+lat+" lon:"+lon+" alt:"+alt+" vx:"+vx+" vy:"+vy+" vz:"+vz+" ind_airspeed:"+ind_airspeed+" true_airspeed:"+true_airspeed+" xacc:"+xacc+" yacc:"+yacc+" zacc:"+zacc+"";
+        return "MAVLINK_MSG_ID_HIL_STATE_QUATERNION - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" attitude_quaternion:"+attitude_quaternion+" rollspeed:"+rollspeed+" pitchspeed:"+pitchspeed+" yawspeed:"+yawspeed+" lat:"+lat+" lon:"+lon+" alt:"+alt+" vx:"+vx+" vy:"+vy+" vz:"+vz+" ind_airspeed:"+ind_airspeed+" true_airspeed:"+true_airspeed+" xacc:"+xacc+" yacc:"+yacc+" zacc:"+zacc;
     }
 
     /**

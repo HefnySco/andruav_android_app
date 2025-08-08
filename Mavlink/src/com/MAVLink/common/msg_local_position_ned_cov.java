@@ -97,7 +97,7 @@ public class msg_local_position_ned_cov extends MAVLinkMessage {
      */
     @Description("Row-major representation of position, velocity and acceleration 9x9 cross-covariance matrix upper right triangle (states: x, y, z, vx, vy, vz, ax, ay, az; first nine entries are the first ROW, next eight entries are the second row, etc.). If unknown, assign NaN value to first element in the array.")
     @Units("")
-    public float covariance[] = new float[45];
+    public float[] covariance = new float[45];
     
     /**
      * Class id of the estimator this estimate originated from.
@@ -244,7 +244,7 @@ public class msg_local_position_ned_cov extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_LOCAL_POSITION_NED_COV - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" x:"+x+" y:"+y+" z:"+z+" vx:"+vx+" vy:"+vy+" vz:"+vz+" ax:"+ax+" ay:"+ay+" az:"+az+" covariance:"+covariance+" estimator_type:"+estimator_type+"";
+        return "MAVLINK_MSG_ID_LOCAL_POSITION_NED_COV - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" x:"+x+" y:"+y+" z:"+z+" vx:"+vx+" vy:"+vy+" vz:"+vz+" ax:"+ax+" ay:"+ay+" az:"+az+" covariance:"+covariance+" estimator_type:"+estimator_type;
     }
 
     /**

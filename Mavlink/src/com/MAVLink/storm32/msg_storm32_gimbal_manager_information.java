@@ -203,7 +203,7 @@ public class msg_storm32_gimbal_manager_information extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_INFORMATION - sysid:"+sysid+" compid:"+compid+" device_cap_flags:"+device_cap_flags+" manager_cap_flags:"+manager_cap_flags+" roll_min:"+roll_min+" roll_max:"+roll_max+" pitch_min:"+pitch_min+" pitch_max:"+pitch_max+" yaw_min:"+yaw_min+" yaw_max:"+yaw_max+" gimbal_id:"+gimbal_id+"";
+        return "MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_INFORMATION - sysid:"+sysid+" compid:"+compid+" device_cap_flags:"+device_cap_flags+" manager_cap_flags:"+manager_cap_flags+" roll_min:"+roll_min+" roll_max:"+roll_max+" pitch_min:"+pitch_min+" pitch_max:"+pitch_max+" yaw_min:"+yaw_min+" yaw_max:"+yaw_max+" gimbal_id:"+gimbal_id;
     }
 
     /**

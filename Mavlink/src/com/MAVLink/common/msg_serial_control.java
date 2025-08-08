@@ -62,7 +62,7 @@ public class msg_serial_control extends MAVLinkMessage {
      */
     @Description("serial data")
     @Units("")
-    public short data[] = new short[70];
+    public short[] data = new short[70];
     
 
     /**
@@ -178,7 +178,7 @@ public class msg_serial_control extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_SERIAL_CONTROL - sysid:"+sysid+" compid:"+compid+" baudrate:"+baudrate+" timeout:"+timeout+" device:"+device+" flags:"+flags+" count:"+count+" data:"+data+"";
+        return "MAVLINK_MSG_ID_SERIAL_CONTROL - sysid:"+sysid+" compid:"+compid+" baudrate:"+baudrate+" timeout:"+timeout+" device:"+device+" flags:"+flags+" count:"+count+" data:"+data;
     }
 
     /**

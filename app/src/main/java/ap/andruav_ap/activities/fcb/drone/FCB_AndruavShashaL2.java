@@ -391,7 +391,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
                 }
             });
             */
-            return;
         }
 
     }

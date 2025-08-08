@@ -48,7 +48,7 @@ public class msg_remote_log_data_block extends MAVLinkMessage {
      */
     @Description("Log data block.")
     @Units("")
-    public short data[] = new short[200];
+    public short[] data = new short[200];
     
 
     /**
@@ -156,7 +156,7 @@ public class msg_remote_log_data_block extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_REMOTE_LOG_DATA_BLOCK - sysid:"+sysid+" compid:"+compid+" seqno:"+seqno+" target_system:"+target_system+" target_component:"+target_component+" data:"+data+"";
+        return "MAVLINK_MSG_ID_REMOTE_LOG_DATA_BLOCK - sysid:"+sysid+" compid:"+compid+" seqno:"+seqno+" target_system:"+target_system+" target_component:"+target_component+" data:"+data;
     }
 
     /**

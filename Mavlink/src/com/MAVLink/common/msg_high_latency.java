@@ -368,7 +368,7 @@ public class msg_high_latency extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_HIGH_LATENCY - sysid:"+sysid+" compid:"+compid+" custom_mode:"+custom_mode+" latitude:"+latitude+" longitude:"+longitude+" roll:"+roll+" pitch:"+pitch+" heading:"+heading+" heading_sp:"+heading_sp+" altitude_amsl:"+altitude_amsl+" altitude_sp:"+altitude_sp+" wp_distance:"+wp_distance+" base_mode:"+base_mode+" landed_state:"+landed_state+" throttle:"+throttle+" airspeed:"+airspeed+" airspeed_sp:"+airspeed_sp+" groundspeed:"+groundspeed+" climb_rate:"+climb_rate+" gps_nsat:"+gps_nsat+" gps_fix_type:"+gps_fix_type+" battery_remaining:"+battery_remaining+" temperature:"+temperature+" temperature_air:"+temperature_air+" failsafe:"+failsafe+" wp_num:"+wp_num+"";
+        return "MAVLINK_MSG_ID_HIGH_LATENCY - sysid:"+sysid+" compid:"+compid+" custom_mode:"+custom_mode+" latitude:"+latitude+" longitude:"+longitude+" roll:"+roll+" pitch:"+pitch+" heading:"+heading+" heading_sp:"+heading_sp+" altitude_amsl:"+altitude_amsl+" altitude_sp:"+altitude_sp+" wp_distance:"+wp_distance+" base_mode:"+base_mode+" landed_state:"+landed_state+" throttle:"+throttle+" airspeed:"+airspeed+" airspeed_sp:"+airspeed_sp+" groundspeed:"+groundspeed+" climb_rate:"+climb_rate+" gps_nsat:"+gps_nsat+" gps_fix_type:"+gps_fix_type+" battery_remaining:"+battery_remaining+" temperature:"+temperature+" temperature_air:"+temperature_air+" failsafe:"+failsafe+" wp_num:"+wp_num;
     }
 
     /**

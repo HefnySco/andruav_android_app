@@ -181,7 +181,7 @@ public class msg_altitude extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ALTITUDE - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" altitude_monotonic:"+altitude_monotonic+" altitude_amsl:"+altitude_amsl+" altitude_local:"+altitude_local+" altitude_relative:"+altitude_relative+" altitude_terrain:"+altitude_terrain+" bottom_clearance:"+bottom_clearance+"";
+        return "MAVLINK_MSG_ID_ALTITUDE - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" altitude_monotonic:"+altitude_monotonic+" altitude_amsl:"+altitude_amsl+" altitude_local:"+altitude_local+" altitude_relative:"+altitude_relative+" altitude_terrain:"+altitude_terrain+" bottom_clearance:"+bottom_clearance;
     }
 
     /**

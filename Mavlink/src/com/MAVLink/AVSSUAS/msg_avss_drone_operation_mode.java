@@ -137,7 +137,7 @@ public class msg_avss_drone_operation_mode extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_AVSS_DRONE_OPERATION_MODE - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" M300_operation_mode:"+M300_operation_mode+" horsefly_operation_mode:"+horsefly_operation_mode+"";
+        return "MAVLINK_MSG_ID_AVSS_DRONE_OPERATION_MODE - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" M300_operation_mode:"+M300_operation_mode+" horsefly_operation_mode:"+horsefly_operation_mode;
     }
 
     /**

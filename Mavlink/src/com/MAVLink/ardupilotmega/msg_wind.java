@@ -137,7 +137,7 @@ public class msg_wind extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_WIND - sysid:"+sysid+" compid:"+compid+" direction:"+direction+" speed:"+speed+" speed_z:"+speed_z+"";
+        return "MAVLINK_MSG_ID_WIND - sysid:"+sysid+" compid:"+compid+" direction:"+direction+" speed:"+speed+" speed_z:"+speed_z;
     }
 
     /**

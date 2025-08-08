@@ -27,7 +27,7 @@ public class msg_storm32_gimbal_device_control extends MAVLinkMessage {
      */
     @Description("Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation, the frame is determined by the STORM32_GIMBAL_DEVICE_FLAGS_YAW_ABSOLUTE flag, set first element to NaN to be ignored).")
     @Units("")
-    public float q[] = new float[4];
+    public float[] q = new float[4];
     
     /**
      * X component of angular velocity (positive: roll to the right, NaN to be ignored).
@@ -189,7 +189,7 @@ public class msg_storm32_gimbal_device_control extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_STORM32_GIMBAL_DEVICE_CONTROL - sysid:"+sysid+" compid:"+compid+" q:"+q+" angular_velocity_x:"+angular_velocity_x+" angular_velocity_y:"+angular_velocity_y+" angular_velocity_z:"+angular_velocity_z+" flags:"+flags+" target_system:"+target_system+" target_component:"+target_component+"";
+        return "MAVLINK_MSG_ID_STORM32_GIMBAL_DEVICE_CONTROL - sysid:"+sysid+" compid:"+compid+" q:"+q+" angular_velocity_x:"+angular_velocity_x+" angular_velocity_y:"+angular_velocity_y+" angular_velocity_z:"+angular_velocity_z+" flags:"+flags+" target_system:"+target_system+" target_component:"+target_component;
     }
 
     /**

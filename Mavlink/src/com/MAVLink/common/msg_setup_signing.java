@@ -48,7 +48,7 @@ public class msg_setup_signing extends MAVLinkMessage {
      */
     @Description("signing key")
     @Units("")
-    public short secret_key[] = new short[32];
+    public short[] secret_key = new short[32];
     
 
     /**
@@ -156,7 +156,7 @@ public class msg_setup_signing extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_SETUP_SIGNING - sysid:"+sysid+" compid:"+compid+" initial_timestamp:"+initial_timestamp+" target_system:"+target_system+" target_component:"+target_component+" secret_key:"+secret_key+"";
+        return "MAVLINK_MSG_ID_SETUP_SIGNING - sysid:"+sysid+" compid:"+compid+" initial_timestamp:"+initial_timestamp+" target_system:"+target_system+" target_component:"+target_component+" secret_key:"+secret_key;
     }
 
     /**

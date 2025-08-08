@@ -27,14 +27,14 @@ public class msg_array_test_5 extends MAVLinkMessage {
      */
     @Description("Value array")
     @Units("")
-    public byte c1[] = new byte[5];
+    public byte[] c1 = new byte[5];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public byte c2[] = new byte[5];
+    public byte[] c2 = new byte[5];
     
 
     /**
@@ -200,7 +200,7 @@ public class msg_array_test_5 extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ARRAY_TEST_5 - sysid:"+sysid+" compid:"+compid+" c1:"+c1+" c2:"+c2+"";
+        return "MAVLINK_MSG_ID_ARRAY_TEST_5 - sysid:"+sysid+" compid:"+compid+" c1:"+c1+" c2:"+c2;
     }
 
     /**

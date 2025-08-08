@@ -159,7 +159,7 @@ public class msg_gimbal_control extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GIMBAL_CONTROL - sysid:"+sysid+" compid:"+compid+" demanded_rate_x:"+demanded_rate_x+" demanded_rate_y:"+demanded_rate_y+" demanded_rate_z:"+demanded_rate_z+" target_system:"+target_system+" target_component:"+target_component+"";
+        return "MAVLINK_MSG_ID_GIMBAL_CONTROL - sysid:"+sysid+" compid:"+compid+" demanded_rate_x:"+demanded_rate_x+" demanded_rate_y:"+demanded_rate_y+" demanded_rate_z:"+demanded_rate_z+" target_system:"+target_system+" target_component:"+target_component;
     }
 
     /**

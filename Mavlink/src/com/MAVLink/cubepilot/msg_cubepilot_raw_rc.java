@@ -27,7 +27,7 @@ public class msg_cubepilot_raw_rc extends MAVLinkMessage {
      */
     @Description("")
     @Units("")
-    public short rc_raw[] = new short[32];
+    public short[] rc_raw = new short[32];
     
 
     /**
@@ -123,7 +123,7 @@ public class msg_cubepilot_raw_rc extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_CUBEPILOT_RAW_RC - sysid:"+sysid+" compid:"+compid+" rc_raw:"+rc_raw+"";
+        return "MAVLINK_MSG_ID_CUBEPILOT_RAW_RC - sysid:"+sysid+" compid:"+compid+" rc_raw:"+rc_raw;
     }
 
     /**

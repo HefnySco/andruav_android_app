@@ -132,7 +132,7 @@ public class msg_utm_global_position extends MAVLinkMessage {
      */
     @Description("Unique UAS ID.")
     @Units("")
-    public short uas_id[] = new short[18];
+    public short[] uas_id = new short[18];
     
     /**
      * Flight state
@@ -310,7 +310,7 @@ public class msg_utm_global_position extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_UTM_GLOBAL_POSITION - sysid:"+sysid+" compid:"+compid+" time:"+time+" lat:"+lat+" lon:"+lon+" alt:"+alt+" relative_alt:"+relative_alt+" next_lat:"+next_lat+" next_lon:"+next_lon+" next_alt:"+next_alt+" vx:"+vx+" vy:"+vy+" vz:"+vz+" h_acc:"+h_acc+" v_acc:"+v_acc+" vel_acc:"+vel_acc+" update_rate:"+update_rate+" uas_id:"+uas_id+" flight_state:"+flight_state+" flags:"+flags+"";
+        return "MAVLINK_MSG_ID_UTM_GLOBAL_POSITION - sysid:"+sysid+" compid:"+compid+" time:"+time+" lat:"+lat+" lon:"+lon+" alt:"+alt+" relative_alt:"+relative_alt+" next_lat:"+next_lat+" next_lon:"+next_lon+" next_alt:"+next_alt+" vx:"+vx+" vy:"+vy+" vz:"+vz+" h_acc:"+h_acc+" v_acc:"+v_acc+" vel_acc:"+vel_acc+" update_rate:"+update_rate+" uas_id:"+uas_id+" flight_state:"+flight_state+" flags:"+flags;
     }
 
     /**

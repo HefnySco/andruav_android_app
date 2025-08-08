@@ -192,7 +192,7 @@ public class msg_winch_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_WINCH_STATUS - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" line_length:"+line_length+" speed:"+speed+" tension:"+tension+" voltage:"+voltage+" current:"+current+" status:"+status+" temperature:"+temperature+"";
+        return "MAVLINK_MSG_ID_WINCH_STATUS - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" line_length:"+line_length+" speed:"+speed+" tension:"+tension+" voltage:"+voltage+" current:"+current+" status:"+status+" temperature:"+temperature;
     }
 
     /**

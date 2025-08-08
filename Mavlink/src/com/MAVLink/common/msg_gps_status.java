@@ -34,35 +34,35 @@ public class msg_gps_status extends MAVLinkMessage {
      */
     @Description("Global satellite ID")
     @Units("")
-    public short satellite_prn[] = new short[20];
+    public short[] satellite_prn = new short[20];
     
     /**
      * 0: Satellite not used, 1: used for localization
      */
     @Description("0: Satellite not used, 1: used for localization")
     @Units("")
-    public short satellite_used[] = new short[20];
+    public short[] satellite_used = new short[20];
     
     /**
      * Elevation (0: right on top of receiver, 90: on the horizon) of satellite
      */
     @Description("Elevation (0: right on top of receiver, 90: on the horizon) of satellite")
     @Units("deg")
-    public short satellite_elevation[] = new short[20];
+    public short[] satellite_elevation = new short[20];
     
     /**
      * Direction of satellite, 0: 0 deg, 255: 360 deg.
      */
     @Description("Direction of satellite, 0: 0 deg, 255: 360 deg.")
     @Units("deg")
-    public short satellite_azimuth[] = new short[20];
+    public short[] satellite_azimuth = new short[20];
     
     /**
      * Signal to noise ratio of satellite
      */
     @Description("Signal to noise ratio of satellite")
     @Units("dB")
-    public short satellite_snr[] = new short[20];
+    public short[] satellite_snr = new short[20];
     
 
     /**
@@ -210,7 +210,7 @@ public class msg_gps_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GPS_STATUS - sysid:"+sysid+" compid:"+compid+" satellites_visible:"+satellites_visible+" satellite_prn:"+satellite_prn+" satellite_used:"+satellite_used+" satellite_elevation:"+satellite_elevation+" satellite_azimuth:"+satellite_azimuth+" satellite_snr:"+satellite_snr+"";
+        return "MAVLINK_MSG_ID_GPS_STATUS - sysid:"+sysid+" compid:"+compid+" satellites_visible:"+satellites_visible+" satellite_prn:"+satellite_prn+" satellite_used:"+satellite_used+" satellite_elevation:"+satellite_elevation+" satellite_azimuth:"+satellite_azimuth+" satellite_snr:"+satellite_snr;
     }
 
     /**

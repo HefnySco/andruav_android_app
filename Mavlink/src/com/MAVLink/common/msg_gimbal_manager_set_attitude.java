@@ -34,7 +34,7 @@ public class msg_gimbal_manager_set_attitude extends MAVLinkMessage {
      */
     @Description("Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation, the frame is depends on whether the flag GIMBAL_MANAGER_FLAGS_YAW_LOCK is set)")
     @Units("")
-    public float q[] = new float[4];
+    public float[] q = new float[4];
     
     /**
      * X component of angular velocity, positive is rolling to the right, NaN to be ignored.
@@ -200,7 +200,7 @@ public class msg_gimbal_manager_set_attitude extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GIMBAL_MANAGER_SET_ATTITUDE - sysid:"+sysid+" compid:"+compid+" flags:"+flags+" q:"+q+" angular_velocity_x:"+angular_velocity_x+" angular_velocity_y:"+angular_velocity_y+" angular_velocity_z:"+angular_velocity_z+" target_system:"+target_system+" target_component:"+target_component+" gimbal_device_id:"+gimbal_device_id+"";
+        return "MAVLINK_MSG_ID_GIMBAL_MANAGER_SET_ATTITUDE - sysid:"+sysid+" compid:"+compid+" flags:"+flags+" q:"+q+" angular_velocity_x:"+angular_velocity_x+" angular_velocity_y:"+angular_velocity_y+" angular_velocity_z:"+angular_velocity_z+" target_system:"+target_system+" target_component:"+target_component+" gimbal_device_id:"+gimbal_device_id;
     }
 
     /**

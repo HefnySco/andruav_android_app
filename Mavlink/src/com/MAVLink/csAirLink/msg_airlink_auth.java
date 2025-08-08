@@ -27,14 +27,14 @@ public class msg_airlink_auth extends MAVLinkMessage {
      */
     @Description("Login")
     @Units("")
-    public byte login[] = new byte[50];
+    public byte[] login = new byte[50];
     
     /**
      * Password
      */
     @Description("Password")
     @Units("")
-    public byte password[] = new byte[50];
+    public byte[] password = new byte[50];
     
 
     /**
@@ -200,7 +200,7 @@ public class msg_airlink_auth extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_AIRLINK_AUTH - sysid:"+sysid+" compid:"+compid+" login:"+login+" password:"+password+"";
+        return "MAVLINK_MSG_ID_AIRLINK_AUTH - sysid:"+sysid+" compid:"+compid+" login:"+login+" password:"+password;
     }
 
     /**

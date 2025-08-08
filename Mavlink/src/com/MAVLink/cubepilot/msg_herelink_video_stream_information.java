@@ -76,7 +76,7 @@ public class msg_herelink_video_stream_information extends MAVLinkMessage {
      */
     @Description("Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).")
     @Units("")
-    public byte uri[] = new byte[230];
+    public byte[] uri = new byte[230];
     
 
     /**
@@ -229,7 +229,7 @@ public class msg_herelink_video_stream_information extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_HERELINK_VIDEO_STREAM_INFORMATION - sysid:"+sysid+" compid:"+compid+" framerate:"+framerate+" bitrate:"+bitrate+" resolution_h:"+resolution_h+" resolution_v:"+resolution_v+" rotation:"+rotation+" camera_id:"+camera_id+" status:"+status+" uri:"+uri+"";
+        return "MAVLINK_MSG_ID_HERELINK_VIDEO_STREAM_INFORMATION - sysid:"+sysid+" compid:"+compid+" framerate:"+framerate+" bitrate:"+bitrate+" resolution_h:"+resolution_h+" resolution_v:"+resolution_v+" rotation:"+rotation+" camera_id:"+camera_id+" status:"+status+" uri:"+uri;
     }
 
     /**

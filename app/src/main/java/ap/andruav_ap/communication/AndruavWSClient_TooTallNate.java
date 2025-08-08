@@ -422,7 +422,6 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
             andruavBinary2MR.processed = true;
 
-            return;
         }
     }
 

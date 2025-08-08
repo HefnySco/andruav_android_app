@@ -181,7 +181,7 @@ public class msg_ekf_ext extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_EKF_EXT - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" Windspeed:"+Windspeed+" WindDir:"+WindDir+" WindZ:"+WindZ+" Airspeed:"+Airspeed+" beta:"+beta+" alpha:"+alpha+"";
+        return "MAVLINK_MSG_ID_EKF_EXT - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" Windspeed:"+Windspeed+" WindDir:"+WindDir+" WindZ:"+WindZ+" Airspeed:"+Airspeed+" beta:"+beta+" alpha:"+alpha;
     }
 
     /**

@@ -55,7 +55,7 @@ public class msg_tunnel extends MAVLinkMessage {
      */
     @Description("Variable length payload. The payload length is defined by payload_length. The entire content of this block is opaque unless you understand the encoding specified by payload_type.")
     @Units("")
-    public short payload[] = new short[128];
+    public short[] payload = new short[128];
     
 
     /**
@@ -167,7 +167,7 @@ public class msg_tunnel extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_TUNNEL - sysid:"+sysid+" compid:"+compid+" payload_type:"+payload_type+" target_system:"+target_system+" target_component:"+target_component+" payload_length:"+payload_length+" payload:"+payload+"";
+        return "MAVLINK_MSG_ID_TUNNEL - sysid:"+sysid+" compid:"+compid+" payload_type:"+payload_type+" target_system:"+target_system+" target_component:"+target_component+" payload_length:"+payload_length+" payload:"+payload;
     }
 
     /**

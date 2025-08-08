@@ -115,7 +115,7 @@ public class msg_airlink_auth_response extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_AIRLINK_AUTH_RESPONSE - sysid:"+sysid+" compid:"+compid+" resp_type:"+resp_type+"";
+        return "MAVLINK_MSG_ID_AIRLINK_AUTH_RESPONSE - sysid:"+sysid+" compid:"+compid+" resp_type:"+resp_type;
     }
 
     /**

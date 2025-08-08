@@ -62,35 +62,35 @@ public class msg_follow_target extends MAVLinkMessage {
      */
     @Description("target velocity (0,0,0) for unknown")
     @Units("m/s")
-    public float vel[] = new float[3];
+    public float[] vel = new float[3];
     
     /**
      * linear target acceleration (0,0,0) for unknown
      */
     @Description("linear target acceleration (0,0,0) for unknown")
     @Units("m/s/s")
-    public float acc[] = new float[3];
+    public float[] acc = new float[3];
     
     /**
      * (1 0 0 0 for unknown)
      */
     @Description("(1 0 0 0 for unknown)")
     @Units("")
-    public float attitude_q[] = new float[4];
+    public float[] attitude_q = new float[4];
     
     /**
      * (0 0 0 for unknown)
      */
     @Description("(0 0 0 for unknown)")
     @Units("")
-    public float rates[] = new float[3];
+    public float[] rates = new float[3];
     
     /**
      * eph epv
      */
     @Description("eph epv")
     @Units("")
-    public float position_cov[] = new float[3];
+    public float[] position_cov = new float[3];
     
     /**
      * bit positions for tracker reporting capabilities (POS = 0, VEL = 1, ACCEL = 2, ATT + RATES = 3)
@@ -265,7 +265,7 @@ public class msg_follow_target extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_FOLLOW_TARGET - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" custom_state:"+custom_state+" lat:"+lat+" lon:"+lon+" alt:"+alt+" vel:"+vel+" acc:"+acc+" attitude_q:"+attitude_q+" rates:"+rates+" position_cov:"+position_cov+" est_capabilities:"+est_capabilities+"";
+        return "MAVLINK_MSG_ID_FOLLOW_TARGET - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" custom_state:"+custom_state+" lat:"+lat+" lon:"+lon+" alt:"+alt+" vel:"+vel+" acc:"+acc+" attitude_q:"+attitude_q+" rates:"+rates+" position_cov:"+position_cov+" est_capabilities:"+est_capabilities;
     }
 
     /**

@@ -97,14 +97,14 @@ public class msg_smart_battery_info extends MAVLinkMessage {
      */
     @Description("Serial number in ASCII characters, 0 terminated. All 0: field not provided.")
     @Units("")
-    public byte serial_number[] = new byte[16];
+    public byte[] serial_number = new byte[16];
     
     /**
      * Static device name in ASCII characters, 0 terminated. All 0: field not provided. Encode as manufacturer name then product name separated using an underscore.
      */
     @Description("Static device name in ASCII characters, 0 terminated. All 0: field not provided. Encode as manufacturer name then product name separated using an underscore.")
     @Units("")
-    public byte device_name[] = new byte[50];
+    public byte[] device_name = new byte[50];
     
     /**
      * Maximum per-cell voltage when charged. 0: field not provided.
@@ -139,7 +139,7 @@ public class msg_smart_battery_info extends MAVLinkMessage {
      */
     @Description("Manufacture date (DD/MM/YYYY) in ASCII characters, 0 terminated. All 0: field not provided.")
     @Units("")
-    public byte manufacture_date[] = new byte[11];
+    public byte[] manufacture_date = new byte[11];
     
 
     /**
@@ -402,7 +402,7 @@ public class msg_smart_battery_info extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_SMART_BATTERY_INFO - sysid:"+sysid+" compid:"+compid+" capacity_full_specification:"+capacity_full_specification+" capacity_full:"+capacity_full+" cycle_count:"+cycle_count+" weight:"+weight+" discharge_minimum_voltage:"+discharge_minimum_voltage+" charging_minimum_voltage:"+charging_minimum_voltage+" resting_minimum_voltage:"+resting_minimum_voltage+" id:"+id+" battery_function:"+battery_function+" type:"+type+" serial_number:"+serial_number+" device_name:"+device_name+" charging_maximum_voltage:"+charging_maximum_voltage+" cells_in_series:"+cells_in_series+" discharge_maximum_current:"+discharge_maximum_current+" discharge_maximum_burst_current:"+discharge_maximum_burst_current+" manufacture_date:"+manufacture_date+"";
+        return "MAVLINK_MSG_ID_SMART_BATTERY_INFO - sysid:"+sysid+" compid:"+compid+" capacity_full_specification:"+capacity_full_specification+" capacity_full:"+capacity_full+" cycle_count:"+cycle_count+" weight:"+weight+" discharge_minimum_voltage:"+discharge_minimum_voltage+" charging_minimum_voltage:"+charging_minimum_voltage+" resting_minimum_voltage:"+resting_minimum_voltage+" id:"+id+" battery_function:"+battery_function+" type:"+type+" serial_number:"+serial_number+" device_name:"+device_name+" charging_maximum_voltage:"+charging_maximum_voltage+" cells_in_series:"+cells_in_series+" discharge_maximum_current:"+discharge_maximum_current+" discharge_maximum_burst_current:"+discharge_maximum_burst_current+" manufacture_date:"+manufacture_date;
     }
 
     /**

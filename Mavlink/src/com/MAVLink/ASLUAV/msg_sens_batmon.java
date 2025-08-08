@@ -269,7 +269,7 @@ public class msg_sens_batmon extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_SENS_BATMON - sysid:"+sysid+" compid:"+compid+" batmon_timestamp:"+batmon_timestamp+" temperature:"+temperature+" safetystatus:"+safetystatus+" operationstatus:"+operationstatus+" voltage:"+voltage+" current:"+current+" batterystatus:"+batterystatus+" serialnumber:"+serialnumber+" cellvoltage1:"+cellvoltage1+" cellvoltage2:"+cellvoltage2+" cellvoltage3:"+cellvoltage3+" cellvoltage4:"+cellvoltage4+" cellvoltage5:"+cellvoltage5+" cellvoltage6:"+cellvoltage6+" SoC:"+SoC+"";
+        return "MAVLINK_MSG_ID_SENS_BATMON - sysid:"+sysid+" compid:"+compid+" batmon_timestamp:"+batmon_timestamp+" temperature:"+temperature+" safetystatus:"+safetystatus+" operationstatus:"+operationstatus+" voltage:"+voltage+" current:"+current+" batterystatus:"+batterystatus+" serialnumber:"+serialnumber+" cellvoltage1:"+cellvoltage1+" cellvoltage2:"+cellvoltage2+" cellvoltage3:"+cellvoltage3+" cellvoltage4:"+cellvoltage4+" cellvoltage5:"+cellvoltage5+" cellvoltage6:"+cellvoltage6+" SoC:"+SoC;
     }
 
     /**

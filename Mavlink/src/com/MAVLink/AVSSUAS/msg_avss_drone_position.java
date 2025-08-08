@@ -170,7 +170,7 @@ public class msg_avss_drone_position extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_AVSS_DRONE_POSITION - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" lat:"+lat+" lon:"+lon+" alt:"+alt+" ground_alt:"+ground_alt+" barometer_alt:"+barometer_alt+"";
+        return "MAVLINK_MSG_ID_AVSS_DRONE_POSITION - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" lat:"+lat+" lon:"+lon+" alt:"+alt+" ground_alt:"+ground_alt+" barometer_alt:"+barometer_alt;
     }
 
     /**

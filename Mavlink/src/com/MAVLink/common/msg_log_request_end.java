@@ -126,7 +126,7 @@ public class msg_log_request_end extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_LOG_REQUEST_END - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+"";
+        return "MAVLINK_MSG_ID_LOG_REQUEST_END - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component;
     }
 
     /**

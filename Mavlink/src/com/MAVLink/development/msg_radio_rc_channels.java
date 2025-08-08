@@ -74,7 +74,7 @@ public class msg_radio_rc_channels extends MAVLinkMessage {
      */
     @Description("RC channels.         Channel values are in centered 13 bit format. Range is -4096 to 4096, center is 0. Conversion to PWM is x * 5/32 + 1500.         Channels with indexes equal or above count should be set to 0, to benefit from MAVLink's trailing-zero trimming.")
     @Units("")
-    public short channels[] = new short[32];
+    public short[] channels = new short[32];
     
 
     /**
@@ -190,7 +190,7 @@ public class msg_radio_rc_channels extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_RADIO_RC_CHANNELS - sysid:"+sysid+" compid:"+compid+" time_last_update_ms:"+time_last_update_ms+" flags:"+flags+" target_system:"+target_system+" target_component:"+target_component+" count:"+count+" channels:"+channels+"";
+        return "MAVLINK_MSG_ID_RADIO_RC_CHANNELS - sysid:"+sysid+" compid:"+compid+" time_last_update_ms:"+time_last_update_ms+" flags:"+flags+" target_system:"+target_system+" target_component:"+target_component+" count:"+count+" channels:"+channels;
     }
 
     /**

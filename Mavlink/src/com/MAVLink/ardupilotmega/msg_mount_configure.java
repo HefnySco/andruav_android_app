@@ -170,7 +170,7 @@ public class msg_mount_configure extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_MOUNT_CONFIGURE - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" mount_mode:"+mount_mode+" stab_roll:"+stab_roll+" stab_pitch:"+stab_pitch+" stab_yaw:"+stab_yaw+"";
+        return "MAVLINK_MSG_ID_MOUNT_CONFIGURE - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" mount_mode:"+mount_mode+" stab_roll:"+stab_roll+" stab_pitch:"+stab_pitch+" stab_yaw:"+stab_yaw;
     }
 
     /**

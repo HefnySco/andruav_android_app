@@ -69,7 +69,7 @@ public class msg_secure_command extends MAVLinkMessage {
      */
     @Description("Signed data.")
     @Units("")
-    public short data[] = new short[220];
+    public short[] data = new short[220];
     
 
     /**
@@ -189,7 +189,7 @@ public class msg_secure_command extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_SECURE_COMMAND - sysid:"+sysid+" compid:"+compid+" sequence:"+sequence+" operation:"+operation+" target_system:"+target_system+" target_component:"+target_component+" data_length:"+data_length+" sig_length:"+sig_length+" data:"+data+"";
+        return "MAVLINK_MSG_ID_SECURE_COMMAND - sysid:"+sysid+" compid:"+compid+" sequence:"+sequence+" operation:"+operation+" target_system:"+target_system+" target_component:"+target_component+" data_length:"+data_length+" sig_length:"+sig_length+" data:"+data;
     }
 
     /**

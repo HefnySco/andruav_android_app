@@ -236,7 +236,7 @@ public class msg_sens_power_board extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_SENS_POWER_BOARD - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" pwr_brd_system_volt:"+pwr_brd_system_volt+" pwr_brd_servo_volt:"+pwr_brd_servo_volt+" pwr_brd_digital_volt:"+pwr_brd_digital_volt+" pwr_brd_mot_l_amp:"+pwr_brd_mot_l_amp+" pwr_brd_mot_r_amp:"+pwr_brd_mot_r_amp+" pwr_brd_analog_amp:"+pwr_brd_analog_amp+" pwr_brd_digital_amp:"+pwr_brd_digital_amp+" pwr_brd_ext_amp:"+pwr_brd_ext_amp+" pwr_brd_aux_amp:"+pwr_brd_aux_amp+" pwr_brd_status:"+pwr_brd_status+" pwr_brd_led_status:"+pwr_brd_led_status+"";
+        return "MAVLINK_MSG_ID_SENS_POWER_BOARD - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" pwr_brd_system_volt:"+pwr_brd_system_volt+" pwr_brd_servo_volt:"+pwr_brd_servo_volt+" pwr_brd_digital_volt:"+pwr_brd_digital_volt+" pwr_brd_mot_l_amp:"+pwr_brd_mot_l_amp+" pwr_brd_mot_r_amp:"+pwr_brd_mot_r_amp+" pwr_brd_analog_amp:"+pwr_brd_analog_amp+" pwr_brd_digital_amp:"+pwr_brd_digital_amp+" pwr_brd_ext_amp:"+pwr_brd_ext_amp+" pwr_brd_aux_amp:"+pwr_brd_aux_amp+" pwr_brd_status:"+pwr_brd_status+" pwr_brd_led_status:"+pwr_brd_led_status;
     }
 
     /**
