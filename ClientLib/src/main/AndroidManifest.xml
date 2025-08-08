@@ -1,5 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.o3dr.android.client">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+          <!--package="com.o3dr.android.client"-->
 
     <uses-permission android:name="android.permission.INTERNET"/>
 

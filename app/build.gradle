@@ -27,7 +27,12 @@ android {
         multiDexEnabled true
     }
 
-
+    // Jai - update for gradle 8.x
+    buildFeatures {
+        buildConfig = true
+    }
+    namespace 'ap.andruav_ap'
+    // Jai - update for gradle 8.x
 
 
     buildTypes {
@@ -120,7 +125,9 @@ dependencies {
     implementation "com.google.android.gms:play-services-maps:${play_services_version}"
     implementation 'org.usb4java:usb4java:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'com.github.supervital:swipenumberpicker:1.0.3'
+    // only FCB mode supported, remove - start
+    //implementation 'com.github.supervital:swipenumberpicker:1.0.3'
+    // only FCB mode supported, remove - end
     implementation project(':rangebar-release')
 }
 
