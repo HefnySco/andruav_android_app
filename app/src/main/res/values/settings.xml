@@ -1,6 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="google_maps_key">AIzaSyC4zUgr3pzCZgfw7tT0fXygT4-AXjtA3CU</string>
-    <integer name="version_code">1</integer>
-    <string name="version_name">1</string>
-</resources>
+<resources></resources>
