@@ -116,7 +116,6 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation "com.google.android.gms:play-services-plus:${play_services_version}"
-    implementation "com.google.android.gms:play-services-maps:${play_services_version}"
     implementation 'org.usb4java:usb4java:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     // only FCB mode supported, remove - start
