@@ -15,10 +15,9 @@ android {
     // Jai - update for gradle 8.x
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             jniDebuggable false
             zipAlignEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false

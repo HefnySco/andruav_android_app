@@ -17,12 +17,10 @@ android {
     buildTypes {
         release {
             buildConfigField "boolean", "IS_DEBUG", "false"
-            minifyEnabled true
+            minifyEnabled false
             jniDebuggable false
             zipAlignEnabled true
             renderscriptDebuggable false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
         }
         debug {
             buildConfigField "boolean", "IS_DEBUG", "true"
