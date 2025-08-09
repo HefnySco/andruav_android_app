@@ -27,19 +27,11 @@ android {
             zipAlignEnabled true
         }
     }
-    flavorDimensions "audience"
 
-
-    productFlavors {
-        PUBLIC_
-                {
-                    dimension "audience"
-                    buildConfigField "String", "BuidType" , "\"PUBLIC_\""
-                }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
     }
 }
 

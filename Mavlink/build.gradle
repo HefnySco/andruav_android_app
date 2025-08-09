@@ -1,6 +1,10 @@
 apply plugin: 'java'
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
 
 sourceSets {
     main {
@@ -12,15 +16,12 @@ sourceSets {
     }
 }
 
-jar {
-   // destinationDir (new File("${rootDir}/ClientLib/libs"))
+tasks.named('jar') {
+    destinationDirectory.set(file("${rootDir}/ClientLib/libs"))
+    archiveBaseName.set('mavlink')
 }
 
 dependencies {
-    implementation 'org.json:json:20200518'
-}
-
-dependencies {
-
-    testImplementation 'junit:junit:4.12'
+    implementation 'org.json:json:20250517'
+    testImplementation 'junit:junit:4.13.2'
 }

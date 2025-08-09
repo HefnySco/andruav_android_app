@@ -99,7 +99,11 @@ configurations {
     all*.exclude group: "org.apache.commons", module: "commons-compress"
 }
 
-
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
 
 dependencies {
     implementation project(':andruavmiddlelibrary')
