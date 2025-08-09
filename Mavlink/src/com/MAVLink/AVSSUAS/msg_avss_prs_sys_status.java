@@ -159,7 +159,7 @@ public class msg_avss_prs_sys_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_AVSS_PRS_SYS_STATUS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" error_status:"+error_status+" battery_status:"+battery_status+" arm_status:"+arm_status+" charge_status:"+charge_status+"";
+        return "MAVLINK_MSG_ID_AVSS_PRS_SYS_STATUS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" error_status:"+error_status+" battery_status:"+battery_status+" arm_status:"+arm_status+" charge_status:"+charge_status;
     }
 
     /**

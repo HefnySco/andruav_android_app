@@ -137,7 +137,7 @@ public class msg_relay_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_RELAY_STATUS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" on:"+on+" present:"+present+"";
+        return "MAVLINK_MSG_ID_RELAY_STATUS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" on:"+on+" present:"+present;
     }
 
     /**

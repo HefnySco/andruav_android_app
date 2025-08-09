@@ -79,7 +79,7 @@ public class CameraInfoLoader {
         filesInSdCard.clear();
 
         File[] filesList = FileUtils.getCameraInfoFileList(this.context);
-        if(filesList != null && filesList.length > 0) {
+        if(filesList != null) {
             for (File file : filesList) {
                 final String filename = file.getName();
                 filesName.add(filename);

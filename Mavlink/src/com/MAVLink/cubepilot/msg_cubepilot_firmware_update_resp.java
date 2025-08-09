@@ -137,7 +137,7 @@ public class msg_cubepilot_firmware_update_resp extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_CUBEPILOT_FIRMWARE_UPDATE_RESP - sysid:"+sysid+" compid:"+compid+" offset:"+offset+" target_system:"+target_system+" target_component:"+target_component+"";
+        return "MAVLINK_MSG_ID_CUBEPILOT_FIRMWARE_UPDATE_RESP - sysid:"+sysid+" compid:"+compid+" offset:"+offset+" target_system:"+target_system+" target_component:"+target_component;
     }
 
     /**

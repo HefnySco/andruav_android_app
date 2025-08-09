@@ -126,7 +126,7 @@ public class msg_raw_rpm extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_RAW_RPM - sysid:"+sysid+" compid:"+compid+" frequency:"+frequency+" index:"+index+"";
+        return "MAVLINK_MSG_ID_RAW_RPM - sysid:"+sysid+" compid:"+compid+" frequency:"+frequency+" index:"+index;
     }
 
     /**

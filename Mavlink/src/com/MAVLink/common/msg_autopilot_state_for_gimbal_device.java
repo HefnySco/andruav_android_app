@@ -34,7 +34,7 @@ public class msg_autopilot_state_for_gimbal_device extends MAVLinkMessage {
      */
     @Description("Quaternion components of autopilot attitude: w, x, y, z (1 0 0 0 is the null-rotation, Hamilton convention).")
     @Units("")
-    public float q[] = new float[4];
+    public float[] q = new float[4];
     
     /**
      * Estimated delay of the attitude data. 0 if unknown.
@@ -255,7 +255,7 @@ public class msg_autopilot_state_for_gimbal_device extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_AUTOPILOT_STATE_FOR_GIMBAL_DEVICE - sysid:"+sysid+" compid:"+compid+" time_boot_us:"+time_boot_us+" q:"+q+" q_estimated_delay_us:"+q_estimated_delay_us+" vx:"+vx+" vy:"+vy+" vz:"+vz+" v_estimated_delay_us:"+v_estimated_delay_us+" feed_forward_angular_velocity_z:"+feed_forward_angular_velocity_z+" estimator_status:"+estimator_status+" target_system:"+target_system+" target_component:"+target_component+" landed_state:"+landed_state+" angular_velocity_z:"+angular_velocity_z+"";
+        return "MAVLINK_MSG_ID_AUTOPILOT_STATE_FOR_GIMBAL_DEVICE - sysid:"+sysid+" compid:"+compid+" time_boot_us:"+time_boot_us+" q:"+q+" q_estimated_delay_us:"+q_estimated_delay_us+" vx:"+vx+" vy:"+vy+" vz:"+vz+" v_estimated_delay_us:"+v_estimated_delay_us+" feed_forward_angular_velocity_z:"+feed_forward_angular_velocity_z+" estimator_status:"+estimator_status+" target_system:"+target_system+" target_component:"+target_component+" landed_state:"+landed_state+" angular_velocity_z:"+angular_velocity_z;
     }
 
     /**

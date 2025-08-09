@@ -313,7 +313,7 @@ public class msg_efi_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_EFI_STATUS - sysid:"+sysid+" compid:"+compid+" ecu_index:"+ecu_index+" rpm:"+rpm+" fuel_consumed:"+fuel_consumed+" fuel_flow:"+fuel_flow+" engine_load:"+engine_load+" throttle_position:"+throttle_position+" spark_dwell_time:"+spark_dwell_time+" barometric_pressure:"+barometric_pressure+" intake_manifold_pressure:"+intake_manifold_pressure+" intake_manifold_temperature:"+intake_manifold_temperature+" cylinder_head_temperature:"+cylinder_head_temperature+" ignition_timing:"+ignition_timing+" injection_time:"+injection_time+" exhaust_gas_temperature:"+exhaust_gas_temperature+" throttle_out:"+throttle_out+" pt_compensation:"+pt_compensation+" health:"+health+" ignition_voltage:"+ignition_voltage+" fuel_pressure:"+fuel_pressure+"";
+        return "MAVLINK_MSG_ID_EFI_STATUS - sysid:"+sysid+" compid:"+compid+" ecu_index:"+ecu_index+" rpm:"+rpm+" fuel_consumed:"+fuel_consumed+" fuel_flow:"+fuel_flow+" engine_load:"+engine_load+" throttle_position:"+throttle_position+" spark_dwell_time:"+spark_dwell_time+" barometric_pressure:"+barometric_pressure+" intake_manifold_pressure:"+intake_manifold_pressure+" intake_manifold_temperature:"+intake_manifold_temperature+" cylinder_head_temperature:"+cylinder_head_temperature+" ignition_timing:"+ignition_timing+" injection_time:"+injection_time+" exhaust_gas_temperature:"+exhaust_gas_temperature+" throttle_out:"+throttle_out+" pt_compensation:"+pt_compensation+" health:"+health+" ignition_voltage:"+ignition_voltage+" fuel_pressure:"+fuel_pressure;
     }
 
     /**

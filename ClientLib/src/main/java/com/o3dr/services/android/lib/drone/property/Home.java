@@ -49,7 +49,7 @@ public class Home implements DroneAttribute {
 
         Home home = (Home) o;
 
-        return !(!Objects.equals(mCoordinate, home.mCoordinate));
+        return Objects.equals(mCoordinate, home.mCoordinate);
 
     }
 

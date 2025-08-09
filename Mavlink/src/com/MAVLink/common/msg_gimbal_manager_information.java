@@ -203,7 +203,7 @@ public class msg_gimbal_manager_information extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GIMBAL_MANAGER_INFORMATION - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" cap_flags:"+cap_flags+" roll_min:"+roll_min+" roll_max:"+roll_max+" pitch_min:"+pitch_min+" pitch_max:"+pitch_max+" yaw_min:"+yaw_min+" yaw_max:"+yaw_max+" gimbal_device_id:"+gimbal_device_id+"";
+        return "MAVLINK_MSG_ID_GIMBAL_MANAGER_INFORMATION - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" cap_flags:"+cap_flags+" roll_min:"+roll_min+" roll_max:"+roll_max+" pitch_min:"+pitch_min+" pitch_max:"+pitch_max+" yaw_min:"+yaw_min+" yaw_max:"+yaw_max+" gimbal_device_id:"+gimbal_device_id;
     }
 
     /**

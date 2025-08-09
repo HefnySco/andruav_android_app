@@ -137,7 +137,7 @@ public class msg_button_change extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_BUTTON_CHANGE - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" last_change_ms:"+last_change_ms+" state:"+state+"";
+        return "MAVLINK_MSG_ID_BUTTON_CHANGE - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" last_change_ms:"+last_change_ms+" state:"+state;
     }
 
     /**

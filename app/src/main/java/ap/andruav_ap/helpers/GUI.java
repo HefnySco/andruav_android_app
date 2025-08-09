@@ -85,7 +85,7 @@ public class GUI {
         final StringBuffer text = new StringBuffer();
         if (andruavUnit.getIsCGS())
         {
-            text.append(HtmlPro.AddLine(App.context.getString(R.string.str_TXT_VIOLET),App.getAppContext().getString(R.string.gen_CGS),true,false));
+            text.append(HtmlPro.AddLine(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_VIOLET),App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_CGS),true,false));
         }
         if (andruavUnit.getIsShutdown())
         {
@@ -117,7 +117,7 @@ public class GUI {
         }
         text.append(">");
         text.append(andruavUnit.UnitID);
-        text.append("<br>").append(getFont(App.context.getString(R.string.str_TXT_GREEN), false, false));
+        text.append("<br>").append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN), false, false));
         text.append(andruavUnit.Description);
         text.append("</font>");
 
@@ -132,11 +132,11 @@ public class GUI {
         final StringBuffer text = new StringBuffer();
         final String sequence   = String.valueOf(wayPointStep.Sequence);
 
-        text.append(getFont(App.context.getString(R.string.str_TXT_BLUE), false, false));
+        text.append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE), false, false));
         text.append("Waypoint No.:");
         text.append("</font>");
 
-        text.append(getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), false, false));
+        text.append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN_DARKER), false, false));
         text.append(sequence);
         text.append("</font><br>");
 
@@ -150,7 +150,7 @@ public class GUI {
         }
         text.append(">");
         text.append(andruavUnit.UnitID);
-        text.append("</font>").append(getFont(App.context.getString(R.string.str_TXT_GREEN), false, false)).append("<br>");
+        text.append("</font>").append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN), false, false)).append("<br>");
         text.append(andruavUnit.Description);
         text.append("</font>");
 
@@ -172,21 +172,21 @@ public class GUI {
             final String altitude = String.format("%4f sec", wayPointStep.Altitude);
             final String timeToStay = String.format("%d sec", wayPointStep.TimeToStay);
 
-            text.append(getFont(App.context.getString(R.string.str_TXT_BLUE), false, false));
+            text.append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE), false, false));
             text.append("Altitude:");
             text.append("</font>");
 
-            text.append(getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), false, false));
+            text.append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN_DARKER), false, false));
             text.append(altitude);
             text.append("</font><br>");
 
 
 
-            text.append(getFont(App.context.getString(R.string.str_TXT_BLUE), false, false));
+            text.append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE), false, false));
             text.append("Stay time:");
             text.append("</font>");
 
-            text.append(getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), false, false));
+            text.append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN_DARKER), false, false));
             text.append(timeToStay);
             text.append("</font>");
         }
@@ -228,40 +228,40 @@ public class GUI {
         final StringBuffer text = new StringBuffer();
         if (andruavUnit.getIsCGS())
         {
-            text.append(getFont(App.context.getString(R.string.str_TXT_BLUE),true,false)).append("NO IMU DATA").append("</b></font>");
+            text.append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE),true,false)).append("NO IMU DATA").append("</b></font>");
         }
 
-        text.append(getFont(App.context.getString(R.string.str_TXT_BLUE), false, false));
+        text.append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE), false, false));
         text.append("Speed:");
         text.append("</font>");
 
-        text.append(getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), false, false));
+        text.append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN_DARKER), false, false));
         text.append(GroundSpeed);
         text.append("</font>");
 
-        text.append(getFont(App.context.getString(R.string.str_TXT_BLUE), false, false));
+        text.append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE), false, false));
         text.append("    max: ");
         text.append("</font>");
 
-        text.append(getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), false, false));
+        text.append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN_DARKER), false, false));
         text.append(GroundSpeed_max);
         text.append("</font>");
 
         text.append("<br>");
 
-        text.append(getFont(App.context.getString(R.string.str_TXT_BLUE), false, false));
+        text.append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE), false, false));
         text.append("Altitude cur:");
         text.append("</font>");
 
-        text.append(getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), false, false));
+        text.append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN_DARKER), false, false));
         text.append(GroundAltitude);
         text.append("</font>");
 
-        text.append(getFont(App.context.getString(R.string.str_TXT_BLUE), false, false));
+        text.append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE), false, false));
         text.append("    max: ");
         text.append("</font>");
 
-        text.append(getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), false, false));
+        text.append(getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN_DARKER), false, false));
         text.append(GroundAltitude_max);
         text.append("</font>");
 
@@ -313,8 +313,8 @@ public class GUI {
 
         if (!DeviceManagerFacade.hasMultitouch())
         {
-            String err = App.getAppContext().getString(R.string.err_feature_multitouch);
-            DialogHelper.doModalDialog(context, App.getAppContext().getString(R.string.title_activity_remotecontrol), err, null);
+            String err = App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.err_feature_multitouch);
+            DialogHelper.doModalDialog(context, App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.title_activity_remotecontrol), err, null);
             AndruavEngine.notification().Speak(err);
             return false;
         }

@@ -214,7 +214,7 @@ public class msg_camera_tracking_image_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_CAMERA_TRACKING_IMAGE_STATUS - sysid:"+sysid+" compid:"+compid+" point_x:"+point_x+" point_y:"+point_y+" radius:"+radius+" rec_top_x:"+rec_top_x+" rec_top_y:"+rec_top_y+" rec_bottom_x:"+rec_bottom_x+" rec_bottom_y:"+rec_bottom_y+" tracking_status:"+tracking_status+" tracking_mode:"+tracking_mode+" target_data:"+target_data+"";
+        return "MAVLINK_MSG_ID_CAMERA_TRACKING_IMAGE_STATUS - sysid:"+sysid+" compid:"+compid+" point_x:"+point_x+" point_y:"+point_y+" radius:"+radius+" rec_top_x:"+rec_top_x+" rec_top_y:"+rec_top_y+" rec_bottom_x:"+rec_bottom_x+" rec_bottom_y:"+rec_bottom_y+" tracking_status:"+tracking_status+" tracking_mode:"+tracking_mode+" target_data:"+target_data;
     }
 
     /**

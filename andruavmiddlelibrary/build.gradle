@@ -8,15 +8,19 @@ android {
         targetSdkVersion android_build_target_sdk_version
         multiDexEnabled true
     }
+    // Jai - update for gradle 8.x
+    buildFeatures {
+        buildConfig = true
+    }
+    namespace 'ap.andruavmiddlelibrary'
+    // Jai - update for gradle 8.x
     buildTypes {
         release {
             buildConfigField "boolean", "IS_DEBUG", "false"
-            minifyEnabled true
+            minifyEnabled false
             jniDebuggable false
             zipAlignEnabled true
             renderscriptDebuggable false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
         }
         debug {
             buildConfigField "boolean", "IS_DEBUG", "true"
@@ -30,20 +34,10 @@ android {
 
 
 
-    flavorDimensions "audience"
-
-
-    productFlavors {
-        PUBLIC_
-                {
-                    dimension "audience"
-                    buildConfigField "String", "BuidType" , "\"PUBLIC_\""
-                }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
     }
 }
 

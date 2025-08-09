@@ -47,6 +47,7 @@ import com.andruav.protocol.commands.textMessages.FlightControl.AndruavMessage_F
 import com.andruav.protocol.commands.textMessages.AndruavMessage_GEOFenceHit;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_GPS;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_GeoFence;
+import com.andruav.protocol.commands.textMessages.AndruavMessage_Sound_TextToSpeech;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_GeoFenceAttachStatus;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_HomeLocation;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_ID;
@@ -325,6 +326,9 @@ public class Andruav_Parser {
                 break;
             case AndruavMessage_ServoChannel.TYPE_AndruavMessage_ServoChannel:
                 andruavMessageBase = new AndruavMessage_ServoChannel();
+                break;
+            case AndruavMessage_Sound_TextToSpeech.TYPE_AndruavMessage_Sound_TextToSpeech:
+                andruavMessageBase = new AndruavMessage_Sound_TextToSpeech();
                 break;
             case AndruavMessage_Config_Preference.TYPE_AndruavResala_Config_Preference:
                 andruavMessageBase = new AndruavMessage_Config_Preference();

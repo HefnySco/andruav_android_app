@@ -1,4 +1,12 @@
 <resources>
+    <declare-styleable name="SwipeNumberPicker">
+        <attr name="min" format="integer"/>
+        <attr name="max" format="integer"/>
+        <attr name="value" format="integer"/>
+        <attr name="arrowColor" format="color"/>
+        <attr name="backgroundColor" format="color"/>
+        <attr name="numberColor" format="color"/>
+    </declare-styleable>
 
     <style name="DialogFragmentStyle" parent="@android:style/Theme.Dialog">
         <item name="android:windowSoftInputMode">stateHidden|adjustResize</item>
@@ -6,18 +14,10 @@
 
 
     <!-- No Header Dialog -->
-    <style name="FullHeightDialog" parent="android:Theme.Dialog">
-        <item name="android:windowNoTitle">true</item>
-    </style>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-    </style>
-
-    <style name="AlertDialogTheme" parent="android:Theme.Dialog">
-        <item name="android:textSize">12sp</item>
-
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -30,11 +30,6 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
-    <style name="Map">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
     <style name="generalNumberSpinner">
         <item name="android:fontFamily">sans-serif-condensed</item>
 
@@ -46,30 +41,12 @@
         <item name="android:textColor">@color/btn_TXT_BLUE_DARKEST</item>
     </style>
 
-    <style name="missionHeaderTitle">
-        <item name="android:textColor">@color/btn_TXT_WHITE</item>
-        <item name="android:textSize">24sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textAllCaps">true</item>
-
-        <item name="android:fontFamily">sans-serif-condensed</item>
-    </style>
-
 
     <style name="commentText">
         <item name="android:textColor">@color/btn_TXT_GREY_DARK</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">italic</item>
 
-    </style>
-
-    <style name="largeMissionDetailText">
-        <item name="android:textColor">@color/btn_TXT_WHITE</item>
-        <item name="android:textSize">40sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:fontFamily">sans-serif-condensed</item>
-        <item name="android:gravity">center</item>
     </style>
 
     <style name="widgetandnruavinfoText">

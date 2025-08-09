@@ -159,7 +159,7 @@ public class msg_fence_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_FENCE_STATUS - sysid:"+sysid+" compid:"+compid+" breach_time:"+breach_time+" breach_count:"+breach_count+" breach_status:"+breach_status+" breach_type:"+breach_type+" breach_mitigation:"+breach_mitigation+"";
+        return "MAVLINK_MSG_ID_FENCE_STATUS - sysid:"+sysid+" compid:"+compid+" breach_time:"+breach_time+" breach_count:"+breach_count+" breach_status:"+breach_status+" breach_type:"+breach_type+" breach_mitigation:"+breach_mitigation;
     }
 
     /**

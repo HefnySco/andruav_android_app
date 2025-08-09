@@ -85,7 +85,7 @@ public class MAVLinkPacket implements Serializable {
 
     static final boolean V = false;
     static void logv(String str) {
-        if(V) System.out.println(String.format("MAVLinkPacket: %s", str));
+        if(V) System.out.printf("MAVLinkPacket: %s%n", str);
     }
 
     /**

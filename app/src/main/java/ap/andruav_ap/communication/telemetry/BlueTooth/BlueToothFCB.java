@@ -147,7 +147,7 @@ public class BlueToothFCB  implements IEvent_SocketData {
                     //App.notification.displayNotification(INotification.NOTIFICATION_TYPE_NORMAL, "Status", serr, true, INotification.INFO_TYPE_TELEMETRY, false);
                     //AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_TELEMETRY, INotification.NOTIFICATION_TYPE_NORMAL, AndruavResala_Error.ERROR_BLUETOOTH, serr, null);
                     //TTS.getInstance().Speak(App.getAppContext().getString(R.string.gen_bluetooth_connected));
-                    PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_NORMAL, AndruavMessage_Error.ERROR_BLUETOOTH, App.getAppContext().getString(R.string.gen_bluetooth_connected), null);
+                    PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_NORMAL, AndruavMessage_Error.ERROR_BLUETOOTH, App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_bluetooth_connected), null);
                     while (!mKillMe) {
                         Thread.sleep(1, 0);
                         int i = Bluetooth.available();
@@ -170,7 +170,7 @@ public class BlueToothFCB  implements IEvent_SocketData {
                                     //App.notification.displayNotification(INotification.NOTIFICATION_TYPE_ERROR, "Error", serr, true, 3, false);
                                     //AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_TELEMETRY, INotification.NOTIFICATION_TYPE_ERROR, AndruavResala_Error.ERROR_BLUETOOTH, serr, null);
                                     //TTS.getInstance().Speak(serr);
-                                    PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_BLUETOOTH, App.getAppContext().getString(R.string.andruav_error_bluetootherror), null);
+                                    PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_BLUETOOTH, App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_bluetootherror), null);
 
                                     log -=1;
                                 }
@@ -189,7 +189,7 @@ public class BlueToothFCB  implements IEvent_SocketData {
                         //App.notification.displayNotification(INotification.NOTIFICATION_TYPE_ERROR, "Status", serr, true, INotification.INFO_TYPE_TELEMETRY, false);
                         //AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_TELEMETRY, INotification.NOTIFICATION_TYPE_ERROR, AndruavResala_Error.ERROR_BLUETOOTH, serr, null);
                         //TTS.getInstance().Speak(App.getAppContext().getString(R.string.andruav_error_bluetootherror));
-                        PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_BLUETOOTH, App.getAppContext().getString(R.string.andruav_error_bluetootherror), null);
+                        PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_BLUETOOTH, App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_bluetootherror), null);
 
 
 
@@ -207,7 +207,7 @@ public class BlueToothFCB  implements IEvent_SocketData {
                     //App.notification.displayNotification(INotification.NOTIFICATION_TYPE_ERROR, "Error", serr, true, INotification.INFO_TYPE_TELEMETRY, false);
                     //AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_TELEMETRY, INotification.NOTIFICATION_TYPE_ERROR, AndruavResala_Error.ERROR_BLUETOOTH, serr, null);
                     //TTS.getInstance().Speak(serr);
-                    PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_BLUETOOTH, App.getAppContext().getString(R.string.andruav_error_bluetootherror), null);
+                    PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_BLUETOOTH, App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_bluetootherror), null);
 
                 }
             }
@@ -216,7 +216,7 @@ public class BlueToothFCB  implements IEvent_SocketData {
         Bluetooth.Connect(address);
 
         if (!Bluetooth.isConnected()) {
-            AndruavEngine.notification().Speak(App.getAppContext().getString(R.string.err_bluetooth_cannotconnect));
+            AndruavEngine.notification().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.err_bluetooth_cannotconnect));
             return;
         }
         threadBT.start();

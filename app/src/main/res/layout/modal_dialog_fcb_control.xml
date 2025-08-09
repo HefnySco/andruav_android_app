@@ -27,7 +27,6 @@
         android:layout_below="@id/mdlgfcbctrl_txt_title"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:background="@color/background"
         android:fillViewport="false"
         android:padding="1dp"
         android:scrollbars="horizontal|vertical">
@@ -217,15 +216,14 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginStart="1dp"
         android:layout_marginLeft="1dp"
-        app:snp_arrowColor="@color/btn_TXT_GREYLIGHT"
-        app:snp_backgroundColor="@color/btn_TXT_BLUE_DARKEST"
-        app:snp_max="1000"
-        app:snp_min="0"
-        app:snp_numberColor="@color/btn_TXT_GREYLIGHT"
-        app:snp_value="0" />
+        snp_arrowColor="@color/btn_TXT_GREYLIGHT"
+        snp_backgroundColor="@color/btn_TXT_BLUE_DARKEST"
+        snp_max="1000"
+        snp_min="0"
+        snp_numberColor="@color/btn_TXT_GREYLIGHT"
+        snp_value="0" />
 
     <TextView
-        android:id="@+id/mdlgcam_text03"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fpvactivity_mode_buttons"
@@ -249,10 +247,10 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="1dp"
         android:layout_marginRight="1dp"
-        app:snp_arrowColor="@color/btn_TXT_GREYLIGHT"
-        app:snp_backgroundColor="@color/btn_TXT_BLUE_DARKEST"
-        app:snp_max="1000"
-        app:snp_min="0"
-        app:snp_numberColor="@color/btn_TXT_GREYLIGHT"
-        app:snp_value="0" />
+        snp_arrowColor="@color/btn_TXT_GREYLIGHT"
+        snp_backgroundColor="@color/btn_TXT_BLUE_DARKEST"
+        snp_max="1000"
+        snp_min="0"
+        snp_numberColor="@color/btn_TXT_GREYLIGHT"
+        snp_value="0" />
 </RelativeLayout>

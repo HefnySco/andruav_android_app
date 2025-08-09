@@ -7,12 +7,17 @@ android {
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
     }
+    // Jai - update for gradle 8.x
+    buildFeatures {
+        buildConfig = true
+    }
+    namespace 'com.andruav.protocol'
+    // Jai - update for gradle 8.x
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             jniDebuggable false
             zipAlignEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
@@ -22,19 +27,11 @@ android {
             zipAlignEnabled true
         }
     }
-    flavorDimensions "audience"
 
-
-    productFlavors {
-        PUBLIC_
-                {
-                    dimension "audience"
-                    buildConfigField "String", "BuidType" , "\"PUBLIC_\""
-                }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
     }
 }
 

@@ -25,7 +25,7 @@ public @interface Description {
 
 		public static void main(String[] args) throws Exception {
 			Field f = Test.class.getField("speed");
-			Description anno = (Description) f.getAnnotation(Description.class);
+			Description anno = f.getAnnotation(Description.class);
 			System.out.println(anno.value());
 		}
 	}

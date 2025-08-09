@@ -280,7 +280,7 @@ public class msg_uavionix_adsb_out_dynamic extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_UAVIONIX_ADSB_OUT_DYNAMIC - sysid:"+sysid+" compid:"+compid+" utcTime:"+utcTime+" gpsLat:"+gpsLat+" gpsLon:"+gpsLon+" gpsAlt:"+gpsAlt+" baroAltMSL:"+baroAltMSL+" accuracyHor:"+accuracyHor+" accuracyVert:"+accuracyVert+" accuracyVel:"+accuracyVel+" velVert:"+velVert+" velNS:"+velNS+" VelEW:"+VelEW+" state:"+state+" squawk:"+squawk+" gpsFix:"+gpsFix+" numSats:"+numSats+" emergencyStatus:"+emergencyStatus+"";
+        return "MAVLINK_MSG_ID_UAVIONIX_ADSB_OUT_DYNAMIC - sysid:"+sysid+" compid:"+compid+" utcTime:"+utcTime+" gpsLat:"+gpsLat+" gpsLon:"+gpsLon+" gpsAlt:"+gpsAlt+" baroAltMSL:"+baroAltMSL+" accuracyHor:"+accuracyHor+" accuracyVert:"+accuracyVert+" accuracyVel:"+accuracyVel+" velVert:"+velVert+" velNS:"+velNS+" VelEW:"+VelEW+" state:"+state+" squawk:"+squawk+" gpsFix:"+gpsFix+" numSats:"+numSats+" emergencyStatus:"+emergencyStatus;
     }
 
     /**

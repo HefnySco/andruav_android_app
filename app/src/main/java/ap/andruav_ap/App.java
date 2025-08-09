@@ -35,7 +35,6 @@ import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
-import android.text.format.Time;
 import android.view.Surface;
 
 import com.andruav.AndruavDroneFacade;
@@ -57,7 +56,6 @@ import com.andruav.interfaces.IPreference;
 import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.communication.AndruavWSClient_TooTallNate;
-import ap.andruav_ap.communication.AndruavUnitMap;
 import ap.andruav_ap.communication.ControlBoardFactory;
 import ap.andruav_ap.communication.telemetry.IEvent_SocketData;
 import ap.andruav_ap.communication.telemetry.SerialSocketServer.AndruavGCSSerialSocketServer;
@@ -84,9 +82,7 @@ import ap.andruavmiddlelibrary.factory.tts.TTS;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
 import com.andruav.protocol.commands.ProtocolHeaders;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_CameraList;
-import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_Ping;
 import com.andruav.protocol.communication.udpproxy.UDPProxy;
-import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
 import com.andruav.uavos.modules.UAVOSConstants;
 import com.andruav.uavos.modules.UAVOSException;
 import com.andruav.uavos.modules.UAVOSModuleCamera;
@@ -125,12 +121,10 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
      */
     public static Activity activeActivity = null;
     public static int gui_ConnectionIconID;
-    public static Time timeApp;
     public boolean D = false; // debug
     public final static String TAG = "RCMOB";
     public static Context context;
     public static IEvent_SocketData iEvent_socketData;
-   // public static AndruavWSClient andruavWSClient;
     public static SoundManager soundManager;
     public static Intent iSensorService;
     /***
@@ -238,7 +232,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                     //Socket Status
                     EventSocketState eventSocketState = (EventSocketState) msg.obj;
                     if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onConnect) {
-                        String connection = getString(R.string.gen_connected);
+                        String connection = getString(ap.andruavmiddlelibrary.R.string.gen_connected);
                         connection += " to Internet Server";
                         App.notification.displayNotification(INotification.NOTIFICATION_TYPE_NORMAL, "Andruav", connection, true, INotification.INFO_TYPE_PROTOCOL, true);
 
@@ -257,11 +251,11 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onDisconnect) {
                         App.gui_ConnectionIconID = R.drawable.connect_w_32x32;
                         App.soundManager.playSound(SoundManager.SND_ERR);
-                        TTS.getInstance().Speak(getString(R.string.gen_connectionlost));
+                        TTS.getInstance().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_connectionlost));
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onError) {
                         App.gui_ConnectionIconID = R.drawable.connected_error_32x32;
                         App.soundManager.playSound(SoundManager.SND_ERR);
-                        TTS.getInstance().Speak(getString(R.string.gen_connectionlost));
+                        TTS.getInstance().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_connectionlost));
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onMessage) {
                         // MenuItem mi = mMenu.findItem(R.id.action_main_wsconnect);
                         // mi.setIcon(R.drawable.connected_color_32x32);
@@ -277,7 +271,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                     if ((andruavWe7da.FCBoard!= null)  && (AndruavSettings.remoteTelemetryAndruavWe7da != null) && andruavWe7da.IsMe()) {   // it is already connected to me
 
                         AndruavFacade.ResumeTelemetry(Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
-                        TTS.getInstance().Speak(getString(R.string.action_res_tel));
+                        TTS.getInstance().Speak(getString(ap.andruavmiddlelibrary.R.string.action_res_tel));
                     }
                 }
                 else if (msg.obj instanceof _7adath_FCB_2AMR) {
@@ -457,7 +451,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     public static void startsocketListener ()
     {
 
-        TTS.getInstance().Speak(App.getAppContext().getString(R.string.gen_serialsocket_started));
+        TTS.getInstance().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_serialsocket_started));
         if (andruavGCSSerialSocketServer ==null)
         {
             andruavGCSSerialSocketServer = new AndruavGCSSerialSocketServer();
@@ -468,7 +462,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
 
     public static void stopsocketListener () {
-        TTS.getInstance().Speak(App.getAppContext().getString(R.string.gen_serialsocket_stopped));
+        TTS.getInstance().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_serialsocket_stopped));
         if (andruavGCSSerialSocketServer == null) return ;
         andruavGCSSerialSocketServer.stopListening();
     }
@@ -496,7 +490,10 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                 camera.put(UAVOSConstants.CAMERA_SUPPORT_FLASH, supportFlash);
                 camera.put(UAVOSConstants.CAMERA_UNIQUE_NAME, AndruavSettings.andruavWe7daBase.PartyID);
                 camera.put(UAVOSConstants.CAMERA_TYPE, AndruavMessage_CameraList.EXTERNAL_CAMERA_TYPE_RTCWEBCAM);
-                camera.put(UAVOSConstants.CAMERA_ANDROID_DUAL_CAM, true);
+                //camera.put(UAVOSConstants.CAMERA_ANDROID_DUAL_CAM, true);
+                camera.put(UAVOSConstants.CAMERA_SPECIFICATION, UAVOSConstants.CAMERA_SPECIFICATION_SUPPORT_ZOOMING | UAVOSConstants.CAMERA_SPECIFICATION_SUPPORT_PHOTO
+                        | UAVOSConstants.CAMERA_SPECIFICATION_SUPPORT_RECORDING | UAVOSConstants.CAMERA_SPECIFICATION_DUAL_CAM
+                        | UAVOSConstants.CAMERA_SPECIFICATION_SUPPORT_FLASHING);
                 camera.put(UAVOSConstants.CAMERA_RECORDING_NOW, false);
                 camera.put(UAVOSConstants.CAMERA_ACTIVE, 1);
                 if (AndruavEngine.getPreference().getModuleType().contains(ProtocolHeaders.UAVOS_CAMERA_MODULE_CLASS)) {
@@ -593,7 +590,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         }
         AndruavEngine.getAndruavWS().connect(websocketURL);
-        TTS.getInstance().Speak(App.getAppContext().getString(R.string.gen_speak_connecting));
+        TTS.getInstance().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_speak_connecting));
 
     }
 
@@ -733,7 +730,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         AndruavEngine.setLo7etTa7akomMasna(new ControlBoardFactory());
         AndruavEngine.setAndruavWe7daMasna3(new AndruavUnitFactory());
-        AndruavEngine.setAndruavWe7daMapBase(new AndruavUnitMap());
 
 
 
@@ -741,8 +737,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         //exceptionHTTPLogger.Logentris(AndruavSettings.AccessCode,"INFO","Started");
 
 
-
-        timeApp = new Time();
 
         gui_ConnectionIconID = R.drawable.connect_w_32x32;
 

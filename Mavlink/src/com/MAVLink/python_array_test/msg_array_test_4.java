@@ -27,7 +27,7 @@ public class msg_array_test_4 extends MAVLinkMessage {
      */
     @Description("Value array")
     @Units("")
-    public long ar_u32[] = new long[4];
+    public long[] ar_u32 = new long[4];
     
     /**
      * Stub field
@@ -134,7 +134,7 @@ public class msg_array_test_4 extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ARRAY_TEST_4 - sysid:"+sysid+" compid:"+compid+" ar_u32:"+ar_u32+" v:"+v+"";
+        return "MAVLINK_MSG_ID_ARRAY_TEST_4 - sysid:"+sysid+" compid:"+compid+" ar_u32:"+ar_u32+" v:"+v;
     }
 
     /**

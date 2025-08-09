@@ -329,7 +329,6 @@
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/fcbdroneactivity_rgProtocols"
         android:layout_alignTop="@+id/fcbdroneactivity_rgConnections"
         android:layout_alignParentRight="true">
 

@@ -104,7 +104,7 @@ public class msg_open_drone_id_location extends MAVLinkMessage {
      */
     @Description("Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ")
     @Units("")
-    public short id_or_mac[] = new short[20];
+    public short[] id_or_mac = new short[20];
     
     /**
      * Indicates whether the unmanned aircraft is on the ground or in the air.
@@ -321,7 +321,7 @@ public class msg_open_drone_id_location extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_OPEN_DRONE_ID_LOCATION - sysid:"+sysid+" compid:"+compid+" latitude:"+latitude+" longitude:"+longitude+" altitude_barometric:"+altitude_barometric+" altitude_geodetic:"+altitude_geodetic+" height:"+height+" timestamp:"+timestamp+" direction:"+direction+" speed_horizontal:"+speed_horizontal+" speed_vertical:"+speed_vertical+" target_system:"+target_system+" target_component:"+target_component+" id_or_mac:"+id_or_mac+" status:"+status+" height_reference:"+height_reference+" horizontal_accuracy:"+horizontal_accuracy+" vertical_accuracy:"+vertical_accuracy+" barometer_accuracy:"+barometer_accuracy+" speed_accuracy:"+speed_accuracy+" timestamp_accuracy:"+timestamp_accuracy+"";
+        return "MAVLINK_MSG_ID_OPEN_DRONE_ID_LOCATION - sysid:"+sysid+" compid:"+compid+" latitude:"+latitude+" longitude:"+longitude+" altitude_barometric:"+altitude_barometric+" altitude_geodetic:"+altitude_geodetic+" height:"+height+" timestamp:"+timestamp+" direction:"+direction+" speed_horizontal:"+speed_horizontal+" speed_vertical:"+speed_vertical+" target_system:"+target_system+" target_component:"+target_component+" id_or_mac:"+id_or_mac+" status:"+status+" height_reference:"+height_reference+" horizontal_accuracy:"+horizontal_accuracy+" vertical_accuracy:"+vertical_accuracy+" barometer_accuracy:"+barometer_accuracy+" speed_accuracy:"+speed_accuracy+" timestamp_accuracy:"+timestamp_accuracy;
     }
 
     /**

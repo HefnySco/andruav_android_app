@@ -181,7 +181,7 @@ public class msg_herelink_telem extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_HERELINK_TELEM - sysid:"+sysid+" compid:"+compid+" rf_freq:"+rf_freq+" link_bw:"+link_bw+" link_rate:"+link_rate+" snr:"+snr+" cpu_temp:"+cpu_temp+" board_temp:"+board_temp+" rssi:"+rssi+"";
+        return "MAVLINK_MSG_ID_HERELINK_TELEM - sysid:"+sysid+" compid:"+compid+" rf_freq:"+rf_freq+" link_bw:"+link_bw+" link_rate:"+link_rate+" snr:"+snr+" cpu_temp:"+cpu_temp+" board_temp:"+board_temp+" rssi:"+rssi;
     }
 
     /**

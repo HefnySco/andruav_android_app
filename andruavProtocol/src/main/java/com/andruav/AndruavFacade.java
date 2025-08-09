@@ -757,7 +757,7 @@ public class AndruavFacade extends AndruavFacadeBase{
     public static void engageRX (final AndruavUnitBase andruavUnitBase)
     {
 
-        if (andruavUnitBase == null) return ;
+        
 
     }
 

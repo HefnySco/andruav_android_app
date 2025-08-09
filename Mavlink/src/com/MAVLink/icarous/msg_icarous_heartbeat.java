@@ -115,7 +115,7 @@ public class msg_icarous_heartbeat extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ICAROUS_HEARTBEAT - sysid:"+sysid+" compid:"+compid+" status:"+status+"";
+        return "MAVLINK_MSG_ID_ICAROUS_HEARTBEAT - sysid:"+sysid+" compid:"+compid+" status:"+status;
     }
 
     /**

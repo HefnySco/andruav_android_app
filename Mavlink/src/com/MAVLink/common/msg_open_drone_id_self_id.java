@@ -41,7 +41,7 @@ public class msg_open_drone_id_self_id extends MAVLinkMessage {
      */
     @Description("Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ")
     @Units("")
-    public short id_or_mac[] = new short[20];
+    public short[] id_or_mac = new short[20];
     
     /**
      * Indicates the type of the description field.
@@ -55,7 +55,7 @@ public class msg_open_drone_id_self_id extends MAVLinkMessage {
      */
     @Description("Text description or numeric value expressed as ASCII characters. Shall be filled with nulls in the unused portion of the field.")
     @Units("")
-    public byte description[] = new byte[23];
+    public byte[] description = new byte[23];
     
 
     /**
@@ -204,7 +204,7 @@ public class msg_open_drone_id_self_id extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_OPEN_DRONE_ID_SELF_ID - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" id_or_mac:"+id_or_mac+" description_type:"+description_type+" description:"+description+"";
+        return "MAVLINK_MSG_ID_OPEN_DRONE_ID_SELF_ID - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" id_or_mac:"+id_or_mac+" description_type:"+description_type+" description:"+description;
     }
 
     /**

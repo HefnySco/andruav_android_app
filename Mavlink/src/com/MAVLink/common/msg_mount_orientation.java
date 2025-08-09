@@ -159,7 +159,7 @@ public class msg_mount_orientation extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_MOUNT_ORIENTATION - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" roll:"+roll+" pitch:"+pitch+" yaw:"+yaw+" yaw_absolute:"+yaw_absolute+"";
+        return "MAVLINK_MSG_ID_MOUNT_ORIENTATION - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" roll:"+roll+" pitch:"+pitch+" yaw:"+yaw+" yaw_absolute:"+yaw_absolute;
     }
 
     /**

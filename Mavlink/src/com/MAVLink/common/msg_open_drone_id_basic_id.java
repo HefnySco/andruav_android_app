@@ -41,7 +41,7 @@ public class msg_open_drone_id_basic_id extends MAVLinkMessage {
      */
     @Description("Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ")
     @Units("")
-    public short id_or_mac[] = new short[20];
+    public short[] id_or_mac = new short[20];
     
     /**
      * Indicates the format for the uas_id field of this message.
@@ -62,7 +62,7 @@ public class msg_open_drone_id_basic_id extends MAVLinkMessage {
      */
     @Description("UAS (Unmanned Aircraft System) ID following the format specified by id_type. Shall be filled with nulls in the unused portion of the field.")
     @Units("")
-    public short uas_id[] = new short[20];
+    public short[] uas_id = new short[20];
     
 
     /**
@@ -186,7 +186,7 @@ public class msg_open_drone_id_basic_id extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_OPEN_DRONE_ID_BASIC_ID - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" id_or_mac:"+id_or_mac+" id_type:"+id_type+" ua_type:"+ua_type+" uas_id:"+uas_id+"";
+        return "MAVLINK_MSG_ID_OPEN_DRONE_ID_BASIC_ID - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" id_or_mac:"+id_or_mac+" id_type:"+id_type+" ua_type:"+ua_type+" uas_id:"+uas_id;
     }
 
     /**

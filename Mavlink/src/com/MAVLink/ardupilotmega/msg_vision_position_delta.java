@@ -41,14 +41,14 @@ public class msg_vision_position_delta extends MAVLinkMessage {
      */
     @Description("Defines a rotation vector [roll, pitch, yaw] to the current MAV_FRAME_BODY_FRD from the previous MAV_FRAME_BODY_FRD.")
     @Units("rad")
-    public float angle_delta[] = new float[3];
+    public float[] angle_delta = new float[3];
     
     /**
      * Change in position to the current MAV_FRAME_BODY_FRD from the previous FRAME_BODY_FRD rotated to the current MAV_FRAME_BODY_FRD.
      */
     @Description("Change in position to the current MAV_FRAME_BODY_FRD from the previous FRAME_BODY_FRD rotated to the current MAV_FRAME_BODY_FRD.")
     @Units("m")
-    public float position_delta[] = new float[3];
+    public float[] position_delta = new float[3];
     
     /**
      * Normalised confidence value from 0 to 100.
@@ -175,7 +175,7 @@ public class msg_vision_position_delta extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_VISION_POSITION_DELTA - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" time_delta_usec:"+time_delta_usec+" angle_delta:"+angle_delta+" position_delta:"+position_delta+" confidence:"+confidence+"";
+        return "MAVLINK_MSG_ID_VISION_POSITION_DELTA - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" time_delta_usec:"+time_delta_usec+" angle_delta:"+angle_delta+" position_delta:"+position_delta+" confidence:"+confidence;
     }
 
     /**

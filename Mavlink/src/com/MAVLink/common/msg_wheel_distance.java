@@ -34,7 +34,7 @@ public class msg_wheel_distance extends MAVLinkMessage {
      */
     @Description("Distance reported by individual wheel encoders. Forward rotations increase values, reverse rotations decrease them. Not all wheels will necessarily have wheel encoders; the mapping of encoders to wheel positions must be agreed/understood by the endpoints.")
     @Units("m")
-    public double distance[] = new double[16];
+    public double[] distance = new double[16];
     
     /**
      * Number of wheels reported.
@@ -145,7 +145,7 @@ public class msg_wheel_distance extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_WHEEL_DISTANCE - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" distance:"+distance+" count:"+count+"";
+        return "MAVLINK_MSG_ID_WHEEL_DISTANCE - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" distance:"+distance+" count:"+count;
     }
 
     /**

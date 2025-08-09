@@ -40,4 +40,5 @@ public interface  INotification {
     void Cancel(int Id);
 
     void Speak(String message);
+    void SpeakNow(String message);
 }

@@ -59,12 +59,12 @@ public class TelemetryModeer {
         switch (connected)
         {
             case CURRENTCONNECTION_USB:
-                PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_NORMAL, AndruavMessage_Error.ERROR_USBERROR, App.getAppContext().getString(R.string.gen_usb_connected), null);
+                PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_NORMAL, AndruavMessage_Error.ERROR_USBERROR, App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_usb_connected), null);
 
                 break;
 
             case CURRENTCONNECTION_BT:
-                PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_NORMAL, AndruavMessage_Error.ERROR_BLUETOOTH, App.getAppContext().getString(R.string.gen_bluetooth_connected), null);
+                PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_NORMAL, AndruavMessage_Error.ERROR_BLUETOOTH, App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_bluetooth_connected), null);
 
                 break;
 
@@ -75,17 +75,17 @@ public class TelemetryModeer {
                 {
 
                     case CURRENTCONNECTION_UDP:
-                        PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_UDP, App.getAppContext().getString(R.string.gen_udp_disabled), null);
+                        PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_UDP, App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_udp_disabled), null);
 
                         break;
 
                     case CURRENTCONNECTION_BT:
-                        PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_BLUETOOTH, App.getAppContext().getString(R.string.gen_bluetooth_disabled), null);
+                        PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_BLUETOOTH, App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_bluetooth_disabled), null);
 
                         break;
 
                     case CURRENTCONNECTION_USB:
-                        PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_USBERROR, App.getAppContext().getString(R.string.gen_usb_disconnected), null);
+                        PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_USBERROR, App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_usb_disconnected), null);
 
                         break;
 
@@ -178,7 +178,7 @@ public class TelemetryModeer {
                        {
                            AndruavEngine.notification().Speak("No Bluetooth device has been selected");
                            try {
-                               DialogHelper.doModalDialog(context, context.getString(R.string.gen_connection), "No Bluetooth device has been selected", null);
+                               DialogHelper.doModalDialog(context, context.getString(ap.andruavmiddlelibrary.R.string.gen_connection), "No Bluetooth device has been selected", null);
                            }
                            catch (RuntimeException er)
                            {
@@ -216,7 +216,7 @@ public class TelemetryModeer {
                        break;
                    case Preference.FCB_COM_TCP:
                    default:
-                       DialogHelper.doModalDialog(context, context.getString(R.string.gen_connection), context.getString(R.string.andruav_error_connection_notsupported), null);
+                       DialogHelper.doModalDialog(context, context.getString(ap.andruavmiddlelibrary.R.string.gen_connection), context.getString(ap.andruavmiddlelibrary.R.string.andruav_error_connection_notsupported), null);
                        break;
                }
                break;
@@ -387,7 +387,7 @@ public class TelemetryModeer {
                     App.BT.Bluetooth.Enable();
                     if (!res) {
                         this.cancel(true);
-                        DialogHelper.doModalDialog(mContext, mContext.getString(R.string.gen_connection), "cannot start Bluetooth", null);
+                        DialogHelper.doModalDialog(mContext, mContext.getString(ap.andruavmiddlelibrary.R.string.gen_connection), "cannot start Bluetooth", null);
                         return;
                     }
                     ProgressDialogHelper.doProgressDialog(mContext,"Bluetooth");

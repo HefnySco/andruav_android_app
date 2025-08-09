@@ -97,7 +97,7 @@ public class msg_distance_sensor extends MAVLinkMessage {
      */
     @Description("Quaternion of the sensor orientation in vehicle body frame (w, x, y, z order, zero-rotation is 1, 0, 0, 0). Zero-rotation is along the vehicle body x-axis. This field is required if the orientation is set to MAV_SENSOR_ROTATION_CUSTOM. Set it to 0 if invalid.'")
     @Units("")
-    public float quaternion[] = new float[4];
+    public float[] quaternion = new float[4];
     
     /**
      * Signal quality of the sensor. Specific to each sensor type, representing the relation of the signal strength with the target reflectivity, distance, size or aspect, but normalised as a percentage. 0 = unknown/unset signal quality, 1 = invalid signal, 100 = perfect signal.
@@ -244,7 +244,7 @@ public class msg_distance_sensor extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_DISTANCE_SENSOR - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" min_distance:"+min_distance+" max_distance:"+max_distance+" current_distance:"+current_distance+" type:"+type+" id:"+id+" orientation:"+orientation+" covariance:"+covariance+" horizontal_fov:"+horizontal_fov+" vertical_fov:"+vertical_fov+" quaternion:"+quaternion+" signal_quality:"+signal_quality+"";
+        return "MAVLINK_MSG_ID_DISTANCE_SENSOR - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" min_distance:"+min_distance+" max_distance:"+max_distance+" current_distance:"+current_distance+" type:"+type+" id:"+id+" orientation:"+orientation+" covariance:"+covariance+" horizontal_fov:"+horizontal_fov+" vertical_fov:"+vertical_fov+" quaternion:"+quaternion+" signal_quality:"+signal_quality;
     }
 
     /**

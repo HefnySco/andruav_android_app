@@ -69,7 +69,7 @@ public class msg_device_op_read extends MAVLinkMessage {
      */
     @Description("Name of device on bus (for SPI).")
     @Units("")
-    public byte busname[] = new byte[40];
+    public byte[] busname = new byte[40];
     
     /**
      * First register to read.
@@ -251,7 +251,7 @@ public class msg_device_op_read extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_DEVICE_OP_READ - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" target_system:"+target_system+" target_component:"+target_component+" bustype:"+bustype+" bus:"+bus+" address:"+address+" busname:"+busname+" regstart:"+regstart+" count:"+count+" bank:"+bank+"";
+        return "MAVLINK_MSG_ID_DEVICE_OP_READ - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" target_system:"+target_system+" target_component:"+target_component+" bustype:"+bustype+" bus:"+bus+" address:"+address+" busname:"+busname+" regstart:"+regstart+" count:"+count+" bank:"+bank;
     }
 
     /**

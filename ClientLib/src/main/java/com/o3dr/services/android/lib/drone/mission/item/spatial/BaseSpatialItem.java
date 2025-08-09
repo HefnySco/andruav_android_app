@@ -36,7 +36,7 @@ public abstract class BaseSpatialItem extends MissionItem implements MissionItem
 
         BaseSpatialItem that = (BaseSpatialItem) o;
 
-        return !(!Objects.equals(coordinate, that.coordinate));
+        return Objects.equals(coordinate, that.coordinate);
 
     }
 

@@ -126,7 +126,7 @@ public class msg_rangefinder extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_RANGEFINDER - sysid:"+sysid+" compid:"+compid+" distance:"+distance+" voltage:"+voltage+"";
+        return "MAVLINK_MSG_ID_RANGEFINDER - sysid:"+sysid+" compid:"+compid+" distance:"+distance+" voltage:"+voltage;
     }
 
     /**

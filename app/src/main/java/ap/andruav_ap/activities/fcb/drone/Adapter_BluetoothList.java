@@ -62,6 +62,7 @@ public class Adapter_BluetoothList extends BaseAdapter {
         ListItem_BluetoothUnit item = new ListItem_BluetoothUnit();
         item.setDeviceName(device.getName());
         item.setDeviceMAC(device.getAddress());
+        if (data.contains(item)) return ;
         data.add(item);
     }
 

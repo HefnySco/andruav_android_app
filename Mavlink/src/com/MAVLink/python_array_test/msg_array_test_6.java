@@ -27,7 +27,7 @@ public class msg_array_test_6 extends MAVLinkMessage {
      */
     @Description("Value array")
     @Units("")
-    public double ar_d[] = new double[2];
+    public double[] ar_d = new double[2];
     
     /**
      * Stub field
@@ -41,21 +41,21 @@ public class msg_array_test_6 extends MAVLinkMessage {
      */
     @Description("Value array")
     @Units("")
-    public long ar_u32[] = new long[2];
+    public long[] ar_u32 = new long[2];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public int ar_i32[] = new int[2];
+    public int[] ar_i32 = new int[2];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public float ar_f[] = new float[2];
+    public float[] ar_f = new float[2];
     
     /**
      * Stub field
@@ -69,14 +69,14 @@ public class msg_array_test_6 extends MAVLinkMessage {
      */
     @Description("Value array")
     @Units("")
-    public int ar_u16[] = new int[2];
+    public int[] ar_u16 = new int[2];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public short ar_i16[] = new short[2];
+    public short[] ar_i16 = new short[2];
     
     /**
      * Stub field
@@ -90,21 +90,21 @@ public class msg_array_test_6 extends MAVLinkMessage {
      */
     @Description("Value array")
     @Units("")
-    public short ar_u8[] = new short[2];
+    public short[] ar_u8 = new short[2];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public byte ar_i8[] = new byte[2];
+    public byte[] ar_i8 = new byte[2];
     
     /**
      * Value array
      */
     @Description("Value array")
     @Units("")
-    public byte ar_c[] = new byte[32];
+    public byte[] ar_c = new byte[32];
     
 
     /**
@@ -337,7 +337,7 @@ public class msg_array_test_6 extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ARRAY_TEST_6 - sysid:"+sysid+" compid:"+compid+" ar_d:"+ar_d+" v3:"+v3+" ar_u32:"+ar_u32+" ar_i32:"+ar_i32+" ar_f:"+ar_f+" v2:"+v2+" ar_u16:"+ar_u16+" ar_i16:"+ar_i16+" v1:"+v1+" ar_u8:"+ar_u8+" ar_i8:"+ar_i8+" ar_c:"+ar_c+"";
+        return "MAVLINK_MSG_ID_ARRAY_TEST_6 - sysid:"+sysid+" compid:"+compid+" ar_d:"+ar_d+" v3:"+v3+" ar_u32:"+ar_u32+" ar_i32:"+ar_i32+" ar_f:"+ar_f+" v2:"+v2+" ar_u16:"+ar_u16+" ar_i16:"+ar_i16+" v1:"+v1+" ar_u8:"+ar_u8+" ar_i8:"+ar_i8+" ar_c:"+ar_c;
     }
 
     /**

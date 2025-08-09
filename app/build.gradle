@@ -5,14 +5,14 @@ apply plugin: 'com.android.application'
 android {
 
 
-    signingConfigs {
-        config {
-            keyAlias 'andruav_ap'
-            keyPassword 'apMonth15'
-            storeFile file('/home/mhefny/Documents/Keys/Andruav_AP/Andruav_Ap.jks')
-            storePassword 'apMonth15'
-        }
-    }
+//    signingConfigs {
+//        config {
+//            keyAlias 'andruav_ap'
+//            keyPassword 'apMonth15'
+//            storeFile file('/home/mhefny/Documents/Keys/Andruav_AP/Andruav_Ap.jks')
+//            storePassword 'apMonth15'
+//        }
+//    }
 
     compileSdkVersion android_build_sdk_version
     buildToolsVersion android_build_tools_version
@@ -21,13 +21,18 @@ android {
         applicationId 'arudpilot.andruav'
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
-        versionName '6.1.0'
-        signingConfig signingConfigs.config
-        versionCode 60000
+        versionName '7.1.0'
+//        signingConfig signingConfigs.config
+        versionCode 60400
         multiDexEnabled true
     }
 
-
+    // Jai - update for gradle 8.x
+    buildFeatures {
+        buildConfig = true
+    }
+    namespace 'ap.andruav_ap'
+    // Jai - update for gradle 8.x
 
 
     buildTypes {
@@ -39,7 +44,7 @@ android {
             zipAlignEnabled true
             testCoverageEnabled = false
             renderscriptDebuggable true
-            signingConfig signingConfigs.config
+         //   signingConfig signingConfigs.config
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
                     outputFileName = "Andruav_debug_" + variant.properties.get('flavorName') + "." + defaultConfig.versionName + "." + releaseTime() + ".apk"
@@ -51,16 +56,15 @@ android {
             logger.info('Release Built')
             debuggable false
             jniDebuggable false
-            signingConfig signingConfigs.config
-            minifyEnabled true
-            shrinkResources true
+//            signingConfig signingConfigs.config
+            minifyEnabled false
             zipAlignEnabled true
+            signingConfig signingConfigs.debug
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
                     outputFileName = "Andruav_release_" + variant.properties.get('flavorName') + "." + defaultConfig.versionName + "." + releaseTime() + ".apk"
                 }
             }
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
 
@@ -77,17 +81,7 @@ android {
 
 
     productFlavors {
-        PUBLIC_
-                {
-                    dimension "audience"
-                    resValue "string", "app_name", "Andruav-AP"
-                    buildConfigField "String", "BuidType" , "\"PUBLIC_\""
-                    sourceSets {
-                        main {
-                            manifest.srcFile 'src/main/AndroidManifest.xml'
-                        }
-                    }
-                }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -105,11 +99,16 @@ configurations {
     all*.exclude group: "org.apache.commons", module: "commons-compress"
 }
 
-
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
 
 dependencies {
     implementation project(':andruavmiddlelibrary')
     implementation project(':ClientLib')
+    //implementation project(':swipenumberpicker')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.multidex:multidex:2.0.1'
     testImplementation 'junit:junit:4.12'
@@ -117,10 +116,11 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation "com.google.android.gms:play-services-plus:${play_services_version}"
-    implementation "com.google.android.gms:play-services-maps:${play_services_version}"
     implementation 'org.usb4java:usb4java:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'com.github.supervital:swipenumberpicker:1.0.3'
+    // only FCB mode supported, remove - start
+    //implementation 'com.github.supervital:swipenumberpicker:1.0.3'
+    // only FCB mode supported, remove - end
     implementation project(':rangebar-release')
 }
 

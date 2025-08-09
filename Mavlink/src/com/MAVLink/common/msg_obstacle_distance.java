@@ -34,7 +34,7 @@ public class msg_obstacle_distance extends MAVLinkMessage {
      */
     @Description("Distance of obstacles around the vehicle with index 0 corresponding to north + angle_offset, unless otherwise specified in the frame. A value of 0 is valid and means that the obstacle is practically touching the sensor. A value of max_distance +1 means no obstacle is present. A value of UINT16_MAX for unknown/not used. In a array element, one unit corresponds to 1cm.")
     @Units("cm")
-    public int distances[] = new int[72];
+    public int[] distances = new int[72];
     
     /**
      * Minimum distance the sensor can measure.
@@ -211,7 +211,7 @@ public class msg_obstacle_distance extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_OBSTACLE_DISTANCE - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" distances:"+distances+" min_distance:"+min_distance+" max_distance:"+max_distance+" sensor_type:"+sensor_type+" increment:"+increment+" increment_f:"+increment_f+" angle_offset:"+angle_offset+" frame:"+frame+"";
+        return "MAVLINK_MSG_ID_OBSTACLE_DISTANCE - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" distances:"+distances+" min_distance:"+min_distance+" max_distance:"+max_distance+" sensor_type:"+sensor_type+" increment:"+increment+" increment_f:"+increment_f+" angle_offset:"+angle_offset+" frame:"+frame;
     }
 
     /**

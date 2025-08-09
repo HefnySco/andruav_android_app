@@ -379,7 +379,7 @@ public class msg_aslctrl_data extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ASLCTRL_DATA - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" h:"+h+" hRef:"+hRef+" hRef_t:"+hRef_t+" PitchAngle:"+PitchAngle+" PitchAngleRef:"+PitchAngleRef+" q:"+q+" qRef:"+qRef+" uElev:"+uElev+" uThrot:"+uThrot+" uThrot2:"+uThrot2+" nZ:"+nZ+" AirspeedRef:"+AirspeedRef+" YawAngle:"+YawAngle+" YawAngleRef:"+YawAngleRef+" RollAngle:"+RollAngle+" RollAngleRef:"+RollAngleRef+" p:"+p+" pRef:"+pRef+" r:"+r+" rRef:"+rRef+" uAil:"+uAil+" uRud:"+uRud+" aslctrl_mode:"+aslctrl_mode+" SpoilersEngaged:"+SpoilersEngaged+"";
+        return "MAVLINK_MSG_ID_ASLCTRL_DATA - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" h:"+h+" hRef:"+hRef+" hRef_t:"+hRef_t+" PitchAngle:"+PitchAngle+" PitchAngleRef:"+PitchAngleRef+" q:"+q+" qRef:"+qRef+" uElev:"+uElev+" uThrot:"+uThrot+" uThrot2:"+uThrot2+" nZ:"+nZ+" AirspeedRef:"+AirspeedRef+" YawAngle:"+YawAngle+" YawAngleRef:"+YawAngleRef+" RollAngle:"+RollAngle+" RollAngleRef:"+RollAngleRef+" p:"+p+" pRef:"+pRef+" r:"+r+" rRef:"+rRef+" uAil:"+uAil+" uRud:"+uRud+" aslctrl_mode:"+aslctrl_mode+" SpoilersEngaged:"+SpoilersEngaged;
     }
 
     /**

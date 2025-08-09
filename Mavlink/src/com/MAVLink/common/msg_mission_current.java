@@ -148,7 +148,7 @@ public class msg_mission_current extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_MISSION_CURRENT - sysid:"+sysid+" compid:"+compid+" seq:"+seq+" total:"+total+" mission_state:"+mission_state+" mission_mode:"+mission_mode+"";
+        return "MAVLINK_MSG_ID_MISSION_CURRENT - sysid:"+sysid+" compid:"+compid+" seq:"+seq+" total:"+total+" mission_state:"+mission_state+" mission_mode:"+mission_mode;
     }
 
     /**

@@ -62,7 +62,7 @@ public class msg_led_control extends MAVLinkMessage {
      */
     @Description("Custom Bytes.")
     @Units("")
-    public short custom_bytes[] = new short[24];
+    public short[] custom_bytes = new short[24];
     
 
     /**
@@ -178,7 +178,7 @@ public class msg_led_control extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_LED_CONTROL - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" instance:"+instance+" pattern:"+pattern+" custom_len:"+custom_len+" custom_bytes:"+custom_bytes+"";
+        return "MAVLINK_MSG_ID_LED_CONTROL - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" instance:"+instance+" pattern:"+pattern+" custom_len:"+custom_len+" custom_bytes:"+custom_bytes;
     }
 
     /**

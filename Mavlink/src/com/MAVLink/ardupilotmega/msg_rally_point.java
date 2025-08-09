@@ -214,7 +214,7 @@ public class msg_rally_point extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_RALLY_POINT - sysid:"+sysid+" compid:"+compid+" lat:"+lat+" lng:"+lng+" alt:"+alt+" break_alt:"+break_alt+" land_dir:"+land_dir+" target_system:"+target_system+" target_component:"+target_component+" idx:"+idx+" count:"+count+" flags:"+flags+"";
+        return "MAVLINK_MSG_ID_RALLY_POINT - sysid:"+sysid+" compid:"+compid+" lat:"+lat+" lng:"+lng+" alt:"+alt+" break_alt:"+break_alt+" land_dir:"+land_dir+" target_system:"+target_system+" target_component:"+target_component+" idx:"+idx+" count:"+count+" flags:"+flags;
     }
 
     /**

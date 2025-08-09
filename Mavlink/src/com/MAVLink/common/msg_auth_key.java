@@ -27,7 +27,7 @@ public class msg_auth_key extends MAVLinkMessage {
      */
     @Description("key")
     @Units("")
-    public byte key[] = new byte[32];
+    public byte[] key = new byte[32];
     
 
     /**
@@ -152,7 +152,7 @@ public class msg_auth_key extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_AUTH_KEY - sysid:"+sysid+" compid:"+compid+" key:"+key+"";
+        return "MAVLINK_MSG_ID_AUTH_KEY - sysid:"+sysid+" compid:"+compid+" key:"+key;
     }
 
     /**

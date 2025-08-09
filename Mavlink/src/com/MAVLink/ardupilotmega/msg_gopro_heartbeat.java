@@ -137,7 +137,7 @@ public class msg_gopro_heartbeat extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GOPRO_HEARTBEAT - sysid:"+sysid+" compid:"+compid+" status:"+status+" capture_mode:"+capture_mode+" flags:"+flags+"";
+        return "MAVLINK_MSG_ID_GOPRO_HEARTBEAT - sysid:"+sysid+" compid:"+compid+" status:"+status+" capture_mode:"+capture_mode+" flags:"+flags;
     }
 
     /**

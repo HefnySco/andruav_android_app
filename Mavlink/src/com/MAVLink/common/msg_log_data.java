@@ -48,7 +48,7 @@ public class msg_log_data extends MAVLinkMessage {
      */
     @Description("log data")
     @Units("")
-    public short data[] = new short[90];
+    public short[] data = new short[90];
     
 
     /**
@@ -156,7 +156,7 @@ public class msg_log_data extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_LOG_DATA - sysid:"+sysid+" compid:"+compid+" ofs:"+ofs+" id:"+id+" count:"+count+" data:"+data+"";
+        return "MAVLINK_MSG_ID_LOG_DATA - sysid:"+sysid+" compid:"+compid+" ofs:"+ofs+" id:"+id+" count:"+count+" data:"+data;
     }
 
     /**

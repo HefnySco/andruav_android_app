@@ -111,21 +111,21 @@ public class msg_gimbal_device_information extends MAVLinkMessage {
      */
     @Description("Name of the gimbal vendor.")
     @Units("")
-    public byte vendor_name[] = new byte[32];
+    public byte[] vendor_name = new byte[32];
     
     /**
      * Name of the gimbal model.
      */
     @Description("Name of the gimbal model.")
     @Units("")
-    public byte model_name[] = new byte[32];
+    public byte[] model_name = new byte[32];
     
     /**
      * Custom name of the gimbal given to it by the user.
      */
     @Description("Custom name of the gimbal given to it by the user.")
     @Units("")
-    public byte custom_name[] = new byte[32];
+    public byte[] custom_name = new byte[32];
     
     /**
      * This field is to be used if the gimbal manager and the gimbal device are the same component and hence have the same component ID. This field is then set to a number between 1-6. If the component ID is separate, this field is not required and must be set to 0.
@@ -391,7 +391,7 @@ public class msg_gimbal_device_information extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GIMBAL_DEVICE_INFORMATION - sysid:"+sysid+" compid:"+compid+" uid:"+uid+" time_boot_ms:"+time_boot_ms+" firmware_version:"+firmware_version+" hardware_version:"+hardware_version+" roll_min:"+roll_min+" roll_max:"+roll_max+" pitch_min:"+pitch_min+" pitch_max:"+pitch_max+" yaw_min:"+yaw_min+" yaw_max:"+yaw_max+" cap_flags:"+cap_flags+" custom_cap_flags:"+custom_cap_flags+" vendor_name:"+vendor_name+" model_name:"+model_name+" custom_name:"+custom_name+" gimbal_device_id:"+gimbal_device_id+"";
+        return "MAVLINK_MSG_ID_GIMBAL_DEVICE_INFORMATION - sysid:"+sysid+" compid:"+compid+" uid:"+uid+" time_boot_ms:"+time_boot_ms+" firmware_version:"+firmware_version+" hardware_version:"+hardware_version+" roll_min:"+roll_min+" roll_max:"+roll_max+" pitch_min:"+pitch_min+" pitch_max:"+pitch_max+" yaw_min:"+yaw_min+" yaw_max:"+yaw_max+" cap_flags:"+cap_flags+" custom_cap_flags:"+custom_cap_flags+" vendor_name:"+vendor_name+" model_name:"+model_name+" custom_name:"+custom_name+" gimbal_device_id:"+gimbal_device_id;
     }
 
     /**

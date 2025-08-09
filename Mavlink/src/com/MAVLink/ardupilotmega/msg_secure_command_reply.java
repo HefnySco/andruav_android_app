@@ -55,7 +55,7 @@ public class msg_secure_command_reply extends MAVLinkMessage {
      */
     @Description("Reply data.")
     @Units("")
-    public short data[] = new short[220];
+    public short[] data = new short[220];
     
 
     /**
@@ -167,7 +167,7 @@ public class msg_secure_command_reply extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_SECURE_COMMAND_REPLY - sysid:"+sysid+" compid:"+compid+" sequence:"+sequence+" operation:"+operation+" result:"+result+" data_length:"+data_length+" data:"+data+"";
+        return "MAVLINK_MSG_ID_SECURE_COMMAND_REPLY - sysid:"+sysid+" compid:"+compid+" sequence:"+sequence+" operation:"+operation+" result:"+result+" data_length:"+data_length+" data:"+data;
     }
 
     /**

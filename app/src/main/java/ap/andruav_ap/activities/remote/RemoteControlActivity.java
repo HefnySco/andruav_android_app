@@ -102,7 +102,7 @@ public class RemoteControlActivity extends AppCompatActivity {
 
         if (!DeviceManagerFacade.hasMultitouch())
         {
-            DialogHelper.doModalDialog(Me,getString(R.string.title_activity_remotecontrol),getString(R.string.err_feature_multitouch),null,new DialogInterface.OnClickListener() {
+            DialogHelper.doModalDialog(Me,getString(ap.andruavmiddlelibrary.R.string.title_activity_remotecontrol),getString(ap.andruavmiddlelibrary.R.string.err_feature_multitouch),null,new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     Me.finish();
                 }
@@ -136,7 +136,7 @@ public class RemoteControlActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.mi_Help) {
-            GMail.sendGMail(this, getString(R.string.email_title), getString(R.string.email_to), getString(R.string.email_subject), getString(R.string.email_body), null);
+            GMail.sendGMail(this, getString(ap.andruavmiddlelibrary.R.string.email_title), getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject), getString(ap.andruavmiddlelibrary.R.string.email_body), null);
             return true;
         }
 

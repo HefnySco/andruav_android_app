@@ -48,7 +48,7 @@ public class msg_gopro_set_request extends MAVLinkMessage {
      */
     @Description("Value.")
     @Units("")
-    public short value[] = new short[4];
+    public short[] value = new short[4];
     
 
     /**
@@ -156,7 +156,7 @@ public class msg_gopro_set_request extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GOPRO_SET_REQUEST - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" cmd_id:"+cmd_id+" value:"+value+"";
+        return "MAVLINK_MSG_ID_GOPRO_SET_REQUEST - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" cmd_id:"+cmd_id+" value:"+value;
     }
 
     /**

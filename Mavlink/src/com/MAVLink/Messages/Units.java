@@ -35,7 +35,7 @@ public @interface Units {
 
 		public static void main(String[] args) throws Exception {
 			Field field = Test.class.getField("speed");
-			Units annotation = (Units) field.getAnnotation(Units.class);
+			Units annotation = field.getAnnotation(Units.class);
 			System.out.println(UnitsEnum.fromName(annotation.value()));
 		}
 	}

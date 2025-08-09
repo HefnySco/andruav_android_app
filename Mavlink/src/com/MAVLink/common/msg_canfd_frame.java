@@ -62,7 +62,7 @@ public class msg_canfd_frame extends MAVLinkMessage {
      */
     @Description("Frame data")
     @Units("")
-    public short data[] = new short[64];
+    public short[] data = new short[64];
     
 
     /**
@@ -178,7 +178,7 @@ public class msg_canfd_frame extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_CANFD_FRAME - sysid:"+sysid+" compid:"+compid+" id:"+id+" target_system:"+target_system+" target_component:"+target_component+" bus:"+bus+" len:"+len+" data:"+data+"";
+        return "MAVLINK_MSG_ID_CANFD_FRAME - sysid:"+sysid+" compid:"+compid+" id:"+id+" target_system:"+target_system+" target_component:"+target_component+" bus:"+bus+" len:"+len+" data:"+data;
     }
 
     /**

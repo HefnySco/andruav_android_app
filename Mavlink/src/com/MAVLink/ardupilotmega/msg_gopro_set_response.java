@@ -126,7 +126,7 @@ public class msg_gopro_set_response extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GOPRO_SET_RESPONSE - sysid:"+sysid+" compid:"+compid+" cmd_id:"+cmd_id+" status:"+status+"";
+        return "MAVLINK_MSG_ID_GOPRO_SET_RESPONSE - sysid:"+sysid+" compid:"+compid+" cmd_id:"+cmd_id+" status:"+status;
     }
 
     /**

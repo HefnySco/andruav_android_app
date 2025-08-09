@@ -137,7 +137,7 @@ public class msg_ualberta_sys_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_UALBERTA_SYS_STATUS - sysid:"+sysid+" compid:"+compid+" mode:"+mode+" nav_mode:"+nav_mode+" pilot:"+pilot+"";
+        return "MAVLINK_MSG_ID_UALBERTA_SYS_STATUS - sysid:"+sysid+" compid:"+compid+" mode:"+mode+" nav_mode:"+nav_mode+" pilot:"+pilot;
     }
 
     /**

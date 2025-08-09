@@ -181,7 +181,7 @@ public class msg_gsm_link_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GSM_LINK_STATUS - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" gsm_modem_type:"+gsm_modem_type+" gsm_link_type:"+gsm_link_type+" rssi:"+rssi+" rsrp_rscp:"+rsrp_rscp+" sinr_ecio:"+sinr_ecio+" rsrq:"+rsrq+"";
+        return "MAVLINK_MSG_ID_GSM_LINK_STATUS - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" gsm_modem_type:"+gsm_modem_type+" gsm_link_type:"+gsm_link_type+" rssi:"+rssi+" rsrp_rscp:"+rsrp_rscp+" sinr_ecio:"+sinr_ecio+" rsrq:"+rsrq;
     }
 
     /**

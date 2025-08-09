@@ -115,7 +115,7 @@ public class msg_mission_item_reached extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_MISSION_ITEM_REACHED - sysid:"+sysid+" compid:"+compid+" seq:"+seq+"";
+        return "MAVLINK_MSG_ID_MISSION_ITEM_REACHED - sysid:"+sysid+" compid:"+compid+" seq:"+seq;
     }
 
     /**

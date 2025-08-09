@@ -163,7 +163,7 @@ public class Parameter implements DroneAttribute, Comparable<Parameter> {
 
         Parameter parameter = (Parameter) o;
 
-        return !(!Objects.equals(name, parameter.name));
+        return Objects.equals(name, parameter.name);
 
     }
 

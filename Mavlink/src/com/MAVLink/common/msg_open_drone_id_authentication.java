@@ -48,7 +48,7 @@ public class msg_open_drone_id_authentication extends MAVLinkMessage {
      */
     @Description("Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ")
     @Units("")
-    public short id_or_mac[] = new short[20];
+    public short[] id_or_mac = new short[20];
     
     /**
      * Indicates the type of authentication.
@@ -83,7 +83,7 @@ public class msg_open_drone_id_authentication extends MAVLinkMessage {
      */
     @Description("Opaque authentication data. For page 0, the size is only 17 bytes. For other pages, the size is 23 bytes. Shall be filled with nulls in the unused portion of the field.")
     @Units("")
-    public short authentication_data[] = new short[23];
+    public short[] authentication_data = new short[23];
     
 
     /**
@@ -219,7 +219,7 @@ public class msg_open_drone_id_authentication extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_OPEN_DRONE_ID_AUTHENTICATION - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" target_system:"+target_system+" target_component:"+target_component+" id_or_mac:"+id_or_mac+" authentication_type:"+authentication_type+" data_page:"+data_page+" last_page_index:"+last_page_index+" length:"+length+" authentication_data:"+authentication_data+"";
+        return "MAVLINK_MSG_ID_OPEN_DRONE_ID_AUTHENTICATION - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" target_system:"+target_system+" target_component:"+target_component+" id_or_mac:"+id_or_mac+" authentication_type:"+authentication_type+" data_page:"+data_page+" last_page_index:"+last_page_index+" length:"+length+" authentication_data:"+authentication_data;
     }
 
     /**

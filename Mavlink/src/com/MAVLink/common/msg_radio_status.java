@@ -181,7 +181,7 @@ public class msg_radio_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_RADIO_STATUS - sysid:"+sysid+" compid:"+compid+" rxerrors:"+rxerrors+" fixed:"+fixed+" rssi:"+rssi+" remrssi:"+remrssi+" txbuf:"+txbuf+" noise:"+noise+" remnoise:"+remnoise+"";
+        return "MAVLINK_MSG_ID_RADIO_STATUS - sysid:"+sysid+" compid:"+compid+" rxerrors:"+rxerrors+" fixed:"+fixed+" rssi:"+rssi+" remrssi:"+remrssi+" txbuf:"+txbuf+" noise:"+noise+" remnoise:"+remnoise;
     }
 
     /**

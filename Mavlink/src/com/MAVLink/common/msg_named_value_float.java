@@ -41,7 +41,7 @@ public class msg_named_value_float extends MAVLinkMessage {
      */
     @Description("Name of the debug variable")
     @Units("")
-    public byte name[] = new byte[10];
+    public byte[] name = new byte[10];
     
 
     /**
@@ -174,7 +174,7 @@ public class msg_named_value_float extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_NAMED_VALUE_FLOAT - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" value:"+value+" name:"+name+"";
+        return "MAVLINK_MSG_ID_NAMED_VALUE_FLOAT - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" value:"+value+" name:"+name;
     }
 
     /**

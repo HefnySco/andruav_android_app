@@ -75,20 +75,20 @@ public class SettingsDrone extends PreferenceActivity {
         // preferenceCategory = addTitle(R.string.pref_gr_general_settings);
         //addSection(R.xml.pref_general);
 
-        preferenceCategory = addTitle(R.string.pref_gr_fcb);
+        preferenceCategory = addTitle(ap.andruavmiddlelibrary.R.string.pref_gr_fcb);
         addSection(R.xml.pref_drone_fcbsettings);
 
 
-        preferenceCategory = addTitle(R.string.pref_gr_fpv_settings);
+        preferenceCategory = addTitle(ap.andruavmiddlelibrary.R.string.pref_gr_fpv_settings);
         addSection(R.xml.pref_drone_fpvsettings_noexternalcam);
 
 
         // Add 'notifications' preferences, and a corresponding header.
-        preferenceCategory = addTitle(R.string.pref_gr_recovery);
+        preferenceCategory = addTitle(ap.andruavmiddlelibrary.R.string.pref_gr_recovery);
         addSection(R.xml.pref_drone_systemrecovery);
 
         // Add 'data and sync' preferences, and a corresponding header.
-        preferenceCategory = addTitle(R.string.pref_feedback_support);
+        preferenceCategory = addTitle(ap.andruavmiddlelibrary.R.string.pref_feedback_support);
         addSection(R.xml.feedback_support);
 
         //preferenceCategory = addTitle(R.string.pref_gr_advanced_settings);

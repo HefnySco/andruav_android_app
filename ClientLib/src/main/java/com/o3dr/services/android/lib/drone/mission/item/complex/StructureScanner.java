@@ -148,7 +148,7 @@ public class StructureScanner extends BaseSpatialItem implements MissionItem.Com
         if (crossHatch != that.crossHatch) return false;
         if (!Objects.equals(surveyDetail, that.surveyDetail))
             return false;
-        return !(!Objects.equals(path, that.path));
+        return Objects.equals(path, that.path);
 
     }
 

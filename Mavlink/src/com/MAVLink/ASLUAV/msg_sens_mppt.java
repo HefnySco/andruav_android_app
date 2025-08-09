@@ -247,7 +247,7 @@ public class msg_sens_mppt extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_SENS_MPPT - sysid:"+sysid+" compid:"+compid+" mppt_timestamp:"+mppt_timestamp+" mppt1_volt:"+mppt1_volt+" mppt1_amp:"+mppt1_amp+" mppt2_volt:"+mppt2_volt+" mppt2_amp:"+mppt2_amp+" mppt3_volt:"+mppt3_volt+" mppt3_amp:"+mppt3_amp+" mppt1_pwm:"+mppt1_pwm+" mppt2_pwm:"+mppt2_pwm+" mppt3_pwm:"+mppt3_pwm+" mppt1_status:"+mppt1_status+" mppt2_status:"+mppt2_status+" mppt3_status:"+mppt3_status+"";
+        return "MAVLINK_MSG_ID_SENS_MPPT - sysid:"+sysid+" compid:"+compid+" mppt_timestamp:"+mppt_timestamp+" mppt1_volt:"+mppt1_volt+" mppt1_amp:"+mppt1_amp+" mppt2_volt:"+mppt2_volt+" mppt2_amp:"+mppt2_amp+" mppt3_volt:"+mppt3_volt+" mppt3_amp:"+mppt3_amp+" mppt1_pwm:"+mppt1_pwm+" mppt2_pwm:"+mppt2_pwm+" mppt3_pwm:"+mppt3_pwm+" mppt1_status:"+mppt1_status+" mppt2_status:"+mppt2_status+" mppt3_status:"+mppt3_status;
     }
 
     /**

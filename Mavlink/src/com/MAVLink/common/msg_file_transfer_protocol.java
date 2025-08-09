@@ -48,7 +48,7 @@ public class msg_file_transfer_protocol extends MAVLinkMessage {
      */
     @Description("Variable length payload. The length is defined by the remaining message length when subtracting the header and other fields.  The entire content of this block is opaque unless you understand any the encoding message_type.  The particular encoding used can be extension specific and might not always be documented as part of the mavlink specification.")
     @Units("")
-    public short payload[] = new short[251];
+    public short[] payload = new short[251];
     
 
     /**
@@ -156,7 +156,7 @@ public class msg_file_transfer_protocol extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL - sysid:"+sysid+" compid:"+compid+" target_network:"+target_network+" target_system:"+target_system+" target_component:"+target_component+" payload:"+payload+"";
+        return "MAVLINK_MSG_ID_FILE_TRANSFER_PROTOCOL - sysid:"+sysid+" compid:"+compid+" target_network:"+target_network+" target_system:"+target_system+" target_component:"+target_component+" payload:"+payload;
     }
 
     /**

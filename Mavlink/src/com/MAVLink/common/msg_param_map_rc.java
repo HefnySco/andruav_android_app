@@ -76,7 +76,7 @@ public class msg_param_map_rc extends MAVLinkMessage {
      */
     @Description("Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string")
     @Units("")
-    public byte param_id[] = new byte[16];
+    public byte[] param_id = new byte[16];
     
     /**
      * Index of parameter RC channel. Not equal to the RC channel id. Typically corresponds to a potentiometer-knob on the RC.
@@ -240,7 +240,7 @@ public class msg_param_map_rc extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_PARAM_MAP_RC - sysid:"+sysid+" compid:"+compid+" param_value0:"+param_value0+" scale:"+scale+" param_value_min:"+param_value_min+" param_value_max:"+param_value_max+" param_index:"+param_index+" target_system:"+target_system+" target_component:"+target_component+" param_id:"+param_id+" parameter_rc_channel_index:"+parameter_rc_channel_index+"";
+        return "MAVLINK_MSG_ID_PARAM_MAP_RC - sysid:"+sysid+" compid:"+compid+" param_value0:"+param_value0+" scale:"+scale+" param_value_min:"+param_value_min+" param_value_max:"+param_value_max+" param_index:"+param_index+" target_system:"+target_system+" target_component:"+target_component+" param_id:"+param_id+" parameter_rc_channel_index:"+parameter_rc_channel_index;
     }
 
     /**

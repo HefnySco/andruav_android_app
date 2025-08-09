@@ -83,7 +83,7 @@ public class msg_attitude_quaternion extends MAVLinkMessage {
      */
     @Description("Rotation offset by which the attitude quaternion and angular speed vector should be rotated for user display (quaternion with [w, x, y, z] order, zero-rotation is [1, 0, 0, 0], send [0, 0, 0, 0] if field not supported). This field is intended for systems in which the reference attitude may change during flight. For example, tailsitters VTOLs rotate their reference attitude by 90 degrees between hover mode and fixed wing mode, thus repr_offset_q is equal to [1, 0, 0, 0] in hover mode and equal to [0.7071, 0, 0.7071, 0] in fixed wing mode.")
     @Units("")
-    public float repr_offset_q[] = new float[4];
+    public float[] repr_offset_q = new float[4];
     
 
     /**
@@ -211,7 +211,7 @@ public class msg_attitude_quaternion extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ATTITUDE_QUATERNION - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" q1:"+q1+" q2:"+q2+" q3:"+q3+" q4:"+q4+" rollspeed:"+rollspeed+" pitchspeed:"+pitchspeed+" yawspeed:"+yawspeed+" repr_offset_q:"+repr_offset_q+"";
+        return "MAVLINK_MSG_ID_ATTITUDE_QUATERNION - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" q1:"+q1+" q2:"+q2+" q3:"+q3+" q4:"+q4+" rollspeed:"+rollspeed+" pitchspeed:"+pitchspeed+" yawspeed:"+yawspeed+" repr_offset_q:"+repr_offset_q;
     }
 
     /**

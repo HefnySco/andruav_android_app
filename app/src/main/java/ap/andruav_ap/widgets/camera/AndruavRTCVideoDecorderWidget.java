@@ -137,7 +137,7 @@ public class AndruavRTCVideoDecorderWidget  extends RelativeLayout implements IR
 
         mVideoFileRenderer.release();
         mVideoFileRenderer = null;
-        final String s = App.context.getString(R.string.action_record_video_stop_local);
+        final String s = App.context.getString(ap.andruavmiddlelibrary.R.string.action_record_video_stop_local);
         AndruavEngine.notification().Speak(s);
         mTxtLabel.setText(s);
         mTxtLabel.setTextColor(Color.WHITE);
@@ -167,7 +167,7 @@ public class AndruavRTCVideoDecorderWidget  extends RelativeLayout implements IR
                 e.printStackTrace();
             }
 
-            final String s = App.context.getString(R.string.action_record_video_start_local);
+            final String s = App.context.getString(ap.andruavmiddlelibrary.R.string.action_record_video_start_local);
             AndruavEngine.notification().Speak(s);
             mTxtLabel.setText(s);
             mTxtLabel.setTextColor(Color.RED);
@@ -210,7 +210,7 @@ public class AndruavRTCVideoDecorderWidget  extends RelativeLayout implements IR
                             {
                                 stopRecording();
                             }
-                            mTxtLabel.setText(App.context.getString(R.string.action_video_off));
+                            mTxtLabel.setText(App.context.getString(ap.andruavmiddlelibrary.R.string.action_video_off));
                             mTxtLabel.setTextColor(App.context.getResources().getColor(R.color.btn_TXT_ERROR));
                             mTxtLabel.setVisibility(View.VISIBLE);
                             if (mAndruavWe7da!=null)
@@ -225,7 +225,7 @@ public class AndruavRTCVideoDecorderWidget  extends RelativeLayout implements IR
                             break;
 
                         case Event_WebRTC.EVENT_CONNECT_SUCCEEDED: {
-                            final String s = App.context.getString(R.string.action_video_rx);
+                            final String s = App.context.getString(ap.andruavmiddlelibrary.R.string.action_video_rx);
                             mTxtLabel.setText(s);
                             mTxtLabel.setTextColor(Color.WHITE);
                             mTxtLabel.setVisibility(View.VISIBLE);
@@ -248,8 +248,8 @@ public class AndruavRTCVideoDecorderWidget  extends RelativeLayout implements IR
                             break;
 
                         case Event_WebRTC.EVENT_CONNECTION_ERROR: {
-                            final String s = App.context.getString(R.string.action_video_err);
-                            mTxtLabel.setText(App.context.getString(R.string.action_video_err));
+                            final String s = App.context.getString(ap.andruavmiddlelibrary.R.string.action_video_err);
+                            mTxtLabel.setText(App.context.getString(ap.andruavmiddlelibrary.R.string.action_video_err));
                             mTxtLabel.setTextColor(App.context.getResources().getColor(R.color.btn_TXT_ERROR));
                             mTxtLabel.setVisibility(View.VISIBLE);
                             AndruavEngine.notification().Speak(s);
@@ -355,7 +355,7 @@ public class AndruavRTCVideoDecorderWidget  extends RelativeLayout implements IR
         //peerConnectionManager.connectToDrone (PartyID);
         peerConnectionManager.joinToDrone (partyID, channel);
         mTxtLabel.setVisibility(View.VISIBLE);
-        mTxtLabel.setText(App.context.getString(R.string.action_video_con));
+        mTxtLabel.setText(App.context.getString(ap.andruavmiddlelibrary.R.string.action_video_con));
         mTxtLabel.setTextColor(Color.WHITE);
 
     }

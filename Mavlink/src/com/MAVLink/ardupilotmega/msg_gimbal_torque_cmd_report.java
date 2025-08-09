@@ -159,7 +159,7 @@ public class msg_gimbal_torque_cmd_report extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GIMBAL_TORQUE_CMD_REPORT - sysid:"+sysid+" compid:"+compid+" rl_torque_cmd:"+rl_torque_cmd+" el_torque_cmd:"+el_torque_cmd+" az_torque_cmd:"+az_torque_cmd+" target_system:"+target_system+" target_component:"+target_component+"";
+        return "MAVLINK_MSG_ID_GIMBAL_TORQUE_CMD_REPORT - sysid:"+sysid+" compid:"+compid+" rl_torque_cmd:"+rl_torque_cmd+" el_torque_cmd:"+el_torque_cmd+" az_torque_cmd:"+az_torque_cmd+" target_system:"+target_system+" target_component:"+target_component;
     }
 
     /**

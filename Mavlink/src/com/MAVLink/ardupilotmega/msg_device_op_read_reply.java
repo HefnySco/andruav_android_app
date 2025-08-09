@@ -55,7 +55,7 @@ public class msg_device_op_read_reply extends MAVLinkMessage {
      */
     @Description("Reply data.")
     @Units("")
-    public short data[] = new short[128];
+    public short[] data = new short[128];
     
     /**
      * Bank number.
@@ -178,7 +178,7 @@ public class msg_device_op_read_reply extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_DEVICE_OP_READ_REPLY - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" result:"+result+" regstart:"+regstart+" count:"+count+" data:"+data+" bank:"+bank+"";
+        return "MAVLINK_MSG_ID_DEVICE_OP_READ_REPLY - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" result:"+result+" regstart:"+regstart+" count:"+count+" data:"+data+" bank:"+bank;
     }
 
     /**

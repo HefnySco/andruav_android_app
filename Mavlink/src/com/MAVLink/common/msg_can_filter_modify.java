@@ -27,7 +27,7 @@ public class msg_can_filter_modify extends MAVLinkMessage {
      */
     @Description("filter IDs, length num_ids")
     @Units("")
-    public int ids[] = new int[16];
+    public int[] ids = new int[16];
     
     /**
      * System ID.
@@ -178,7 +178,7 @@ public class msg_can_filter_modify extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_CAN_FILTER_MODIFY - sysid:"+sysid+" compid:"+compid+" ids:"+ids+" target_system:"+target_system+" target_component:"+target_component+" bus:"+bus+" operation:"+operation+" num_ids:"+num_ids+"";
+        return "MAVLINK_MSG_ID_CAN_FILTER_MODIFY - sysid:"+sysid+" compid:"+compid+" ids:"+ids+" target_system:"+target_system+" target_component:"+target_component+" bus:"+bus+" operation:"+operation+" num_ids:"+num_ids;
     }
 
     /**

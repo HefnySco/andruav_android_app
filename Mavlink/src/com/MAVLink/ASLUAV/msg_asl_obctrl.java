@@ -192,7 +192,7 @@ public class msg_asl_obctrl extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ASL_OBCTRL - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" uElev:"+uElev+" uThrot:"+uThrot+" uThrot2:"+uThrot2+" uAilL:"+uAilL+" uAilR:"+uAilR+" uRud:"+uRud+" obctrl_status:"+obctrl_status+"";
+        return "MAVLINK_MSG_ID_ASL_OBCTRL - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" uElev:"+uElev+" uThrot:"+uThrot+" uThrot2:"+uThrot2+" uAilL:"+uAilL+" uAilR:"+uAilR+" uRud:"+uRud+" obctrl_status:"+obctrl_status;
     }
 
     /**

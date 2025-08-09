@@ -22,7 +22,17 @@ final public class UAVOSConstants {
     public final static String CAMERA_SUPPORT_ZOOM      = "z";
     public final static String CAMERA_SUPPORT_FLASH     = "f";
     public final static String CAMERA_ACTIVE            = "active";
+
+    public final static int CAMERA_SPECIFICATION_SUPPORT_ZOOMING    = 0x1;
+    public final static int CAMERA_SPECIFICATION_SUPPORT_ROTATION   = 0x2;
+    public final static int CAMERA_SPECIFICATION_SUPPORT_RECORDING  = 0x4;
+    public final static int CAMERA_SPECIFICATION_SUPPORT_PHOTO      = 0x8;
+    public final static int CAMERA_SPECIFICATION_DUAL_CAM           = 0x10;
+    public final static int CAMERA_SPECIFICATION_SUPPORT_FLASHING   = 0x20;
     public final static String CAMERA_TYPE              = "p";
-    public final static String CAMERA_ANDROID_DUAL_CAM  = "f";
+
+    //public final static String CAMERA_ANDROID_DUAL_CAM  = "f";
     public final static String CAMERA_RECORDING_NOW     = "r";
+
+    public final static String CAMERA_SPECIFICATION     = "s";
 }

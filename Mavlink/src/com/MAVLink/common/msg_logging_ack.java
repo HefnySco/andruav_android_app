@@ -137,7 +137,7 @@ public class msg_logging_ack extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_LOGGING_ACK - sysid:"+sysid+" compid:"+compid+" sequence:"+sequence+" target_system:"+target_system+" target_component:"+target_component+"";
+        return "MAVLINK_MSG_ID_LOGGING_ACK - sysid:"+sysid+" compid:"+compid+" sequence:"+sequence+" target_system:"+target_system+" target_component:"+target_component;
     }
 
     /**

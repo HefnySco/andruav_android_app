@@ -90,7 +90,7 @@ public class HUBCommunication extends BaseAndruavShasha {
         mhandle.sendMessageDelayed(msg,0);
     }
 
-   ///////////////////
+    ///////////////////
 
     private void UIHandler () {
         mhandle = new Handler() {
@@ -112,8 +112,8 @@ public class HUBCommunication extends BaseAndruavShasha {
 
         if (mcheckAndruavServer.isChecked())
         {
-            mtxtWebServerIP.setText(AndruavEngine.getPreference().getContext().getResources().getString(R.string.pref_auth_URL));
-            mtxtWebServerPort.setText(String.valueOf(AndruavEngine.getPreference().getContext().getResources().getInteger(R.integer.pref_auth_Port)));
+            mtxtWebServerIP.setText(AndruavEngine.getPreference().getContext().getResources().getString(ap.andruavmiddlelibrary.R.string.pref_auth_URL));
+            mtxtWebServerPort.setText(String.valueOf(AndruavEngine.getPreference().getContext().getResources().getInteger(ap.andruavmiddlelibrary.R.integer.pref_auth_Port)));
         }
     }
 
@@ -169,7 +169,7 @@ public class HUBCommunication extends BaseAndruavShasha {
 
         setContentView(R.layout.activity_hubcommunication);
 
-       initGUI();
+        initGUI();
     }
 
 
@@ -178,7 +178,7 @@ public class HUBCommunication extends BaseAndruavShasha {
     {
         super.onStart();
         readPreference();
-    updateUI();
+        updateUI();
 
     }
 
@@ -213,18 +213,15 @@ public class HUBCommunication extends BaseAndruavShasha {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        switch (id) {
-            case  R.id.action_save:
-                savePreference();
-                return true;
-            case R.id.action_refresh:
-                readPreference();
-                return true;
-            case R.id.mi_hub_Help:
-                GMail.sendGMail(this, getString(R.string.email_title),getString(R.string.email_to), getString(R.string.email_subject), getString(R.string.email_body),null);
-                return true;
-
-
+        if (id == R.id.action_save) {
+            savePreference();
+            return true;
+        } else if (id == R.id.action_refresh) {
+            readPreference();
+            return true;
+        } else if (id == R.id.mi_hub_Help) {
+            GMail.sendGMail(this, getString(ap.andruavmiddlelibrary.R.string.email_title), getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject), getString(ap.andruavmiddlelibrary.R.string.email_body), null);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -234,14 +231,14 @@ public class HUBCommunication extends BaseAndruavShasha {
     public void onBackPressed()
     {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle(getString(R.string.action_savebeforeexit));
+        alert.setTitle(getString(ap.andruavmiddlelibrary.R.string.action_savebeforeexit));
 
 
         alert.setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 if (!savePreference())
                     return ; // dont exit with values not saved.
-                Toast.makeText(getApplicationContext(), getString(R.string.action_done), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(ap.andruavmiddlelibrary.R.string.action_done), Toast.LENGTH_SHORT).show();
                 App.stopAndruavWS(true);
                 finish();
             }
@@ -257,7 +254,7 @@ public class HUBCommunication extends BaseAndruavShasha {
 
         alert.show();
 
-       // super.onBackPressed();
+        // super.onBackPressed();
     }
 
     private void testConnection ()
@@ -265,12 +262,12 @@ public class HUBCommunication extends BaseAndruavShasha {
         NetInfoAdapter.Update();
         if ((!NetInfoAdapter.isWifiInternetEnabled()) && (!NetInfoAdapter.isMobileNetworkConnected()))
         {
-            DialogHelper.doModalDialog(this,getString(R.string.gen_connection),getString(R.string.err_no_internet),null);
+            DialogHelper.doModalDialog(this,getString(ap.andruavmiddlelibrary.R.string.gen_connection),getString(ap.andruavmiddlelibrary.R.string.err_no_internet),null);
             return ;
         }
 
         if (AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED)) {
-                return; // I am already connected.
+            return; // I am already connected.
         }
 
         if (PreferenceValidator.isInvalidLoginCode())
@@ -279,15 +276,15 @@ public class HUBCommunication extends BaseAndruavShasha {
             return ;
         }
 
-            try
-            {
-                LoginClient.ValidateAccount(Preference.getLoginUserName(null), Preference.getLoginAccessCode(null),Preference.getWebServerGroupName(null), null);
-            }
-            catch (UnsupportedEncodingException e )
-            {
-                AndruavEngine.log().logException("exception_log", e);
-                DialogHelper.doModalDialog(Me,getString(R.string.action_login),getString(R.string.err_loginfailed),null);
-            }
+        try
+        {
+            LoginClient.ValidateAccount(Preference.getLoginUserName(null), Preference.getLoginAccessCode(null),Preference.getWebServerGroupName(null), null);
+        }
+        catch (UnsupportedEncodingException e )
+        {
+            AndruavEngine.log().logException("exception_log", e);
+            DialogHelper.doModalDialog(Me,getString(ap.andruavmiddlelibrary.R.string.action_login),getString(ap.andruavmiddlelibrary.R.string.err_loginfailed),null);
+        }
 
     }
 
@@ -297,21 +294,21 @@ public class HUBCommunication extends BaseAndruavShasha {
     {
         // Verify
         if (mtxtWebServerIP.getText().length() == 0) {
-            DialogHelper.doModalDialog(this,getString(R.string.websocket_IP),getString(R.string.err_nullValue),null);
+            DialogHelper.doModalDialog(this,getString(ap.andruavmiddlelibrary.R.string.websocket_IP),getString(ap.andruavmiddlelibrary.R.string.err_nullValue),null);
             return false;
         }
         if (mtxtWebServerPort.getText().length() == 0) {
-            DialogHelper.doModalDialog(this,getString(R.string.websocket_Port),getString(R.string.err_nullValue),null);
+            DialogHelper.doModalDialog(this,getString(ap.andruavmiddlelibrary.R.string.websocket_Port),getString(ap.andruavmiddlelibrary.R.string.err_nullValue),null);
             return false;
         }
         // Verify
         if (mtxtWebUserName.getText().length() == 0) {
-            DialogHelper.doModalDialog(this,getString(R.string.websocket_UserName),getString(R.string.err_nullValue),null);
+            DialogHelper.doModalDialog(this,getString(ap.andruavmiddlelibrary.R.string.websocket_UserName),getString(ap.andruavmiddlelibrary.R.string.err_nullValue),null);
             return false;
         }
 
         if (AndruavSettings.isValidAndruavUnitName(String.valueOf(mtxtWebUserName.getText()))) {
-            DialogHelper.doModalDialog(this,getString(R.string.websocket_UserName),getString(R.string.err_invalid_unitname),null);
+            DialogHelper.doModalDialog(this,getString(ap.andruavmiddlelibrary.R.string.websocket_UserName),getString(ap.andruavmiddlelibrary.R.string.err_invalid_unitname),null);
             return false;
         }
 
@@ -321,12 +318,12 @@ public class HUBCommunication extends BaseAndruavShasha {
         }
         */
         if (mtxtWebDescription.getText().length() == 0) {
-            DialogHelper.doModalDialog(this,getString(R.string.websocket_Description),getString(R.string.err_nullValue),null);
+            DialogHelper.doModalDialog(this,getString(ap.andruavmiddlelibrary.R.string.websocket_Description),getString(ap.andruavmiddlelibrary.R.string.err_nullValue),null);
             return false;
         }
         if ((mchkEncryptWebServer.isChecked()) && mtxtEncryptionKey.getText().length() != 16)
         {
-            DialogHelper.doModalDialog(this,getString(R.string.websocket_Encryptiom),getString(R.string.err_ws_encrypted_16),null);
+            DialogHelper.doModalDialog(this,getString(ap.andruavmiddlelibrary.R.string.websocket_Encryptiom),getString(ap.andruavmiddlelibrary.R.string.err_ws_encrypted_16),null);
             return false;
         }
         // Do Save
@@ -336,10 +333,10 @@ public class HUBCommunication extends BaseAndruavShasha {
         Preference.setWebServerUserName(null, mtxtWebUserName.getText().toString().toLowerCase());
         if (!Preference.enableGroupName(null))
         {
-            Preference.setWebServerGroupName(null, App.getAppContext().getString(R.string.pref_groupname).toLowerCase());
+            Preference.setWebServerGroupName(null, App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.pref_groupname).toLowerCase());
         }
         else {
-           // Preference.setWebServerGroupName(null, mtxtWebGroupName.getText().toString().toLowerCase());
+            // Preference.setWebServerGroupName(null, mtxtWebGroupName.getText().toString().toLowerCase());
             Preference.setWebServerGroupName(null, mspinnerGroupNo.getSelectedItem().toString());
 
         }
@@ -358,7 +355,7 @@ public class HUBCommunication extends BaseAndruavShasha {
 
 
 
-        AndruavEngine.notification().Speak(getString(R.string.action_saved));
+        AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.action_saved));
 
         return true;
     }
@@ -370,7 +367,7 @@ public class HUBCommunication extends BaseAndruavShasha {
         mtxtWebUserName.setText(String.valueOf(Preference.getWebServerUserName(null)));
         if (!Preference.enableGroupName(null))
         { // reset value
-            Preference.setWebServerGroupName(null, App.getAppContext().getString(R.string.pref_groupname).toLowerCase());
+            Preference.setWebServerGroupName(null, App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.pref_groupname).toLowerCase());
         }
         //mtxtWebGroupName.setText(String.valueOf(Preference.getWebServerGroupName(null)));
 

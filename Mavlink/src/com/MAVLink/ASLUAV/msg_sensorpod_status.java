@@ -192,7 +192,7 @@ public class msg_sensorpod_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_SENSORPOD_STATUS - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" free_space:"+free_space+" visensor_rate_1:"+visensor_rate_1+" visensor_rate_2:"+visensor_rate_2+" visensor_rate_3:"+visensor_rate_3+" visensor_rate_4:"+visensor_rate_4+" recording_nodes_count:"+recording_nodes_count+" cpu_temp:"+cpu_temp+"";
+        return "MAVLINK_MSG_ID_SENSORPOD_STATUS - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" free_space:"+free_space+" visensor_rate_1:"+visensor_rate_1+" visensor_rate_2:"+visensor_rate_2+" visensor_rate_3:"+visensor_rate_3+" visensor_rate_4:"+visensor_rate_4+" recording_nodes_count:"+recording_nodes_count+" cpu_temp:"+cpu_temp;
     }
 
     /**

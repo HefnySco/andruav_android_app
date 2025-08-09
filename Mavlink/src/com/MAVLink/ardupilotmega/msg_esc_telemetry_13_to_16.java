@@ -27,42 +27,42 @@ public class msg_esc_telemetry_13_to_16 extends MAVLinkMessage {
      */
     @Description("Voltage.")
     @Units("cV")
-    public int voltage[] = new int[4];
+    public int[] voltage = new int[4];
     
     /**
      * Current.
      */
     @Description("Current.")
     @Units("cA")
-    public int current[] = new int[4];
+    public int[] current = new int[4];
     
     /**
      * Total current.
      */
     @Description("Total current.")
     @Units("mAh")
-    public int totalcurrent[] = new int[4];
+    public int[] totalcurrent = new int[4];
     
     /**
      * RPM (eRPM).
      */
     @Description("RPM (eRPM).")
     @Units("rpm")
-    public int rpm[] = new int[4];
+    public int[] rpm = new int[4];
     
     /**
      * count of telemetry packets received (wraps at 65535).
      */
     @Description("count of telemetry packets received (wraps at 65535).")
     @Units("")
-    public int count[] = new int[4];
+    public int[] count = new int[4];
     
     /**
      * Temperature.
      */
     @Description("Temperature.")
     @Units("degC")
-    public short temperature[] = new short[4];
+    public short[] temperature = new short[4];
     
 
     /**
@@ -218,7 +218,7 @@ public class msg_esc_telemetry_13_to_16 extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ESC_TELEMETRY_13_TO_16 - sysid:"+sysid+" compid:"+compid+" voltage:"+voltage+" current:"+current+" totalcurrent:"+totalcurrent+" rpm:"+rpm+" count:"+count+" temperature:"+temperature+"";
+        return "MAVLINK_MSG_ID_ESC_TELEMETRY_13_TO_16 - sysid:"+sysid+" compid:"+compid+" voltage:"+voltage+" current:"+current+" totalcurrent:"+totalcurrent+" rpm:"+rpm+" count:"+count+" temperature:"+temperature;
     }
 
     /**

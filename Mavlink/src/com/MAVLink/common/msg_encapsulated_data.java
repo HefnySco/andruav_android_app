@@ -34,7 +34,7 @@ public class msg_encapsulated_data extends MAVLinkMessage {
      */
     @Description("image data bytes")
     @Units("")
-    public short data[] = new short[253];
+    public short[] data = new short[253];
     
 
     /**
@@ -134,7 +134,7 @@ public class msg_encapsulated_data extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ENCAPSULATED_DATA - sysid:"+sysid+" compid:"+compid+" seqnr:"+seqnr+" data:"+data+"";
+        return "MAVLINK_MSG_ID_ENCAPSULATED_DATA - sysid:"+sysid+" compid:"+compid+" seqnr:"+seqnr+" data:"+data;
     }
 
     /**

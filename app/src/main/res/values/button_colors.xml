@@ -6,45 +6,31 @@
         <color name="btn_TXT_BLUE">#75a4d3</color>
         <color name="btn_TXT_BLUE_DARKER">#75A4D3</color>
         <color name="btn_TXT_BLUE_DARKEST">#3671ab</color>
-        <color name="btn_TXT_VIOLET">#7584D3</color>
-        <color name="btn_TXT_GREEN">#75D375</color>  <!-- used brown as the key-->
+    <color name="btn_TXT_GREEN">#75D375</color>  <!-- used brown as the key-->
         <color name="btn_TXT_GREEN_DARKER">#36AB36</color>
-        <color name="btn_TXT_GREE_DARKESTN">#1D5E1D</color>
-        <color name="btn_TXT_MAGENTA">#D375D3</color>
-        <color name="btn_TXT_BROWN">#D3A475</color>
-        <color name="btn_TXT_ERROR">#f75050</color>
+    <color name="btn_TXT_MAGENTA">#D375D3</color>
+    <color name="btn_TXT_ERROR">#f75050</color>
 
-        <color name="btn_TXT_WARNING">#D3D375</color>
-        <color name="btn_TXT_GREY_DARK">#3E3E3E</color>
+    <color name="btn_TXT_GREY_DARK">#3E3E3E</color>
         <color name="btn_TXT_GREY">#AEAEAE</color>
         <color name="btn_TXT_GREYLIGHT">#DEDEDE</color>
         <color name="btn_TXT_WHITE">#FFFFFF</color>
         <color name="btn_TX_HANDLER">#f79090</color>
-        <color name="btn_GOOGLEPLUS_RED">#dd4b39</color>
 
-        <color name="btn_TXT_GREEN_HUD_LAND">#36AB36</color>
+    <color name="btn_TXT_GREEN_HUD_LAND">#36AB36</color>
         <color name="btn_TXT_GREEN_HUD_SKY">#3671AB</color>
 
-        <color name="btn_TXT_TOWER_HUD_SKY">#2cb1e1</color>
-        <color name="btn_TXT_TOWER_HUD_SKY_DARK">#0082d6</color>
-        <color name="btn_TXT_TOWER_HUD_GROUND">#4bbba1</color>
-        <color name="btn_TXT_TOWER_HUD_GROUND_DARK">#008f63</color>
 
-
-        <color name="COLOR_SAFE_FENCE">#7032CD32</color>
-        <color name="COLOR_UNSAFE_FENCE">#70FF1493</color>
-        <color name="btn_TXT_TRANSPARENT">#00000000</color>
-        <color name="btn_TXT_WHITE2">#f0f0dd</color>
+    <color name="COLOR_SAFE_FENCE">#7032CD32</color>
+    <color name="btn_TXT_WHITE2">#f0f0dd</color>
 
 
         <color name="btn_TXT_COLOR">#FFFFFF</color>
         <color name="btn_COLOR_DISABLED">#A4A4A4</color>
         <color name="btn_COLOR_PRESSED">#D3A475</color>
         <color name="btn_COLOR_UNPRESSED">#75A4D3</color>
-        <color name="btn_COLOR_UNPRESSED_ERROR">#D375D3</color>
 
-        <color name="Ana_GREY">#a4a4a4</color>
-        <color name="btn_COLOR_WHITE">#ffffff</color>
+    <color name="btn_COLOR_WHITE">#ffffff</color>
 </resources>
 
 

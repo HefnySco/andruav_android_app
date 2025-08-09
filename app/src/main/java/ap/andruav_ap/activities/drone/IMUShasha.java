@@ -278,7 +278,7 @@ public class IMUShasha extends BaseAndruavShasha {
             public void onClick(View v) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(Me);
-                builder.setMessage(getString(R.string.imu_calibration))
+                builder.setMessage(getString(ap.andruavmiddlelibrary.R.string.imu_calibration))
                         .setCancelable(false)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -314,7 +314,7 @@ public class IMUShasha extends BaseAndruavShasha {
             public void onClick(View v) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(Me);
-                builder.setMessage(getString(R.string.imu_tilt))
+                builder.setMessage(getString(ap.andruavmiddlelibrary.R.string.imu_tilt))
                         .setCancelable(false)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -361,23 +361,23 @@ public class IMUShasha extends BaseAndruavShasha {
         {
             case Surface.ROTATION_0:
                 btnMobileDirection.setCompoundDrawablesWithIntrinsicBounds(R.drawable.arrow_up_w_32x32,0, 0, 0);
-                btnMobileDirection.setText(getString(R.string.gen_front));
-                if (speak) AndruavEngine.notification().Speak(getString(R.string.gen_front));
+                btnMobileDirection.setText(getString(ap.andruavmiddlelibrary.R.string.gen_front));
+                if (speak) AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_front));
                 break;
             case Surface.ROTATION_90:
                 btnMobileDirection.setCompoundDrawablesWithIntrinsicBounds(R.drawable.arrow_left_w_32x32,0, 0, 0);
-                btnMobileDirection.setText(getString(R.string.gen_left));
-                if (speak) AndruavEngine.notification().Speak(getString(R.string.gen_left));
+                btnMobileDirection.setText(getString(ap.andruavmiddlelibrary.R.string.gen_left));
+                if (speak) AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_left));
                 break;
             case Surface.ROTATION_180:
-                btnMobileDirection.setText(getString(R.string.gen_down));
+                btnMobileDirection.setText(getString(ap.andruavmiddlelibrary.R.string.gen_down));
                 btnMobileDirection.setCompoundDrawablesWithIntrinsicBounds(R.drawable.arrow_down_w_32x32,0, 0, 0);
-                if (speak) AndruavEngine.notification().Speak(getString(R.string.gen_down));
+                if (speak) AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_down));
                 break;
             case Surface.ROTATION_270:
                 btnMobileDirection.setCompoundDrawablesWithIntrinsicBounds(R.drawable.arrow_right_w_32x32,0, 0, 0);
-                btnMobileDirection.setText(getString(R.string.gen_right));
-                if (speak) AndruavEngine.notification().Speak(getString(R.string.gen_right));
+                btnMobileDirection.setText(getString(ap.andruavmiddlelibrary.R.string.gen_right));
+                if (speak) AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_right));
                 break;
             default:
                 break;
@@ -417,7 +417,7 @@ public class IMUShasha extends BaseAndruavShasha {
 
         if (id == R.id.mi_imu_Help)
         {
-            GMail.sendGMail(this, getString(R.string.email_title),getString(R.string.email_to), getString(R.string.email_subject), getString(R.string.email_body),null);
+            GMail.sendGMail(this, getString(ap.andruavmiddlelibrary.R.string.email_title),getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject), getString(ap.andruavmiddlelibrary.R.string.email_body),null);
 
         }
         return super.onOptionsItemSelected(item);

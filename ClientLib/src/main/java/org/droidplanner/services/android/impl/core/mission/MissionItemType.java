@@ -94,7 +94,7 @@ public enum MissionItemType {
             case DO_JUMP:
                 return new DoJumpImpl(referenceItem);
             default:
-                throw new IllegalArgumentException("Unrecognized mission item type (" + name + ")" + "");
+                throw new IllegalArgumentException("Unrecognized mission item type (" + name + ")");
         }
     }
 }

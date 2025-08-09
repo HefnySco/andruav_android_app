@@ -159,7 +159,7 @@ public class msg_storm32_gimbal_manager_correct_roll extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_CORRECT_ROLL - sysid:"+sysid+" compid:"+compid+" roll:"+roll+" target_system:"+target_system+" target_component:"+target_component+" gimbal_id:"+gimbal_id+" client:"+client+"";
+        return "MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_CORRECT_ROLL - sysid:"+sysid+" compid:"+compid+" roll:"+roll+" target_system:"+target_system+" target_component:"+target_component+" gimbal_id:"+gimbal_id+" client:"+client;
     }
 
     /**

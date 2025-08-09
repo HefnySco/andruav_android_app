@@ -159,7 +159,7 @@ public class msg_set_mag_offsets extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_SET_MAG_OFFSETS - sysid:"+sysid+" compid:"+compid+" mag_ofs_x:"+mag_ofs_x+" mag_ofs_y:"+mag_ofs_y+" mag_ofs_z:"+mag_ofs_z+" target_system:"+target_system+" target_component:"+target_component+"";
+        return "MAVLINK_MSG_ID_SET_MAG_OFFSETS - sysid:"+sysid+" compid:"+compid+" mag_ofs_x:"+mag_ofs_x+" mag_ofs_y:"+mag_ofs_y+" mag_ofs_z:"+mag_ofs_z+" target_system:"+target_system+" target_component:"+target_component;
     }
 
     /**

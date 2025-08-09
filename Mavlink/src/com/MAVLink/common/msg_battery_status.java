@@ -48,7 +48,7 @@ public class msg_battery_status extends MAVLinkMessage {
      */
     @Description("Battery voltage of cells 1 to 10 (see voltages_ext for cells 11-14). Cells in this field above the valid cell count for this battery should have the UINT16_MAX value. If individual cell voltages are unknown or not measured for this battery, then the overall battery voltage should be filled in cell 0, with all others set to UINT16_MAX. If the voltage of the battery is greater than (UINT16_MAX - 1), then cell 0 should be set to (UINT16_MAX - 1), and cell 1 to the remaining voltage. This can be extended to multiple cells if the total voltage is greater than 2 * (UINT16_MAX - 1).")
     @Units("mV")
-    public int voltages[] = new int[10];
+    public int[] voltages = new int[10];
     
     /**
      * Battery current, -1: autopilot does not measure the current
@@ -104,7 +104,7 @@ public class msg_battery_status extends MAVLinkMessage {
      */
     @Description("Battery voltages for cells 11 to 14. Cells above the valid cell count for this battery should have a value of 0, where zero indicates not supported (note, this is different than for the voltages field and allows empty byte truncation). If the measured value is 0 then 1 should be sent instead.")
     @Units("mV")
-    public int voltages_ext[] = new int[4];
+    public int[] voltages_ext = new int[4];
     
     /**
      * Battery mode. Default (0) is that battery mode reporting is not supported or battery is in normal-use mode.
@@ -274,7 +274,7 @@ public class msg_battery_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_BATTERY_STATUS - sysid:"+sysid+" compid:"+compid+" current_consumed:"+current_consumed+" energy_consumed:"+energy_consumed+" temperature:"+temperature+" voltages:"+voltages+" current_battery:"+current_battery+" id:"+id+" battery_function:"+battery_function+" type:"+type+" battery_remaining:"+battery_remaining+" time_remaining:"+time_remaining+" charge_state:"+charge_state+" voltages_ext:"+voltages_ext+" mode:"+mode+" fault_bitmask:"+fault_bitmask+"";
+        return "MAVLINK_MSG_ID_BATTERY_STATUS - sysid:"+sysid+" compid:"+compid+" current_consumed:"+current_consumed+" energy_consumed:"+energy_consumed+" temperature:"+temperature+" voltages:"+voltages+" current_battery:"+current_battery+" id:"+id+" battery_function:"+battery_function+" type:"+type+" battery_remaining:"+battery_remaining+" time_remaining:"+time_remaining+" charge_state:"+charge_state+" voltages_ext:"+voltages_ext+" mode:"+mode+" fault_bitmask:"+fault_bitmask;
     }
 
     /**

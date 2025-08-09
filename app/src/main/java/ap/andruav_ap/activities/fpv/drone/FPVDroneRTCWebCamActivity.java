@@ -50,7 +50,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import de.greenrobot.event.EventBus;
-//import georegression.struct.shapes.Quadrilateral_F64;
 import ap.andruav_ap.guiEvent.GUIEvent_EnableFlashing;
 import ap.andruav_ap.activities.camera.Event_RecordVideoStatus;
 import ap.andruav_ap.widgets.AlarmWidget;
@@ -82,9 +81,7 @@ import com.andruav.uavos.modules.UAVOSModuleCamera;
 
 import ap.andruavmiddlelibrary.preference.Preference;
 import ap.andruavmiddlelibrary.webrtc.classes.PnPeer;
-//import rcmobile.boof.BoofMosa3ed;
-//import rcmobile.boof.BoofSurfaceView;
-//import rcmobile.boof.TLD_Tracker;
+
 
 public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener, VideoSink, VSink {
 
@@ -273,7 +270,7 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
                             txtVideoStatus.setVisibility(View.INVISIBLE);
                         break;
                         case Event_WebRTC.EVENT_CONNECT_SUCCEEDED:
-                            txtVideoStatus.setText(App.context.getString(R.string.action_video_on));
+                            txtVideoStatus.setText(App.context.getString(ap.andruavmiddlelibrary.R.string.action_video_on));
                             txtVideoStatus.setVisibility(View.VISIBLE);
                         break;
                         case Event_WebRTC.EVENT_CONNECTION_ERROR:
@@ -794,7 +791,7 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
                         }
                     } catch (Exception ex) {
                         AndruavEngine.log().logException(AndruavSettings.AccessCode, "exception_fpv2", ex);
-                        PanicFacade.cannotStartCamera(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_CAMERA, App.getAppContext().getString(R.string.andruav_error_camertakeimage), null);
+                        PanicFacade.cannotStartCamera(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_CAMERA, App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_camertakeimage), null);
                         skip = false;
                     }
 

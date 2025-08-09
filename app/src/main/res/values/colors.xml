@@ -3,20 +3,8 @@
     <!-- http://www.colorsontheweb.com/colorwizard.asp -->
 
 
+    <color name="background">#E5E5E5</color>
+    <color name="arrows">#757575</color>
+    <color name="text">#212121</color>
 
-    <integer-array name="androidcolors">
-        <item>@color/btn_TXT_BLUE</item>
-        <item>@color/btn_TXT_BLUE_DARKER</item>
-        <item>@color/btn_TXT_BLUE_DARKEST</item>
-        <item>@color/btn_TXT_VIOLET</item>
-        <item>@color/btn_TXT_GREEN</item>
-        <item>@color/btn_TXT_GREEN_DARKER</item>
-        <item>@color/btn_TXT_MAGENTA</item>
-        <item>@color/btn_TXT_BROWN</item>
-        <item>@color/btn_TXT_ERROR</item>
-        <item>@color/btn_TXT_WARNING</item>
-        <item>@color/btn_TXT_GREY_DARK</item>
-        <item>@color/btn_TXT_GREY</item>
-        <item>@color/btn_TXT_WHITE</item>
-    </integer-array>
 </resources>

@@ -38,5 +38,10 @@ public class DummyNotification implements INotification {
 
     }
 
+    @Override
+    public void SpeakNow(String message) {
+
+    }
+
 
 }

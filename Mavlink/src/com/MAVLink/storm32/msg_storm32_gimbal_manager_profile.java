@@ -55,7 +55,7 @@ public class msg_storm32_gimbal_manager_profile extends MAVLinkMessage {
      */
     @Description("Priorities for custom profile.")
     @Units("")
-    public short priorities[] = new short[8];
+    public short[] priorities = new short[8];
     
     /**
      * Profile flags for custom profile (0 = default).
@@ -76,7 +76,7 @@ public class msg_storm32_gimbal_manager_profile extends MAVLinkMessage {
      */
     @Description("Timeouts for custom profile (0 = infinite, in uints of 100 ms).")
     @Units("")
-    public short timeouts[] = new short[8];
+    public short[] timeouts = new short[8];
     
 
     /**
@@ -208,7 +208,7 @@ public class msg_storm32_gimbal_manager_profile extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_PROFILE - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" gimbal_id:"+gimbal_id+" profile:"+profile+" priorities:"+priorities+" profile_flags:"+profile_flags+" rc_timeout:"+rc_timeout+" timeouts:"+timeouts+"";
+        return "MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_PROFILE - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" gimbal_id:"+gimbal_id+" profile:"+profile+" priorities:"+priorities+" profile_flags:"+profile_flags+" rc_timeout:"+rc_timeout+" timeouts:"+timeouts;
     }
 
     /**

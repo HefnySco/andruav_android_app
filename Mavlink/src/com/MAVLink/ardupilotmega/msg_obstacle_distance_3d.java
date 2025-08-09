@@ -203,7 +203,7 @@ public class msg_obstacle_distance_3d extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_OBSTACLE_DISTANCE_3D - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" x:"+x+" y:"+y+" z:"+z+" min_distance:"+min_distance+" max_distance:"+max_distance+" obstacle_id:"+obstacle_id+" sensor_type:"+sensor_type+" frame:"+frame+"";
+        return "MAVLINK_MSG_ID_OBSTACLE_DISTANCE_3D - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" x:"+x+" y:"+y+" z:"+z+" min_distance:"+min_distance+" max_distance:"+max_distance+" obstacle_id:"+obstacle_id+" sensor_type:"+sensor_type+" frame:"+frame;
     }
 
     /**

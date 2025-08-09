@@ -69,7 +69,7 @@ public class msg_device_op_write extends MAVLinkMessage {
      */
     @Description("Name of device on bus (for SPI).")
     @Units("")
-    public byte busname[] = new byte[40];
+    public byte[] busname = new byte[40];
     
     /**
      * First register to write.
@@ -90,7 +90,7 @@ public class msg_device_op_write extends MAVLinkMessage {
      */
     @Description("Write data.")
     @Units("")
-    public short data[] = new short[128];
+    public short[] data = new short[128];
     
     /**
      * Bank number.
@@ -270,7 +270,7 @@ public class msg_device_op_write extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_DEVICE_OP_WRITE - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" target_system:"+target_system+" target_component:"+target_component+" bustype:"+bustype+" bus:"+bus+" address:"+address+" busname:"+busname+" regstart:"+regstart+" count:"+count+" data:"+data+" bank:"+bank+"";
+        return "MAVLINK_MSG_ID_DEVICE_OP_WRITE - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" target_system:"+target_system+" target_component:"+target_component+" bustype:"+bustype+" bus:"+bus+" address:"+address+" busname:"+busname+" regstart:"+regstart+" count:"+count+" data:"+data+" bank:"+bank;
     }
 
     /**

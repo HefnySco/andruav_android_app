@@ -148,7 +148,7 @@ public class msg_remote_log_block_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_REMOTE_LOG_BLOCK_STATUS - sysid:"+sysid+" compid:"+compid+" seqno:"+seqno+" target_system:"+target_system+" target_component:"+target_component+" status:"+status+"";
+        return "MAVLINK_MSG_ID_REMOTE_LOG_BLOCK_STATUS - sysid:"+sysid+" compid:"+compid+" seqno:"+seqno+" target_system:"+target_system+" target_component:"+target_component+" status:"+status;
     }
 
     /**

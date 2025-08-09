@@ -115,7 +115,7 @@ public class msg_uavionix_adsb_transceiver_health_report extends MAVLinkMessage 
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT - sysid:"+sysid+" compid:"+compid+" rfHealth:"+rfHealth+"";
+        return "MAVLINK_MSG_ID_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT - sysid:"+sysid+" compid:"+compid+" rfHealth:"+rfHealth;
     }
 
     /**

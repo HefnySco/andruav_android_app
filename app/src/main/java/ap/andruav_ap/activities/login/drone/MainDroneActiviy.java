@@ -85,9 +85,9 @@ public class MainDroneActiviy extends AppCompatActivity {
                         if (event_LoginClient.LastError == 0) {
                             email = event_LoginClient.Parameters.get(CONST_ACCOUNT_NAME_PARAMETER);
 
-                            AndruavEngine.notification().Speak(getString(R.string.login_action_joined));
+                            AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.login_action_joined));
                             savePreference();
-                            DialogHelper.doModalDialog(Me, getString(R.string.login_login), getString(R.string.login_action_joined), null,
+                            DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.login_login), getString(ap.andruavmiddlelibrary.R.string.login_action_joined), null,
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int whichButton) {
                                             App.restartApp(1000, false);
@@ -96,12 +96,12 @@ public class MainDroneActiviy extends AppCompatActivity {
                             App.stopAndruavWS(true); // destroy WS
                             App.defineAndruavUnit(false);
                         } else if (event_LoginClient.LastError == LoginClient.ERR_SERVER_UNREACHABLE) {
-                            DialogHelper.doModalDialog(Me, getString(R.string.login_login), getString(R.string.login_action_unreachable), null);
-                            AndruavEngine.notification().Speak(getString(R.string.login_action_unreachable));
+                            DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.login_login), getString(ap.andruavmiddlelibrary.R.string.login_action_unreachable), null);
+                            AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.login_action_unreachable));
                             email = "";
                         } else {
-                            DialogHelper.doModalDialog(Me, getString(R.string.login_login), event_LoginClient.Parameters.get(CONST_ERROR_MSG), null);
-                            AndruavEngine.notification().Speak(getString(R.string.login_action_badaccesscode));
+                            DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.login_login), event_LoginClient.Parameters.get(CONST_ERROR_MSG), null);
+                            AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.login_action_badaccesscode));
                             email = "";
 
                         }
@@ -182,7 +182,7 @@ public class MainDroneActiviy extends AppCompatActivity {
         {
             if (edtAccessCode.getText().length() == 0)
             {
-                DialogHelper.doModalDialog(this, getString(R.string.login_access_code), getString(R.string.err_nullValue), null);
+                DialogHelper.doModalDialog(this, getString(ap.andruavmiddlelibrary.R.string.login_access_code), getString(ap.andruavmiddlelibrary.R.string.err_nullValue), null);
             }
             else {
                 doProgressDialog();
@@ -197,7 +197,7 @@ public class MainDroneActiviy extends AppCompatActivity {
                 catch (UnsupportedEncodingException e )
                 {
                     AndruavEngine.log().logException("exception_log", e);
-                    DialogHelper.doModalDialog(Me,getString(R.string.action_login),getString(R.string.err_loginfailed),null);
+                    DialogHelper.doModalDialog(Me,getString(ap.andruavmiddlelibrary.R.string.action_login),getString(ap.andruavmiddlelibrary.R.string.err_loginfailed),null);
                 }
             }
 
@@ -206,8 +206,8 @@ public class MainDroneActiviy extends AppCompatActivity {
         private void doProgressDialog()
         {
             mprogressDialog = new ProgressDialog(DroneLoginShasha.this);
-            mprogressDialog.setMessage(getString(R.string.action_init));
-            mprogressDialog.setTitle(getString(R.string.action_connect));
+            mprogressDialog.setMessage(getString(ap.andruavmiddlelibrary.R.string.action_init));
+            mprogressDialog.setTitle(getString(ap.andruavmiddlelibrary.R.string.action_connect));
             mprogressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mprogressDialog.show();
         }
@@ -247,7 +247,7 @@ public class MainDroneActiviy extends AppCompatActivity {
             // The activity has become visible (it is now "resumed").
             if (merrorCode== LoginClient.ERR_ACCOUNT_NOT_FOUND)
             {
-                DialogHelper.doModalDialog(this,getString(R.string.action_login),getString(R.string.err_accountNotFound),null);
+                DialogHelper.doModalDialog(this,getString(ap.andruavmiddlelibrary.R.string.action_login),getString(ap.andruavmiddlelibrary.R.string.err_accountNotFound),null);
             }
             merrorCode = LoginClient.ERR_SUCCESS;
             readPreference();
@@ -283,7 +283,7 @@ public class MainDroneActiviy extends AppCompatActivity {
             int id = item.getItemId();
 
             if (id == R.id.mi_login_Help) {
-                GMail.sendGMail(this, getString(R.string.email_title), getString(R.string.email_to), getString(R.string.email_subject), getString(R.string.email_body), null);
+                GMail.sendGMail(this, getString(ap.andruavmiddlelibrary.R.string.email_title), getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject), getString(ap.andruavmiddlelibrary.R.string.email_body), null);
             }
 
             return super.onOptionsItemSelected(item);

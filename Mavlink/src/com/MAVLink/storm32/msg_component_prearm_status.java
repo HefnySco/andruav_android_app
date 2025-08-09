@@ -148,7 +148,7 @@ public class msg_component_prearm_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_COMPONENT_PREARM_STATUS - sysid:"+sysid+" compid:"+compid+" enabled_flags:"+enabled_flags+" fail_flags:"+fail_flags+" target_system:"+target_system+" target_component:"+target_component+"";
+        return "MAVLINK_MSG_ID_COMPONENT_PREARM_STATUS - sysid:"+sysid+" compid:"+compid+" enabled_flags:"+enabled_flags+" fail_flags:"+fail_flags+" target_system:"+target_system+" target_component:"+target_component;
     }
 
     /**

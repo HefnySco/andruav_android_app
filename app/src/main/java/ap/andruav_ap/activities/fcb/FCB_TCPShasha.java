@@ -161,7 +161,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
                                     Me.selectItem(AndruavSettings.remoteTelemetryAndruavWe7da, false, false);
                                     // reclick selected on
                                     AndruavFacade.StopTelemetry();
-                                    AndruavEngine.notification().Speak(App.getAppContext().getString(R.string.err_serialsocket_no_remote_telemetry));
+                                    AndruavEngine.notification().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.err_serialsocket_no_remote_telemetry));
                                 } else {  // item is already selected
                                     Me.selectItem(AndruavSettings.remoteTelemetryAndruavWe7da, true, false);
                                 }
@@ -204,12 +204,12 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
                     final Event_SocketAction event_socketAction = (Event_SocketAction) msg.obj;
                     switch (event_socketAction.socketAction) {
                         case Event_SocketAction.SOCKETACTION_STARTED:
-                            txtStatus.setText(getString(R.string.gen_serialsocket_started));
+                            txtStatus.setText(getString(ap.andruavmiddlelibrary.R.string.gen_serialsocket_started));
                             htmlText = "<font color=#36AB36>" + "Telemetry TCP server started" + "</font><br>";
                             txtlog.append(Html.fromHtml(htmlText));
                             break;
                         case Event_SocketAction.SOCKETACTION_CLOSED:
-                            txtStatus.setText(getString(R.string.gen_serialsocket_started));
+                            txtStatus.setText(getString(ap.andruavmiddlelibrary.R.string.gen_serialsocket_started));
                             htmlText = "<font color=#F75050>" + "Telemetry TCP server stopped" + "</font><br>";
                             txtlog.append(Html.fromHtml(htmlText));
                             break;
@@ -218,7 +218,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
                             txtlog.append(Html.fromHtml(htmlText));
                             if (AndruavSettings.remoteTelemetryAndruavWe7da == null )
                             {
-                                AndruavEngine.notification().Speak(App.getAppContext().getString(R.string.err_serialsocket_no_remote_telemetry));
+                                AndruavEngine.notification().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.err_serialsocket_no_remote_telemetry));
                             }
                             break;
                         case Event_SocketAction.SOCKETACTION_CLIENT_DISCONNECTED:
@@ -264,7 +264,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
 
          final boolean  bRunning = App.isSocketListenerRunning();
 
-         btnSocketListen.setText( getString((bRunning)?R.string.gen_on:R.string.gen_off));
+         btnSocketListen.setText( getString((bRunning)?ap.andruavmiddlelibrary.R.string.gen_on:ap.andruavmiddlelibrary.R.string.gen_off));
          btnSocketListen.setBackgroundResource(R.drawable.button_shap);
          TelemetryUnitsAdapter = new Adapter_DroneTelemetry(Me,Me);
 
@@ -310,26 +310,20 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        switch (id)
-        {
-            case R.id.mi_fcb_Help:
-                GMail.sendGMail(this, getString(R.string.email_title), getString(R.string.email_to), getString(R.string.email_subject), getString(R.string.email_body), null);
-                break;
 
-            case R.id.mi_fcb_smarttelemetry:
-                if (AndruavSettings.remoteTelemetryAndruavWe7da != null)
-                {
-                    SmartOptimization_Dlg smartOptimization_dlg = SmartOptimization_Dlg.newInstance(AndruavSettings.remoteTelemetryAndruavWe7da.UnitID);
-                    smartOptimization_dlg.show(fragmentManager,"fragment_edit_name");
+        if (id == R.id.mi_fcb_Help) {
+            GMail.sendGMail(this, getString(ap.andruavmiddlelibrary.R.string.email_title), getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject), getString(ap.andruavmiddlelibrary.R.string.email_body), null);
+        } else if (id == R.id.mi_fcb_smarttelemetry) {
+            if (AndruavSettings.remoteTelemetryAndruavWe7da != null)
+            {
+                SmartOptimization_Dlg smartOptimization_dlg = SmartOptimization_Dlg.newInstance(AndruavSettings.remoteTelemetryAndruavWe7da.UnitID);
+                smartOptimization_dlg.show(fragmentManager,"fragment_edit_name");
 
-                }
-                else
-                {
-                    DialogHelper.doModalDialog(this,"Error","No Active Telemetry","OK");
-                }
-                break;
-
-
+            }
+            else
+            {
+                DialogHelper.doModalDialog(this,"Error","No Active Telemetry","OK");
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -402,6 +396,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
 
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     protected boolean validatePortNumber ()
@@ -440,7 +435,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
         if (App.isSocketListenerRunning()) {
             // stop Me
             App.stopsocketListener();
-            btnSocketListen.setText(getString(R.string.gen_off));
+            btnSocketListen.setText(getString(ap.andruavmiddlelibrary.R.string.gen_off));
             btnSocketListen.setBackgroundResource(R.drawable.button_shap);
             btnSocketListen.setVisibility(View.INVISIBLE);
             AndruavSettings.andruavWe7daBase.setTelemetry_protocol(TelemetryProtocol.TelemetryProtocol_No_Telemetry);  // reset telemetry
@@ -457,7 +452,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
 
         if (!validatePortNumber())
         {
-            DialogHelper.doModalDialog(this,getString(R.string.gen_connection),getString(R.string.err_invalid_portnum),getString(android.R.string.ok));
+            DialogHelper.doModalDialog(this,getString(ap.andruavmiddlelibrary.R.string.gen_connection),getString(ap.andruavmiddlelibrary.R.string.err_invalid_portnum),getString(android.R.string.ok));
             return ;
         }
 
@@ -481,7 +476,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
         }
 
         App.startsocketListener();
-        btnSocketListen.setText(getString(R.string.gen_on));
+        btnSocketListen.setText(getString(ap.andruavmiddlelibrary.R.string.gen_on));
         btnSocketListen.setBackgroundResource(R.drawable.button_active);
         btnSocketListen.setVisibility(View.VISIBLE);
         AndruavSettings.andruavWe7daBase.setTelemetry_protocol(TelemetryProtocol.TelemetryProtocol_Unknown_Telemetry);  // reset telemetry
@@ -503,19 +498,19 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
     {
         if (App.isSocketListenerRunning())
         {
-                txtStatus.setText(getString(R.string.gen_serialsocket_started));
+                txtStatus.setText(getString(ap.andruavmiddlelibrary.R.string.gen_serialsocket_started));
                 btnSocketListen.setBackgroundResource(R.drawable.button_active);
         }
         else
         {
                 if (NetInfoAdapter.isConnectedViaWifi())
                 {
-                    txtStatus.setText(getString(R.string.gen_serialsocket_stopped));
+                    txtStatus.setText(getString(ap.andruavmiddlelibrary.R.string.gen_serialsocket_stopped));
                     btnSocketListen.setBackgroundResource(R.drawable.button_shap);
                 }
                 else
                 {
-                    txtStatus.setText(getString(R.string.gen_serialsocket_no_wifi));
+                    txtStatus.setText(getString(ap.andruavmiddlelibrary.R.string.gen_serialsocket_no_wifi));
                 }
         }
 
@@ -586,7 +581,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
        {
             selectItem(AndruavSettings.remoteTelemetryAndruavWe7da, false, false);
             AndruavFacade.StopTelemetry();
-            AndruavEngine.notification().Speak(App.getAppContext().getString(R.string.err_serialsocket_no_remote_telemetry));
+            AndruavEngine.notification().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.err_serialsocket_no_remote_telemetry));
             return ;
        }
 

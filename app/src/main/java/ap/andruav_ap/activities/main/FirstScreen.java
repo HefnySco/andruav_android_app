@@ -48,10 +48,10 @@ public class FirstScreen extends BaseAndruavShasha {
 
                 if (!CheckAppPermissions.isPermissionsOK(Me))
                 {
-                    DialogHelper.doModalDialog(Me, getString(R.string.gen_security), getString(R.string.err_security), "yes",
+                    DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.gen_security), getString(ap.andruavmiddlelibrary.R.string.err_security), "yes",
                             (dialogInterface, i) -> CheckAppPermissions.goToSettings(),
                             "No",
-                            (dialogInterface, i) -> GMail.sendGMail(Me, getString(R.string.email_title), getString(R.string.email_to), getString(R.string.email_subject2), getString(R.string.email_body2), null));
+                            (dialogInterface, i) -> GMail.sendGMail(Me, getString(ap.andruavmiddlelibrary.R.string.email_title), getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject2), getString(ap.andruavmiddlelibrary.R.string.email_body2), null));
                     return;
                 }
                 finish();
@@ -73,7 +73,7 @@ public class FirstScreen extends BaseAndruavShasha {
 
 
         ////// Set Content View Here
-        AndruavEngine.notification().Speak(getString(R.string.hello_world));
+        AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.hello_world));
 
         initGUI();
 

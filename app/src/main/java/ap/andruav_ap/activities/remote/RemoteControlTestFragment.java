@@ -190,7 +190,7 @@ public class RemoteControlTestFragment extends Fragment implements IFragmentSave
 
         if (!DeviceManagerFacade.hasMultitouch())
         {
-            DialogHelper.doModalDialog(Me, getString(R.string.title_activity_remotecontrol), getString(R.string.err_feature_multitouch), null, new DialogInterface.OnClickListener() {
+            DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.title_activity_remotecontrol), getString(ap.andruavmiddlelibrary.R.string.err_feature_multitouch), null, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     Me.finish();
                 }

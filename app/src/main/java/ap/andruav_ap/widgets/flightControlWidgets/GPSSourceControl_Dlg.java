@@ -156,19 +156,19 @@ public class GPSSourceControl_Dlg extends DialogFragment {
                     rb_GPS_Auto.setChecked(true);
                     rb_GPS_Mobile.setChecked(false);
                     rb_GPS_FCB.setChecked(false);
-                    txt_Description.setText(getString(R.string.gen_GPS_auto_desc));
+                    txt_Description.setText(getString(ap.andruavmiddlelibrary.R.string.gen_GPS_auto_desc));
                     break;
                 case AndruavUnitBase.GPS_MODE_MOBILE:
                     rb_GPS_Auto.setChecked(false);
                     rb_GPS_Mobile.setChecked(true);
                     rb_GPS_FCB.setChecked(false);
-                    txt_Description.setText(getString(R.string.gen_GPS_mobile_desc));
+                    txt_Description.setText(getString(ap.andruavmiddlelibrary.R.string.gen_GPS_mobile_desc));
                     break;
                 case AndruavUnitBase.GPS_MODE_FCB:
                     rb_GPS_Auto.setChecked(false);
                     rb_GPS_Mobile.setChecked(false);
                     rb_GPS_FCB.setChecked(true);
-                    txt_Description.setText(getString(R.string.gen_GPS_fcb_desc));
+                    txt_Description.setText(getString(ap.andruavmiddlelibrary.R.string.gen_GPS_fcb_desc));
                     break;
             }
 

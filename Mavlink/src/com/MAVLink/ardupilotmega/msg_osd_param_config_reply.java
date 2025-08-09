@@ -126,7 +126,7 @@ public class msg_osd_param_config_reply extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_OSD_PARAM_CONFIG_REPLY - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" result:"+result+"";
+        return "MAVLINK_MSG_ID_OSD_PARAM_CONFIG_REPLY - sysid:"+sysid+" compid:"+compid+" request_id:"+request_id+" result:"+result;
     }
 
     /**

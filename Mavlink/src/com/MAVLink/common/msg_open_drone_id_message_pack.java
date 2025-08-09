@@ -41,7 +41,7 @@ public class msg_open_drone_id_message_pack extends MAVLinkMessage {
      */
     @Description("Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ")
     @Units("")
-    public short id_or_mac[] = new short[20];
+    public short[] id_or_mac = new short[20];
     
     /**
      * This field must currently always be equal to 25 (bytes), since all encoded OpenDroneID messages are specificed to have this length.
@@ -62,7 +62,7 @@ public class msg_open_drone_id_message_pack extends MAVLinkMessage {
      */
     @Description("Concatenation of encoded OpenDroneID messages. Shall be filled with nulls in the unused portion of the field.")
     @Units("")
-    public short messages[] = new short[225];
+    public short[] messages = new short[225];
     
 
     /**
@@ -186,7 +186,7 @@ public class msg_open_drone_id_message_pack extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_OPEN_DRONE_ID_MESSAGE_PACK - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" id_or_mac:"+id_or_mac+" single_message_size:"+single_message_size+" msg_pack_size:"+msg_pack_size+" messages:"+messages+"";
+        return "MAVLINK_MSG_ID_OPEN_DRONE_ID_MESSAGE_PACK - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" id_or_mac:"+id_or_mac+" single_message_size:"+single_message_size+" msg_pack_size:"+msg_pack_size+" messages:"+messages;
     }
 
     /**

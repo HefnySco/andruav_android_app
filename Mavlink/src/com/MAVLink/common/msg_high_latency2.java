@@ -401,7 +401,7 @@ public class msg_high_latency2 extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_HIGH_LATENCY2 - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" latitude:"+latitude+" longitude:"+longitude+" custom_mode:"+custom_mode+" altitude:"+altitude+" target_altitude:"+target_altitude+" target_distance:"+target_distance+" wp_num:"+wp_num+" failure_flags:"+failure_flags+" type:"+type+" autopilot:"+autopilot+" heading:"+heading+" target_heading:"+target_heading+" throttle:"+throttle+" airspeed:"+airspeed+" airspeed_sp:"+airspeed_sp+" groundspeed:"+groundspeed+" windspeed:"+windspeed+" wind_heading:"+wind_heading+" eph:"+eph+" epv:"+epv+" temperature_air:"+temperature_air+" climb_rate:"+climb_rate+" battery:"+battery+" custom0:"+custom0+" custom1:"+custom1+" custom2:"+custom2+"";
+        return "MAVLINK_MSG_ID_HIGH_LATENCY2 - sysid:"+sysid+" compid:"+compid+" timestamp:"+timestamp+" latitude:"+latitude+" longitude:"+longitude+" custom_mode:"+custom_mode+" altitude:"+altitude+" target_altitude:"+target_altitude+" target_distance:"+target_distance+" wp_num:"+wp_num+" failure_flags:"+failure_flags+" type:"+type+" autopilot:"+autopilot+" heading:"+heading+" target_heading:"+target_heading+" throttle:"+throttle+" airspeed:"+airspeed+" airspeed_sp:"+airspeed_sp+" groundspeed:"+groundspeed+" windspeed:"+windspeed+" wind_heading:"+wind_heading+" eph:"+eph+" epv:"+epv+" temperature_air:"+temperature_air+" climb_rate:"+climb_rate+" battery:"+battery+" custom0:"+custom0+" custom1:"+custom1+" custom2:"+custom2;
     }
 
     /**

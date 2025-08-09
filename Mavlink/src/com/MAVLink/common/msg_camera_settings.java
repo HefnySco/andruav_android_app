@@ -148,7 +148,7 @@ public class msg_camera_settings extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_CAMERA_SETTINGS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" mode_id:"+mode_id+" zoomLevel:"+zoomLevel+" focusLevel:"+focusLevel+"";
+        return "MAVLINK_MSG_ID_CAMERA_SETTINGS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" mode_id:"+mode_id+" zoomLevel:"+zoomLevel+" focusLevel:"+focusLevel;
     }
 
     /**

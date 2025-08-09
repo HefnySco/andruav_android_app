@@ -76,7 +76,7 @@ public class msg_camera_fov_status extends MAVLinkMessage {
      */
     @Description("Quaternion of camera orientation (w, x, y, z order, zero-rotation is 1, 0, 0, 0)")
     @Units("")
-    public float q[] = new float[4];
+    public float[] q = new float[4];
     
     /**
      * Horizontal field of view (NaN if unknown).
@@ -222,7 +222,7 @@ public class msg_camera_fov_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_CAMERA_FOV_STATUS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" lat_camera:"+lat_camera+" lon_camera:"+lon_camera+" alt_camera:"+alt_camera+" lat_image:"+lat_image+" lon_image:"+lon_image+" alt_image:"+alt_image+" q:"+q+" hfov:"+hfov+" vfov:"+vfov+"";
+        return "MAVLINK_MSG_ID_CAMERA_FOV_STATUS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" lat_camera:"+lat_camera+" lon_camera:"+lon_camera+" alt_camera:"+alt_camera+" lat_image:"+lat_image+" lon_image:"+lon_image+" alt_image:"+alt_image+" q:"+q+" hfov:"+hfov+" vfov:"+vfov;
     }
 
     /**

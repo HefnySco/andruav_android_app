@@ -179,7 +179,7 @@ public class AndruavGCSSerialSocketServer {
                 EventBus.getDefault().post(event_socketAction);
             }
             // we disconnected anyway
-            AndruavEngine.notification().Speak(App.getAppContext().getString(R.string.gen_serialsocket_client_disconnected));
+            AndruavEngine.notification().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_serialsocket_client_disconnected));
 
         }
 

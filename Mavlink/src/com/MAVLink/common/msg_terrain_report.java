@@ -181,7 +181,7 @@ public class msg_terrain_report extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_TERRAIN_REPORT - sysid:"+sysid+" compid:"+compid+" lat:"+lat+" lon:"+lon+" terrain_height:"+terrain_height+" current_height:"+current_height+" spacing:"+spacing+" pending:"+pending+" loaded:"+loaded+"";
+        return "MAVLINK_MSG_ID_TERRAIN_REPORT - sysid:"+sysid+" compid:"+compid+" lat:"+lat+" lon:"+lon+" terrain_height:"+terrain_height+" current_height:"+current_height+" spacing:"+spacing+" pending:"+pending+" loaded:"+loaded;
     }
 
     /**

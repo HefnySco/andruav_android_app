@@ -137,7 +137,7 @@ public class msg_gopro_get_request extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GOPRO_GET_REQUEST - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" cmd_id:"+cmd_id+"";
+        return "MAVLINK_MSG_ID_GOPRO_GET_REQUEST - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" target_component:"+target_component+" cmd_id:"+cmd_id;
     }
 
     /**

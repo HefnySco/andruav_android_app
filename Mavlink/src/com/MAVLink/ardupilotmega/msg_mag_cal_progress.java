@@ -83,7 +83,7 @@ public class msg_mag_cal_progress extends MAVLinkMessage {
      */
     @Description("Bitmask of sphere sections (see http://en.wikipedia.org/wiki/Geodesic_grid).")
     @Units("")
-    public short completion_mask[] = new short[10];
+    public short[] completion_mask = new short[10];
     
 
     /**
@@ -211,7 +211,7 @@ public class msg_mag_cal_progress extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_MAG_CAL_PROGRESS - sysid:"+sysid+" compid:"+compid+" direction_x:"+direction_x+" direction_y:"+direction_y+" direction_z:"+direction_z+" compass_id:"+compass_id+" cal_mask:"+cal_mask+" cal_status:"+cal_status+" attempt:"+attempt+" completion_pct:"+completion_pct+" completion_mask:"+completion_mask+"";
+        return "MAVLINK_MSG_ID_MAG_CAL_PROGRESS - sysid:"+sysid+" compid:"+compid+" direction_x:"+direction_x+" direction_y:"+direction_y+" direction_z:"+direction_z+" compass_id:"+compass_id+" cal_mask:"+cal_mask+" cal_status:"+cal_status+" attempt:"+attempt+" completion_pct:"+completion_pct+" completion_mask:"+completion_mask;
     }
 
     /**

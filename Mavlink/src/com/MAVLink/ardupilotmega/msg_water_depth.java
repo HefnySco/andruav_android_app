@@ -225,7 +225,7 @@ public class msg_water_depth extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_WATER_DEPTH - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" lat:"+lat+" lng:"+lng+" alt:"+alt+" roll:"+roll+" pitch:"+pitch+" yaw:"+yaw+" distance:"+distance+" temperature:"+temperature+" id:"+id+" healthy:"+healthy+"";
+        return "MAVLINK_MSG_ID_WATER_DEPTH - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" lat:"+lat+" lng:"+lng+" alt:"+alt+" roll:"+roll+" pitch:"+pitch+" yaw:"+yaw+" distance:"+distance+" temperature:"+temperature+" id:"+id+" healthy:"+healthy;
     }
 
     /**

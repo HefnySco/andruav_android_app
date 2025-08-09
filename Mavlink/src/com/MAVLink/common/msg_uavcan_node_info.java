@@ -48,7 +48,7 @@ public class msg_uavcan_node_info extends MAVLinkMessage {
      */
     @Description("Node name string. For example, 'sapog.px4.io'.")
     @Units("")
-    public byte name[] = new byte[80];
+    public byte[] name = new byte[80];
     
     /**
      * Hardware major version number.
@@ -69,7 +69,7 @@ public class msg_uavcan_node_info extends MAVLinkMessage {
      */
     @Description("Hardware unique 128-bit ID.")
     @Units("")
-    public short hw_unique_id[] = new short[16];
+    public short[] hw_unique_id = new short[16];
     
     /**
      * Software major version number.
@@ -248,7 +248,7 @@ public class msg_uavcan_node_info extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_UAVCAN_NODE_INFO - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" uptime_sec:"+uptime_sec+" sw_vcs_commit:"+sw_vcs_commit+" name:"+name+" hw_version_major:"+hw_version_major+" hw_version_minor:"+hw_version_minor+" hw_unique_id:"+hw_unique_id+" sw_version_major:"+sw_version_major+" sw_version_minor:"+sw_version_minor+"";
+        return "MAVLINK_MSG_ID_UAVCAN_NODE_INFO - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" uptime_sec:"+uptime_sec+" sw_vcs_commit:"+sw_vcs_commit+" name:"+name+" hw_version_major:"+hw_version_major+" hw_version_minor:"+hw_version_minor+" hw_unique_id:"+hw_unique_id+" sw_version_major:"+sw_version_major+" sw_version_minor:"+sw_version_minor;
     }
 
     /**

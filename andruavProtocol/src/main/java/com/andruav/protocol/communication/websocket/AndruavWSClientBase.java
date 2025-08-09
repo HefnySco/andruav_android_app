@@ -1532,7 +1532,7 @@ public abstract class AndruavWSClientBase {
 
             if (andruav_2MR.MessageRouting.equals(MESSAGE_TYPE_SYSTEM)) { // SYSTEM MESSAGES
 
-                if (executeSystemCommand(andruav_2MR)) return ; // all system messages are text
+                executeSystemCommand(andruav_2MR);
 
             }
             else

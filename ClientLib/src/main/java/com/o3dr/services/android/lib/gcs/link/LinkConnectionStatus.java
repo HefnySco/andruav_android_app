@@ -14,7 +14,7 @@ import java.util.Objects;
 /**
  * Conveys information about the link connection state.
  * <p/>
- * This value is returned in the {@link com.o3dr.android.client.Drone#notifyAttributeUpdated} as the
+ * This value is returned in the  as the
  * extra value {@link com.o3dr.services.android.lib.gcs.link.LinkEventExtra#EXTRA_CONNECTION_STATUS}
  * when the attribute event is {@link com.o3dr.services.android.lib.gcs.link.LinkEvent#LINK_STATE_UPDATED}
  */
@@ -170,7 +170,7 @@ public final class LinkConnectionStatus implements Parcelable {
         if (!Objects.equals(mStatusCode, that.mStatusCode)) {
             return false;
         }
-        return !(!Objects.equals(mExtras, that.mExtras));
+        return Objects.equals(mExtras, that.mExtras);
 
     }
 

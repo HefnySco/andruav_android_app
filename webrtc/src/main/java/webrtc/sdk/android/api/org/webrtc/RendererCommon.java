@@ -190,7 +190,7 @@ public class RendererCommon {
     //  w1 w2 0 w3]
     // clang-format off
     float[] matrix4x4 = {
-        values[0 + 0],  values[3], 0,  values[2 * 3],
+        values[0],  values[3], 0,  values[2 * 3],
         values[1],  values[3 + 1], 0,  values[2 * 3 + 1],
         0,                  0,                 1,  0,
         values[2],  values[3 + 2], 0,  values[2 * 3 + 2],

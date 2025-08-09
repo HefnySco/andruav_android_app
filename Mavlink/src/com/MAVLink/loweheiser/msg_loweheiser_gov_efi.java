@@ -357,7 +357,7 @@ public class msg_loweheiser_gov_efi extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_LOWEHEISER_GOV_EFI - sysid:"+sysid+" compid:"+compid+" volt_batt:"+volt_batt+" curr_batt:"+curr_batt+" curr_gen:"+curr_gen+" curr_rot:"+curr_rot+" fuel_level:"+fuel_level+" throttle:"+throttle+" runtime:"+runtime+" until_maintenance:"+until_maintenance+" rectifier_temp:"+rectifier_temp+" generator_temp:"+generator_temp+" efi_batt:"+efi_batt+" efi_rpm:"+efi_rpm+" efi_pw:"+efi_pw+" efi_fuel_flow:"+efi_fuel_flow+" efi_fuel_consumed:"+efi_fuel_consumed+" efi_baro:"+efi_baro+" efi_mat:"+efi_mat+" efi_clt:"+efi_clt+" efi_tps:"+efi_tps+" efi_exhaust_gas_temperature:"+efi_exhaust_gas_temperature+" generator_status:"+generator_status+" efi_status:"+efi_status+" efi_index:"+efi_index+"";
+        return "MAVLINK_MSG_ID_LOWEHEISER_GOV_EFI - sysid:"+sysid+" compid:"+compid+" volt_batt:"+volt_batt+" curr_batt:"+curr_batt+" curr_gen:"+curr_gen+" curr_rot:"+curr_rot+" fuel_level:"+fuel_level+" throttle:"+throttle+" runtime:"+runtime+" until_maintenance:"+until_maintenance+" rectifier_temp:"+rectifier_temp+" generator_temp:"+generator_temp+" efi_batt:"+efi_batt+" efi_rpm:"+efi_rpm+" efi_pw:"+efi_pw+" efi_fuel_flow:"+efi_fuel_flow+" efi_fuel_consumed:"+efi_fuel_consumed+" efi_baro:"+efi_baro+" efi_mat:"+efi_mat+" efi_clt:"+efi_clt+" efi_tps:"+efi_tps+" efi_exhaust_gas_temperature:"+efi_exhaust_gas_temperature+" generator_status:"+generator_status+" efi_status:"+efi_status+" efi_index:"+efi_index;
     }
 
     /**

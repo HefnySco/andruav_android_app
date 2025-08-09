@@ -365,7 +365,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
 
     protected void disableMobileBatteryStatus ()
     {
-        mMobileBattery.setText(App.context.getString(R.string.empty_content));
+        mMobileBattery.setText(App.context.getString(ap.andruavmiddlelibrary.R.string.empty_content));
         final Drawable imgbat = App.context.getResources().getDrawable(R.drawable.battery_gr_32x32);
         mMobileBattery.setCompoundDrawablesWithIntrinsicBounds(imgbat, null, null, null);
 
@@ -375,7 +375,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
     protected void disableFCBBatteryStatus ()
     {
 
-       mFCBBattery.setText(App.context.getString(R.string.empty_content));
+       mFCBBattery.setText(App.context.getString(ap.andruavmiddlelibrary.R.string.empty_content));
        final Drawable imgbat = App.context.getResources().getDrawable(R.drawable.battery_gr_32x32);
        mFCBBattery.setCompoundDrawablesWithIntrinsicBounds(imgbat, null, null, null);
 
@@ -416,24 +416,24 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
 
         if (andruavWe7da.getIsCGS())
         {
-            text.append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append(" n/a").append("</b></font>");
+            text.append(GUI.getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE), true, false)).append(" n/a").append("</b></font>");
         }
         else {
             if (isFCB)
             {
-                text.append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append(String.format("%3.0f", andruavBattery.FCB_BatteryRemaining)).append("% ").append(String.format("%2.2f", andruavBattery.FCB_BatteryVoltage / 1000.0)).append("v").append("</b></font>");
+                text.append(GUI.getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE), true, false)).append(String.format("%3.0f", andruavBattery.FCB_BatteryRemaining)).append("% ").append(String.format("%2.2f", andruavBattery.FCB_BatteryVoltage / 1000.0)).append("v").append("</b></font>");
                 double cur=andruavBattery.FCB_CurrentConsumed;
                 if (andruavBattery.FCB_CurrentConsumed==-1)
                 {
                     cur =0;
                 }
-                text.append("<br>").append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append(String.format("%2.2f", cur / 1000.0f)).append(" Ah").append("</b></font>");
+                text.append("<br>").append(GUI.getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE), true, false)).append(String.format("%2.2f", cur / 1000.0f)).append(" Ah").append("</b></font>");
 
             }
             else {
-                text.append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append(String.format("%3.0f", andruavBattery.BatteryLevel)).append("% ").append(String.format("%2.2f", andruavBattery.Voltage / 1000.0)).append("v").append("</b></font>");
+                text.append(GUI.getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE), true, false)).append(String.format("%3.0f", andruavBattery.BatteryLevel)).append("% ").append(String.format("%2.2f", andruavBattery.Voltage / 1000.0)).append("v").append("</b></font>");
                 if (andruavBattery.Charging) {
-                    text.append("<br>").append(GUI.getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), true, false)).append(App.context.getString(R.string.action_bat_charging));
+                    text.append("<br>").append(GUI.getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN_DARKER), true, false)).append(App.context.getString(ap.andruavmiddlelibrary.R.string.action_bat_charging));
                 }
             }
         }
@@ -484,22 +484,22 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
 
         if (andruavWe7da.getAvailableLocation() == null)
         {
-            text.append(GUI.getFont(App.context.getString(R.string.str_TXT_GREY), false, false)).append("No GPS").append("</b></font>");
+            text.append(GUI.getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREY), false, false)).append("No GPS").append("</b></font>");
             mGPS.setCompoundDrawablesWithIntrinsicBounds(App.context.getResources().getDrawable(R.drawable.gps_no_32x32), null, null, null);
 
         }
         else
         {
             if (andruavWe7da.getActiveGPS().GPS3DFix == 1) {
-                text.append(HtmlPro.AddLine(App.context.getString(R.string.str_TXT_ERROR), "No-Fix", false, false));
+                text.append(HtmlPro.AddLine(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_ERROR), "No-Fix", false, false));
                 icon = R.drawable.gps_bad_32x32;
             } else
             if (andruavWe7da.getActiveGPS().GPS3DFix == 2) {
-                text.append(HtmlPro.AddLine(App.context.getString(R.string.str_TXT_GREEN_DARKER), "2D-Fix", false, false));
+                text.append(HtmlPro.AddLine(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN_DARKER), "2D-Fix", false, false));
                 icon = R.drawable.gps_nofix_32x32;
             } else
             if (andruavWe7da.getActiveGPS().GPS3DFix >= 3) {
-                text.append(HtmlPro.AddLine(App.context.getString(R.string.str_TXT_BLUE_DARKEST), "3D-Fix", false, false));
+                text.append(HtmlPro.AddLine(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE_DARKEST), "3D-Fix", false, false));
                 icon = R.drawable.gps_fix_32x32;
             }
 
@@ -532,18 +532,18 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
 
 
 
-        text.append(HtmlPro.AddLine(App.context.getString(R.string.str_TXT_GREEN_DARKER), straccuracy, false, false));
-        text.append(HtmlPro.AddLine(App.context.getString(R.string.str_TXT_BLUE), "sat:", false, false));
-        text.append(HtmlPro.AddLine(App.context.getString(R.string.str_TXT_GREEN_HUD_LAND), String.valueOf(andruavWe7da.getActiveIMU().SATC), false, false));
+        text.append(HtmlPro.AddLine(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN_DARKER), straccuracy, false, false));
+        text.append(HtmlPro.AddLine(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE), "sat:", false, false));
+        text.append(HtmlPro.AddLine(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN_HUD_LAND), String.valueOf(andruavWe7da.getActiveIMU().SATC), false, false));
 
 
         if (andruavWe7da.getActiveGPS().getUseFCBIMU())
         {
-            text.append(HtmlPro.AddLine(App.context.getString(R.string.str_TXT_ERROR), " board gps", true, false));
+            text.append(HtmlPro.AddLine(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_ERROR), " board gps", true, false));
         }
         else
         {
-            text.append(HtmlPro.AddLine(App.context.getString(R.string.str_TXT_ERROR), " mobile gps", true, false));
+            text.append(HtmlPro.AddLine(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_ERROR), " mobile gps", true, false));
         }
 
 
@@ -659,23 +659,23 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
         final StringBuffer textFCBMode = new StringBuffer();
 
 
-        textFCBMode.append(GUI.getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), true, false)).append(FlightMode.getFlightModeText(andruavWe7da.getFlightModeFromBoard())).append("</b></font>");
+        textFCBMode.append(GUI.getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN_DARKER), true, false)).append(FlightMode.getFlightModeText(andruavWe7da.getFlightModeFromBoard())).append("</b></font>");
         if (andruavWe7da.IsFlying())
         {
             flyingTime = GUI.elapsed2( System.currentTimeMillis(),andruavWe7da.getFlyingStartTime());
-            textFCBMode.append(GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false)).append(" Flying ").append(flyingTime).append("</font>");
+            textFCBMode.append(GUI.getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE), true, false)).append(" Flying ").append(flyingTime).append("</font>");
 
         }
         if (andruavWe7da.IsArmed())
         {
-            textFCBMode.append("<br>").append(GUI.getFont(App.context.getString(R.string.str_TXT_ERROR), true, false)).append("ARMED</b></font>");
+            textFCBMode.append("<br>").append(GUI.getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_ERROR), true, false)).append("ARMED</b></font>");
         }
         if (andruavWe7da.getisGCSBlockedFromBoard())
         {
-            textFCBMode.append("<br>").append(GUI.getFont(App.context.getString(R.string.str_TXT_ERROR), true, false)).append(" BLOCKED</b></font>");
+            textFCBMode.append("<br>").append(GUI.getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_ERROR), true, false)).append(" BLOCKED</b></font>");
         }
 
-        textFCBMode.append("<br>").append(GUI.getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), true, false)).append(" </b></font>");
+        textFCBMode.append("<br>").append(GUI.getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN_DARKER), true, false)).append(" </b></font>");
 
         mFCBMode.setText(Html.fromHtml(textFCBMode.toString()));
         mFCBMode.setVisibility(View.VISIBLE);
@@ -689,10 +689,10 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
        // textFCBMode.append(ActivityMosa3ed.getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), true, false)).append(height).append("</b></font>");
         // Speed & Altitude ActivityMosa3ed
 
-        String textSpeedAlt = GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false) + "speed: " + "</b></font>" +
-                GUI.getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), true, false) + speedText + "</b></font>" +
-                GUI.getFont(App.context.getString(R.string.str_TXT_BLUE), true, false) + "<br>alt: " + "</b></font>" +
-                GUI.getFont(App.context.getString(R.string.str_TXT_GREEN_DARKER), true, false) + height + "</b></font>";
+        String textSpeedAlt = GUI.getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE), true, false) + "speed: " + "</b></font>" +
+                GUI.getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN_DARKER), true, false) + speedText + "</b></font>" +
+                GUI.getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_BLUE), true, false) + "<br>alt: " + "</b></font>" +
+                GUI.getFont(App.context.getString(ap.andruavmiddlelibrary.R.string.str_TXT_GREEN_DARKER), true, false) + height + "</b></font>";
         mIMUAltitude.setText(Html.fromHtml(textSpeedAlt));
         mIMUAltitude.setVisibility(View.VISIBLE);
         final Drawable imgalt = App.context.getResources().getDrawable(R.drawable.height_b_32x32);

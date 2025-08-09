@@ -262,7 +262,7 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
                             txtVideoStatus.setVisibility(View.INVISIBLE);
                         break;
                         case Event_WebRTC.EVENT_CONNECT_SUCCEEDED:
-                            txtVideoStatus.setText(App.context.getString(R.string.action_video_on));
+                            txtVideoStatus.setText(App.context.getString(ap.andruavmiddlelibrary.R.string.action_video_on));
                             txtVideoStatus.setVisibility(View.VISIBLE);
                         break;
                         case Event_WebRTC.EVENT_CONNECTION_ERROR:
@@ -806,7 +806,7 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
                         }
                     } catch (Exception ex) {
                         AndruavEngine.log().logException(AndruavSettings.AccessCode, "exception_fpv2", ex);
-                        PanicFacade.cannotStartCamera(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_CAMERA, App.getAppContext().getString(R.string.andruav_error_camertakeimage), null);
+                        PanicFacade.cannotStartCamera(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_CAMERA, App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_camertakeimage), null);
                         skip = false;
                     }
 

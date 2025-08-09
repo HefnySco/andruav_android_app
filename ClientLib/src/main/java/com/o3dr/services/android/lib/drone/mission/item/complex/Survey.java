@@ -170,7 +170,7 @@ public class Survey extends MissionItem implements MissionItem.ComplexItem<Surve
             return false;
         if (!Objects.equals(gridPoints, survey.gridPoints))
             return false;
-        return !(!Objects.equals(cameraLocations, survey.cameraLocations));
+        return Objects.equals(cameraLocations, survey.cameraLocations);
 
     }
 

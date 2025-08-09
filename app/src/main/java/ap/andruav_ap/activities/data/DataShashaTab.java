@@ -99,7 +99,7 @@ public class DataShashaTab extends BaseAndruavShasha_L2 implements ActionBar.Tab
 
         if (id == R.id.mi_data_Help)
         {
-            GMail.sendGMail(this, getString(R.string.email_title), getString(R.string.email_to), getString(R.string.email_subject), getString(R.string.email_body), null);
+            GMail.sendGMail(this, getString(ap.andruavmiddlelibrary.R.string.email_title), getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject), getString(ap.andruavmiddlelibrary.R.string.email_body), null);
 
         }
 
@@ -169,11 +169,11 @@ public class DataShashaTab extends BaseAndruavShasha_L2 implements ActionBar.Tab
             Locale l = Locale.getDefault();
             switch (position) {
                 case 0:
-                    return getString(R.string.title_data_activity_tab_section1).toUpperCase(l);
+                    return getString(ap.andruavmiddlelibrary.R.string.title_data_activity_tab_section1).toUpperCase(l);
                 case 1:
-                    return getString(R.string.title_data_activity_tab_section2).toUpperCase(l);
+                    return getString(ap.andruavmiddlelibrary.R.string.title_data_activity_tab_section2).toUpperCase(l);
                 case 2:
-                    return getString(R.string.title_data_activity_tab_section3).toUpperCase(l);
+                    return getString(ap.andruavmiddlelibrary.R.string.title_data_activity_tab_section3).toUpperCase(l);
             }
             return null;
         }

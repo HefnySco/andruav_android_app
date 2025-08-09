@@ -214,7 +214,7 @@ public class msg_digicam_control extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_DIGICAM_CONTROL - sysid:"+sysid+" compid:"+compid+" extra_value:"+extra_value+" target_system:"+target_system+" target_component:"+target_component+" session:"+session+" zoom_pos:"+zoom_pos+" zoom_step:"+zoom_step+" focus_lock:"+focus_lock+" shot:"+shot+" command_id:"+command_id+" extra_param:"+extra_param+"";
+        return "MAVLINK_MSG_ID_DIGICAM_CONTROL - sysid:"+sysid+" compid:"+compid+" extra_value:"+extra_value+" target_system:"+target_system+" target_component:"+target_component+" session:"+session+" zoom_pos:"+zoom_pos+" zoom_step:"+zoom_step+" focus_lock:"+focus_lock+" shot:"+shot+" command_id:"+command_id+" extra_param:"+extra_param;
     }
 
     /**

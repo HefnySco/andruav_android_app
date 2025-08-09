@@ -76,7 +76,7 @@ public class msg_global_vision_position_estimate extends MAVLinkMessage {
      */
     @Description("Row-major representation of pose 6x6 cross-covariance matrix upper right triangle (states: x_global, y_global, z_global, roll, pitch, yaw; first six entries are the first ROW, next five entries are the second ROW, etc.). If unknown, assign NaN value to first element in the array.")
     @Units("")
-    public float covariance[] = new float[21];
+    public float[] covariance = new float[21];
     
     /**
      * Estimate reset counter. This should be incremented when the estimate resets in any of the dimensions (position, velocity, attitude, angular speed). This is designed to be used when e.g an external SLAM system detects a loop-closure and the estimate jumps.
@@ -211,7 +211,7 @@ public class msg_global_vision_position_estimate extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GLOBAL_VISION_POSITION_ESTIMATE - sysid:"+sysid+" compid:"+compid+" usec:"+usec+" x:"+x+" y:"+y+" z:"+z+" roll:"+roll+" pitch:"+pitch+" yaw:"+yaw+" covariance:"+covariance+" reset_counter:"+reset_counter+"";
+        return "MAVLINK_MSG_ID_GLOBAL_VISION_POSITION_ESTIMATE - sysid:"+sysid+" compid:"+compid+" usec:"+usec+" x:"+x+" y:"+y+" z:"+z+" roll:"+roll+" pitch:"+pitch+" yaw:"+yaw+" covariance:"+covariance+" reset_counter:"+reset_counter;
     }
 
     /**

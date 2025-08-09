@@ -120,27 +120,23 @@ public class RemoteControlSettingGCSActivityTab  extends AppCompatActivity imple
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        switch (id) {
-            case  R.id.action_save:
-                if ((mViewPager!= null) && (mFragment[mViewPager.getCurrentItem()] != null))
-                {
-                   // ((IFragmentSave) mFragment[mViewPager.getCurrentItem()]).Save();
-                }
-                return true;
-            case R.id.action_refresh:
-                if ((mViewPager!= null) && (mFragment[mViewPager.getCurrentItem()] != null)) {
-                   // ((IFragmentSave) mFragment[mViewPager.getCurrentItem()]).Refresh();
-                }
-                return true;
-            case R.id.mi_Help:
-                GMail.sendGMail(this, getString(R.string.email_title), getString(R.string.email_to), getString(R.string.email_subject), getString(R.string.email_body), null);
-                return true;
-
-            case R.id.mi_remotescreen:
-                startActivity(new Intent(RemoteControlSettingGCSActivityTab.this, RemoteControlActivity.class));
-                return true;
+        if (id == R.id.action_save) {
+            if ((mViewPager != null) && (mFragment[mViewPager.getCurrentItem()] != null)) {
+                // ((IFragmentSave) mFragment[mViewPager.getCurrentItem()]).Save();
+            }
+            return true;
+        } else if (id == R.id.action_refresh) {
+            if ((mViewPager != null) && (mFragment[mViewPager.getCurrentItem()] != null)) {
+                // ((IFragmentSave) mFragment[mViewPager.getCurrentItem()]).Refresh();
+            }
+            return true;
+        } else if (id == R.id.mi_Help) {
+            GMail.sendGMail(this, getString(ap.andruavmiddlelibrary.R.string.email_title), getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject), getString(ap.andruavmiddlelibrary.R.string.email_body), null);
+            return true;
+        } else if (id == R.id.mi_remotescreen) {
+            startActivity(new Intent(RemoteControlSettingGCSActivityTab.this, RemoteControlActivity.class));
+            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -207,9 +203,9 @@ public class RemoteControlSettingGCSActivityTab  extends AppCompatActivity imple
             Locale l = Locale.getDefault();
             switch (position) {
                 case 0:
-                    return getString(R.string.title_activity_remote_control_setting_GCS_activity_tab_section1).toUpperCase(l);
+                    return getString(ap.andruavmiddlelibrary.R.string.title_activity_remote_control_setting_GCS_activity_tab_section1).toUpperCase(l);
                 case 1:
-                    return getString(R.string.title_activity_remote_control_setting_GCS_activity_tab_section3).toUpperCase(l);
+                    return getString(ap.andruavmiddlelibrary.R.string.title_activity_remote_control_setting_GCS_activity_tab_section3).toUpperCase(l);
 
 
             }

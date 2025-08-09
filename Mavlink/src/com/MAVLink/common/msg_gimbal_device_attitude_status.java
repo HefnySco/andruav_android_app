@@ -48,7 +48,7 @@ public class msg_gimbal_device_attitude_status extends MAVLinkMessage {
      */
     @Description("Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). The frame is described in the message description.")
     @Units("")
-    public float q[] = new float[4];
+    public float[] q = new float[4];
     
     /**
      * X component of angular velocity (positive: rolling to the right). The frame is described in the message description. NaN if unknown.
@@ -258,7 +258,7 @@ public class msg_gimbal_device_attitude_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GIMBAL_DEVICE_ATTITUDE_STATUS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" q:"+q+" angular_velocity_x:"+angular_velocity_x+" angular_velocity_y:"+angular_velocity_y+" angular_velocity_z:"+angular_velocity_z+" failure_flags:"+failure_flags+" flags:"+flags+" target_system:"+target_system+" target_component:"+target_component+" delta_yaw:"+delta_yaw+" delta_yaw_velocity:"+delta_yaw_velocity+" gimbal_device_id:"+gimbal_device_id+"";
+        return "MAVLINK_MSG_ID_GIMBAL_DEVICE_ATTITUDE_STATUS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" q:"+q+" angular_velocity_x:"+angular_velocity_x+" angular_velocity_y:"+angular_velocity_y+" angular_velocity_z:"+angular_velocity_z+" failure_flags:"+failure_flags+" flags:"+flags+" target_system:"+target_system+" target_component:"+target_component+" delta_yaw:"+delta_yaw+" delta_yaw_velocity:"+delta_yaw_velocity+" gimbal_device_id:"+gimbal_device_id;
     }
 
     /**
