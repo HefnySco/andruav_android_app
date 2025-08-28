@@ -21,7 +21,7 @@ android {
         applicationId 'arudpilot.andruav'
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
-        versionName '7.1.0'
+        versionName '7.1.1'
 //        signingConfig signingConfigs.config
         versionCode 60400
         multiDexEnabled true
@@ -44,7 +44,6 @@ android {
             zipAlignEnabled true
             testCoverageEnabled = false
             renderscriptDebuggable true
-         //   signingConfig signingConfigs.config
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
                     outputFileName = "Andruav_debug_" + variant.properties.get('flavorName') + "." + defaultConfig.versionName + "." + releaseTime() + ".apk"
