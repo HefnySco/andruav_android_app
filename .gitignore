@@ -16,6 +16,10 @@ build/
 .gradle
 
 local.properties
+checks.json
+.vscode/coding-times.db
+mavlink.jar
+
 
 # IntelliJ
 *.iml
