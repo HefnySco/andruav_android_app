@@ -87,7 +87,10 @@ public class AndruavMessage_ID extends AndruavMessageBase {
     public String Description;
 
 
-
+    /***
+     * This field is used by ANdruav and NOT DE and it means I am Andruav & My Version is x.y.z
+     */
+    public String Version_of_Andruav;
 
     public AndruavMessage_ID() {
         super();
@@ -124,6 +127,7 @@ public class AndruavMessage_ID extends AndruavMessageBase {
         IsFlashing          = AndruavSettings.andruavWe7daBase.getIsFlashing();
         IsWhisling          = AndruavSettings.andruavWe7daBase.getIsWhisling();
         Permissions         = AndruavSettings.andruavWe7daBase.getPermissions();
+        Version_of_Andruav  = AndruavSettings.andruavWe7daBase.getVersionOfAndruav();
     }
 
     private void defaultInit() {
@@ -175,6 +179,7 @@ public class AndruavMessage_ID extends AndruavMessageBase {
         json_data.accumulate("UD", UnitID);
         json_data.accumulate("DS", Description);
         json_data.accumulate("p", Permissions);
+        json_data.accumulate("av", Version_of_Andruav);
 
         // dont add unless it is TRUE to save packet size
         if (useFCBIMU) json_data.accumulate("FI", useFCBIMU);

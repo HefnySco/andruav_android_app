@@ -29,6 +29,8 @@ public class AndruavUnitMe extends AndruavUnitBase {
      */
     public boolean mIsModule = false;
 
+
+    public String mVersionOfAndruav;
     @Override
     protected void Telemetry_protocol_changed(int telemetry_protocol)
     {
@@ -72,6 +74,12 @@ public class AndruavUnitMe extends AndruavUnitBase {
     public void updateUdpProxyLastReceiveTime()
     {
        lastaccess_udp_proxy_receive =System.currentTimeMillis();
+    }
+
+
+    public String getVersionOfAndruav()
+    {
+        return mVersionOfAndruav;
     }
 
 }

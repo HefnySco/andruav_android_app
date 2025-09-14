@@ -379,6 +379,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     public static void updateWe7daInfo()
     {
 
+        AndruavSettings.andruavWe7daBase.mVersionOfAndruav = App.versionName;
         AndruavSettings.andruavWe7daBase.UnitID = Preference.getWebServerUserName(null).toLowerCase();
         AndruavSettings.andruavWe7daBase.PartyID = Preference.getLoginPartyID(null);
         AndruavSettings.andruavWe7daBase.Description = Preference.getWebServerUserDescription(null);
@@ -537,26 +538,12 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     public static void startUDPServer ()
     {
         stopUDPServer();
-
-
-
-        if (!BuildConfig.DEBUG)
-        {
-        }
-
     }
 
     public static void stopUDPServer ()
     {
 
         mAndruavUDP = false;
-
-        if (!BuildConfig.DEBUG)
-        {
-        }
-
-
-
     }
 
     public static void startAndruavSMS()
