@@ -1,5 +1,8 @@
 package ap.andruav_ap.communication.controlBoard;
 
+import static com.MAVLink.enums.MAV_STATE.MAV_STATE_ACTIVE;
+import static com.MAVLink.enums.MAV_STATE.MAV_STATE_CRITICAL;
+import static com.MAVLink.enums.MAV_STATE.MAV_STATE_EMERGENCY;
 import static com.MAVLink.minimal.msg_heartbeat.MAVLINK_MSG_ID_HEARTBEAT;
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_REGISTERED;
 
@@ -12,6 +15,8 @@ import android.os.Message;
 
 import androidx.collection.SimpleArrayMap;
 
+import com.MAVLink.common.msg_sys_status;
+import com.MAVLink.enums.MAV_SYS_STATUS_SENSOR;
 import com.andruav.controlBoard.shared.missions.MissionCameraTrigger;
 import com.andruav.controlBoard.shared.missions.MissionCameraControl;
 import com.andruav.event.Event_Remote_ChannelsCMD;
@@ -739,7 +744,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
 
 
-
     public void onDroneEvent_HeartBeat (final int sysid, final short type, final int base_mode, final int system_status, final int mavlink_version)
     {
 
@@ -749,19 +753,18 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
         canFly = MavLink_Helpers.isCanFly (type);
 
         isArmed = ((base_mode & MAV_MODE_FLAG.MAV_MODE_FLAG_SAFETY_ARMED) == MAV_MODE_FLAG.MAV_MODE_FLAG_SAFETY_ARMED) || (mAndruavUnitBase.getVehicleType() == VehicleTypes.VEHICLE_ROVER);
+
         this.mAndruavUnitBase.IsArmed(isArmed);
 
         final int vehicle_type = AndruavSettings.andruavWe7daBase.getVehicleType();
 
 
-        isFlying = (vehicle_type != VehicleTypes.VEHICLE_ROVER) &&
-                ((system_status == MAV_STATE.MAV_STATE_ACTIVE)
+        isFlying = (vehicle_type != VehicleTypes.VEHICLE_ROVER) && isArmed &&
+                ((system_status == MAV_STATE_ACTIVE)
                 || (isFlying
-                && (system_status == MAV_STATE.MAV_STATE_CRITICAL || system_status == MAV_STATE.MAV_STATE_EMERGENCY)));
+                && (system_status == MAV_STATE_CRITICAL || system_status == MAV_STATE_EMERGENCY)));
         this.mAndruavUnitBase.IsFlying(isFlying);
     }
-
-
 
     public void onDroneEvent_StateConnected ()
     {
@@ -803,8 +806,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
     public void onDroneEvent_AltitudeUpdated (final com.o3dr.services.android.lib.drone.property.Altitude droneAltitude)
     {
-        // IMPORTANT: THIS IS ABSOLUTE ALT NOT RELATIVE ALT
-        Altitude  = droneAltitude.getAltitude();
         alt_error = droneAltitude.getTargetAltitude() - droneAltitude.getAltitude();
     }
 
@@ -860,7 +861,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
             wp_dist = GPSHelper.calculateDistance(guided_LngLat.getLongitude(), guided_LngLat.getLatitude(), vehicle_gps_lng, vehicle_gps_lat);
             target_bearing = GPSHelper.calculateBearing(vehicle_gps_lng, vehicle_gps_lat, guided_LngLat.getLongitude(), guided_LngLat.getLatitude());
 
-            this.mAndruavUnitBase.updateFCBNavInfo();
+            mAndruavUnitBase.updateFCBNavInfo();
             EventBus.getDefault().post(a7adath_nav_info_ready); // ToDo: this should be an internal trigger in Andruav Protocol Lib
 
         }
@@ -876,6 +877,55 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
 
             followMeOn = false;
+
+        mAndruavUnitBase.updateFromFCBGPS();
+
+        EventBus.getDefault().post(a7adath_gps_ready); // ToDo: this should be an internal trigger in Andruav Protocol Lib
+    }
+
+    public void onDroneEvent_GPS_Position2 (double lat, double lng, double alt_rel, double alt_abs)
+    {
+        vehicle_gps_lng = lng / 10E6;
+        vehicle_gps_lat = lat / 10E6;
+        vehicle_gps_alt = alt_rel;
+        vehicle_gps_abs = alt_abs;
+
+        LatLong lnglat = new LatLong(vehicle_gps_lat, vehicle_gps_lng);
+
+        counterBearing = counterBearing + 1;
+        double distanceFromOldPoint =0;
+        if (gps_lng_old != 0)
+        {
+            distanceFromOldPoint = MathUtils.getDistance2D(new LatLong(gps_lat_old,gps_lng_old),lnglat);
+            if (distanceFromOldPoint > 10) {
+                nav_bearing = MathUtils.getHeadingFromCoordinates(new LatLong(gps_lat_old, gps_lng_old),
+                        lnglat);
+            }
+        }
+
+        if ((guided_LngLat != null) && (guided_LngLat.getLatitude() != 0)) {
+            // we have a valid guided point
+
+            wp_dist_old = wp_dist;
+            wp_dist = GPSHelper.calculateDistance(guided_LngLat.getLongitude(), guided_LngLat.getLatitude(), vehicle_gps_lng, vehicle_gps_lat);
+            target_bearing = GPSHelper.calculateBearing(vehicle_gps_lng, vehicle_gps_lat, guided_LngLat.getLongitude(), guided_LngLat.getLatitude());
+
+            mAndruavUnitBase.updateFCBNavInfo();
+            EventBus.getDefault().post(a7adath_nav_info_ready); // ToDo: this should be an internal trigger in Andruav Protocol Lib
+
+        }
+
+        if ((distanceFromOldPoint > 10) || (gps_lng_old == 0)) {
+            // update older point if distance > 10 meters
+            if ((gps_lng_old != vehicle_gps_lng) && (gps_lat_old != vehicle_gps_lat)) {
+                gps_lng_old = vehicle_gps_lng;
+                gps_lat_old = vehicle_gps_lat;
+            }
+        }
+
+
+
+        followMeOn = false;
 
         mAndruavUnitBase.updateFromFCBGPS();
 
@@ -1155,11 +1205,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     }
 
 
-    public void onDroneEvent_StateArming (final State vehicleState)
-    {
-        isArmed = vehicleState.isArmed() || (mType == VehicleTypes.VEHICLE_ROVER);
-        this.mAndruavUnitBase.IsArmed(isArmed);
-    }
 
 
     public void onDroneEvent_GuidedUpdated (final GuidedState guidedState)
@@ -1583,15 +1628,13 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
         if (rcChannelBlock) return ;
 
 
-        if (vehicleState != null)
-        {
 
-            if (vehicleState.isFlying()) {
+
+        if (isFlying) {
                 App.droneKitServer.ctrl_climbTo(altitude);
                 target_gps_alt = altitude;
                 return ;
             }
-        }
 
         App.droneKitServer.ctrl_changeAltitude(altitude, new AbstractCommandListener() {
             @Override
@@ -1608,7 +1651,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
+//                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
             }
         });
     }

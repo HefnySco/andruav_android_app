@@ -3,9 +3,11 @@ package ap.andruav_ap.communication.controlBoard.mavlink;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.common.msg_attitude;
 import com.MAVLink.common.msg_command_long;
+import com.MAVLink.common.msg_global_position_int;
 import com.MAVLink.common.msg_open_drone_id_basic_id;
 import com.MAVLink.common.msg_open_drone_id_location;
 import com.MAVLink.minimal.msg_heartbeat;
+import com.MAVLink.common.msg_sys_status;
 import com.MAVLink.common.msg_rc_channels;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_mount_status;
@@ -63,6 +65,9 @@ public class DroneKitMavlinkObserver extends MavlinkObserver
 //                case msg_open_drone_id_location.MAVLINK_MSG_ID_OPEN_DRONE_ID_LOCATION:
 //                    break;
 
+                case msg_sys_status.MAVLINK_MSG_ID_SYS_STATUS:
+                    DroneMavlinkHandler.execute_sys_status((msg_sys_status) mavLinkMessage);
+                    break;
                 case msg_heartbeat.MAVLINK_MSG_ID_HEARTBEAT:
                     DroneMavlinkHandler.execute_heartbeat_raw((msg_heartbeat) mavLinkMessage);
                     break;
@@ -99,6 +104,11 @@ public class DroneKitMavlinkObserver extends MavlinkObserver
                 case msg_command_long.MAVLINK_MSG_ID_COMMAND_LONG:
                     DroneMavlinkHandler.execute_command_long ((msg_command_long) mavLinkMessage);
                     break;
+
+                case msg_global_position_int.MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
+                    DroneMavlinkHandler.execute_global_position_int ((msg_global_position_int) mavLinkMessage);
+                    break;
+
             }
 
 

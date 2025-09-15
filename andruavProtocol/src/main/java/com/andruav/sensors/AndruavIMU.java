@@ -2,6 +2,8 @@ package com.andruav.sensors;
 
 import android.location.Location;
 
+import com.andruav.andruavUnit.AndruavLocation;
+
 /**
  * Created by M.Hefny on 11-May-15.
  */
@@ -37,14 +39,14 @@ public class AndruavIMU {
     public int GPSFixQuality;
     public float Hdop;
     public float Vdop;
-    protected Location CurrentLocation;
+    protected AndruavLocation CurrentLocation;
     //public double GroundAltitude;
 
     private Boolean misMe;
     /***
      * This is a circular index where the pointer points to last valid point;
      */
-    protected Location[] locationHistory;
+    protected AndruavLocation[] locationHistory;
     protected int locationHistoryIndex = -1;
     /**
      * Sattellite Count
@@ -130,7 +132,7 @@ public class AndruavIMU {
         misMe = isMe;
         if (enableLocationHistory)
         {
-            locationHistory = new Location[LOCATION_HISTORY_LENGTH];
+            locationHistory = new AndruavLocation[LOCATION_HISTORY_LENGTH];
         }
         useFCBIMU = FCBIMU;
     }
@@ -196,7 +198,7 @@ public class AndruavIMU {
     }
 
 
-    public void setCurrentLocation(Location loc)
+    public void setCurrentLocation(AndruavLocation loc)
     {
         if (locationHistory != null)
         {
@@ -206,13 +208,12 @@ public class AndruavIMU {
                 locationHistory[locationHistoryIndex] = loc;
 
                 calculateStatistics (loc);
-
             }
         }
         CurrentLocation = loc;
     }
 
-    public Location getCurrentLocation ()
+    public AndruavLocation getCurrentLocation ()
     {
         return CurrentLocation;
     }

@@ -3,6 +3,10 @@ package ap.andruav_ap.communication.controlBoard.mavlink;
 import static com.MAVLink.enums.MAV_TYPE.MAV_TYPE_GCS;
 import static com.MAVLink.enums.MAV_TYPE.MAV_TYPE_GIMBAL;
 
+import com.MAVLink.common.msg_global_position_int;
+import com.MAVLink.common.msg_sys_status;
+import com.MAVLink.enums.MAV_AUTOPILOT;
+import com.MAVLink.enums.MAV_SYS_STATUS_SENSOR;
 import com.andruav.AndruavEngine;
 import com.andruav.andruavUnit.AndruavUnitAllGCS;
 import com.andruav.event.fpv7adath.Event_FPV_CMD;
@@ -94,6 +98,15 @@ public class DroneMavlinkHandler {
     }
 
 
+    public static void execute_sys_status(msg_sys_status mavLinkMessage)
+    {
+
+        final boolean prearm_ready = (mavLinkMessage.onboard_control_sensors_health & MAV_SYS_STATUS_SENSOR.MAV_SYS_STATUS_PREARM_CHECK ) != 0;
+
+        AndruavSettings.andruavWe7daBase.isReadyToArm(prearm_ready);
+
+    }
+
     /***
      *
      * @param msg_heartbeat
@@ -104,6 +117,7 @@ public class DroneMavlinkHandler {
 
         //if (msg_heartbeat.compid==0) return; // ignore parse
         if (msg_heartbeat.sysid==255) return; // ignore parse
+
         final ControlBoard_DroneKit controlBoard_droneKit = (ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard;
 
         if (controlBoard_droneKit == null) return ;
@@ -160,6 +174,15 @@ public class DroneMavlinkHandler {
             event_fpv_cmd.Requester = new AndruavUnitAllGCS(); //.getPartyID();
             AndruavEngine.getEventBus().post(event_fpv_cmd);
         }
+    }
+
+    public static void execute_global_position_int (msg_global_position_int mavLinkMessage)
+    {
+        if (mavLinkMessage.sysid==255) return; // ignore parse
+
+        final ControlBoard_DroneKit controlBoard_droneKit = (ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard;
+        if (controlBoard_droneKit == null) return ;
+        controlBoard_droneKit.onDroneEvent_GPS_Position2(mavLinkMessage.lat, mavLinkMessage.lon, mavLinkMessage.relative_alt, mavLinkMessage.alt);
     }
 
 }

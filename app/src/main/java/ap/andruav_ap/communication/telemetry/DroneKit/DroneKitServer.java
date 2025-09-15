@@ -618,7 +618,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         final Gps droneGps = mDrone.getAttribute(AttributeType.GPS);
         switch (event) {
             case AttributeEvent.GPS_POSITION:
-                ((ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard).onDroneEvent_GPS_Position(droneGps);
+                //((ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard).onDroneEvent_GPS_Position(droneGps);
                 break;
             case AttributeEvent.WARNING_NO_GPS:
                 ((ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard).onDroneEvent_GPS_NOGPS(droneGps);
@@ -961,7 +961,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
     public void ctrl_gotoLngLatI (LatLong point, boolean force, AbstractCommandListener listener)
     {
         ControlApi.getApi(mDrone).goTo(point, force, listener);
-
     }
 
 
@@ -1301,7 +1300,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
+
             }
         });
     }
@@ -1325,7 +1324,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
+
             }
         });
     }
@@ -1360,8 +1359,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try Auto Mode again");
+
 
             }
         });
@@ -1391,8 +1389,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try Position Hold Mode again");
+
             }
         });
     }
@@ -1420,8 +1417,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try Altitude Hold Mode again");
+
             }
         });
     }
@@ -1451,8 +1447,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try Loiter Mode again");
+
             }
         });
     }
@@ -1482,8 +1477,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try Surface Mode again");
+
             }
         });
     }
@@ -1513,9 +1507,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
 
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try fly take off mode again");
             }
         });
     }
@@ -1546,8 +1538,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try Guided Mode again");
+
             }
         });
     }
@@ -1578,9 +1569,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
 
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try fly by wire Mode again");
             }
         });
     }
@@ -1610,9 +1599,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
 
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try fly by wire Mode again");
             }
         });
     }
@@ -1641,9 +1628,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
 
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try cruise Mode again");
             }
         });
     }
@@ -1672,9 +1657,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
 
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try Manual Mode again");
             }
         });
     }
@@ -1704,9 +1687,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
 
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try Acro Mode again");
             }
         });
     }
@@ -1781,9 +1762,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
             @Override
             public void onTimeout() {
-                if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnTimeout();
 
-                PanicFacade.cannotDoAutopilotAction("Time Out. Please try Brake Mode again");
             }
         });
     }

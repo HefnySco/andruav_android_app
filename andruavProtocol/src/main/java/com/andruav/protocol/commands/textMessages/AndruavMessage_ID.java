@@ -39,6 +39,7 @@ public class AndruavMessage_ID extends AndruavMessageBase {
     public boolean IsCGS;
 
     public boolean IsArmed;
+    public boolean IsReadyToArm;
 
     public boolean IsFlashing = false;
     public boolean IsWhisling = false;
@@ -92,6 +93,7 @@ public class AndruavMessage_ID extends AndruavMessageBase {
      */
     public String Version_of_Andruav;
 
+    protected  int m_arming_status = 0;
     public AndruavMessage_ID() {
         super();
 
@@ -119,6 +121,7 @@ public class AndruavMessage_ID extends AndruavMessageBase {
         isGCSBlocked        = AndruavSettings.andruavWe7daBase.getisGCSBlockedFromBoard();
         manualTXBlockedMode = AndruavSettings.andruavWe7daBase.getManualTXBlockedSubAction();
         IsArmed             = AndruavSettings.andruavWe7daBase.IsArmed();
+        IsReadyToArm        = AndruavSettings.andruavWe7daBase.isReadyToArm();
         telemetry_protocol  = AndruavSettings.andruavWe7daBase.getTelemetry_protocol();
         UnitID              = AndruavSettings.andruavWe7daBase.UnitID;
         useFCBIMU           = AndruavSettings.andruavWe7daBase.useFCBIMU();
@@ -147,7 +150,12 @@ public class AndruavMessage_ID extends AndruavMessageBase {
         if (json_receive_data.has("FI")) useFCBIMU = json_receive_data.getBoolean("FI");
         if (json_receive_data.has("SD")) IsShutdown = json_receive_data.getBoolean("SD");
         if (json_receive_data.has("GM")) GPSMode = json_receive_data.getInt("GM");
-        if (json_receive_data.has("AR")) IsArmed = json_receive_data.getBoolean("AR");  //backward compatibility
+        if (json_receive_data.has("AR"))
+        {
+            m_arming_status = json_receive_data.getInt("AR");
+            IsArmed = (m_arming_status & 0x1) != 0;
+            IsReadyToArm = (m_arming_status & 0x2) != 0;
+        }
         if (json_receive_data.has("FL")) IsFlying = json_receive_data.getBoolean("FL"); //backward compatibility
         if (json_receive_data.has("FM")) FlyingMode = json_receive_data.getInt("FM"); //backward compatibility
         if (json_receive_data.has("B"))  isGCSBlocked = json_receive_data.getBoolean("B");
@@ -181,10 +189,20 @@ public class AndruavMessage_ID extends AndruavMessageBase {
         json_data.accumulate("p", Permissions);
         json_data.accumulate("av", Version_of_Andruav);
 
+        m_arming_status = 0;
+        if (IsReadyToArm)
+        {
+            m_arming_status  |= (1 << 0);
+        }
+        if (IsArmed)
+        {
+            m_arming_status  |= (1 << 1);
+        }
+        json_data.accumulate("AR", m_arming_status);
+
         // dont add unless it is TRUE to save packet size
         if (useFCBIMU) json_data.accumulate("FI", useFCBIMU);
         if (IsShutdown) json_data.accumulate("SD", IsShutdown);
-        if (IsArmed) json_data.accumulate("AR", IsArmed);
         if (IsFlying) json_data.accumulate("FL", IsFlying);
         if (IsFlashing) json_data.accumulate("x", IsFlashing);
         if (IsWhisling) json_data.accumulate("y", IsWhisling);

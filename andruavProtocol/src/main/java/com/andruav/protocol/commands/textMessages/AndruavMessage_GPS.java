@@ -2,6 +2,8 @@ package com.andruav.protocol.commands.textMessages;
 
 import android.location.Location;
 
+import com.andruav.andruavUnit.AndruavLocation;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,9 +37,7 @@ public class AndruavMessage_GPS extends AndruavMessageBase {
      * NOT AndruavWe7da.gpsMode
      */
     public boolean GPSFCB;
-    public Location CurrentLocation;
-    @Deprecated
-    public float groundAltitude;
+    public AndruavLocation CurrentLocation;
     /**
      * Sattellite Count
      */
@@ -65,15 +65,13 @@ public class AndruavMessage_GPS extends AndruavMessageBase {
         SATC = json_receive_data.getInt("SC");
         //GPS3DFix = json_receive_data.getInt("3D");
 
-        if (json_receive_data.has("g")) {
-            groundAltitude = nf_us.parse(json_receive_data.getString("g")).floatValue();
-        }
         if (json_receive_data.has("p")) {
             //GroundAltitude = Float.parseFloat(json_receive_data.getString("galt"));
-            CurrentLocation = new Location(json_receive_data.getString("p"));
+            CurrentLocation = new AndruavLocation(json_receive_data.getString("p"));
             CurrentLocation.setLatitude(nf_us.parse(json_receive_data.getString("la")).doubleValue());
             CurrentLocation.setLongitude(nf_us.parse(json_receive_data.getString("ln")).doubleValue());
-            CurrentLocation.setAltitude(nf_us.parse(json_receive_data.getString("a")).doubleValue());
+            CurrentLocation.setAltitude(nf_us.parse(json_receive_data.getString("r")).doubleValue());
+            CurrentLocation.setAltitudeAbsolute(nf_us.parse(json_receive_data.getString("a")).doubleValue());
             CurrentLocation.setTime(json_receive_data.getLong("t"));
             if (json_receive_data.has("s")) {
                 CurrentLocation.setSpeed((float) json_receive_data.getDouble("s"));
@@ -124,8 +122,8 @@ public class AndruavMessage_GPS extends AndruavMessageBase {
             json_data.accumulate("ln", String.format(Locale.US, "%4.6f", CurrentLocation.getLongitude()));
             json_data.accumulate("p", CurrentLocation.getProvider());
             json_data.accumulate("t", CurrentLocation.getTime());
-            json_data.accumulate("a", String.format(Locale.US, "%5.1f", CurrentLocation.getAltitude()).trim());
-            json_data.accumulate("g", Float.parseFloat(String.format(Locale.US, "%6.1f", groundAltitude)));
+            json_data.accumulate("a", String.format(Locale.US, "%5.1f", CurrentLocation.getAltitudeAbsolute()).trim());
+            json_data.accumulate("r", String.format(Locale.US, "%5.1f", CurrentLocation.getAltitude()).trim());
             if (CurrentLocation.hasSpeed()) {
                 json_data.accumulate("s", String.format(Locale.US, "%.3f", CurrentLocation.getSpeed()).trim());
             }

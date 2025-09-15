@@ -21,6 +21,7 @@ import java.util.Timer;
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.App;
 
+import com.andruav.andruavUnit.AndruavLocation;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
 import ap.andruavmiddlelibrary.preference.Preference;
 import ap.andruavmiddlelibrary.sensors.CompassCalculation;
@@ -91,7 +92,7 @@ public class SensorService extends Service {
             case Event_IMU_CMD.IMU_CMD_ReadGPS:
                 // GPS Sensor requests from service to read it.
                 Event_IMU_CMD event_imu_cmd = event;
-                Location loc = (Location) (event_imu_cmd.tag);
+                AndruavLocation loc = (AndruavLocation) (event_imu_cmd.tag);
                 if (loc != null)
                 {
 

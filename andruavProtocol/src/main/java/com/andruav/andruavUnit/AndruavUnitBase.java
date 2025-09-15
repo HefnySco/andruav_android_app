@@ -231,6 +231,8 @@ public class AndruavUnitBase {
     protected boolean isFlying  = false;
     protected boolean isArmed   = false;
 
+    protected boolean m_is_ready_to_arm = false;
+
     private long mFlyingTimeTemp = 0;
     private long mFlyingLastStartTime = 0;
     /***
@@ -909,6 +911,16 @@ public class AndruavUnitBase {
 
     }
 
+    public void isReadyToArm (final boolean is_ready_to_arm)
+    {
+        m_is_ready_to_arm = is_ready_to_arm;
+    }
+
+    public boolean isReadyToArm ()
+    {
+        return m_is_ready_to_arm;
+    }
+
 
     public boolean IsArmed()
     {
@@ -1196,7 +1208,7 @@ public class AndruavUnitBase {
      * if GPS not in FCB board, we use Andruav GPS
      * @return
      */
-    public Location getAvailableLocation () {
+    public AndruavLocation getAvailableLocation () {
         if (IsCGS) {
             return LastEvent_IMU.getCurrentLocation();
         }
@@ -1488,10 +1500,11 @@ public class AndruavUnitBase {
         LastEvent_FCB_IMU.GPS3DFix          = this.FCBoard.getGPSfixType();
         LastEvent_FCB_IMU.SATC              = this.FCBoard.getGPSSatCount();
         //LastEvent_FCB_IMU.GroundAltitude  = this.FCBoard.getGPSAlt();
-        final Location loc = new Location("GPS");
+        final AndruavLocation loc = new AndruavLocation("GPS");
         loc.setLongitude(this.FCBoard.getGPSLongitude());
         loc.setLatitude(this.FCBoard.getGPSLatitude());
-        loc.setAltitude(this.FCBoard.getGPSAlt());
+        loc.setAltitude(this.FCBoard.getGPSAltRelative());
+        loc.setAltitudeAbsolute(this.FCBoard.getGPSAltAbs());
         loc.setSpeed((float)this.FCBoard.getGPSGroundSpeed());
         loc.setBearing((float)this.FCBoard.getNavBearing());
         LastEvent_FCB_IMU.setCurrentLocation(loc);

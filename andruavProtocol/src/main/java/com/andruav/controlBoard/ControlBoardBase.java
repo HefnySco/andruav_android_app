@@ -134,6 +134,8 @@ public class ControlBoardBase {
     protected double    vehicle_gps_lng;
     protected double    vehicle_gps_lat;
     protected double    vehicle_gps_alt;          // (RELATIVE TO GROUND) Altitude (AMSL, NOT WGS84), in meters * 1000 (positive for up). Note that virtually all GPS modules provide the AMSL maxAltitude in addition to the WGS84 maxAltitude.
+    protected double    vehicle_gps_abs;
+
     protected double    gps_groundspeed;       // GPS ground speed (m/s). If unknown, set to: UINT16_MAX
     protected int       gps_satCount;
     protected double    airspeed;
@@ -576,9 +578,14 @@ public class ControlBoardBase {
      * Altitude (AMSL, NOT WGS84), in meters * 1000 (positive for up). Note that virtually all GPS modules provide the AMSL maxAltitude in addition to the WGS84 maxAltitude.
      * @return
      */
-    public double   getGPSAlt()
+    public double   getGPSAltRelative()
     {
         return vehicle_gps_alt / gps_alt_scale;
+    }
+
+    public double   getGPSAltAbs()
+    {
+        return vehicle_gps_abs / gps_alt_scale;
     }
 
     public double   getGPSGroundSpeed()
@@ -597,10 +604,7 @@ public class ControlBoardBase {
 
 
 
-    public double getAltitude ()
-    {
-        return Altitude / AltitudePerUnit;
-    }
+
 
     // single exception handler
     protected int bexceptionexecute = 5;
