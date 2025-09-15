@@ -171,136 +171,7 @@ public  class Sensor_GPS   extends GenericLocationSensor implements LocationList
 
     }
 
-//    /***
-//     * Implements GpsStatus.NmeaListener
-//     * @http "http://manuals.deere.com/omview/OMPFP10334_19/JS56696,0000550_19_20090710.html"
-//     * @param timestamp
-//     * @param nmea
-//     */
-//    @Override
-//    public void onNmeaReceived(long timestamp, String nmea) {
-//        try {
-//            //Log.d("sensors.rcmobile.sensors","nmea rx: " + nmea);
-//            if (nmea == null) return;
-//            final NumberFormat nf_us = NumberFormat.getInstance(Locale.US);
-//
-//            String[] nmeaCmd = StringSplit.fastSplit(nmea, ',');
-//
-//            if (nmeaCmd[0].equals("$GPGSA")) {
-//                if ((nmeaCmd.length > 2) && (nmeaCmd[2].length() != 0)) {
-//                    mFixLevel = Integer.parseInt(nmeaCmd[2]);
-//                }
-//                if ((nmeaCmd.length > 15)  && (nmeaCmd[15].length() != 0) ) {
-//                    Pdop = Float.parseFloat(nmeaCmd[15]);
-//                }
-////                if ((nmeaCmd.length > 16)  && (nmeaCmd[16].length() != 0)) {
-////                    Hdop = Float.parseFloat(nmeaCmd[16]);
-////                }
-//                if ((nmeaCmd.length > 17)  && (nmeaCmd[17].length() != 0)) {
-//                    if (!nmeaCmd[17].startsWith("*")) {
-//                        Vdop = Float.parseFloat(nmeaCmd[17].split("\\*")[0]);
-//                    }
-//                }
-//            } else if (nmeaCmd[0].equals("$GPGGA")) {
-//                if ((nmeaCmd.length >= 6) && (nmeaCmd[6].length() != 0)) {
-//                    mFixQuality = Integer.parseInt(nmeaCmd[6]);
-//                }
-//                if ((nmeaCmd.length >= 11) && (nmeaCmd[9].length() != 0) && (nmeaCmd[11].length() != 0)) {
-//                    //Altitude here is $GPGGA.Altitude + $GPGGA.Height of geoid above WGS84 ellipsoid
-//                    altitude = Float.parseFloat(nmeaCmd[9]) + Float.parseFloat(nmeaCmd[11]);
-//                    altitude = updateAltitude(altitude); // reference to ground
-//
-//                }
-//                if ((nmeaCmd.length > 8)  && (nmeaCmd[8].length() != 0)) {
-//                    Hdop = Float.parseFloat(nmeaCmd[8]);
-//                }
-//
-//            }
-//
-//
-//        }
-//        catch (ArrayIndexOutOfBoundsException e)
-//        {
-//            // ignore
-//        }
-//        catch (Exception ex)
-//        {
-//            AndruavMo7arek.log().logException("gps", ex);
-//        }
-//
-//        Event_GPS_NMEA event_gps_nmea = new Event_GPS_NMEA();
-//        event_gps_nmea.nmea = nmea;
-//        event_gps_nmea.timestamp = timestamp;
-//        EventBus.getDefault().post(event_gps_nmea);
-//    }
 
-    /***
-     * Implements GpsStatus.Listener
-     * @param event
-     */
-    /*@Override
-    public void onGpsStatusChanged(int event) {
-
-        int satcount=0;
-        StringBuilder GpsStats=new StringBuilder();
-        GpsStatus gpsStatus = null;
-        if (ActivityCompat.checkSelfPermission(AndruavEngine.AppContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(AndruavEngine.AppContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-        }
-        else
-        {
-            gpsStatus = mLocationManager.getGpsStatus(null);
-        }
-        if (gpsStatus != null) {
-            msatellites = gpsStatus.getSatellites();
-            Iterator<GpsSatellite> sat = msatellites.iterator();
-            int i = 0;
-            while (sat.hasNext()) {
-                GpsSatellite satellite = sat.next();
-                if (satellite.usedInFix())
-                {
-                    satcount+=1;
-                }
-                GpsStats.append(i++);
-                GpsStats.append(": ");
-                GpsStats.append(satellite.getPrn());
-                GpsStats.append(",");
-                GpsStats.append(satellite.usedInFix());
-                GpsStats.append(",");
-                GpsStats.append(satellite.getSnr());
-                GpsStats.append(",");
-                GpsStats.append(satellite.getAzimuth());
-                GpsStats.append(",");
-                GpsStats.append(satellite.getElevation());
-                GpsStats.append("\n\n");
-            }
-
-            strGpsStats = GpsStats.toString();
-            intSatCount = satcount;
-         }
-
-        switch (event) {
-            case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-
-                //Log.d("GPS",   " has been GPS_EVENT_SATELLITE_STATUS");
-                break;
-            case GpsStatus.GPS_EVENT_FIRST_FIX:
-                misFirstFix = true;
-                //Log.d("GPS",   " has been GPS_EVENT_FIRST_FIX");
-                break;
-            case GpsStatus.GPS_EVENT_STARTED:
-                misFirstFix = false;
-                //Log.d("GPS",   " has been GPS_EVENT_STARTED");
-                break;
-            case GpsStatus.GPS_EVENT_STOPPED:
-                misFirstFix = false;
-                //Log.d("GPS",   " has been GPS_EVENT_STOPPED");
-                break;
-            default:
-                // new android veriosn ... maybe
-                break;
-        }
-    }*/
 
     /***
      * Implements LocationListener
@@ -363,13 +234,6 @@ public  class Sensor_GPS   extends GenericLocationSensor implements LocationList
 
     public int getSatelliteCount()
     {
-        /*Iterator<GpsSatellite> sat = msatellites.iterator();
-        int i = 0;
-        while (sat.hasNext()) {
-            GpsSatellite satellite = sat.next();
-            if (satellite.usedInFix()==true) i+=0;
-        }*/
-        //Log.d("Sensor_GPS", "getSatelliteCount = " + intSatCount + " Fix ?= " + misFirstFix);
         return misFirstFix ? intSatCount : 0;
     }
 
@@ -424,20 +288,7 @@ public  class Sensor_GPS   extends GenericLocationSensor implements LocationList
             for (String provider : matchingProviders) {
                 Location location = mLocationManager.getLastKnownLocation(provider);
                 if (location != null) {
-             /*   float accuracy = location.getAccuracy();
-                long time = location.getTime();
-
-                if ((time > minTime && accuracy < bestAccuracy)) {
-                    bestResult = location;
-                    bestAccuracy = accuracy;
-                    bestTime = time;
-                }
-                else if (time < minTime &&
-                        bestAccuracy == Float.MAX_VALUE && time > bestTime){
-                    bestResult = location;
-                    bestTime = time;
-                }
-                */
+            
                     if (isBetterLocation(location, bestResult)) {
                         bestResult = location;
                     }

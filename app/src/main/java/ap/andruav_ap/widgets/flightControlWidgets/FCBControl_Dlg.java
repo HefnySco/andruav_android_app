@@ -155,7 +155,6 @@ public class FCBControl_Dlg extends DialogFragment {
         mbtnClimb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AndruavFCBControlFacade.do_ChangeAltitude(Preference.getDefaultClimbAlt(null), andruavWe7da);
 
             }
         });

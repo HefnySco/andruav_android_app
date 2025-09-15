@@ -178,38 +178,6 @@ public class CameraRecorder extends CameraRecorderBase {
     }
 
 
-    public void encodeFeed (final VideoFrame Frame)
-    {
-        /*if (!mIsRecording || (mVideoEncoder == null)) return ;
-        mhandler.post(() -> {
-            try {
-                mVideoEncoder.frameAvailableSoon();
-                mVideoEncoder.encode(Frame);
-            }
-            catch (final Exception e)
-            {
-                e.printStackTrace();
-            }
-
-        });*/
-        if (mVideoEncoder == null) {
-        }
-        //mVideoEncoder.frameAvailableSoon();
-
-        //mVideoEncoder.encode(Frame, null);
-    }
-
-
-
-
-    public void encodeAudio (final byte[] data)
-    {
-        if (!mIsRecording || (mAudioEncoder== null)) return ;
-
-        mAudioEncoder.frameAvailableSoon();
-        mAudioEncoder.encode(ByteBuffer.wrap(data));
-    }
-
     public void startRecording (final int width,final int height, final int frameRate, final boolean recordAudio, final boolean encrypted, final Surface videoSurface, final DefaultVideoEncoderFactory videoEncoder )
     {
         if ((width == 0) || (height ==0)) return ;

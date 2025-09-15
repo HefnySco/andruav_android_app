@@ -101,7 +101,6 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
     public void onEvent (Event_GeoFence_Hit a7adath_geoFence_hit)
     {
         if (a7adath_geoFence_hit.andruavUnitBase.IsMe()) {
-            //NotificationFacade.cannotStartCamera();
             AndruavFacade.sendGeoFenceHit(null, a7adath_geoFence_hit);
 
             final GeoFenceBase geoFenceBase = GeoFenceManager.getGeoFence(a7adath_geoFence_hit.fenceName);
@@ -124,14 +123,6 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
         final AndruavUnitBase andruavUnitBase = a7adath_geoFence_ready.andruavWe7da;
         if(andruavUnitBase.IsMe())
         {
-            // seems I got my GEO Fence Updated
-            // TODO: you can sendMessageToModule a REMORT ONLY and THEN GCS later can use RemoteExecuteCommand to ask for sending GeoFencePoint.
-
-
-            // OLD TECHNIQUE
-            // Here we Broadcast a large amount of DATA !!!
-            // We could Send the name and then interested units will sendMessageToModule RemoteExecute - TYPE_AndruavMessage_GeoFence
-            ///////AndruavFacade.sendGeoFence(null,GeoFenceManager.getGeoFence(a7adath_geoFence_ready.fenceName));
 
             // Here we broad cast thet this drone is only attached to a fence by fenceName that is it.
             AndruavFacade.sendGeoFenceAttach(a7adath_geoFence_ready.fenceName,true,null);
@@ -201,18 +192,6 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
         if (!a7adath_imu_ready.mAndruavWe7da.IsMe()) return ;
 
 
-        /**
-         BUG
-
-         if (AndruavSettings.andruavWe7daBase.LastEvent_IMU.hasCurrentLocation()) {
-         mLastLocation = AndruavSettings.andruavWe7daBase.LastEvent_IMU.getCurrentLocation(); // save if for emergency recovery
-         }
-
-         */
-
-        /*
-        AndruavResala_NAV_INFO is sent instead when useFCBIMU is true
-         */
         if (AndruavSettings.andruavWe7daBase.useFCBIMU()) return ; // it should be true
 
         final long now = System.currentTimeMillis();
