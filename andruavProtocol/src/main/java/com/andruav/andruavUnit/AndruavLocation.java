@@ -9,7 +9,7 @@ public class AndruavLocation extends Location {
 
 
 
-    protected  double m_alt_abs;
+    protected  double m_alt_rel;
 
     public AndruavLocation(@NonNull Location location) {
         super(location);
@@ -20,8 +20,8 @@ public class AndruavLocation extends Location {
     }
 
 
-    public double getAltitudeAbsolute() { return m_alt_abs; }
+    public double getAltitudeRelative() { return m_alt_rel; }
 
-    public void setAltitudeAbsolute(double alt_abs) { m_alt_abs = alt_abs; }
+    public void setAltitudeRelative(double alt_abs) { m_alt_rel = alt_abs; }
 
 }

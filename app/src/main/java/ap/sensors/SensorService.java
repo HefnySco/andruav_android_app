@@ -92,7 +92,7 @@ public class SensorService extends Service {
             case Event_IMU_CMD.IMU_CMD_ReadGPS:
                 // GPS Sensor requests from service to read it.
                 Event_IMU_CMD event_imu_cmd = event;
-                AndruavLocation loc = (AndruavLocation) (event_imu_cmd.tag);
+                AndruavLocation loc =  new AndruavLocation ((Location)event_imu_cmd.tag);
                 if (loc != null)
                 {
 

@@ -70,8 +70,8 @@ public class AndruavMessage_GPS extends AndruavMessageBase {
             CurrentLocation = new AndruavLocation(json_receive_data.getString("p"));
             CurrentLocation.setLatitude(nf_us.parse(json_receive_data.getString("la")).doubleValue());
             CurrentLocation.setLongitude(nf_us.parse(json_receive_data.getString("ln")).doubleValue());
-            CurrentLocation.setAltitude(nf_us.parse(json_receive_data.getString("r")).doubleValue());
-            CurrentLocation.setAltitudeAbsolute(nf_us.parse(json_receive_data.getString("a")).doubleValue());
+            CurrentLocation.setAltitude(nf_us.parse(json_receive_data.getString("a")).doubleValue());
+            CurrentLocation.setAltitudeRelative(nf_us.parse(json_receive_data.getString("r")).doubleValue());
             CurrentLocation.setTime(json_receive_data.getLong("t"));
             if (json_receive_data.has("s")) {
                 CurrentLocation.setSpeed((float) json_receive_data.getDouble("s"));
@@ -122,8 +122,8 @@ public class AndruavMessage_GPS extends AndruavMessageBase {
             json_data.accumulate("ln", String.format(Locale.US, "%4.6f", CurrentLocation.getLongitude()));
             json_data.accumulate("p", CurrentLocation.getProvider());
             json_data.accumulate("t", CurrentLocation.getTime());
-            json_data.accumulate("a", String.format(Locale.US, "%5.1f", CurrentLocation.getAltitudeAbsolute()).trim());
-            json_data.accumulate("r", String.format(Locale.US, "%5.1f", CurrentLocation.getAltitude()).trim());
+            json_data.accumulate("a", String.format(Locale.US, "%5.1f", CurrentLocation.getAltitude()).trim());
+            json_data.accumulate("r", String.format(Locale.US, "%5.1f", CurrentLocation.getAltitudeRelative()).trim());
             if (CurrentLocation.hasSpeed()) {
                 json_data.accumulate("s", String.format(Locale.US, "%.3f", CurrentLocation.getSpeed()).trim());
             }

@@ -1503,8 +1503,8 @@ public class AndruavUnitBase {
         final AndruavLocation loc = new AndruavLocation("GPS");
         loc.setLongitude(this.FCBoard.getGPSLongitude());
         loc.setLatitude(this.FCBoard.getGPSLatitude());
-        loc.setAltitude(this.FCBoard.getGPSAltRelative());
-        loc.setAltitudeAbsolute(this.FCBoard.getGPSAltAbs());
+        loc.setAltitude(this.FCBoard.getGPSAltAbs());
+        loc.setAltitudeRelative(this.FCBoard.getGPSAltRelative());
         loc.setSpeed((float)this.FCBoard.getGPSGroundSpeed());
         loc.setBearing((float)this.FCBoard.getNavBearing());
         LastEvent_FCB_IMU.setCurrentLocation(loc);
