@@ -274,8 +274,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
                 if (andruavWe7da == null) return ;
                 if (parentFragmentManager != null) {
 
-                    FCBControl_Dlg fcbControl_dlg = FCBControl_Dlg.newInstance(andruavWe7da);
-                    fcbControl_dlg.show(parentFragmentManager, "fragment_edit_name");
+
                 }
             }
         });

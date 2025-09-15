@@ -104,7 +104,6 @@ public class MainScreen extends BaseAndruavShasha {
     private Button mbtnFPV;
     private Button mbtnConnection;
     private Button mbtnFCB;
-    private Button mbtnData;
     private TextView mtxtAccessCode;
     private TextView mtxtUDPProxy;
 
@@ -502,18 +501,6 @@ public class MainScreen extends BaseAndruavShasha {
             }
         });
 
-
-
-
-        mbtnData = findViewById(R.id.btnData);
-        mbtnData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               startActivity(new Intent(MainScreen.this, DataShashaTab.class));
-            }
-        });
-
-
         mtxtAccessCode = findViewById(R.id.mainactivity_txtAccessCode);
         mtxtUDPProxy = findViewById(R.id.mainactivity_txtUdpProxy);
         writeInfoLabel();
@@ -526,9 +513,7 @@ public class MainScreen extends BaseAndruavShasha {
         View parentLayout = findViewById(android.R.id.content);
         App.notification.showSnack(INotification.NOTIFICATION_TYPE_NORMAL, "Info", "Andruav version: " + App.versionName);
 
-        //Toast.makeText(this, "Andruav version:" + App.versionName  , Toast.LENGTH_LONG).show();
 
-        // Snackbar.make(this, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 
     private void writeInfoLabel() {
@@ -758,7 +743,6 @@ public class MainScreen extends BaseAndruavShasha {
 
         mbtnConnection.setEnabled(BigButtonsenabled && enabled);
 
-        mbtnData.setEnabled(BigButtonsenabled);
         if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
             mbtnFCB.setEnabled(BigButtonsenabled);
             mbtnIMU.setEnabled(BigButtonsenabled && enabled);
