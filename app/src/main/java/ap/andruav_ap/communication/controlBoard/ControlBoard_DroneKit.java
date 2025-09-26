@@ -1587,11 +1587,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     @Override
     public void do_SetCurrentMission (final int missionItemNumber)
     {
-        /*if ((missionItemNumber < 0) || (missionItemNumber >MissionItemCount))
-        {
-
-        }*/
-
         App.droneKitServer.doSetCurrentMission(missionItemNumber);
     }
 

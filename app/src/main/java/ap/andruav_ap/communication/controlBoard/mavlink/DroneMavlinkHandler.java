@@ -1,7 +1,9 @@
 package ap.andruav_ap.communication.controlBoard.mavlink;
 
+import static com.MAVLink.enums.MAV_AUTOPILOT.MAV_AUTOPILOT_INVALID;
 import static com.MAVLink.enums.MAV_TYPE.MAV_TYPE_GCS;
 import static com.MAVLink.enums.MAV_TYPE.MAV_TYPE_GIMBAL;
+import static com.MAVLink.enums.MAV_TYPE.MAV_TYPE_ONBOARD_CONTROLLER;
 
 import com.MAVLink.common.msg_global_position_int;
 import com.MAVLink.common.msg_sys_status;
@@ -113,9 +115,12 @@ public class DroneMavlinkHandler {
      */
     public static void execute_heartbeat_raw( msg_heartbeat msg_heartbeat)
     {
-        if ((msg_heartbeat.type >= MAV_TYPE_GIMBAL) || (msg_heartbeat.type == MAV_TYPE_GCS)) return ; // ignore parsing ths ADSB message
+        if ((msg_heartbeat.type >= MAV_TYPE_GIMBAL)
+                || (msg_heartbeat.type == MAV_TYPE_GCS)
+                || (msg_heartbeat.type == MAV_TYPE_ONBOARD_CONTROLLER)
+                || (msg_heartbeat.autopilot == MAV_AUTOPILOT_INVALID)) return ;
 
-        //if (msg_heartbeat.compid==0) return; // ignore parse
+        if (msg_heartbeat.compid!=1) return; // ignore parse
         if (msg_heartbeat.sysid==255) return; // ignore parse
 
         final ControlBoard_DroneKit controlBoard_droneKit = (ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard;
