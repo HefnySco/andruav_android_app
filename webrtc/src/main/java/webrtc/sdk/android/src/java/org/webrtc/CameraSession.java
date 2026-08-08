@@ -71,6 +71,9 @@ interface CameraSession {
 
 
   static int getDeviceOrientation(Context context) {
+    if (AndruavWebRTCGlobals.fixedDeviceOrientationDegrees >= 0) {
+      return AndruavWebRTCGlobals.fixedDeviceOrientationDegrees;
+    }
     final WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
     switch (wm.getDefaultDisplay().getRotation()) {
       case Surface.ROTATION_90:

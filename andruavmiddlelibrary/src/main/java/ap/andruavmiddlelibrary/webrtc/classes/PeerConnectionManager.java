@@ -182,6 +182,14 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
 
             if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
+                // The capturing phone is rigidly mounted (e.g. on a drone) and always forced to
+                // landscape - it never physically rotates. Freeze the capture rotation to match,
+                // instead of letting WebRTC query the live WindowManager rotation, which flips to
+                // portrait while this Activity is minimized into Picture-in-Picture (its window
+                // briefly stops being the system's "foreground orientation owner"), visibly
+                // rotating both the local preview and the outgoing stream by 90 degrees.
+                org.webrtc.AndruavWebRTCGlobals.fixedDeviceOrientationDegrees = 90;
+
                 // Returns the number of cams & front/back face device name
                 capturer = createVideoCapturer();
 

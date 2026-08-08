@@ -5,15 +5,20 @@ package ap.andruav_ap.activities.fpv.drone;
 import org.greenrobot.eventbus.Subscribe;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
+import android.app.RemoteAction;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Icon;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
@@ -30,6 +35,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.andruav.AndruavFacade;
 import com.andruav.AndruavEngine;
@@ -80,6 +89,7 @@ import ap.andruavmiddlelibrary.webrtc.events.Event_WebRTC;
 
 public class FPVModuleRTCWebCamActivity extends Activity {
 
+    private static final String ACTION_PIP_STOP = "ap.andruav_ap.fpv.ACTION_STOP_STREAM_PIP";
 
     private final Object stateLock = new Object();
 
@@ -90,6 +100,22 @@ public class FPVModuleRTCWebCamActivity extends Activity {
     private boolean mServiceBound = false;
     private AndruavUnitBase andruavUnit_selected;
     private final Object synObj = new Object();
+
+    // Remembers each overlay control's visibility from just before entering PiP, so it can be
+    // restored exactly (e.g. txtVideoStatus, which is independently toggled by connection status)
+    // instead of blindly forcing everything back to VISIBLE.
+    private final Map<View, Integer> mPrePipVisibility = new HashMap<>();
+
+    private final BroadcastReceiver mPipStopReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (ACTION_PIP_STOP.equals(intent.getAction())) {
+                // Same single stop funnel as the on-screen stop button.
+                EventBus.getDefault().post(new _7adath_StopAndroidCamera());
+                finish();
+            }
+        }
+    };
 
     private boolean mTakeImage = false;
     private int mTakeImageCount = 0;
@@ -452,7 +478,11 @@ public class FPVModuleRTCWebCamActivity extends Activity {
 
         initGUI();
 
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mPipStopReceiver, new IntentFilter(ACTION_PIP_STOP), Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(mPipStopReceiver, new IntentFilter(ACTION_PIP_STOP));
+        }
 
     }
 
@@ -513,7 +543,47 @@ public class FPVModuleRTCWebCamActivity extends Activity {
 
     private PictureInPictureParams buildPipParams() {
         final Rational aspect = Preference.useStreamVideoHD(null) ? new Rational(16, 9) : new Rational(4, 3);
-        return new PictureInPictureParams.Builder().setAspectRatio(aspect).build();
+        final PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder().setAspectRatio(aspect);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder.setActions(Collections.singletonList(buildStopRemoteAction()));
+        }
+        return builder.build();
+    }
+
+    private RemoteAction buildStopRemoteAction() {
+        final PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this, 0, new Intent(ACTION_PIP_STOP).setPackage(getPackageName()),
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        final Icon icon = Icon.createWithResource(this, R.drawable.signout_w_32x32);
+        final CharSequence label = getString(ap.andruavmiddlelibrary.R.string.action_exit);
+        return new RemoteAction(icon, label, label, pendingIntent);
+    }
+
+    /**
+     * While floating in PiP, only the system-drawn stop action (see buildStopRemoteAction())
+     * should be visible on the video - our own on-screen buttons are far too small to use there
+     * and just clutter the tiny window. Hide them all on entering PiP, restore each one's exact
+     * prior state (not just VISIBLE - e.g. txtVideoStatus toggles independently based on
+     * connection status) on returning to full screen.
+     */
+    @Override
+    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+
+        final ViewGroup root = (ViewGroup) mSurfaceViewRenderer.getParent();
+        if (isInPictureInPictureMode) {
+            for (int i = 0; i < root.getChildCount(); i++) {
+                final View child = root.getChildAt(i);
+                if (child == mSurfaceViewRenderer) continue;
+                mPrePipVisibility.put(child, child.getVisibility());
+                child.setVisibility(View.GONE);
+            }
+        } else {
+            for (Map.Entry<View, Integer> entry : mPrePipVisibility.entrySet()) {
+                entry.getKey().setVisibility(entry.getValue());
+            }
+            mPrePipVisibility.clear();
+        }
     }
 
     @Override
@@ -595,6 +665,7 @@ public class FPVModuleRTCWebCamActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        unregisterReceiver(mPipStopReceiver);
         if (isFinishing()) {
             // A real close - either the explicit stop button (which already posted this event
             // itself; posting again is harmless) or the system PiP window's own close (X) button,
