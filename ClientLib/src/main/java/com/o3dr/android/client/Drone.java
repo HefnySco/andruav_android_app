@@ -3,9 +3,7 @@ package com.o3dr.android.client;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Parcelable;
-import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -37,11 +35,11 @@ import com.o3dr.services.android.lib.gcs.link.LinkEvent;
 import com.o3dr.services.android.lib.gcs.link.LinkEventExtra;
 import com.o3dr.services.android.lib.gcs.returnToMe.ReturnToMeState;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
-import com.o3dr.services.android.lib.model.IDroneApi;
 import com.o3dr.services.android.lib.model.IObserver;
 import com.o3dr.services.android.lib.model.action.Action;
 
-import java.util.NoSuchElementException;
+import org.droidplanner.services.android.impl.api.DroneApi;
+
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -82,20 +80,13 @@ public class Drone {
     public static final String ACTION_GROUND_COLLISION_IMMINENT = CLAZZ_NAME + ".ACTION_GROUND_COLLISION_IMMINENT";
     public static final String EXTRA_IS_GROUND_COLLISION_IMMINENT = "extra_is_ground_collision_imminent";
 
-    private final IBinder.DeathRecipient binderDeathRecipient = new IBinder.DeathRecipient() {
-        @Override
-        public void binderDied() {
-            notifyDroneServiceInterrupted("Lost access to the drone api.");
-        }
-    };
-
     private final ConcurrentLinkedQueue<DroneListener> droneListeners = new ConcurrentLinkedQueue<>();
 
     private Handler handler;
     private ControlTower serviceMgr;
     private DroneObserver droneObserver;
 
-    private final AtomicReference<IDroneApi> droneApiRef = new AtomicReference<>(null);
+    private final AtomicReference<DroneApi> droneApiRef = new AtomicReference<>(null);
     private ConnectionParameter connectionParameter;
     private LinkListener linkListener;
     private ExecutorService asyncScheduler;
@@ -133,15 +124,13 @@ public class Drone {
             throw new IllegalStateException("Service manager must be connected.");
         }
 
-        IDroneApi droneApi = droneApiRef.get();
+        DroneApi droneApi = droneApiRef.get();
         if (isStarted(droneApi)) {
             return;
         }
 
-        try {
-            droneApi = serviceMgr.registerDroneApi();
-            droneApi.asBinder().linkToDeath(binderDeathRecipient, 0);
-        } catch (RemoteException e) {
+        droneApi = serviceMgr.registerDroneApi();
+        if (droneApi == null) {
             throw new IllegalStateException("Unable to retrieve a valid drone handle.");
         }
 
@@ -156,17 +145,12 @@ public class Drone {
     }
 
     synchronized void destroy() {
-        IDroneApi droneApi = droneApiRef.get();
+        DroneApi droneApi = droneApiRef.get();
 
         removeAttributesObserver(droneApi, this.droneObserver);
 
-        try {
-            if (isStarted(droneApi)) {
-                droneApi.asBinder().unlinkToDeath(binderDeathRecipient, 0);
-                serviceMgr.releaseDroneApi();
-            }
-        } catch (NoSuchElementException e) {
-            Log.e(TAG, e.getMessage(), e);
+        if (isStarted(droneApi)) {
+            serviceMgr.releaseDroneApi();
         }
 
         if (asyncScheduler != null) {
@@ -195,15 +179,6 @@ public class Drone {
         Bundle extrasBundle = new Bundle(1);
         extrasBundle.putBoolean(EXTRA_IS_GROUND_COLLISION_IMMINENT, isCollisionImminent);
         notifyAttributeUpdated(ACTION_GROUND_COLLISION_IMMINENT, extrasBundle);
-    }
-
-    private void handleRemoteException(RemoteException e) {
-        final IDroneApi droneApi = droneApiRef.get();
-        if (droneApi != null && !droneApi.asBinder().pingBinder()) {
-            final String errorMsg = e.getMessage();
-            Log.e(TAG, errorMsg, e);
-            notifyDroneServiceInterrupted(errorMsg);
-        }
     }
 
     public double getSpeedParameter() {
@@ -259,18 +234,13 @@ public class Drone {
     }
 
     public <T extends Parcelable> T getAttribute(String type) {
-        final IDroneApi droneApi = droneApiRef.get();
+        final DroneApi droneApi = droneApiRef.get();
         if (!isStarted(droneApi) || type == null) {
             return this.getAttributeDefaultValue(type);
         }
 
         T attribute = null;
-        Bundle carrier = null;
-        try {
-            carrier = droneApi.getAttribute(type);
-        } catch (RemoteException e) {
-            handleRemoteException(e);
-        }
+        Bundle carrier = droneApi.getAttribute(type);
 
         if (carrier != null) {
             try {
@@ -290,7 +260,7 @@ public class Drone {
             throw new IllegalArgumentException("Callback must be non-null.");
         }
 
-        final IDroneApi droneApi = droneApiRef.get();
+        final DroneApi droneApi = droneApiRef.get();
         if (!isStarted(droneApi)) {
             handler.post(new Runnable() {
                 @Override
@@ -456,14 +426,10 @@ public class Drone {
     }
 
     public boolean performActionOnHandler(Action action, final Handler handler, final AbstractCommandListener listener) {
-        final IDroneApi droneApi = droneApiRef.get();
+        final DroneApi droneApi = droneApiRef.get();
         if (isStarted(droneApi)) {
-            try {
-                droneApi.executeAction(action, wrapListener(handler, listener));
-                return true;
-            } catch (RemoteException e) {
-                handleRemoteException(e);
-            }
+            droneApi.executeAction(action, wrapListener(handler, listener));
+            return true;
         }
 
         return false;
@@ -478,21 +444,17 @@ public class Drone {
     }
 
     public boolean performAsyncActionOnHandler(Action action, Handler handler, AbstractCommandListener listener) {
-        final IDroneApi droneApi = droneApiRef.get();
+        final DroneApi droneApi = droneApiRef.get();
         if (isStarted(droneApi)) {
-            try {
-                droneApi.executeAsyncAction(action, wrapListener(handler, listener));
-                return true;
-            } catch (RemoteException e) {
-                handleRemoteException(e);
-            }
+            droneApi.executeAsyncAction(action, wrapListener(handler, listener));
+            return true;
         }
 
         return false;
     }
 
-    private boolean isStarted(IDroneApi droneApi) {
-        return droneApi != null && droneApi.asBinder().pingBinder();
+    private boolean isStarted(DroneApi droneApi) {
+        return droneApi != null;
     }
 
     public boolean isStarted() {
@@ -500,7 +462,7 @@ public class Drone {
     }
 
     public boolean isConnected() {
-        final IDroneApi droneApi = droneApiRef.get();
+        final DroneApi droneApi = droneApiRef.get();
         State droneState = getAttribute(AttributeType.STATE);
         return isStarted(droneApi) && droneState.isConnected();
     }
@@ -545,35 +507,23 @@ public class Drone {
         }
     }
 
-    private void addAttributesObserver(IDroneApi droneApi, IObserver observer) {
+    private void addAttributesObserver(DroneApi droneApi, IObserver observer) {
         if (isStarted(droneApi)) {
-            try {
-                droneApi.addAttributesObserver(observer);
-            } catch (RemoteException e) {
-                handleRemoteException(e);
-            }
+            droneApi.addAttributesObserver(observer);
         }
     }
 
     public void addMavlinkObserver(MavlinkObserver observer) {
-        final IDroneApi droneApi = droneApiRef.get();
+        final DroneApi droneApi = droneApiRef.get();
         if (isStarted(droneApi)) {
-            try {
-                droneApi.addMavlinkObserver(observer);
-            } catch (RemoteException e) {
-                handleRemoteException(e);
-            }
+            droneApi.addMavlinkObserver(observer);
         }
     }
 
     public void removeMavlinkObserver(MavlinkObserver observer) {
-        final IDroneApi droneApi = droneApiRef.get();
+        final DroneApi droneApi = droneApiRef.get();
         if (isStarted(droneApi)) {
-            try {
-                droneApi.removeMavlinkObserver(observer);
-            } catch (RemoteException e) {
-                handleRemoteException(e);
-            }
+            droneApi.removeMavlinkObserver(observer);
         }
     }
 
@@ -585,13 +535,9 @@ public class Drone {
         droneListeners.remove(listener);
     }
 
-    private void removeAttributesObserver(IDroneApi droneApi, IObserver observer) {
+    private void removeAttributesObserver(DroneApi droneApi, IObserver observer) {
         if (isStarted(droneApi)) {
-            try {
-                droneApi.removeAttributesObserver(observer);
-            } catch (RemoteException e) {
-                handleRemoteException(e);
-            }
+            droneApi.removeAttributesObserver(observer);
         }
     }
 

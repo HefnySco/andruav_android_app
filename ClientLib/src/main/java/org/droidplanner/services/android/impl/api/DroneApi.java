@@ -37,7 +37,6 @@ import com.o3dr.services.android.lib.gcs.link.LinkEventExtra;
 import com.o3dr.android.client.BuildConfig;
 import com.o3dr.services.android.lib.mavlink.MavlinkMessageWrapper;
 import com.o3dr.services.android.lib.model.ICommandListener;
-import com.o3dr.services.android.lib.model.IDroneApi;
 import com.o3dr.services.android.lib.model.IMavlinkObserver;
 import com.o3dr.services.android.lib.model.IObserver;
 import com.o3dr.services.android.lib.model.action.Action;
@@ -66,9 +65,9 @@ import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_PUSH_TO_DRONE;
 
 /**
- * Implementation for the IDroneApi interface.
+ * Drone command/attribute API, called directly (in-process) by {@link com.o3dr.android.client.Drone}.
  */
-public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.OnDroneListener, DroneInterfaces.AttributeEventListener,
+public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInterfaces.AttributeEventListener,
     DroneInterfaces.OnParameterManagerListener, MagnetometerCalibrationImpl.OnMagnetometerCalibrationListener {
 
     //The Reset ROI mission item was introduced in version 2.6.8. Any client library older than this do not support it.
@@ -160,8 +159,7 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
         return connectionParams != null && connectionParams.getEventsDispatchingPeriod() > 0L;
     }
 
-    @Override
-    public Bundle getAttribute(String type) throws RemoteException {
+    public Bundle getAttribute(String type) {
         Bundle carrier = new Bundle();
 
         if (AttributeType.CAMERA.equals(type)) {
@@ -252,38 +250,33 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
 
     }
 
-    @Override
-    public void addAttributesObserver(IObserver observer) throws RemoteException {
+    public void addAttributesObserver(IObserver observer) {
         if (observer != null) {
             Timber.d("Adding attributes observer.");
             observersList.add(observer);
         }
     }
 
-    @Override
-    public void removeAttributesObserver(IObserver observer) throws RemoteException {
+    public void removeAttributesObserver(IObserver observer) {
         if (observer != null) {
             Timber.d("Removing attributes observer.");
             observersList.remove(observer);
         }
     }
 
-    @Override
-    public void addMavlinkObserver(IMavlinkObserver observer) throws RemoteException {
+    public void addMavlinkObserver(IMavlinkObserver observer) {
         if (observer != null) {
             mavlinkObserversList.add(observer);
         }
     }
 
-    @Override
-    public void removeMavlinkObserver(IMavlinkObserver observer) throws RemoteException {
+    public void removeMavlinkObserver(IMavlinkObserver observer) {
         if (observer != null) {
             mavlinkObserversList.remove(observer);
         }
     }
 
-    @Override
-    public void executeAction(Action action, ICommandListener listener) throws RemoteException {
+    public void executeAction(Action action, ICommandListener listener) {
         if (action == null) {
             return;
         }
@@ -384,18 +377,15 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
         }
     }
 
-    @Override
-    public void executeAsyncAction(Action action, ICommandListener listener) throws RemoteException {
+    public void executeAsyncAction(Action action, ICommandListener listener) {
         executeAction(action, listener);
     }
 
-    @Override
-    public void performAction(Action action) throws RemoteException {
+    public void performAction(Action action) {
         executeAction(action, null);
     }
 
-    @Override
-    public void performAsyncAction(Action action) throws RemoteException {
+    public void performAsyncAction(Action action) {
         performAction(action);
     }
 
@@ -431,11 +421,7 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
                 observer.onAttributeUpdated(attributeEvent, extrasBundle);
             } catch (RemoteException e) {
                 Timber.e(e, e.getMessage());
-                try {
-                    removeAttributesObserver(observer);
-                } catch (RemoteException e1) {
-                    Timber.e(e, e1.getMessage());
-                }
+                removeAttributesObserver(observer);
             }
         }
     }
@@ -452,11 +438,7 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
                     observer.onMavlinkMessageReceived(msgWrapper);
                 } catch (RemoteException e) {
                     Timber.e(e, e.getMessage());
-                    try {
-                        removeMavlinkObserver(observer);
-                    } catch (RemoteException e1) {
-                        Timber.e(e1, e1.getMessage());
-                    }
+                    removeMavlinkObserver(observer);
                 }
             }
         }
