@@ -1,115 +1,190 @@
-<ScrollView
-     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scrollView"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_main_gradient"
+    android:fillViewport="true"
+    android:clipToPadding="false">
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="1.0"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="20dp">
+
+        <!-- Header -->
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="1.0"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
 
+            <ImageView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:background="@drawable/header_logo_glow"
+                android:padding="7dp"
+                android:src="@drawable/ic_logo2"
+                android:contentDescription="@null" />
 
-            <Button
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/main_activity_btn_IMU"
-                android:id="@+id/btnIMU"
-                android:layout_weight="0.50"
-                android:layout_margin="2dp"
-                android:background="@drawable/sel_big_button_color"
-                android:textColor="@color/btn_TXT_COLOR"
-                android:drawableLeft="@drawable/gyro_w"
-                android:drawableStart="@drawable/gyro_w" />
+                android:layout_weight="1"
+                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:orientation="vertical">
 
-            <Button
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/main_activity_btn_FPV"
-                    android:id="@+id/btnFPV"
-                    android:clickable="false"
-                    android:layout_weight="0.50"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/sel_big_button_color"
-                    android:textColor="@color/btn_TXT_COLOR"
-                    android:drawableLeft="@drawable/fpv_w"
-                    android:drawableStart="@drawable/fpv_w" />
+                    android:text="@string/main_activity_header_title"
+                    android:textColor="@color/header_title"
+                    android:textSize="21sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.06" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/main_activity_tagline"
+                    android:textColor="@color/header_subtitle"
+                    android:textSize="13sp"
+                    android:fontFamily="sans-serif-condensed" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1.0"
-        android:orientation="horizontal">
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/main_activity_btn_COM"
-                    android:id="@+id/btnCommServer"
-                    android:layout_weight="0.50"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/sel_big_button_color"
-                    android:textColor="@color/btn_TXT_COLOR"
-                    android:drawableLeft="@drawable/com_w"
-                    android:drawableStart="@drawable/com_w"
-                />
-
-        <Button
-            android:id="@+id/btnFCB"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            android:layout_weight="0.50"
-            android:background="@drawable/sel_big_button_color"
-            android:drawableStart="@drawable/connection_w"
-            android:drawableLeft="@drawable/connection_w"
-            android:text="@string/main_activity_btn_FCB"
-            android:textColor="@color/btn_TXT_COLOR" />
-
-    </LinearLayout>
+        <!-- Action grid: row 1 -->
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="1.0"
             android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/btnIMU"
+                android:layout_width="0dp"
+                android:layout_height="148dp"
+                android:layout_weight="1"
+                android:layout_margin="6dp"
+                android:elevation="6dp"
+                android:stateListAnimator="@null"
+                android:background="@drawable/sel_big_button_color"
+                android:text="@string/main_activity_btn_IMU"
+                android:textAllCaps="false"
+                android:textColor="@color/sel_main_btn_text"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:drawableTop="@drawable/badge_icon_imu"
+                android:drawablePadding="10dp"
+                android:paddingTop="10dp" />
+
+            <Button
+                android:id="@+id/btnFPV"
+                android:layout_width="0dp"
+                android:layout_height="148dp"
+                android:layout_weight="1"
+                android:layout_margin="6dp"
+                android:elevation="6dp"
+                android:stateListAnimator="@null"
+                android:background="@drawable/sel_big_button_color"
+                android:text="@string/main_activity_btn_FPV"
+                android:textAllCaps="false"
+                android:textColor="@color/sel_main_btn_text"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:drawableTop="@drawable/badge_icon_fpv"
+                android:drawablePadding="10dp"
+                android:paddingTop="10dp" />
+
         </LinearLayout>
 
-
-
-        <TextView
+        <!-- Action grid: row 2 -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnCommServer"
+                android:layout_width="0dp"
+                android:layout_height="148dp"
+                android:layout_weight="1"
+                android:layout_margin="6dp"
+                android:elevation="6dp"
+                android:stateListAnimator="@null"
+                android:background="@drawable/sel_big_button_color"
+                android:text="@string/main_activity_btn_COM"
+                android:textAllCaps="false"
+                android:textColor="@color/sel_main_btn_text"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:drawableTop="@drawable/badge_icon_com"
+                android:drawablePadding="10dp"
+                android:paddingTop="10dp" />
+
+            <Button
+                android:id="@+id/btnFCB"
+                android:layout_width="0dp"
+                android:layout_height="148dp"
+                android:layout_weight="1"
+                android:layout_margin="6dp"
+                android:elevation="6dp"
+                android:stateListAnimator="@null"
+                android:background="@drawable/sel_big_button_color"
+                android:text="@string/main_activity_btn_FCB"
+                android:textAllCaps="false"
+                android:textColor="@color/sel_main_btn_text"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:drawableTop="@drawable/badge_icon_fcb"
+                android:drawablePadding="10dp"
+                android:paddingTop="10dp" />
+
+        </LinearLayout>
+
+        <!-- Info chips -->
+        <TextView
             android:id="@+id/mainactivity_txtAccessCode"
-            android:layout_gravity="bottom"
-            android:layout_weight="0.50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/chip_info_background"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:textColor="@color/chip_text"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif-condensed"
             android:hint="@string/main_activity_hint_access"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp" />
+            android:textColorHint="@color/header_subtitle" />
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/mainactivity_txtUdpProxy"
-            android:layout_gravity="bottom"
-            android:layout_weight="0.50"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/chip_info_background"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:textColor="@color/chip_text"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif-condensed"
             android:hint="@string/main_activity_hint_telem"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp" />
+            android:textColorHint="@color/header_subtitle" />
 
     </LinearLayout>
-    </ScrollView>
 
+</ScrollView>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="main_activity_header_title">ANDRUAV</string>
+    <string name="main_activity_tagline">Ground control station</string>
 
 </resources>

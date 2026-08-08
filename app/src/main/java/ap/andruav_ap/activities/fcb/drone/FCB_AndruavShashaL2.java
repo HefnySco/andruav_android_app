@@ -27,6 +27,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
@@ -80,6 +81,11 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
     private RadioButton rbTCP;
     private RadioButton rbUDP;
     private RadioButton rbService_3DR;
+
+    private LinearLayout sectionBT;
+    private LinearLayout sectionTCP;
+    private LinearLayout sectionUDP;
+    private LinearLayout sectionUSB;
 
     private Set<BluetoothDevice> pairedDevices;
     private ListView lstbluetoothDevices;
@@ -148,6 +154,11 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
 
         rbService_3DR = findViewById(R.id.fcbdroneactivity_rb3DR);
 
+        sectionBT  = findViewById(R.id.fcbdroneactivity_sectionBT);
+        sectionTCP = findViewById(R.id.fcbdroneactivity_sectionTCP);
+        sectionUDP = findViewById(R.id.fcbdroneactivity_sectionUDP);
+        sectionUSB = findViewById(R.id.fcbdroneactivity_sectionUSB);
+
         if (FeatureSwitch.Disable_3DRFCBConnections)
         {
             rbService_3DR.setVisibility(View.INVISIBLE);
@@ -205,6 +216,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
                 rbUSB.setChecked(v == rbUSB);
                 rbTCP.setChecked(v == rbTCP);
                 rbUDP.setChecked(v == rbUDP);
+                updateSectionVisibility();
                 bSaved = false;
                 savePreference();
                 updateFloatingButton();
@@ -232,6 +244,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         });
 
         loadPreference();
+        updateSectionVisibility();
         setPhysicalConnectionGUI();
         //updateFloatingButton();
 
@@ -351,6 +364,18 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         rbUSB.setEnabled(enable);
         lbUSBBaudRate.setEnabled(enable);
 
+    }
+
+
+    /***
+     * Shows only the settings section relevant to the selected connection type tab.
+     */
+    private void updateSectionVisibility()
+    {
+        sectionBT.setVisibility(rbBlueTooth.isChecked() ? View.VISIBLE : View.GONE);
+        sectionTCP.setVisibility(rbTCP.isChecked() ? View.VISIBLE : View.GONE);
+        sectionUDP.setVisibility(rbUDP.isChecked() ? View.VISIBLE : View.GONE);
+        sectionUSB.setVisibility(rbUSB.isChecked() ? View.VISIBLE : View.GONE);
     }
 
 

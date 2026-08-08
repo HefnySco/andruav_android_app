@@ -16,7 +16,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
@@ -55,8 +54,6 @@ public class HUBCommunication extends BaseAndruavShasha {
 
     private EditText    mtxtWebDescription;
     private CheckBox    mcheckAndruavServer;
-    private CheckBox    mchkEncryptWebServer;
-    private TextView    mtxtEncryptionKey;
 
 
     private Menu mMenu;
@@ -153,8 +150,6 @@ public class HUBCommunication extends BaseAndruavShasha {
 
 
         mtxtWebDescription = findViewById(R.id.hubactivity_edtDescription);
-        mchkEncryptWebServer = findViewById(R.id.hubactivity_chkEncryption);
-        mtxtEncryptionKey= findViewById(R.id.hubactivity_edtEncryptionKey);
 
         mtxtWebServerIP.setEnabled(!mcheckAndruavServer.isChecked());
         mtxtWebServerPort.setEnabled(!mcheckAndruavServer.isChecked());
@@ -326,11 +321,6 @@ public class HUBCommunication extends BaseAndruavShasha {
             DialogHelper.doModalDialog(this,getString(ap.andruavmiddlelibrary.R.string.websocket_Description),getString(ap.andruavmiddlelibrary.R.string.err_nullValue),null);
             return false;
         }
-        if ((mchkEncryptWebServer.isChecked()) && mtxtEncryptionKey.getText().length() != 16)
-        {
-            DialogHelper.doModalDialog(this,getString(ap.andruavmiddlelibrary.R.string.websocket_Encryptiom),getString(ap.andruavmiddlelibrary.R.string.err_ws_encrypted_16),null);
-            return false;
-        }
         // Do Save
         Preference.setAuthServerPort(null, Integer.parseInt(mtxtWebServerPort.getText().toString()));
         String serverURL = mtxtWebServerIP.getText().toString();
@@ -351,8 +341,6 @@ public class HUBCommunication extends BaseAndruavShasha {
         Preference.isLocalServer(null, !mcheckAndruavServer.isChecked());
         //Preference.isEnforceName(null,mchkEnforceName.isChecked());
         Preference.isEnforceName(null,true); // ActivityMosa3ed Fix
-        Preference.isEncryptedWS(null, mchkEncryptWebServer.isChecked());
-        Preference.setEncryptedWSKey(null, mtxtEncryptionKey.getText().toString());
 
         App.updateWe7daInfo();
 
@@ -381,8 +369,6 @@ public class HUBCommunication extends BaseAndruavShasha {
 
         mtxtWebDescription.setText(String.valueOf(Preference.getWebServerUserDescription(null)));
         mcheckAndruavServer.setChecked(!Preference.isLocalServer(null));
-        mchkEncryptWebServer.setChecked(Preference.isEncryptedWS(null));
-        mtxtEncryptionKey.setText(String.valueOf(Preference.getEncryptedWSKey(null)));
 
     }
 
