@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.andruav.AndruavSettings;
+import com.andruav.interfaces.INotification;
+import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 
 import ap.andruav_ap.activities.fpv.drone.FPVDroneRTCWebCamActivity;
 
@@ -32,14 +34,16 @@ public class FPVActivityFactory {
         }
         if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
         } else {  // you cannot use a drone if mobile does not have a cam
-            if (!CheckAppPermissions.checkPermissionAndRequest((Activity) context,
-                    Manifest.permission.CAMERA,"Please grant Camera Permission"))
+            if (!CheckAppPermissions.ensurePermission((Activity) context,
+                    Manifest.permission.CAMERA, AndruavMessage_Error.ERROR_CAMERA,
+                    INotification.INFO_TYPE_CAMERA, "Please grant Camera Permission"))
             {
                 //Log.d(TAG, "checkPermissionAndRequest failed");
                 return;
             }
-            if (!CheckAppPermissions.checkPermissionAndRequest((Activity) context,
-                    Manifest.permission.RECORD_AUDIO,"Please grant Microphone Permission"))
+            if (!CheckAppPermissions.ensurePermission((Activity) context,
+                    Manifest.permission.RECORD_AUDIO, AndruavMessage_Error.ERROR_CAMERA,
+                    INotification.INFO_TYPE_CAMERA, "Please grant Microphone Permission"))
             {
                 return;
             }

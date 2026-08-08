@@ -2,6 +2,7 @@ package ap.andruav_ap.activities.fcb.drone;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -9,11 +10,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +36,7 @@ import java.util.Set;
 
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha_L2;
 import ap.andruav_ap.App;
+import ap.andruav_ap.helpers.CheckAppPermissions;
 import ap.andruav_ap.communication.telemetry.DroneKit.DroneKitServer;
 import ap.andruav_ap.guiEvent.GUIEvent_UpdateConnection;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
@@ -305,11 +310,30 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
 
     private  void enableBlueTooth()
     {
-        final boolean enable = DeviceManagerFacade.hasBlueTooth();
+        // Bluetooth is usable only if the device has BT hardware AND the runtime permission is granted.
+        final boolean enable = isBluetoothUsable();
         txtBluetoothID.setEnabled(enable);
         txtBluetoothID.setEnabled(enable);
         rbBlueTooth.setEnabled(enable);
 
+    }
+
+
+    /***
+     * Returns true if the device has Bluetooth hardware AND the required runtime
+     * permission is granted. Below API 31 the plain BLUETOOTH/BLUETOOTH_ADMIN
+     * permissions are install-time (manifest) so no runtime check is needed.
+     * On API 31+ BLUETOOTH_CONNECT/BLUETOOTH_SCAN are runtime permissions.
+     */
+    private boolean isBluetoothUsable ()
+    {
+        if (!DeviceManagerFacade.hasBlueTooth()) return false;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
     }
 
     private void enableUSB ()

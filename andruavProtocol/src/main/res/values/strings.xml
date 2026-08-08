@@ -52,6 +52,8 @@
     <string name="andruav_error_geofence_safe">Geo Fence Safe</string>
     <string name="andruav_error_geofence_unsafe">Geo Fence Violation</string>
 
+    <string name="andruav_error_permission_denied">Permission denied: %1$s feature disabled.</string>
+
     <string name="gen_rc_releazed">RC Released. You can use TX to control</string>
     <string name="gen_rc_freezed">RC Freezed. no TX control.</string>
     <string name="gen_rc_centered">RC Centered. no control.</string>

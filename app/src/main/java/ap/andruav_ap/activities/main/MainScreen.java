@@ -832,9 +832,7 @@ public class MainScreen extends BaseAndruavShasha {
         }
 
 
-        if (CheckAppPermissions.isPermissionsOK(Me)) {
-            ((App)(getApplication())).initSignalMonitor();
-        }
+        ((App)(getApplication())).initSignalMonitor();
         isUSBIntent = localIntent.getBooleanExtra("USBConnect", false);
 
 

@@ -7,6 +7,10 @@ import android.telephony.SmsManager;
 import androidx.core.app.ActivityCompat;
 
 import com.andruav.AndruavEngine;
+import com.andruav.AndruavFacade;
+import com.andruav.interfaces.INotification;
+
+import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_REGISTERED;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -27,6 +31,10 @@ public class SMS {
                 //                                          int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
+                if (AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED)) {
+                    AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_TELEMETRY, INotification.NOTIFICATION_TYPE_ERROR,
+                            0, "SMS permission denied (SEND_SMS)", null);
+                }
                 return;
             }
             SmsManager smsManager = SmsManager.getDefault();

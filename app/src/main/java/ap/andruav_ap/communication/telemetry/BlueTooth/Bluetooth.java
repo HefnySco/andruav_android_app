@@ -13,8 +13,11 @@ import androidx.core.content.ContextCompat;
 
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
+import com.andruav.AndruavFacade;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 import com.andruav.interfaces.INotification;
+
+import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_REGISTERED;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -73,7 +76,12 @@ public class Bluetooth {
      */
     private boolean hasConnectPermission() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true;
-        return ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED;
+        boolean granted = ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED;
+        if (!granted && AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED)) {
+            AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_TELEMETRY, INotification.NOTIFICATION_TYPE_ERROR,
+                    AndruavMessage_Error.ERROR_BLUETOOTH, "Bluetooth permission denied (BLUETOOTH_CONNECT)", null);
+        }
+        return granted;
     }
 
     /***
@@ -81,7 +89,12 @@ public class Bluetooth {
      */
     private boolean hasScanPermission() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true;
-        return ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED;
+        boolean granted = ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED;
+        if (!granted && AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED)) {
+            AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_TELEMETRY, INotification.NOTIFICATION_TYPE_ERROR,
+                    AndruavMessage_Error.ERROR_BLUETOOTH, "Bluetooth permission denied (BLUETOOTH_SCAN)", null);
+        }
+        return granted;
     }
 
     public void Enable() {

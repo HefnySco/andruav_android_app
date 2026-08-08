@@ -1,5 +1,6 @@
 package ap.andruav_ap.communication.telemetry.DroneKit;
 
+import android.Manifest;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -75,6 +76,7 @@ import com.o3dr.services.android.lib.model.AbstractCommandListener;
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.App;
 import ap.andruav_ap.DeviceManagerFacade;
+import ap.andruav_ap.helpers.CheckAppPermissions;
 import ap.andruav_ap.R;
 import ap.andruav_ap.communication.controlBoard.ControlBoard_DroneKit;
 import ap.andruav_ap.communication.controlBoard.mavlink.DroneKitMavlinkObserver;
@@ -444,6 +446,16 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
                     connectionParams = ConnectionParameter.newUsbConnection(Constants.baudRateItemsValue[Preference.getFCBUSBBaudRateSelector(null)], null);
                     break;
                 case Preference.FCB_COM_BT:
+                    // Guard: do not attempt Bluetooth if hardware or permission is unavailable.
+                    // Mirrors the existing USB guard below. Prevents crash on BT-less devices
+                    // or when BLUETOOTH_CONNECT/SCAN permission has been denied.
+                    if (!DeviceManagerFacade.hasBlueTooth()) return; // should not happen
+                    if (!CheckAppPermissions.reportMissingPermission(Manifest.permission.BLUETOOTH_CONNECT,
+                            AndruavMessage_Error.ERROR_BLUETOOTH, INotification.INFO_TYPE_TELEMETRY,
+                            "Bluetooth connection (BLUETOOTH_CONNECT)")) return;
+                    if (!CheckAppPermissions.reportMissingPermission(Manifest.permission.BLUETOOTH_SCAN,
+                            AndruavMessage_Error.ERROR_BLUETOOTH, INotification.INFO_TYPE_TELEMETRY,
+                            "Bluetooth connection (BLUETOOTH_SCAN)")) return;
                     final boolean res = App.BT.Bluetooth.GetAdapter();
                     App.BT.Bluetooth.Enable();
                     selectedConnectionType = ConnectionType.TYPE_BLUETOOTH;

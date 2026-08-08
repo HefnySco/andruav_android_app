@@ -81,6 +81,9 @@ public class MainActivityBuilder extends AppCompatActivity {
         }
 
 
+        // Ask for permissions (non-blocking) on first run OR whenever a permission is
+        // missing. FirstScreen always proceeds to MainScreen afterwards regardless of
+        // the user's answer -- see FirstScreen for details.
         if ((App.isFirstRun) || (!CheckAppPermissions.isPermissionsOK(this))){
             startActivity(new Intent(this, FirstScreen.class));
 

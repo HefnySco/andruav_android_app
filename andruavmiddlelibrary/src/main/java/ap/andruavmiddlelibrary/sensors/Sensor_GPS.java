@@ -22,6 +22,9 @@ import java.util.Locale;
 
 
 import com.andruav.AndruavEngine;
+import com.andruav.AndruavFacade;
+import com.andruav.interfaces.INotification;
+import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 import com.andruav.util.GPSHelper;
 import com.andruav.util.StringSplit;
 
@@ -381,6 +384,11 @@ public  class Sensor_GPS   extends GenericLocationSensor implements LocationList
                     Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         {
             Log.d("Sensor_GPS", "checkSelfPermission failed");
+            // If connected to Andruav server, report the missing permission as an ERROR message.
+            if (AndruavEngine.isAndruavWSStatus(com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_REGISTERED)) {
+                AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_GPS, INotification.NOTIFICATION_TYPE_ERROR,
+                        AndruavMessage_Error.ERROR_GPS, "Location permission denied", null);
+            }
             return;
         }
         //check permission - end

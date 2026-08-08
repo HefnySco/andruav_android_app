@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -33,30 +34,73 @@ public class FirstScreen extends BaseAndruavShasha {
     private FirstScreen Me;
 
 
+    private boolean proceededToMainScreen = false;
+    private final Handler mPermissionHandler = new Handler();
+
+    /***
+     * Always continues to MainScreen exactly once, regardless of how the user
+     * responds to the permission dialog (or if they don't respond at all).
+     * This guarantees the app never gets stuck with "nowhere to go".
+     */
+    private void proceedToMainScreen ()
+    {
+        if (proceededToMainScreen) return;
+        proceededToMainScreen = true;
+        mPermissionHandler.removeCallbacksAndMessages(null);
+        startActivity(new Intent(Me, MainScreen.class));
+        finish();
+    }
+
+    private static final int PERMISSIONS_REQUEST_CODE = 1;
+
     private void initGUI ()
     {
 
         if (AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED))
         {
-            startActivity(new Intent(Me, MainScreen.class));
+            proceedToMainScreen();
+            return;
         }
 
         new Handler().post(new Runnable() {
             @Override
             public void run() {
 
-
                 if (!CheckAppPermissions.isPermissionsOK(Me))
                 {
-                    DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.gen_security), getString(ap.andruavmiddlelibrary.R.string.err_security), "yes",
-                            (dialogInterface, i) -> CheckAppPermissions.goToSettings(),
-                            "No",
-                            (dialogInterface, i) -> GMail.sendGMail(Me, getString(ap.andruavmiddlelibrary.R.string.email_title), getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject2), getString(ap.andruavmiddlelibrary.R.string.email_body2), null));
-                    return;
+                    // Highlight and ask for permissions -- clearly visible, not a toast
+                    // that can be missed. "Grant" triggers the real OS permission dialogs
+                    // and we wait for onRequestPermissionsResult() before proceeding --
+                    // finishing the Activity right away would kill the dialogs before
+                    // they can even show. "Skip" proceeds immediately. A safety timer
+                    // guarantees we never get stuck here either way.
+                    DialogHelper.doModalDialog(Me,
+                            getString(ap.andruavmiddlelibrary.R.string.gen_security),
+                            getString(ap.andruavmiddlelibrary.R.string.err_security),
+                            getString(android.R.string.ok),
+                            (dialogInterface, i) -> CheckAppPermissions.requestAllPermissions(Me, PERMISSIONS_REQUEST_CODE),
+                            getString(android.R.string.cancel),
+                            (dialogInterface, i) -> proceedToMainScreen());
+
+                    // Safety net: never get stuck on this screen even if the user
+                    // ignores the dialog, dismisses it by tapping outside, or the OS
+                    // permission flow never calls back for some reason.
+                    mPermissionHandler.postDelayed(FirstScreen.this::proceedToMainScreen, 20000);
                 }
-                finish();
+                else
+                {
+                    proceedToMainScreen();
+                }
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSIONS_REQUEST_CODE) {
+            proceedToMainScreen();
+        }
     }
 
 

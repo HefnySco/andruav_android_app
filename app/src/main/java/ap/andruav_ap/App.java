@@ -19,6 +19,7 @@ package ap.andruav_ap;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -54,6 +55,7 @@ import com.andruav.interfaces.IEventBus;
 import com.andruav.interfaces.INotification;
 import com.andruav.interfaces.IPreference;
 
+import ap.andruav_ap.helpers.CheckAppPermissions;
 import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
 import de.greenrobot.event.EventBus;
 import ap.andruav_ap.communication.AndruavWSClient_TooTallNate;
@@ -309,6 +311,12 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
     public void initSignalMonitor ()
     {
+        // READ_PHONE_STATE is required to access TelephonyManager.listen().
+        // If missing: send Andruav ERROR when connected, otherwise skip silently.
+        if (!CheckAppPermissions.reportMissingPermission(Manifest.permission.READ_PHONE_STATE,
+                0, INotification.INFO_TYPE_TELEMETRY, "READ_PHONE_STATE")) {
+            return;
+        }
         mManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (mManager != null) {
             mManager.listen(mListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS |
