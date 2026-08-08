@@ -7,12 +7,17 @@ import android.content.IntentFilter;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 import android.view.Surface;
+
+import androidx.core.app.NotificationCompat;
+
+import ap.andruav_ap.R;
 
 import com.andruav.AndruavSettings;
 
@@ -37,6 +42,13 @@ import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_IMU_CMD;
 import com.andruav.event.droneReport_Event.Event_IMU_Ready;
 
 public class SensorService extends Service {
+
+    /**
+     * Notification id for this service's foreground-service notification. Distinct from
+     * {@code DroidPlannerService}'s own (101) and every id in {@link com.andruav.interfaces.INotification},
+     * since this service and the FCB-link service can both be in the foreground at once.
+     */
+    private static final int FOREGROUND_ID = 120;
 
     //////// Attributes
     protected boolean               mcreated = false;
@@ -140,8 +152,31 @@ public class SensorService extends Service {
 
         UnRegisterListeners();
 
+        stopForeground(true);
         stopSelf();
 
+    }
+
+    /**
+     * Keeps GPS/IMU/battery collection running at full rate while the app is backgrounded
+     * mid-flight - without this, API 26+ throttles or kills sensor/location updates for
+     * background services after a short grace period.
+     */
+    private void promoteToForeground()
+    {
+        android.app.Notification notification = new NotificationCompat.Builder(this, ap.andruav_ap.Notification.CHANNEL_ID)
+                .setContentTitle("Andruav")
+                .setContentText("Collecting sensor and location data")
+                .setSmallIcon(R.drawable.ic_logo2)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
+                .setOngoing(true)
+                .build();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(FOREGROUND_ID, notification, android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION);
+        } else {
+            startForeground(FOREGROUND_ID, notification);
+        }
     }
 
     /**
@@ -364,6 +399,8 @@ public class SensorService extends Service {
     @Override
     public int onStartCommand(android.content.Intent intent, int flags, int startId)
     {
+        promoteToForeground();
+
         if (mcreated)
         {   // already running
             readCalibrationValues();
@@ -416,6 +453,7 @@ public class SensorService extends Service {
             }
         }
 
+        stopForeground(true);
 
         super.onDestroy();
     }

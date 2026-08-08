@@ -48,7 +48,7 @@ import ap.andruavmiddlelibrary.factory.tts.TTS;
 
 public  class Notification implements INotification{
 
-    private static final String CHANNEL_ID = "andruav_notifications";
+    public static final String CHANNEL_ID = "andruav_notifications";
 
     final long SPEEK_MIN_TIME = 500;
     Random rnd = new Random();

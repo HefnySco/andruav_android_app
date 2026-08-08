@@ -28,6 +28,7 @@ import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import androidx.core.content.ContextCompat;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
@@ -401,7 +402,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         if (iSensorService == null) {
 
                 iSensorService = new Intent(App.getAppContext(), SensorService.class);
-                App.getAppContext().startService(iSensorService);
+                ContextCompat.startForegroundService(App.getAppContext(), iSensorService);
             }
 
         if (KMLFile == null) {
