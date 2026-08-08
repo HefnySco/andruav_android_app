@@ -97,10 +97,14 @@ public class FileHelper {
         {  // get Folder relative to ExternalStorageDirectory root.
             if (externalStorageWriteable)
             {
-                if (Build.VERSION.SDK_INT != Build.VERSION_CODES.Q) {
-                    root = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), subFolder);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    // Scoped storage (API 29+): requestLegacyExternalStorage is ignored once
+                    // targetSdkVersion >= 30, so the shared public Downloads directory below is not
+                    // reliably writable without MANAGE_EXTERNAL_STORAGE. Use app-specific external
+                    // storage instead - no permission required on any API level, always writable.
+                    root = AndruavEngine.getPreference().getContext().getExternalFilesDir(subFolder);
                 }else {
-                    root = new File(Environment.getExternalStorageDirectory(), subFolder);
+                    root = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), subFolder);
                 }
             }
             else {

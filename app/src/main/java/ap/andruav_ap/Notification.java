@@ -21,11 +21,13 @@ package ap.andruav_ap;
  */
 
 import android.app.Activity;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
+import android.os.Build;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.NotificationCompat;
 import android.text.Html;
@@ -45,6 +47,8 @@ import ap.andruavmiddlelibrary.factory.tts.TTS;
 
 
 public  class Notification implements INotification{
+
+    private static final String CHANNEL_ID = "andruav_notifications";
 
     final long SPEEK_MIN_TIME = 500;
     Random rnd = new Random();
@@ -74,6 +78,13 @@ public  class Notification implements INotification{
     public void init (final Context context) {
         mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         this.context = context;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    "Andruav Notifications", NotificationManager.IMPORTANCE_DEFAULT);
+            mNotificationManager.createNotificationChannel(channel);
+        }
+
         EventBus.getDefault().register(this);
     }
 
@@ -171,7 +182,7 @@ public  class Notification implements INotification{
         if (Id == 0) {
             Id = NOTIFICATION_TYPE_GENERIC;
         }
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context).setSmallIcon(smallLogo).setContentTitle(title).setContentText(text);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID).setSmallIcon(smallLogo).setContentTitle(title).setContentText(text);
         if (Sound)
             mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
         // mBuilder.setOnlyAlertOnce(false);

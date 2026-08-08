@@ -38,6 +38,11 @@ public class FPVActivityFactory {
                 //Log.d(TAG, "checkPermissionAndRequest failed");
                 return;
             }
+            if (!CheckAppPermissions.checkPermissionAndRequest((Activity) context,
+                    Manifest.permission.RECORD_AUDIO,"Please grant Microphone Permission"))
+            {
+                return;
+            }
             Intent intent;
             if (AndruavSettings.andruavWe7daBase.mIsModule)
             {

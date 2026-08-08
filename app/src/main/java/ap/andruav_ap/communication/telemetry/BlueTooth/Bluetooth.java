@@ -6,9 +6,10 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
 
-import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
@@ -66,9 +67,31 @@ public class Bluetooth {
         return mBluetoothAdapter != null;
     }
 
+    /***
+     * BLUETOOTH_CONNECT (API 31+) is required for most adapter/socket operations that used to be
+     * covered by the plain manifest BLUETOOTH permission. Not required (and not requestable) below API 31.
+     */
+    private boolean hasConnectPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true;
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /***
+     * BLUETOOTH_SCAN (API 31+) is required for discovery. Not required (and not requestable) below API 31.
+     */
+    private boolean hasScanPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true;
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED;
+    }
+
     public void Enable() {
-        if (!mBluetoothAdapter.isEnabled()) {
-            mBluetoothAdapter.enable();
+        if (!hasConnectPermission()) return;
+        try {
+            if (!mBluetoothAdapter.isEnabled()) {
+                mBluetoothAdapter.enable();
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
         }
     }
 
@@ -130,7 +153,12 @@ public class Bluetooth {
 
 public java.util.Set<android.bluetooth.BluetoothDevice> getBondedDevices()
 {
-    return mBluetoothAdapter.getBondedDevices();
+    if (!hasConnectPermission()) return null;
+    try {
+        return mBluetoothAdapter.getBondedDevices();
+    } catch (SecurityException e) {
+        return null;
+    }
 }
 
 
@@ -173,7 +201,11 @@ public void GetRemoteDevice(String MAC) {
         // to call it, but it might hurt not to... discovery is a
         // heavyweight process; you don't want it in progress when
         // a connection attempt is made.
-        mBluetoothAdapter.cancelDiscovery();
+        try {
+            if (hasScanPermission()) mBluetoothAdapter.cancelDiscovery();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
         }
 
 public synchronized void Connect(String MAC) {
@@ -181,6 +213,7 @@ public synchronized void Connect(String MAC) {
         // Blocking connect, for a simple client nothing else can
         // happen until a successful connection is made, so we
         // don't care if it blocks.
+        if (!hasConnectPermission()) return ;
         if (!mBluetoothAdapter.isEnabled()) return ;
 
         try {
@@ -195,6 +228,10 @@ public synchronized void Connect(String MAC) {
 
         // app.Speak("Connected");
 
+        } catch (SecurityException e) {
+            Connected = false;
+            ConnectionLost = true;
+            AndruavEngine.log().logException(AndruavSettings.AccessCode, "exception_BT", e);
         } catch (IOException e) {
         try {
         btSocket.close();

@@ -54,7 +54,7 @@ public abstract class CheckAppPermissions {
             permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity,
                     Manifest.permission.READ_MEDIA_IMAGES);
             permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity,
-                    Manifest.permission.READ_MEDIA_IMAGES);
+                    Manifest.permission.READ_MEDIA_VIDEO);
         }
         permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.CAMERA);
         permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -66,6 +66,13 @@ public abstract class CheckAppPermissions {
                     new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                     1);
         //}
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            //https://developer.android.com/develop/ui/views/notifications/notification-permission
+            permissionsOK = permissionsOK && CheckAppPermissions.checkPermissionAndRequest(activity,
+                    Manifest.permission.POST_NOTIFICATIONS, "Please grant Notifications Permission");
+        }
+
         return permissionsOK;
     }
 
