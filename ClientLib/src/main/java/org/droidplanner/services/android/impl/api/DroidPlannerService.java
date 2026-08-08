@@ -6,37 +6,39 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import com.o3dr.android.client.R;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.mission.item.complex.CameraDetail;
-import com.o3dr.services.android.lib.model.IApiListener;
-import com.o3dr.services.android.lib.model.IDroidPlannerServices;
 
 import org.droidplanner.services.android.impl.core.drone.DroneManager;
 import org.droidplanner.services.android.impl.core.survey.CameraInfo;
-import org.droidplanner.services.android.impl.utils.Utils;
 import org.droidplanner.services.android.impl.utils.file.IO.CameraInfoLoader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 import timber.log.Timber;
 
 /**
- * DroneKit-Android background service implementation.
+ * Drone services implementation.
+ *
+ * <p>
+ * This runs in the app's own process and is bound through {@link LocalBinder}, so clients get a
+ * direct reference to this instance and to the {@link DroneApi} it hands out - no AIDL, no binder
+ * marshalling. It stays an Android {@link Service} because it is the app's only foreground service:
+ * the ongoing notification is what keeps the process at foreground priority while a vehicle is
+ * connected.
+ * </p>
  */
 public class DroidPlannerService extends Service {
 
@@ -46,17 +48,15 @@ public class DroidPlannerService extends Service {
     private static final int FOREGROUND_ID = 101;
 
     /**
-     * Set of actions to notify the local app's components of the service events.
+     * Handed to clients on bind, giving them a direct reference to this service instance.
      */
-    public static final String ACTION_DRONE_CREATED = Utils.PACKAGE_NAME + ".ACTION_DRONE_CREATED";
-    public static final String ACTION_DRONE_DESTROYED = Utils.PACKAGE_NAME + ".ACTION_DRONE_DESTROYED";
-    public static final String ACTION_RELEASE_API_INSTANCE = Utils.PACKAGE_NAME + ".action.RELEASE_API_INSTANCE";
-    public static final String EXTRA_API_INSTANCE_APP_ID = "extra_api_instance_app_id";
+    public class LocalBinder extends Binder {
+        public DroidPlannerService getService() {
+            return DroidPlannerService.this;
+        }
+    }
 
-    /**
-     * Used to broadcast service events.
-     */
-    private LocalBroadcastManager lbm;
+    private final IBinder localBinder = new LocalBinder();
 
     /**
      * Stores drone api instances per connected client. The client are denoted by their app id.
@@ -67,26 +67,19 @@ public class DroidPlannerService extends Service {
      */
     DroneManager droneManager = null;
 
-    private DPServices dpServices;
-
     private CameraInfoLoader cameraInfoLoader;
     private List<CameraDetail> cachedCameraDetails;
 
     /**
-     * Generate a drone api instance for the client denoted by the given app id.
+     * Generate a drone api instance for the connecting client.
      *
-     * @param listener Used to retrieve api information.
-     * @return a IDroneApi instance
+     * @return a DroneApi instance
      */
-    DroneApi registerDroneApi(IApiListener listener) {
-        if (listener == null)
-            return null;
-
+    public DroneApi registerDroneApi() {
         releaseDroneApi();
 
-        DroneApi droneApi = new DroneApi(this, listener);
+        DroneApi droneApi = new DroneApi(this);
         droneApiStore = droneApi;
-        lbm.sendBroadcast(new Intent(ACTION_DRONE_CREATED));
         updateForegroundNotification();
         return droneApi;
     }
@@ -95,7 +88,7 @@ public class DroidPlannerService extends Service {
      * Release the drone api instance attached to the given app id.
      *
      */
-    void releaseDroneApi() {
+    public void releaseDroneApi() {
         if (droneApiStore == null) return ;
         droneApiStore.destroy();
         droneApiStore = null;
@@ -176,13 +169,7 @@ public class DroidPlannerService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Timber.d("Binding intent: " + intent);
-        final String action = intent.getAction();
-        if (IDroidPlannerServices.class.getName().equals(action)) {
-            // Return binder to ipc client-server interaction.
-            return dpServices;
-        } else {
-            return null;
-        }
+        return localBinder;
     }
 
     @SuppressLint("NewApi")
@@ -190,12 +177,10 @@ public class DroidPlannerService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        Timber.d("Creating DroneKit-Android.");
+        Timber.d("Creating drone services.");
 
         final Context context = getApplicationContext();
 
-        dpServices = new DPServices(this);
-        lbm = LocalBroadcastManager.getInstance(context);
         this.cameraInfoLoader = new CameraInfoLoader(context);
 
         updateForegroundNotification();
@@ -250,7 +235,7 @@ public class DroidPlannerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Timber.d("Destroying DroneKit-Android.");
+        Timber.d("Destroying drone services.");
 
         if (droneApiStore != null) {
             droneApiStore.destroy();
@@ -262,38 +247,7 @@ public class DroidPlannerService extends Service {
             droneManager = null;
         }
 
-        dpServices.destroy();
-
         stopForeground(true);
-
-        //Disable this service. It'll be reenabled the next time its local client needs it.
-        enableDroidPlannerService(getApplicationContext(), false);
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null) {
-            final String action = intent.getAction();
-            if (ACTION_RELEASE_API_INSTANCE.equals(action)) {
-                releaseDroneApi();
-            }
-        }
-
-        stopSelf();
-        return START_NOT_STICKY;
-    }
-
-    /**
-     * Toggles the DroidPlannerService component
-     * @param context
-     * @param enable
-     */
-    public static void enableDroidPlannerService(Context context, boolean enable){
-        final ComponentName serviceComp = new ComponentName(context, DroidPlannerService.class);
-        final int newState = enable ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-                : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
-
-        context.getPackageManager().setComponentEnabledSetting(serviceComp, newState, PackageManager.DONT_KILL_APP);
     }
 
 }

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.text.TextUtils;
@@ -35,13 +34,14 @@ import com.o3dr.services.android.lib.gcs.event.GCSEvent;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 import com.o3dr.services.android.lib.gcs.link.LinkEvent;
 import com.o3dr.services.android.lib.gcs.link.LinkEventExtra;
+import com.o3dr.android.client.BuildConfig;
 import com.o3dr.services.android.lib.mavlink.MavlinkMessageWrapper;
-import com.o3dr.services.android.lib.model.IApiListener;
 import com.o3dr.services.android.lib.model.ICommandListener;
 import com.o3dr.services.android.lib.model.IDroneApi;
 import com.o3dr.services.android.lib.model.IMavlinkObserver;
 import com.o3dr.services.android.lib.model.IObserver;
 import com.o3dr.services.android.lib.model.action.Action;
+import com.o3dr.services.android.lib.util.version.VersionUtils;
 
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces;
 import org.droidplanner.services.android.impl.core.drone.DroneManager;
@@ -57,7 +57,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import timber.log.Timber;
@@ -70,7 +69,7 @@ import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.
  * Implementation for the IDroneApi interface.
  */
 public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.OnDroneListener, DroneInterfaces.AttributeEventListener,
-    DroneInterfaces.OnParameterManagerListener, MagnetometerCalibrationImpl.OnMagnetometerCalibrationListener, IBinder.DeathRecipient {
+    DroneInterfaces.OnParameterManagerListener, MagnetometerCalibrationImpl.OnMagnetometerCalibrationListener {
 
     //The Reset ROI mission item was introduced in version 2.6.8. Any client library older than this do not support it.
     private final static int RESET_ROI_LIB_VERSION = 206080;
@@ -109,7 +108,6 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
     private final ConcurrentLinkedQueue<IObserver> observersList;
     private final ConcurrentLinkedQueue<IMavlinkObserver> mavlinkObserversList;
     private DroneManager droneMgr;
-    private final IApiListener apiListener;
 
     private final ClientInfo clientInfo;
 
@@ -119,7 +117,7 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
 
     private ConnectionParameter connectionParams;
 
-    DroneApi(DroidPlannerService dpService, IApiListener listener) {
+    DroneApi(DroidPlannerService dpService) {
 
         this.service = dpService;
         this.context = dpService.getApplicationContext();
@@ -128,19 +126,8 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
         observersList = new ConcurrentLinkedQueue<>();
         mavlinkObserversList = new ConcurrentLinkedQueue<>();
 
-        this.apiListener = listener;
-        int apiVersionCode = -1;
-        int clientVersionCode = -1;
-        try {
-            this.apiListener.asBinder().linkToDeath(this, 0);
-            checkForSelfRelease();
-
-            apiVersionCode = apiListener.getApiVersionCode();
-            clientVersionCode = apiListener.getClientVersionCode();
-        } catch (RemoteException e) {
-            Timber.e(e, e.getMessage());
-            dpService.releaseDroneApi();
-        }
+        int apiVersionCode = VersionUtils.getCoreLibVersion(this.context);
+        int clientVersionCode = BuildConfig.VERSION_CODE;
 
         this.clientInfo = new ClientInfo(apiVersionCode, clientVersionCode);
     }
@@ -149,12 +136,6 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
         Timber.d("Destroying drone api instance for app");
         this.observersList.clear();
         this.mavlinkObserversList.clear();
-
-        try {
-            this.apiListener.asBinder().unlinkToDeath(this, 0);
-        } catch (NoSuchElementException e) {
-            Timber.e(e, e.getMessage());
-        }
 
         this.service.disconnectDroneManager(this.droneMgr, this.clientInfo);
     }
@@ -271,16 +252,6 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
 
     }
 
-    private void checkForSelfRelease() {
-        //Check if the apiListener is still connected instead.
-        if (!apiListener.asBinder().pingBinder()) {
-            Timber.w("Client is not longer available.");
-            this.context.startService(new Intent(this.context, DroidPlannerService.class)
-                .setAction(DroidPlannerService.ACTION_RELEASE_API_INSTANCE)
-                .putExtra(DroidPlannerService.EXTRA_API_INSTANCE_APP_ID, getOwnerId()));
-        }
-    }
-
     @Override
     public void addAttributesObserver(IObserver observer) throws RemoteException {
         if (observer != null) {
@@ -294,7 +265,6 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
         if (observer != null) {
             Timber.d("Removing attributes observer.");
             observersList.remove(observer);
-            checkForSelfRelease();
         }
     }
 
@@ -309,7 +279,6 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
     public void removeMavlinkObserver(IMavlinkObserver observer) throws RemoteException {
         if (observer != null) {
             mavlinkObserversList.remove(observer);
-            checkForSelfRelease();
         }
     }
 
@@ -750,12 +719,10 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
         switch (connectionStatus.getStatusCode()) {
             case LinkConnectionStatus.FAILED:
                 disconnect();
-                checkForSelfRelease();
                 break;
 
             case LinkConnectionStatus.DISCONNECTED:
                 disconnect();
-                checkForSelfRelease();
                 break;
         }
 
@@ -763,11 +730,6 @@ public final class DroneApi extends IDroneApi.Stub implements DroneInterfaces.On
         extras.putParcelable(LinkEventExtra.EXTRA_CONNECTION_STATUS, connectionStatus);
         notifyAttributeUpdate(LinkEvent.LINK_STATE_UPDATED, extras);
 
-    }
-
-    @Override
-    public void binderDied() {
-        checkForSelfRelease();
     }
 
     @Override

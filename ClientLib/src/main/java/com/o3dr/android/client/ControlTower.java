@@ -6,29 +6,31 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
 
 import com.o3dr.android.client.interfaces.TowerListener;
-import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
-import com.o3dr.services.android.lib.model.IDroidPlannerServices;
-import com.o3dr.services.android.lib.model.IDroneApi;
+
+import org.droidplanner.services.android.impl.api.DroidPlannerService;
+import org.droidplanner.services.android.impl.api.DroneApi;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * Entry point to the drone services.
+ *
+ * <p>
+ * {@link DroidPlannerService} runs in this same process, so the binding below is a plain
+ * {@code LocalBinder} handoff: once connected, every call on the returned {@link DroneApi} is a
+ * direct virtual call. The bind itself is kept (rather than instantiating the service ourselves)
+ * because {@link DroidPlannerService} is a foreground service - the binding is what keeps the
+ * process at foreground priority while a vehicle is connected.
+ * </p>
+ *
  * Created by fhuya on 11/12/14.
  */
 public class ControlTower {
 
     private static final String TAG = ControlTower.class.getSimpleName();
-
-    private final IBinder.DeathRecipient binderDeathRecipient = new IBinder.DeathRecipient() {
-        @Override
-        public void binderDied() {
-            notifyTowerDisconnected();
-        }
-    };
 
     private final ServiceConnection o3drServicesConnection = new ServiceConnection() {
 
@@ -36,18 +38,14 @@ public class ControlTower {
         public void onServiceConnected(ComponentName name, IBinder service) {
             isServiceConnecting.set(false);
 
-            o3drServices = IDroidPlannerServices.Stub.asInterface(service);
-            try {
-                o3drServices.asBinder().linkToDeath(binderDeathRecipient, 0);
-                notifyTowerConnected();
-            } catch (RemoteException e) {
-                notifyTowerDisconnected();
-            }
+            o3drServices = ((DroidPlannerService.LocalBinder) service).getService();
+            notifyTowerConnected();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             isServiceConnecting.set(false);
+            o3drServices = null;
             notifyTowerDisconnected();
         }
     };
@@ -55,17 +53,15 @@ public class ControlTower {
     private final AtomicBoolean isServiceConnecting = new AtomicBoolean(false);
 
     private final Context context;
-    private final DroneApiListener apiListener;
     private TowerListener towerListener;
-    private IDroidPlannerServices o3drServices;
+    private DroidPlannerService o3drServices;
 
     public ControlTower(Context context) {
         this.context = context;
-        this.apiListener = new DroneApiListener(this.context);
     }
 
     public boolean isTowerConnected() {
-        return o3drServices != null && o3drServices.asBinder().pingBinder();
+        return o3drServices != null;
     }
 
     void notifyTowerConnected() {
@@ -109,17 +105,14 @@ public class ControlTower {
         towerListener = listener;
 
         if (!isTowerConnected() && !isServiceConnecting.get()) {
-            final Intent serviceIntent = ApiAvailability.getInstance().getAvailableServicesInstance(context);
+            final Intent serviceIntent = new Intent(context, DroidPlannerService.class);
             isServiceConnecting.set(context.bindService(serviceIntent, o3drServicesConnection,
                     Context.BIND_AUTO_CREATE));
         }
     }
 
     public void disconnect() {
-        if (o3drServices != null) {
-            o3drServices.asBinder().unlinkToDeath(binderDeathRecipient, 0);
-            o3drServices = null;
-        }
+        o3drServices = null;
 
         notifyTowerDisconnected();
 
@@ -128,19 +121,17 @@ public class ControlTower {
         try {
             context.unbindService(o3drServicesConnection);
         } catch (Exception e) {
-            Log.e(TAG, "Error occurred while unbinding from DroneKit-Android.");
+            Log.e(TAG, "Error occurred while unbinding from the drone services.");
         }
     }
 
-    IDroneApi registerDroneApi() throws RemoteException {
-        return o3drServices.registerDroneApi(this.apiListener);
+    DroneApi registerDroneApi() {
+        return o3drServices.registerDroneApi();
     }
 
-    void releaseDroneApi(IDroneApi droneApi) throws RemoteException {
-        o3drServices.releaseDroneApi(droneApi);
-    }
-
-    private String getApplicationId() {
-        return context.getPackageName();
+    void releaseDroneApi() {
+        if (o3drServices != null) {
+            o3drServices.releaseDroneApi();
+        }
     }
 }

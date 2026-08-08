@@ -163,9 +163,9 @@ public class Drone {
         try {
             if (isStarted(droneApi)) {
                 droneApi.asBinder().unlinkToDeath(binderDeathRecipient, 0);
-                serviceMgr.releaseDroneApi(droneApi);
+                serviceMgr.releaseDroneApi();
             }
-        } catch (RemoteException | NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             Log.e(TAG, e.getMessage(), e);
         }
 
