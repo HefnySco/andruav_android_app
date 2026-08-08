@@ -25,7 +25,6 @@ import com.andruav.protocol.commands.textMessages.AndruavMessage_SensorsStatus;
 import com.andruav.sensors.AndruavGimbal;
 import com.andruav.interfaces.INotification;
 import com.andruav.controlBoard.IControlBoard_Callback;
-import com.andruav.controlBoard.ControlBoard_Shadow;
 import com.andruav.controlBoard.ControlBoardBase;
 import com.andruav.controlBoard.shared.common.FlightMode;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
@@ -611,7 +610,6 @@ public class AndruavUnitBase {
      * So GCBoard can be connected physically to a board, or represents a remote Drone.
      */
     public ControlBoardBase FCBoard;
-    public ControlBoard_Shadow FCBoardShadow;
 
 
 /////////////////////////// HOME & TARGET LOCATION
@@ -788,7 +786,7 @@ public class AndruavUnitBase {
 
     public boolean useFCBIMU ()
     {
-        return (useFCBIMU); //  && ((FCBoard!= null) || (FCBoardShadow!= null)));
+        return (useFCBIMU); //  && (FCBoard!= null));
     }
 
 
@@ -1268,12 +1266,6 @@ public class AndruavUnitBase {
             if (this.FCBoard != null) {
                 FCBoard.ActivateListener(false);
                 FCBoard = null;
-            }
-        }
-        else {
-            if (this.FCBoardShadow != null) {
-                FCBoardShadow.ActivateListener(false);
-                FCBoardShadow = null;
             }
         }
     }

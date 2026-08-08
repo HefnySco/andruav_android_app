@@ -924,13 +924,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                             event_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_RECORDVIDEO);
                             event_fpv_cmd.Requester = andruavUnit;
                             event_fpv_cmd.ACT = andruavResala_remoteExecute.getBooleanValue("Act");
-                            if (Preference.useExternalCam(null)) {
-                                // new IPWebCamImage(event_fpv_cmd);
-                                PanicFacade.cannotStartCamera(INotification.NOTIFICATION_TYPE_ERROR, INotification.NOTIFICATION_TYPE_ERROR, "Record Video is not supported in this video mode yet", null);
-
-                            } else {
-                                EventBus.getDefault().post(event_fpv_cmd);
-                            }
+                            EventBus.getDefault().post(event_fpv_cmd);
                             break;
 
 

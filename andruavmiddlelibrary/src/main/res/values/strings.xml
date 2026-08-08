@@ -386,7 +386,6 @@
     <string name="fcbdrone_usb">USB</string>
     <string name="fcbdrone_tcp">TCP</string>
     <string name="fcbdrone_udp">UDP</string>
-    <string name="fcbdrone_native">Native</string>
     <string name="fcbdrone_3dr">Dronekit</string>
     <string name="fcbdrone_dji">DJI</string>
     <string name="fcbdrone_usbbaudrate">Speed</string>

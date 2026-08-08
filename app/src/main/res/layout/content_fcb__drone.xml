@@ -339,12 +339,6 @@
             android:id="@+id/fcbdroneactivity_rb3DR"
             android:textColor="@color/btn_TXT_BLUE_DARKEST" />
 
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/fcbdrone_native"
-            android:id="@+id/fcbdroneactivity_rbNative" />
-
     </RadioGroup>
 
     <ListView

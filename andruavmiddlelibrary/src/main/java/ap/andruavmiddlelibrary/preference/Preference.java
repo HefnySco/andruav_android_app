@@ -491,31 +491,6 @@ public class Preference {
 
 
     /***
-     * Use External Camera source such as IP Webcam
-     *
-     * @param contextWrapper
-     * @return
-     */
-    public static boolean useExternalCam(final android.content.ContextWrapper contextWrapper) {
-        if (FeatureSwitch.Disable_Drone_ExternalCam) return false;
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "LNScs17Ok", false);
-    }
-
-    /***
-     * Use External Camera source such as IP Webcam
-     *
-     * @param contextWrapper
-     * @param bEnabled
-     */
-    public static void useExternalCam(final android.content.ContextWrapper contextWrapper, boolean bEnabled) {
-        if (FeatureSwitch.Disable_Drone_ExternalCam) {
-            bEnabled = false;
-        }
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "LNScs17Ok", bEnabled);
-    }
-
-
-    /***
      * doMirror Image of Drone WebRTC
      *
      * @param contextWrapper
@@ -1249,7 +1224,6 @@ public class Preference {
     }
 
     public static void FactoryReset_FPV(final android.content.ContextWrapper contextWrapper) {
-        Preference.useExternalCam(contextWrapper, false);
         Preference.setRTCCamRotateCAM(contextWrapper, 0);
         Preference.setRTCCamMirrored(contextWrapper, false);
         Preference.useUDPCamera(contextWrapper, true);

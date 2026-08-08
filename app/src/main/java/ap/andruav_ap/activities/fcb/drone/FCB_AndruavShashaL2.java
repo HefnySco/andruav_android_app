@@ -73,7 +73,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
     private RadioButton rbTCP;
     private RadioButton rbUDP;
     private RadioButton rbService_3DR;
-    private RadioButton rbNative;
 
     private Set<BluetoothDevice> pairedDevices;
     private ListView lstbluetoothDevices;
@@ -138,17 +137,10 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         rbUDP = findViewById(R.id.fcbdroneactivity_rbUDP);
 
         rbService_3DR = findViewById(R.id.fcbdroneactivity_rb3DR);
-        rbNative = findViewById(R.id.fcbdroneactivity_rbNative);
 
         if (FeatureSwitch.Disable_3DRFCBConnections)
         {
             rbService_3DR.setVisibility(View.INVISIBLE);
-        }
-
-        if (FeatureSwitch.Disable_NativeFCBConnections)
-        {
-            rbNative.setVisibility(View.INVISIBLE);
-            rbService_3DR.setChecked(true);
         }
 
         View.OnClickListener BTListener = new View.OnClickListener() {
@@ -210,18 +202,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         rbTCP.setOnClickListener(genericClickListener);
         rbUDP.setOnClickListener(genericClickListener);
 
-        rbNative.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rbBlueTooth.setChecked(true);
-                bSaved = false;
-                //setPhysicalConnectionGUI();
-                savePreference();
-                updateFloatingButton();
-            }
-        });
-
-
         rbService_3DR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -229,7 +209,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
                 if (!DroneKitServer.isValidAndroidVersion()) {
                     DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.gen_connection), getString(ap.andruavmiddlelibrary.R.string.err_3dr_mobileversion), null);
                     rbService_3DR.setChecked(false);
-                    rbNative.setChecked(false);
                 }
 
                 //setPhysicalConnectionGUI();
@@ -288,7 +267,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
             rbUDP.setEnabled(false);
 
             rbService_3DR.setEnabled(false);
-            rbNative.setEnabled(false);
 
             drawable = R.drawable.service_3dr_72x72;
 
@@ -301,7 +279,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         {
             setPhysicalConnectionGUI();
             rbService_3DR.setEnabled(true);
-            rbNative.setEnabled(true);
 
             drawable = R.drawable.service_3dr_gy_72x72;
         }
@@ -346,16 +323,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
 
     private void setPhysicalConnectionGUI()
     {
-        if (rbNative.isChecked())
-        {
-            enableBlueTooth();
-            enableUSB();
-            rbTCP.setEnabled(false);
-            rbUDP.setEnabled(true);
-
-            return;
-        }
-
         if (rbService_3DR.isChecked())
         {
             enableBlueTooth();
