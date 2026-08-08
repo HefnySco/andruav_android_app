@@ -4,9 +4,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
-import de.greenrobot.dao.AbstractDao;
-import de.greenrobot.dao.Property;
-import de.greenrobot.dao.internal.DaoConfig;
+import org.greenrobot.greendao.AbstractDao;
+import org.greenrobot.greendao.Property;
+import org.greenrobot.greendao.database.DatabaseStatement;
+import org.greenrobot.greendao.internal.DaoConfig;
 
 /**
  * Created by mhefny on 2/13/16.
@@ -75,6 +76,28 @@ public class LogDao  extends AbstractDao<LogRow, Long> {
     }
 
     @Override
+    protected void bindValues(DatabaseStatement stmt, LogRow entity) {
+        stmt.clearBindings();
+
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
+
+        stmt.bindString(2, entity.getUserName());
+
+        String tag = entity.getTag();
+        if (tag != null) {
+            stmt.bindString(3, tag);
+        }
+
+        String error = entity.getError();
+        if (error != null) {
+            stmt.bindString(4, error);
+        }
+    }
+
+    @Override
     protected void bindValues(SQLiteStatement stmt, LogRow entity) {
         stmt.clearBindings();
 
@@ -116,8 +139,10 @@ public class LogDao  extends AbstractDao<LogRow, Long> {
         return true;
     }
 
-
-
+    @Override
+    public boolean hasKey(LogRow entity) {
+        return entity != null && entity.getId() != null;
+    }
 
 
 }

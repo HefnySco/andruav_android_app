@@ -2,6 +2,8 @@ package ap.andruavmiddlelibrary.database;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import org.greenrobot.greendao.database.StandardDatabase;
+
 import com.andruav.AndruavEngine;
 
 /**
@@ -33,7 +35,7 @@ public class DaoManager {
         db = helper.getWritableDatabase();
         //helper.onUpgrade(db,1000,1001);
 
-        daoMaster = new DaoMaster(db);
+        daoMaster = new DaoMaster(new StandardDatabase(db));
         daoSession = daoMaster.newSession();
         logDao = daoSession.getLogDao();
         genericDataDao = daoSession.getCustomerDao();

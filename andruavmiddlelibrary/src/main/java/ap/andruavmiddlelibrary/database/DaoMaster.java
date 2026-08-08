@@ -5,8 +5,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import de.greenrobot.dao.AbstractDaoMaster;
-import de.greenrobot.dao.identityscope.IdentityScopeType;
+import org.greenrobot.greendao.AbstractDaoMaster;
+import org.greenrobot.greendao.database.Database;
+import org.greenrobot.greendao.identityscope.IdentityScopeType;
 
 /**
  * Created by mhefny on 2/13/16.
@@ -55,7 +56,7 @@ public class DaoMaster extends AbstractDaoMaster {
         }
     }
 
-    public DaoMaster(SQLiteDatabase db) {
+    public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
         registerDaoClass(LogDao.class);
         registerDaoClass(GenericDataDao.class);

@@ -47,7 +47,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     api project(':andruavProtocol')
     api project(':webrtc')
-    api 'de.greenrobot:greendao:2.1.0'
+    api 'org.greenrobot:greendao:3.3.0'
     api 'com.squareup.okhttp3:okhttp:3.14.9'
     //api 'org.webrtc:google-webrtc:1.0.30039'
     api 'de.greenrobot:eventbus:2.4.0'
