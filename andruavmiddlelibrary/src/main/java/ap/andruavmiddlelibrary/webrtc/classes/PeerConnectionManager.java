@@ -51,6 +51,12 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     private VideoCapturer capturer;
 
     private VideoSink mExternalVideoSink;
+    /**
+     * The transient local-preview sink (backed by {@link #mSurfaceViewRenderer}). Unlike
+     * {@code mExternalVideoSink}, this may be null (no Activity currently attached) without
+     * affecting capture/publish, which keeps running via the single sink added in {@link #init}.
+     */
+    private VideoSink mLocalPreviewSink;
     private VideoSource localVideoSource;
     private boolean     videoSourceStopped = true;
     private VideoTrack localVideoTrack;
@@ -158,11 +164,14 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
 
 
-            if ((irtcListener == null) || (surfaceViewRenderer == null)) return false;
+            if (irtcListener == null) return false;
             connected = false;
-            mSurfaceViewRenderer = surfaceViewRenderer;
-            mSurfaceViewRenderer.init(eglBaseTX.getEglBaseContext(),null,EglBase.CONFIG_PLAIN,new GlRectDrawer());
-            mSurfaceViewRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
+            // surfaceViewRenderer may be null: capture/publish must be able to start with no
+            // local preview attached (e.g. when initialized from a Service). A renderer can be
+            // attached later via attachLocalRenderer().
+            if (surfaceViewRenderer != null) {
+                attachLocalRenderer(surfaceViewRenderer);
+            }
 
             mVideoCapturerSurfaceTextureHelper =
                     SurfaceTextureHelper.create("CVTTX", eglBaseTX.getEglBaseContext());
@@ -207,8 +216,11 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
                 // Now we can add our tracks.
                 localVideoTrack = pcFactory.createVideoTrack(AndruavSettings.andruavWe7daBase.PartyID, localVideoSource);
                 mediaStream.addTrack(localVideoTrack);
+                // Added exactly once for the life of the track: local preview attach/detach only
+                // ever changes mLocalPreviewSink, it never touches this sink registration, so
+                // capture/publish keeps running whether or not a renderer is currently attached.
                localVideoTrack.addSink(videoFrame -> {
-                    mSurfaceViewRenderer.onFrame(videoFrame);
+                    if (mLocalPreviewSink != null) mLocalPreviewSink.onFrame(videoFrame);
                     mExternalVideoSink.onFrame(videoFrame);
                 });
             }
@@ -230,6 +242,33 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
     }
 
+
+    /**
+     * Attaches a local-preview renderer without touching capture/publish state. Safe to call
+     * repeatedly (e.g. each time an Activity resumes) and safe to call while capture is running.
+     */
+    public void attachLocalRenderer(final SurfaceViewRenderer renderer) {
+        if (renderer == null) return;
+        if (mSurfaceViewRenderer == renderer) return;
+
+        mSurfaceViewRenderer = renderer;
+        mSurfaceViewRenderer.init(eglBaseTX.getEglBaseContext(), null, EglBase.CONFIG_PLAIN, new GlRectDrawer());
+        mSurfaceViewRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
+        mLocalPreviewSink = mSurfaceViewRenderer;
+    }
+
+    /**
+     * Detaches and releases the local-preview renderer only. Does NOT stop the capturer, the
+     * video source/track, or any peer connection - those keep running so a backgrounded/screen-off
+     * Activity never interrupts the stream. Call {@link #stopStreaming()} for real teardown.
+     */
+    public void detachLocalRenderer() {
+        mLocalPreviewSink = null;
+        if (mSurfaceViewRenderer != null) {
+            mSurfaceViewRenderer.release();
+            mSurfaceViewRenderer = null;
+        }
+    }
 
     private VideoCapturer createVideoCapturer() {
 
@@ -329,8 +368,14 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
         }
     }
 
-    public void onPause() {
-        if (mSurfaceViewRenderer==null) return ;
+    /**
+     * Real, full teardown of capture + peer connections - disconnects all peers, disposes the
+     * local video track/source, and stops the capturer. Call only when genuinely told to stop
+     * streaming (explicit UI stop, or the remote stop command) - never on a mere Activity pause,
+     * since that would kill the stream on every screen-off.
+     */
+    public void stopStreaming() {
+        if (pnRTC3ameel == null) return ;
 
         try {
             disconnectToDrone(null,null);
@@ -361,7 +406,6 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     public void onResume() {
 
         if (localVideoSource==null) return;
-        if (mSurfaceViewRenderer==null) return;
 
         startLocalVideoSource();
 
@@ -469,9 +513,8 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
                 capturer.dispose();
             }
 
-            if (mSurfaceViewRenderer != null) {
-                mSurfaceViewRenderer.release();
-            }
+            // Renderer lifecycle is owned exclusively by attachLocalRenderer()/detachLocalRenderer()
+            // now - capture teardown must not touch it.
             // dont uncomment
             /*
             if (localAudioSource != null && !audioSourceStopped) {
@@ -565,7 +608,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     @Override
     public void onFrameCaptured(VideoFrame videoFrame) {
         // called in Drone Mode - Transmitting
-        mSurfaceViewRenderer.onFrame(videoFrame);
+        if (mLocalPreviewSink != null) mLocalPreviewSink.onFrame(videoFrame);
         mExternalVideoSink.onFrame(videoFrame);
     }
 
@@ -659,7 +702,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
                             mRotationGCS, videoFrame.getTimestampNs());
                             // called in Drone Mode ---- Transmitting
 
-                            mSurfaceViewRenderer.onFrame(outVideoFrame);
+                            if (mLocalPreviewSink != null) mLocalPreviewSink.onFrame(outVideoFrame);
                     mExternalVideoSink.onFrame(outVideoFrame);
                 });
                 mIRTCListener.onAddRemoteStream(remoteStream, peer);

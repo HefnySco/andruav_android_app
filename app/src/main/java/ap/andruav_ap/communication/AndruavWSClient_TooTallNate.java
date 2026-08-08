@@ -25,6 +25,7 @@ import com.andruav.event.droneReport_Event.Event_WayPointReached;
 import com.andruav.event.fcb_event._7adath_FCB_2AMR;
 import com.andruav.event.fpv7adath.Event_FPV_CMD;
 import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
+import com.andruav.event.fpv7adath._7adath_StopAndroidCamera;
 import com.andruav.event.networkEvent.EventLoginClient;
 import com.andruav.event.networkEvent.EventSocketState;
 import com.andruav.andruavUnit.AndruavUnitBase;
@@ -968,6 +969,11 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                                 } else {
                                     // this is WRONG not after UAVOS update
                                     AndruavSettings.mVideoRequests.remove(andruavUnit.PartyID);
+                                    // Only stop once no consumer still wants video - one viewer
+                                    // disconnecting shouldn't kill the stream for others watching.
+                                    if (AndruavSettings.mVideoRequests.isEmpty()) {
+                                        EventBus.getDefault().post(new _7adath_StopAndroidCamera());
+                                    }
                                 }
 
 

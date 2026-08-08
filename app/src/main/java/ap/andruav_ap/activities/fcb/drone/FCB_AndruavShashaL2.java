@@ -201,6 +201,10 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         View.OnClickListener genericClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                rbBlueTooth.setChecked(v == rbBlueTooth);
+                rbUSB.setChecked(v == rbUSB);
+                rbTCP.setChecked(v == rbTCP);
+                rbUDP.setChecked(v == rbUDP);
                 bSaved = false;
                 savePreference();
                 updateFloatingButton();

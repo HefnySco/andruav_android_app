@@ -106,6 +106,7 @@ import java.util.concurrent.TimeUnit;
 import ap.andruavmiddlelibrary.log.ExceptionHTTPLogger;
 import ap.andruavmiddlelibrary.log.ExceptionHandler;
 import ap.sensors.SensorService;
+import ap.andruav_ap.services.fpv.FPVStreamingService;
 import ap.andruavmiddlelibrary.database.DaoManager;
 
 import static com.andruav.uavos.modules.UAVOSConstants.UAVOS_MODULE_TYPE_CAMERA;
@@ -132,6 +133,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     public static IEvent_SocketData iEvent_socketData;
     public static SoundManager soundManager;
     public static Intent iSensorService;
+    public static Intent iFPVStreamingService;
     /***
      * unit-ID of the telemetry drone that this CGS connected with.
      */
@@ -446,6 +448,33 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
             KMLFile.shutDown();
             KMLFile = null;
         }
+    }
+
+    /**
+     * Starts the camera-capture/publish + local-recording foreground service. Idempotent - safe
+     * to call from an Activity's onResume() even if a stream from a previous session is already
+     * running.
+     */
+    public static void startFPVStreamingService()
+    {
+        if (iFPVStreamingService == null) {
+            iFPVStreamingService = new Intent(App.getAppContext(), FPVStreamingService.class);
+            ContextCompat.startForegroundService(App.getAppContext(), iFPVStreamingService);
+        }
+    }
+
+    public static void stopFPVStreamingService()
+    {
+        if (iFPVStreamingService != null)
+        {
+            App.getAppContext().stopService(iFPVStreamingService);
+            iFPVStreamingService = null;
+        }
+    }
+
+    public static boolean isFPVStreamingServiceRunning()
+    {
+        return iFPVStreamingService != null;
     }
 
     public static void sendTelemetryfromGCS (final byte[] Data, AndruavUnitBase telemetryTarget)

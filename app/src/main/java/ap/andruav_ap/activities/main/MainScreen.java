@@ -57,6 +57,7 @@ import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 import ap.andruav_ap.DeviceManagerFacade;
 
 import com.andruav.event.fcb_event.Event_UDP_Proxy;
+import com.andruav.event.fpv7adath._7adath_FPVStreamingStatusChanged;
 import com.andruav.event.networkEvent.EventLoginClient;
 import com.andruav.event.networkEvent.EventSocketState;
 
@@ -173,6 +174,14 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
     @Subscribe
+    public void onEvent(final _7adath_FPVStreamingStatusChanged a7adath_fpvStreamingStatusChanged) {
+
+        Message msg = new Message();
+        msg.obj = a7adath_fpvStreamingStatusChanged;
+        mhandle.sendMessageDelayed(msg, 0);
+    }
+
+    @Subscribe
     public void onEvent(EventLoginClient event_LoginClient) {
 
         Message msg = new Message();
@@ -245,6 +254,10 @@ public class MainScreen extends BaseAndruavShasha {
                 if (msg.obj instanceof Event_ProtocolChanged)
                 {
                     updateFCBButton();
+                }
+                else if (msg.obj instanceof _7adath_FPVStreamingStatusChanged)
+                {
+                    updateFPVButton();
                 }
                 else if (msg.obj instanceof Event_UDP_Proxy)
                 {
@@ -812,6 +825,17 @@ public class MainScreen extends BaseAndruavShasha {
 
     }
 
+    protected void updateFPVButton() {
+        if (App.isFPVStreamingServiceRunning())
+        {
+            mbtnFPV.setBackgroundResource(R.drawable.big_button_shape_active);
+        }
+        else
+        {
+            mbtnFPV.setBackgroundResource(R.drawable.sel_big_button_color);
+        }
+    }
+
     protected void doSignOut() {
 
 
@@ -1141,6 +1165,7 @@ public class MainScreen extends BaseAndruavShasha {
         // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         invalidateOptionsMenu();
         updateFCBButton();
+        updateFPVButton();
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         EventBus.getDefault().register(this);

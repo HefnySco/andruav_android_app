@@ -292,45 +292,50 @@
         android:layout_marginTop="25dp"
         android:background="@color/btn_TXT_BLUE" />
 
-    <RadioGroup
-    android:layout_width="wrap_content"
+    <LinearLayout
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
         android:layout_below="@+id/textView13"
         android:id="@+id/fcbdroneactivity_rgConnections"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
 
         <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/fcbdrone_bt"
-        android:id="@+id/fcbdroneactivity_dbBT"
-        android:layout_below="@+id/textView13" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/fcbdrone_bt"
+            android:id="@+id/fcbdroneactivity_dbBT" />
 
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/fcbdrone_usb"
-        android:id="@+id/fcbdroneactivity_rbUSB" />
+        <RadioButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/fcbdrone_usb"
+            android:id="@+id/fcbdroneactivity_rbUSB" />
 
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/fcbdrone_tcp"
-        android:id="@+id/fcbdroneactivity_rbTCP" />
+        <RadioButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/fcbdrone_tcp"
+            android:id="@+id/fcbdroneactivity_rbTCP" />
 
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/fcbdrone_udp"
-        android:id="@+id/fcbdroneactivity_rbUDP" />
+        <RadioButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/fcbdrone_udp"
+            android:id="@+id/fcbdroneactivity_rbUDP" />
 
-    </RadioGroup>
+    </LinearLayout>
 
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/fcbdroneactivity_rgConnections"
-        android:layout_alignParentRight="true">
+        android:layout_alignParentRight="true"
+        android:visibility="gone">
 
         <RadioButton
             android:layout_width="wrap_content"

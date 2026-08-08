@@ -45,6 +45,21 @@
         android:padding="1dp"
         android:layout_below="@+id/fpvactivity_btn_ZeroTilt" />
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fpvactivity_btn_StopStream"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/sel_trans_button_color"
+        android:drawableTop="@drawable/signout_w_32x32"
+        android:layout_margin="2dp"
+        android:textSize="10sp"
+        android:text="@string/action_exit"
+        android:padding="1dp"
+        android:layout_below="@+id/fpvactivity_btn_CameraSwitch" />
+
     <TextView
         android:text="@string/action_video_on"
         android:id="@+id/fpvactivity_txtVideoStatus"

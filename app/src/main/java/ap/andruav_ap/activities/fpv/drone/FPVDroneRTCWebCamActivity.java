@@ -5,17 +5,24 @@ package ap.andruav_ap.activities.fpv.drone;
 import org.greenrobot.eventbus.Subscribe;
 
 import android.app.Activity;
+import android.app.PictureInPictureParams;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
-import android.util.Log;
+import android.util.Rational;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -29,74 +36,55 @@ import com.andruav.AndruavSettings;
 import com.andruav.event.droneReport_Event.Event_CameraZoom;
 import com.andruav.event.droneReport_Event.Event_Vehicle_Flying_Changed;
 import com.andruav.event.droneReport_Event.Event_Vehicle_Mode_Changed;
+import com.andruav.event.fpv7adath._7adath_StopAndroidCamera;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.event.fpv7adath.Event_FPV_CMD;
 import com.andruav.FeatureSwitch;
 import com.andruav.andruavUnit.AndruavUnitSystem;
 import com.andruav.interfaces.INotification;
 import com.andruav.controlBoard.shared.common.FlightMode;
+import com.andruav.notification.PanicFacade;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.webrtc.AndruavWebRTCGlobals;
-import org.webrtc.ContextUtils;
 import org.webrtc.EglRenderer;
-import org.webrtc.MediaStream;
 import org.webrtc.SurfaceViewRenderer;
-import org.webrtc.VideoFrame;
-import org.webrtc.VideoSink;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.guiEvent.GUIEvent_EnableFlashing;
-import ap.andruav_ap.activities.camera.Event_RecordVideoStatus;
 import ap.andruav_ap.widgets.AlarmWidget;
 import ap.andruav_ap.widgets.flightControlWidgets.AndruavUnitInfoWidget;
 import ap.andruav_ap.widgets.flightControlWidgets.AttitudeWidget;
 import ap.andruav_ap.App;
 import ap.andruav_ap.DeviceManagerFacade;
-import ap.andruav_ap.activities.camera.CameraRecorder;
-import ap.andruavmiddlelibrary.com.serenegiant.encoder.MediaVideoEncoder;
+import ap.andruav_ap.services.fpv.FPVStreamingService;
 import ap.andruavmiddlelibrary.eventClasses.fpvEvent.Event_FPV_Image;
 import ap.andruavmiddlelibrary.factory.io.FileHelper;
 import ap.andruavmiddlelibrary.factory.util.ActivityMosa3ed;
 import ap.andruavmiddlelibrary.factory.util.Image_Helper;
-import ap.andruavmiddlelibrary.factory.util.Time_Helper;
-import ap.andruavmiddlelibrary.webrtc.classes.AndruavVideoFileRenderer;
-import ap.andruavmiddlelibrary.webrtc.classes.VideoByteRenderer;
 import ap.andruavmiddlelibrary.webrtc.events.Event_WebRTC;
-import ap.andruavmiddlelibrary.webrtc.classes.PeerConnectionManager;
 import ap.andruav_ap.widgets.flightControlWidgets.NEWSWidget;
 import ap.andruav_ap.R;
-import ap.andruavmiddlelibrary.webrtc.IRTCListener;
-import ap.andruavmiddlelibrary.webrtc.classes.VSink;
-import ap.andruavmiddlelibrary.Voting;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_IMU_CMD;
 
-import com.andruav.notification.PanicFacade;
-import com.andruav.uavos.modules.UAVOSConstants;
-import com.andruav.uavos.modules.UAVOSModuleCamera;
-
 import ap.andruavmiddlelibrary.preference.Preference;
-import ap.andruavmiddlelibrary.webrtc.classes.PnPeer;
 
 
-public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener, VideoSink, VSink {
+public class FPVDroneRTCWebCamActivity extends Activity {
 
     private final Object stateLock = new Object();
 
     private FPVDroneRTCWebCamActivity Me;
     private static Handler mHandle;
     private SurfaceViewRenderer mSurfaceViewRenderer;
-    PeerConnectionManager mPeerConnectionManager;
+    private FPVStreamingService mBoundService;
+    private boolean mServiceBound = false;
     private AndruavUnitBase andruavUnit_selected;
     private final Object synObj = new Object();
 
@@ -107,18 +95,13 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
     private double mDistanceBetweenShotes = 0; // ignored
     private boolean mSendBackImages = false;
     private AndruavUnitBase mSendBackTo = null; // name of Image requester
-    int frameHeight, frameWidth;
-    private boolean mRecordVideo = false;
-    /**
-     * muxer for audio/video recording
-     */
-    //private CameraRecorder mcameraRecorder;
 
 
     ////// ActivityMosa3ed Variables
     private TextView txtVideoStatus;
     private Button btnZeroTilt;
     private Button btnCameraSwitch;
+    private Button btnStopStream;
     private NEWSWidget newsWidget;
     private AttitudeWidget attitudeWidget;
     private AndruavUnitInfoWidget andruavUnitInfoWidget;
@@ -136,11 +119,21 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
      * ScheduledExecutorService used to periodically schedule the rcRepeater.
      */
     private ScheduledExecutorService rcRepeater;
-    private VideoByteRenderer mVideoByteRenderer;
 
-    private AndruavVideoFileRenderer mVideoFileRenderer;
-    private Uri mVideoFileRendererUri; // scoped storage (API 29+) MediaStore entry backing mVideoFileRenderer
-    private CameraRecorder mcameraRecorder;
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mBoundService = ((FPVStreamingService.LocalBinder) service).getService();
+            mServiceBound = true;
+            mBoundService.attachRenderer(mSurfaceViewRenderer);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mBoundService = null;
+            mServiceBound = false;
+        }
+    };
 
 
     @Subscribe
@@ -259,10 +252,11 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
 
                 if (msg.obj instanceof Event_CameraZoom)
                 {
+                    if (mBoundService == null || mBoundService.getPeerConnectionManager() == null) return;
                     Event_CameraZoom adath_cameraZoom = (Event_CameraZoom) msg.obj;
                     if (adath_cameraZoom.ZoomValue == Double.MAX_VALUE)
                     {
-                        float zoom = mPeerConnectionManager.getZoom();
+                        float zoom = mBoundService.getPeerConnectionManager().getZoom();
                         if (adath_cameraZoom.ZoomIn)
                         {
                             zoom +=adath_cameraZoom.ZoomValueStep;
@@ -271,7 +265,7 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
                         {
                             zoom -=adath_cameraZoom.ZoomValueStep;
                         }
-                        mPeerConnectionManager.setZoom(zoom);
+                        mBoundService.getPeerConnectionManager().setZoom(zoom);
                     }
                 }
 
@@ -308,14 +302,11 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
 
 
                 } else if (msg.obj instanceof Event_FPV_CMD) {
+                    // Only UI-visible-only commands (need the live renderer) are handled here.
+                    // FPV_CMD_FLASHCAM / FPV_CMD_SWITCHCAM / FPV_CMD_RECORDVIDEO are handled by
+                    // FPVStreamingService directly so they aren't executed twice.
                     Event_FPV_CMD a7adath_FPV_CMD = (Event_FPV_CMD) msg.obj;
                     switch (a7adath_FPV_CMD.CMD_ID) {
-                        case Event_FPV_CMD.FPV_CMD_FLASHCAM:
-                            mPeerConnectionManager.setFlash(a7adath_FPV_CMD.ACT? AndruavWebRTCGlobals.FlashOn:AndruavWebRTCGlobals.FlashOff);
-                            break;
-                        case Event_FPV_CMD.FPV_CMD_SWITCHCAM:
-                            mPeerConnectionManager.switchCamera();
-                            break;
 
                         case Event_FPV_CMD.FPV_CMD_TAKEIMAGE:
                             mTakeImageCount = a7adath_FPV_CMD.NumberOfImages;
@@ -339,18 +330,6 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
                         case Event_FPV_CMD.FPV_CMD_ROTATECAM:
 
                             break;
-
-                        case Event_FPV_CMD.FPV_CMD_RECORDVIDEO:
-                            mRecordVideo = a7adath_FPV_CMD.ACT;
-                            if (!mRecordVideo)
-                            {
-                                stopRecording();
-                            }
-                            else
-                            {
-                                startRecording();
-
-                            }break;
                     }
 
                 }
@@ -366,31 +345,6 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
     }
 
 
-
-    private void initRTC() {
-
-        ContextUtils.initialize(AndruavEngine.AppContext);
-
-        mSurfaceViewRenderer = findViewById(R.id.fpvactivity_rtc_glviewsurface);
-
-        if (mPeerConnectionManager == null)
-        {
-
-            mPeerConnectionManager = new PeerConnectionManager();
-            mSurfaceViewRenderer.setEnableHardwareScaler(true);
-
-            final boolean res = mPeerConnectionManager.init(this, this, this, mSurfaceViewRenderer, true, AndruavSettings.andruavWe7daBase.PartyID);
-            if (!res) {
-                PanicFacade.cannotStartCamera();
-                Voting.onCameraIssue();
-            }
-
-
-        }
-
-
-    }
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -401,14 +355,15 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
     private void initGUI ()
     {
         attitudeWidget = findViewById((R.id.fpvactivity_widget_attitude));
-        //mcameraRecorder = new CameraRecorder();
-        //mcameraRecorder.init();
 
         newsWidget = findViewById(R.id.NEWSWidget);
 
 
         txtVideoStatus = findViewById(R.id.fpvactivity_txtVideoStatus);
         txtVideoStatus.setVisibility(View.INVISIBLE);
+
+        mSurfaceViewRenderer = findViewById(R.id.fpvactivity_rtc_glviewsurface);
+        mSurfaceViewRenderer.setEnableHardwareScaler(true);
 
         btnZeroTilt = findViewById(R.id.fpvactivity_btn_ZeroTilt);
         btnZeroTilt.setOnClickListener(new View.OnClickListener() {
@@ -417,17 +372,9 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
 
                 if (FeatureSwitch.DEBUG_MODE)
                 {
-
-                    mPeerConnectionManager.setFlash(mPeerConnectionManager.getFlash());
-                    /*if (!mRecordVideo)
-                    {
-                        startRecording();
+                    if ((mBoundService != null) && (mBoundService.getPeerConnectionManager() != null)) {
+                        mBoundService.getPeerConnectionManager().setFlash(mBoundService.getPeerConnectionManager().getFlash());
                     }
-                    else
-                    {
-                        stopRecording();
-
-                    }*/
                 }
                 else {
                     EventBus.getDefault().post(new Event_IMU_CMD(Event_IMU_CMD.IMU_CMD_UpdateZeroTilt)); // tel IMU to reread Tilt
@@ -442,8 +389,22 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
             @Override
             public void onClick(View view) {
                 if (andruavUnit_selected.UnitID.equals(AndruavSettings.andruavWe7daBase.UnitID)) {
-                    mPeerConnectionManager.switchCamera();
+                    if ((mBoundService != null) && (mBoundService.getPeerConnectionManager() != null)) {
+                        mBoundService.getPeerConnectionManager().switchCamera();
+                    }
                 }
+            }
+        });
+
+        btnStopStream = findViewById(R.id.fpvactivity_btn_StopStream);
+        btnStopStream.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Single funnel for real stop - FPVStreamingService tears down capture/recording
+                // and stops itself; the remote RemoteCommand_STREAMVIDEO Act:false path posts the
+                // same event.
+                EventBus.getDefault().post(new _7adath_StopAndroidCamera());
+                finish();
             }
         });
 
@@ -478,10 +439,43 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
     }
 
     @Override
+    public void onBackPressed() {
+        // Don't close the FPV screen on back - shrink it into a floating Picture-in-Picture
+        // window instead, like a video call, so the live feed stays visible while the pilot uses
+        // the rest of the app. The stream only really stops via the explicit stop button (or the
+        // system PiP window's own close button, see onDestroy()).
+        if (!tryEnterPictureInPicture()) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        // Covers Home button / switching to recents the same way as back press.
+        tryEnterPictureInPicture();
+    }
+
+    private boolean tryEnterPictureInPicture() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return false;
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) return false;
+        try {
+            return enterPictureInPictureMode(buildPipParams());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private PictureInPictureParams buildPipParams() {
+        final Rational aspect = Preference.useStreamVideoHD(null) ? new Rational(16, 9) : new Rational(4, 3);
+        return new PictureInPictureParams.Builder().setAspectRatio(aspect).build();
+    }
+
+    @Override
     protected void onRestart() {
         super.onRestart();
-        // get out of this screen so that you can re-initailize video.
-        this.finish();
+        // Streaming is owned by FPVStreamingService now and keeps running regardless of this
+        // Activity's lifecycle, so a restart simply resumes/rebinds - no forced re-init needed.
     }
 
     @Override
@@ -494,16 +488,18 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
         super.onResume();
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        if (mPeerConnectionManager != null)
-        {
-            mPeerConnectionManager.onResume();
-        }
-        else
-        {
-            initRTC();
-        }
 
-        EventBus.getDefault().register(this);
+        App.startFPVStreamingService();
+        // Resuming from PiP (rather than a fresh onStart) leaves us still bound/registered from
+        // before, since onPause() deliberately skips unbinding/unregistering while floating -
+        // re-doing either here would double-bind, or throw (EventBus rejects a second register()
+        // on an already-registered subscriber).
+        if (!mServiceBound) {
+            bindService(new Intent(this, FPVStreamingService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
+        }
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
 
         App.startSensorService();
 
@@ -514,14 +510,26 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
 
         try
         {
+            if (!isFinishing() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInPictureInPictureMode()) {
+                // Still floating and visible in the PiP window - keep the renderer attached and
+                // stay bound, otherwise the floating preview would go blank.
+                super.onPause();
+                return;
+            }
+
             mHandle.removeCallbacksAndMessages(null);
 
-            if (mPeerConnectionManager != null)
-            {
-                mPeerConnectionManager.onPause();
-                mPeerConnectionManager.onDestroy();
+            // Only detach the local-preview renderer - capture/publish/recording keep running in
+            // FPVStreamingService regardless of this Activity's visibility, so screen-off/backgrounding
+            // never interrupts the stream.
+            if (mBoundService != null) {
+                mBoundService.detachRenderer();
             }
-            mSurfaceViewRenderer.release();
+            if (mServiceBound) {
+                unbindService(mServiceConnection);
+                mServiceBound = false;
+                mBoundService = null;
+            }
 
             EventBus.getDefault().unregister(this);
 
@@ -529,8 +537,6 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
                 rcRepeater.shutdownNow();
                 rcRepeater = null;
             }
-
-            //mcameraRecorder.shutDown();
 
             super.onPause();
         }
@@ -543,7 +549,12 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
 
     @Override
     protected void onDestroy() {
-        //mPeerConnectionManager.onDestroy();
+        if (isFinishing()) {
+            // A real close - either the explicit stop button (which already posted this event
+            // itself; posting again is harmless) or the system PiP window's own close (X) button,
+            // which calls finish() directly with no other hook to intercept it.
+            EventBus.getDefault().post(new _7adath_StopAndroidCamera());
+        }
         super.onDestroy();
 
     }
@@ -559,162 +570,8 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
 
     }
 
-    @Override
-    public void onLocalStream(final MediaStream localStream) {
 
-        if (!App.isAndruavWSConnected()) return ;
-
-
-        Log.d("fpvstream", "onLocalStream");
-        mHandle.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                final int t = Preference.getFirstServer(null) ;
-
-                Preference.setFirstServer(null,t+1);
-            }
-        },(long) (Math.random() + 1) * 2000);
-    }
-
-    @Override
-    public void onAddRemoteStream(MediaStream remoteStream, PnPeer peer) {
-    }
-
-    @Override
-    public void onRemoveRemoteStream(MediaStream remoteStream, PnPeer peer) {
-    }
-
-    @Override
-    public void onPeerConnectionClosed(final PnPeer peer) {
-        synchronized (synObj) {
-            if (mHandle == null) return;
-
-            mHandle.post(() ->
-            {
-                AndruavSettings.mVideoRequests.remove(peer.getConnectedPeer().PartyID);
-            });
-        }
-    }
-
-    @Override
-    public void onPeerConnected(final String  userId) {
-        //txtVideoStatus.setVisibility(View.VISIBLE);
-    }
-
-
-    private void startRecording()
-    {
-        mRecordVideo = false;
-        final int height, width;
-        if (Preference.useStreamVideoHD(null)) {
-            height  = 1080;
-            width = 720;
-        }
-        else
-        {
-            height  = 640;
-            width = 480;
-        }
-        try {
-            try {
-
-                if (MediaVideoEncoder.VIDEO_FORMAT== MediaVideoEncoder.MOBILE_WORK_FOR_ALL)
-                {
-                    final String videoName = "v_" + Time_Helper.getDateTimeString() + ".mp4";
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        // Scoped storage: write to a MediaStore Downloads entry so the video
-                        // survives uninstall and is browsable in a File Manager.
-                        mVideoFileRendererUri = FileHelper.createDownloadsEntry(App.KMLFile.getVideoPath(), videoName, "video/mp4");
-                        if (mVideoFileRendererUri == null) {
-                            throw new IOException("Unable to create video file in Downloads");
-                        }
-                        java.io.OutputStream os = getContentResolver().openOutputStream(mVideoFileRendererUri);
-                        if (os == null) {
-                            throw new IOException("Unable to open video file for writing");
-                        }
-                        mVideoFileRenderer = new AndruavVideoFileRenderer(os, videoName, 15, width, height, mPeerConnectionManager.getEglBaseContextTX());
-                    } else {
-                        mVideoFileRenderer = new AndruavVideoFileRenderer(App.KMLFile.getVideoPath() + "/v_" + Time_Helper.getDateTimeString()+".mp4",15,width,height, mPeerConnectionManager.getEglBaseContextTX());
-                    }
-                }
-                else
-                {
-                    mcameraRecorder = new CameraRecorder();
-                    mcameraRecorder.init();
-                    mcameraRecorder.startRecording(width,height,15,false,false, mPeerConnectionManager.getSurfaceTX(), mPeerConnectionManager.getDefaultVideoEncoderFactory());
-
-                    mVideoByteRenderer = new VideoByteRenderer(Me,width,height,mPeerConnectionManager.getEglBaseContextTX());
-                }
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                mRecordVideo = false;
-            }
-
-            // must be last
-            mRecordVideo = true;
-
-            AndruavSettings.andruavWe7daBase.VideoRecording = AndruavUnitBase.VIDEORECORDING_ON;
-            try {
-                UAVOSModuleCamera uavosModuleCamera = (UAVOSModuleCamera) AndruavEngine.getUAVOSMapBase().get(AndruavSettings.andruavLocalCameraModuleID);
-                JSONArray json_tracks = (JSONArray) (uavosModuleCamera.getModuleMessages());
-                JSONObject camera =  json_tracks.getJSONObject(0);
-                camera.put(UAVOSConstants.CAMERA_RECORDING_NOW, true);
-            }
-            catch(Exception ex)
-            {
-                // failed to update camera module.
-            }
-            AndruavEngine.getEventBus().post(new Event_RecordVideoStatus(Event_RecordVideoStatus.CONST_IS_RECORDING));
-            if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                AndruavFacade.broadcastID();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            mRecordVideo = false;
-        }
-
-    }
-
-    private void stopRecording()
-    {
-        mRecordVideo = false;
-        if (mVideoFileRenderer!= null) {
-            mVideoFileRenderer.release();
-            mVideoFileRenderer = null;
-        }
-        if (mVideoFileRendererUri != null) {
-            FileHelper.markMediaStoreEntryComplete(mVideoFileRendererUri);
-            mVideoFileRendererUri = null;
-        }
-        if (mVideoByteRenderer!= null) {
-            mVideoByteRenderer.release();
-            mVideoByteRenderer = null;
-            mcameraRecorder.stopRecording();
-            mcameraRecorder = null;
-        }
-
-        AndruavSettings.andruavWe7daBase.VideoRecording = AndruavUnitBase.VIDEORECORDING_OFF;
-
-        try {
-            UAVOSModuleCamera uavosModuleCamera = (UAVOSModuleCamera) AndruavEngine.getUAVOSMapBase().get(AndruavSettings.andruavLocalCameraModuleID);
-            JSONArray json_tracks = (JSONArray) (uavosModuleCamera.getModuleMessages());
-            JSONObject camera =  json_tracks.getJSONObject(0);
-            camera.put(UAVOSConstants.CAMERA_RECORDING_NOW, false);
-        }
-        catch(Exception ex)
-        {
-            // failed to update camera module.
-        }
-        if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
-            AndruavFacade.broadcastID();
-        }
-    }
-
-
-    long lastSSImage =0;
+    private long lastSSImage =0;
     /***
      *
      * Take Silent Single Image
@@ -859,46 +716,5 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
         }
 
     };
-
-
-    @Override
-    public void onFrame(final byte[] frame, final int offset, final int size) {
-        if ((mcameraRecorder!= null) && (mcameraRecorder.isRecording())) {
-            // condition is replicated to avoid post runnable without need, and then void calling null object when stop recording.
-            mHandle.post(() -> {
-                if (mRecordVideo) {
-
-
-                    mcameraRecorder.encodeFeed(ByteBuffer.wrap(frame, offset, size));
-                }
-            });
-        }
-    }
-
-
-    long lastTimeFrame = 0;
-    @Override
-    public void onFrame(VideoFrame videoFrame) {
-        frameHeight = videoFrame.getRotatedHeight();
-        frameWidth = videoFrame.getRotatedWidth();
-        if (mRecordVideo) {
-            if (MediaVideoEncoder.VIDEO_FORMAT== MediaVideoEncoder.MOBILE_WORK_FOR_ALL)
-            {
-                if (mVideoFileRenderer != null) {
-                    long now = System.currentTimeMillis();
-                    if ((now - lastTimeFrame) > 50) {
-                        lastTimeFrame = now;
-                        mVideoFileRenderer.onFrame(videoFrame);
-                    }
-                }
-                mVideoFileRenderer.onFrame(videoFrame);
-            }
-            else {
-                mVideoByteRenderer.onFrame(videoFrame);
-            }
-        }
-
-
-    }
 
 }
