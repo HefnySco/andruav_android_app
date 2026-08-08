@@ -411,7 +411,52 @@ public class NetInfoAdapter {
             return IP;
 
         IP =  getIPAddress("v4-rmnet_data0");  //  USB Tethering with SIM 4G
-        return IP;
+        if (IP != null)
+            return IP;
+
+        // None of the known interface names matched - OEMs name the Wi-Fi AP/hotspot interface
+        // differently across devices. Fall back to any private-range IPv4 address on any interface,
+        // so devices connected via home Wi-Fi, tethering, or phone-as-AP can still reach this phone
+        // (e.g. to forward SITL traffic to it).
+        return getAnyPrivateIPv4();
+    }
+
+    /***
+     * Last-resort fallback for {@link #getIPWifi()}: scans every network interface for a private-range
+     * (RFC1918) IPv4 address, regardless of interface name.
+     */
+    private static String getAnyPrivateIPv4()
+    {
+        Enumeration<NetworkInterface> en;
+        try {
+            en = NetworkInterface.getNetworkInterfaces();
+        } catch (SocketException e) {
+            return null;
+        }
+        if (en == null) return null;
+
+        while (en.hasMoreElements()) {
+            NetworkInterface intf = en.nextElement();
+            for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                InetAddress inetAddress = enumIpAddr.nextElement();
+                if ((!inetAddress.isLoopbackAddress()) && (inetAddress instanceof Inet4Address) && isPrivateIPv4(inetAddress)) {
+                    return inetAddress.getHostAddress();
+                }
+            }
+        }
+        return null;
+    }
+
+    private static boolean isPrivateIPv4(final InetAddress inetAddress)
+    {
+        final byte[] addr = inetAddress.getAddress();
+        final int b0 = addr[0] & 0xFF;
+        final int b1 = addr[1] & 0xFF;
+
+        if (b0 == 10) return true;                                // 10.0.0.0/8
+        if ((b0 == 172) && (b1 >= 16) && (b1 <= 31)) return true;  // 172.16.0.0/12
+        if ((b0 == 192) && (b1 == 168)) return true;               // 192.168.0.0/16
+        return false;
     }
 
     public static String getWifiIPBroadcast ()
