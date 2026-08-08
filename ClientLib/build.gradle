@@ -91,14 +91,13 @@ android {
 }
 
 dependencies {
-    implementation 'com.jakewharton.timber:timber:3.1.0'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation "com.google.android.gms:play-services-base:${play_services_version}"
     implementation "com.google.android.gms:play-services-location:${play_services_version}"
     implementation "com.google.android.gms:play-services-auth:${play_services_version}"
 
     //Java semver library
     implementation 'com.github.zafarkhaja:java-semver:0.9.0'
-    implementation 'com.jcraft:jsch:0.1.51'
     implementation 'com.googlecode.mp4parser:isoparser:1.1.7'
     api project(':Mavlink')
     api files('libs/d2xx.jar')
