@@ -36,7 +36,7 @@ android {
 }
 
 dependencies {
-    api 'androidx.appcompat:appcompat:1.0.0'
+    api 'androidx.appcompat:appcompat:1.7.0'
     api 'org.java-websocket:Java-WebSocket:1.5.7'
     api project(path: ':Mavlink')
     androidTestImplementation 'junit:junit:4.12'
