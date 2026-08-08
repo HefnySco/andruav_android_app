@@ -1,7 +1,6 @@
 package org.droidplanner.services.android.impl.core.drone.variables;
 
 import android.os.Handler;
-import android.os.RemoteException;
 import android.os.SystemClock;
 
 import com.MAVLink.ardupilotmega.msg_ekf_status_report;
@@ -136,7 +135,7 @@ public class State extends DroneVariable<GenericMavLinkDrone> {
                     public void run() {
                         try {
                             listener.onSuccess();
-                        } catch (RemoteException e) {
+                        } catch (Exception e) {
                             Timber.e(e, e.getMessage());
                         }
                     }
@@ -154,7 +153,7 @@ public class State extends DroneVariable<GenericMavLinkDrone> {
                     public void run() {
                         try {
                             listener.onError(CommandExecutionError.COMMAND_FAILED);
-                        } catch (RemoteException e) {
+                        } catch (Exception e) {
                             Timber.e(e, e.getMessage());
                         }
                     }

@@ -3,7 +3,6 @@ package com.o3dr.android.client.utils.connection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Process;
-import android.os.RemoteException;
 import android.util.Log;
 
 import com.o3dr.services.android.lib.model.ICommandListener;
@@ -152,11 +151,7 @@ public abstract class AbstractIpConnection {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        listener.onSuccess();
-                    } catch (RemoteException e) {
-                        Log.e(TAG, e.getMessage(), e);
-                    }
+                    listener.onSuccess();
                 }
             });
         }
@@ -168,11 +163,7 @@ public abstract class AbstractIpConnection {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        listener.onTimeout();
-                    } catch (RemoteException e) {
-                        Log.e(TAG, e.getMessage(), e);
-                    }
+                    listener.onTimeout();
                 }
             });
         }

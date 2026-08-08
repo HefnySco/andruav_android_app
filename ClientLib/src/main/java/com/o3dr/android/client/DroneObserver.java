@@ -1,14 +1,13 @@
 package com.o3dr.android.client;
 
 import android.os.Bundle;
-import android.os.RemoteException;
 
 import com.o3dr.services.android.lib.model.IObserver;
 
 /**
  * Created by fhuya on 10/29/14.
  */
-final class DroneObserver extends IObserver.Stub {
+final class DroneObserver implements IObserver {
 
     private final Drone drone;
 
@@ -17,8 +16,7 @@ final class DroneObserver extends IObserver.Stub {
     }
 
     @Override
-    public void onAttributeUpdated(String attributeEvent, Bundle eventExtras) throws
-            RemoteException {
+    public void onAttributeUpdated(String attributeEvent, Bundle eventExtras) {
         drone.notifyAttributeUpdated(attributeEvent, eventExtras);
     }
 }

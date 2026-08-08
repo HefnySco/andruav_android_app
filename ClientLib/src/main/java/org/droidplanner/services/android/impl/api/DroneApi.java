@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -419,9 +418,8 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
         for (IObserver observer : observersList) {
             try {
                 observer.onAttributeUpdated(attributeEvent, extrasBundle);
-            } catch (RemoteException e) {
+            } catch (Exception e) {
                 Timber.e(e, e.getMessage());
-                removeAttributesObserver(observer);
             }
         }
     }
@@ -436,9 +434,8 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
             for (IMavlinkObserver observer : mavlinkObserversList) {
                 try {
                     observer.onMavlinkMessageReceived(msgWrapper);
-                } catch (RemoteException e) {
+                } catch (Exception e) {
                     Timber.e(e, e.getMessage());
-                    removeMavlinkObserver(observer);
                 }
             }
         }

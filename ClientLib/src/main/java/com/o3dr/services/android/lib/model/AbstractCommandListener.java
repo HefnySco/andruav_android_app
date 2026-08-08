@@ -3,7 +3,7 @@ package com.o3dr.services.android.lib.model;
 /**
  * Created by Fredia Huya-Kouadio on 7/5/15.
  */
-public abstract class AbstractCommandListener extends ICommandListener.Stub {
+public abstract class AbstractCommandListener implements ICommandListener {
     @Override
     public abstract void onSuccess();
 

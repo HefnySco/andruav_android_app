@@ -1,7 +1,6 @@
 package org.droidplanner.services.android.impl.core.drone.variables.calibration;
 
 import android.os.Handler;
-import android.os.RemoteException;
 
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_statustext;
@@ -27,7 +26,7 @@ public class AccelCalibration extends DroneVariable implements DroneInterfaces.O
             if (listener != null) {
                 try {
                     listener.onSuccess();
-                } catch (RemoteException e) {
+                } catch (Exception e) {
                     Timber.e(e, e.getMessage());
                 }
             }
@@ -51,7 +50,7 @@ public class AccelCalibration extends DroneVariable implements DroneInterfaces.O
             if (listener != null) {
                 try {
                     listener.onSuccess();
-                } catch (RemoteException e) {
+                } catch (Exception e) {
                     Timber.e(e, e.getMessage());
                 }
             }
@@ -72,7 +71,7 @@ public class AccelCalibration extends DroneVariable implements DroneInterfaces.O
                     if (listener != null) {
                         try {
                             listener.onSuccess();
-                        } catch (RemoteException e) {
+                        } catch (Exception e) {
                             Timber.e(e, e.getMessage());
                         }
                     }
@@ -84,7 +83,7 @@ public class AccelCalibration extends DroneVariable implements DroneInterfaces.O
                     if (listener != null) {
                         try {
                             listener.onError(executionError);
-                        } catch (RemoteException e) {
+                        } catch (Exception e) {
                             Timber.e(e, e.getMessage());
                         }
                     }
@@ -96,7 +95,7 @@ public class AccelCalibration extends DroneVariable implements DroneInterfaces.O
                     if (listener != null) {
                         try {
                             listener.onTimeout();
-                        } catch (RemoteException e) {
+                        } catch (Exception e) {
                             Timber.e(e, e.getMessage());
                         }
                     }

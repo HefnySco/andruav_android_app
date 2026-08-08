@@ -1,7 +1,6 @@
 package org.droidplanner.services.android.impl.utils;
 
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.text.TextUtils;
 import android.view.Surface;
 
@@ -84,7 +83,7 @@ public class CommonApiUtils {
         if (listener != null) {
             try {
                 listener.onSuccess();
-            } catch (RemoteException e) {
+            } catch (Exception e) {
                 Timber.e(e, e.getMessage());
             }
         }
@@ -94,7 +93,7 @@ public class CommonApiUtils {
         if (listener != null) {
             try {
                 listener.onError(errorCode);
-            } catch (RemoteException e) {
+            } catch (Exception e) {
                 Timber.e(e, e.getMessage());
             }
         }
@@ -104,7 +103,7 @@ public class CommonApiUtils {
         if (listener != null) {
             try {
                 listener.onTimeout();
-            } catch (RemoteException e) {
+            } catch (Exception e) {
                 Timber.e(e, e.getMessage());
             }
         }
@@ -755,7 +754,7 @@ public class CommonApiUtils {
                         if (listener != null) {
                             try {
                                 listener.onError(executionError);
-                            } catch (RemoteException e) {
+                            } catch (Exception e) {
                                 Timber.e(e, e.getMessage());
                             }
                         }
@@ -766,7 +765,7 @@ public class CommonApiUtils {
                         if (listener != null) {
                             try {
                                 listener.onTimeout();
-                            } catch (RemoteException e) {
+                            } catch (Exception e) {
                                 Timber.e(e, e.getMessage());
                             }
                         }

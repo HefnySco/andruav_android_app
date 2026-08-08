@@ -1,7 +1,6 @@
 package org.droidplanner.services.android.impl.core.drone.variables;
 
 import android.os.Handler;
-import android.os.RemoteException;
 
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkCommands;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.DroneEventsType;
@@ -141,7 +140,7 @@ public class GuidedPoint extends DroneVariable implements OnDroneListener<MavLin
                     if (listener != null) {
                         try {
                             listener.onError(executionError);
-                        } catch (RemoteException e) {
+                        } catch (Exception e) {
                             Timber.e(e, e.getMessage());
                         }
                     }
@@ -152,7 +151,7 @@ public class GuidedPoint extends DroneVariable implements OnDroneListener<MavLin
                     if (listener != null) {
                         try {
                             listener.onTimeout();
-                        } catch (RemoteException e) {
+                        } catch (Exception e) {
                             Timber.e(e, e.getMessage());
                         }
                     }
@@ -165,7 +164,7 @@ public class GuidedPoint extends DroneVariable implements OnDroneListener<MavLin
                     public void run() {
                         try {
                             listener.onError(CommandExecutionError.COMMAND_UNSUPPORTED);
-                        } catch (RemoteException e) {
+                        } catch (Exception e) {
                             Timber.e(e, e.getMessage());
                         }
                     }

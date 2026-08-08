@@ -1,7 +1,6 @@
 package org.droidplanner.services.android.impl.core.drone;
 
 import android.os.Handler;
-import android.os.RemoteException;
 
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import com.o3dr.services.android.lib.model.ICommandListener;
@@ -31,7 +30,7 @@ public class DroneVariable<T extends MavLinkDrone> {
 				public void run() {
 					try {
 						listener.onSuccess();
-					} catch (RemoteException e) {
+					} catch (Exception e) {
 						Timber.e(e, e.getMessage());
 					}
 				}
@@ -52,7 +51,7 @@ public class DroneVariable<T extends MavLinkDrone> {
 				public void run() {
 					try {
 						listener.onError(error);
-					} catch (RemoteException e) {
+					} catch (Exception e) {
 						Timber.e(e, e.getMessage());
 					}
 				}
@@ -72,7 +71,7 @@ public class DroneVariable<T extends MavLinkDrone> {
 				public void run() {
 					try {
 						listener.onTimeout();
-					} catch (RemoteException e) {
+					} catch (Exception e) {
 						Timber.e(e, e.getMessage());
 					}
 				}

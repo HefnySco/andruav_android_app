@@ -1,7 +1,6 @@
 package org.droidplanner.services.android.impl.core.drone.manager;
 
 import android.os.Handler;
-import android.os.RemoteException;
 
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_command_ack;
@@ -166,7 +165,7 @@ public class DroneCommandTracker {
                         listener.onError(ackResult);
                         break;
                 }
-            } catch (RemoteException e) {
+            } catch (Exception e) {
                 Timber.e(e, e.getMessage());
             }
         }
