@@ -1,5 +1,7 @@
 package ap.andruav_ap.activities.remote;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
@@ -11,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.DeviceManagerFacade;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_RemoteEngaged_CMD;
 import ap.andruav_ap.R;
@@ -31,6 +33,7 @@ public class RemoteControlActivity extends AppCompatActivity {
 
     //////////BUS EVENT
 
+    @Subscribe
     public void onEvent(Event_RemoteEngaged_CMD event_remoteEngaged_cmd) {
 
         final Message msg = mhandle.obtainMessage();

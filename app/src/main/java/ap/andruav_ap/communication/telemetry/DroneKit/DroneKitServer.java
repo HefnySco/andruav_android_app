@@ -1,5 +1,7 @@
 package ap.andruav_ap.communication.telemetry.DroneKit;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.Manifest;
 import android.content.Context;
 import android.os.Bundle;
@@ -73,7 +75,7 @@ import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 import com.o3dr.services.android.lib.mavlink.MavlinkMessageWrapper;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 import ap.andruav_ap.DeviceManagerFacade;
 import ap.andruav_ap.helpers.CheckAppPermissions;
@@ -338,6 +340,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
     }
 
 
+    @Subscribe
     public void onEvent (final Event_ShutDown_Signalling event)
     {
 

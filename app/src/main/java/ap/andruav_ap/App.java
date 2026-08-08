@@ -17,6 +17,8 @@
 
 package ap.andruav_ap;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.Manifest;
@@ -57,7 +59,7 @@ import com.andruav.interfaces.IPreference;
 
 import ap.andruav_ap.helpers.CheckAppPermissions;
 import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.communication.AndruavWSClient_TooTallNate;
 import ap.andruav_ap.communication.ControlBoardFactory;
 import ap.andruav_ap.communication.telemetry.IEvent_SocketData;
@@ -173,6 +175,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
 
 
+    @Subscribe
     public void onEvent (final _7adath_ConnectionQuality a7adath_ConnectionQuality)
     {
         Message msg = new Message();
@@ -180,12 +183,14 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         mhandle.sendMessageDelayed(msg, 0);
     }
 
+    @Subscribe
     public void onEvent (final EventSocketState event) {
         final Message msg = mhandle.obtainMessage();
         msg.obj = event;
         if (mhandle != null)  mhandle.sendMessageDelayed(msg,0);
     }
 
+    @Subscribe
     public void onEvent(Event_ProtocolChanged event_protocolChanged) {
 
         Message msg = new Message();
@@ -193,6 +198,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         mhandle.sendMessageDelayed(msg, 0);
     }
 
+    @Subscribe
     public void onEvent (final Event_FCB_Changed a7adath_fcb_changed)
     {
         final Message msg = mhandle.obtainMessage();
@@ -201,6 +207,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     }
 
 
+    @Subscribe
     public void onEvent (final _7adath_FCB_2AMR adath_fcb_2AMR)
     {
         final Message msg = mhandle.obtainMessage();

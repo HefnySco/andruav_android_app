@@ -1,5 +1,7 @@
 package ap.andruav_ap;
 
+import org.greenrobot.eventbus.Subscribe;
+
 /*
   Created by M.Hefny on 07-Oct-14.
  */
@@ -40,7 +42,7 @@ import com.andruav.interfaces.INotification;
 
 import java.util.Random;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.activities.main.MainScreen;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
 import ap.andruavmiddlelibrary.factory.tts.TTS;
@@ -56,6 +58,7 @@ public  class Notification implements INotification{
     Context context;
     long last_speek_time = 0;
 
+    @Subscribe
     public void onEvent (final Event_ShutDown_Signalling event)
     {
         if (event.CloseOrder != 4) return ;

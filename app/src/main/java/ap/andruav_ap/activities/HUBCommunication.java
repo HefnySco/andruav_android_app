@@ -1,5 +1,7 @@
 package ap.andruav_ap.activities;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.media.AudioManager;
@@ -19,7 +21,7 @@ import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.activities.login.LoginScreenFactory;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.App;
@@ -66,6 +68,7 @@ public class HUBCommunication extends BaseAndruavShasha {
 
     //////////BUS EVENT
 
+    @Subscribe
     public void onEvent (EventLoginClient event_LoginClient) {
 
         Message msg = new Message();
@@ -74,6 +77,7 @@ public class HUBCommunication extends BaseAndruavShasha {
     }
 
 
+    @Subscribe
     public void onEvent (final Andruav_2MR Andruav_2MR) {
         Message msg = new Message();
         msg.obj = Andruav_2MR;
@@ -84,6 +88,7 @@ public class HUBCommunication extends BaseAndruavShasha {
 
 
 
+    @Subscribe
     public void onEvent (final EventSocketState event) {
         Message msg = new Message();
         msg.obj = event;

@@ -1,5 +1,7 @@
 package ap.andruav_ap.widgets.flightControlWidgets;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -28,7 +30,7 @@ import com.andruav.controlBoard.shared.common.FlightMode;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
 import com.andruav.sensors.AndruavBattery;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 import ap.andruav_ap.R;
 import ap.andruav_ap.helpers.GUI;
@@ -80,6 +82,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
     //////////BUS EVENT
 
 
+    @Subscribe
     public void onEvent (final Event_FCB_Changed a7adath_fcb_changed)
     {
         if ((andruavWe7da == null) || (!andruavWe7da.Equals(a7adath_fcb_changed.andruavUnitBase)))
@@ -92,6 +95,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
         if (mhandler != null)  mhandler.sendMessageDelayed(msg,0);
     }
 
+    @Subscribe
     public void onEvent (final Event_Vehicle_Flying_Changed a7adath_vehicle_flying_changed)
     {
         if ((andruavWe7da == null) || (!andruavWe7da.Equals(a7adath_vehicle_flying_changed.mAndruavWe7da)))
@@ -104,6 +108,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
         if (mhandler != null)  mhandler.sendMessageDelayed(msg,0);
     }
 
+    @Subscribe
     public void onEvent (final Event_Vehicle_Mode_Changed a7adath_vehicle_mode_changed)
     {
         if ((andruavWe7da == null) || (!andruavWe7da.Equals(a7adath_vehicle_mode_changed.mAndruavWe7da)))
@@ -117,6 +122,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
     }
 
 
+    @Subscribe
     public void onEvent (final Event_GCSBlockedChanged a7adath_gcsBlockedChanged)
     {
         if ((andruavWe7da == null) || (!andruavWe7da.Equals(a7adath_gcsBlockedChanged.andruavUnitBase)))
@@ -133,6 +139,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
      * Local IMU events
      * @param a7adath_imu_ready
      */
+    @Subscribe
     public void onEvent (final Event_IMU_Ready a7adath_imu_ready)
     {
         // This is local IMU so return if local Unit is not selected
@@ -147,6 +154,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
     }
 
 
+    @Subscribe
     public void onEvent (final Event_GPS_Ready a7adath_gps_ready)
     {
         // This is local IMU so return if local Unit is not selected
@@ -164,6 +172,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
      * Local Battery Info
      * @param a7adath_battery_ready
      */
+    @Subscribe
     public void onEvent (final Event_Battery_Ready a7adath_battery_ready) {
 
         // This is local IMU so return if local Unit is not selected
@@ -178,6 +187,7 @@ public class AndruavUnitInfoWidget extends RelativeLayout {
     }
 
 
+    @Subscribe
     public void onEvent (final Event_UnitShutDown a7adath_unitShutDown)
     {
         if ((andruavWe7da ==null) || (!andruavWe7da.Equals(a7adath_unitShutDown.andruavUnitBase)))

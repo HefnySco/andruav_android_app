@@ -1,5 +1,7 @@
 package ap.andruav_ap.communication.controlBoard;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import static com.MAVLink.enums.MAV_STATE.MAV_STATE_ACTIVE;
 import static com.MAVLink.enums.MAV_STATE.MAV_STATE_CRITICAL;
 import static com.MAVLink.enums.MAV_STATE.MAV_STATE_EMERGENCY;
@@ -87,7 +89,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 import ap.andruav_ap.communication.controlBoard.mavlink.DroneMavlinkHandler;
 import ap.andruav_ap.helpers.RemoteControl;
@@ -248,6 +250,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
     }
 
+    @Subscribe(priority = 1)
     public void onEvent (final Event_GPS_Ready a7adath_gps_ready) throws JSONException {
 
         try {
@@ -296,6 +299,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
         }
     }
 
+    @Subscribe(priority = 1)
     public void onEvent (final Event_GPS_NMEA event_gps_nmea) throws JSONException {
 
         if ((mGPS1_Type != GPS_TYPE_NMEA) && ((mGPS2_Type != GPS_TYPE_NMEA)))
@@ -312,6 +316,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
         }
     }
 
+    @Subscribe(priority = 1)
     public void onEvent (final Event_RemoteServo event_remoteServo)
     {
         sendServoChannel (event_remoteServo.ChannelNumber, event_remoteServo.ChannelValue);
@@ -332,6 +337,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     }
 
 
+    @Subscribe(priority = 1)
     public void onEvent (final Event_FCB_RemoteControlSettings event)
     {
         int[] channels = new int[8];
@@ -496,7 +502,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     @Override
     public void ActivateListener (boolean bActivate) {
         if (bActivate) {
-            EventBus.getDefault().register(this,1);
+            EventBus.getDefault().register(this);
 
             if (rcRepeater == null || rcRepeater.isShutdown()) {
                 rcRepeater = Executors.newSingleThreadScheduledExecutor();

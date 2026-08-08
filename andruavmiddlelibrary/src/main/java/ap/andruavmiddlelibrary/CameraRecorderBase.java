@@ -1,5 +1,7 @@
 package ap.andruavmiddlelibrary;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -9,7 +11,7 @@ import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
 
 import org.webrtc.DefaultVideoEncoderFactory;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 
 public abstract class CameraRecorderBase {
     ///////// CONSTANTS
@@ -48,6 +50,7 @@ public abstract class CameraRecorderBase {
     //////////BUS EVENT
 
 
+    @Subscribe
     public void onEvent (final Event_ShutDown_Signalling event)
     {
         if (event.CloseOrder != 2) return ;

@@ -1,5 +1,7 @@
 package ap.andruav_ap;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
@@ -23,7 +25,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.greenrobot.greendao.query.QueryBuilder;
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import com.andruav.AndruavFacade;
 
 import ap.andruavmiddlelibrary.eventClasses.fpvEvent.Event_FPV_Image;
@@ -78,6 +80,7 @@ public class KMLFileHandler {
     //////////BUS EVENT
 
 
+    @Subscribe
     public void onEvent (final Event_ShutDown_Signalling event)
     {
         if (event.CloseOrder != 2) return ;
@@ -91,6 +94,7 @@ public class KMLFileHandler {
      * Local IMU events
      * @param event_IMU
      */
+    @Subscribe
     public void onEvent (final Event_IMU_Ready event_IMU)
     {
 
@@ -114,6 +118,7 @@ public class KMLFileHandler {
         if (mhandler != null)  mhandler.sendMessageDelayed(msg,0);
     }
 
+    @Subscribe
     public void onEvent (final Event_FPV_Image event_fpv_image)
     {
         if (stopKML || (!mclearToWrite)) return ;

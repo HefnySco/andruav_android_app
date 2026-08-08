@@ -1,5 +1,7 @@
 package ap.andruav_ap.activities.remote;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
@@ -20,7 +22,7 @@ import com.andruav.Constants;
 import com.andruav.event.droneReport_Event.Event_RemoteControlSettingsReceived;
 import com.andruav.controlBoard.ControlBoardBase;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import com.andruav.AndruavFacade;
 
 import ap.andruav_ap.App;
@@ -72,6 +74,7 @@ public class RemoteControlWidget extends RelativeLayout implements JoystickMoved
     private RemoteControlWidget Me;
 
 
+    @Subscribe
     public void onEvent (final Event_RemoteControlSettingsReceived a7adath_remoteControlSettingsReceived)
     {
         if ((mAndruavUnit == null) || (!mAndruavUnit.Equals(a7adath_remoteControlSettingsReceived.mAndruavWe7da))) {

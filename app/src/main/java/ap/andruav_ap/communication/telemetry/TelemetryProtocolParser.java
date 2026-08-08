@@ -1,5 +1,7 @@
 package ap.andruav_ap.communication.telemetry;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.os.Handler;
 import android.os.HandlerThread;
 
@@ -9,7 +11,7 @@ import com.andruav.AndruavSettings;
 import com.andruav.TelemetryProtocol;
 import com.andruav.controlBoard.ControlBoardBase;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 import com.andruav.event.fcb_event.Event_FCBData;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
@@ -36,6 +38,7 @@ public class TelemetryProtocolParser {
 
     //////////BUS EVENT
 
+    @Subscribe
     public void onEvent(Event_ShutDown_Signalling event) {
         if (event.CloseOrder != 2) return;
 
@@ -44,6 +47,7 @@ public class TelemetryProtocolParser {
         App.telemetryProtocolParser = null;
     }
 
+    @Subscribe
     public void onEvent(Event_SocketAction eventSocketAction) {
         try {
             if (eventSocketAction.socketAction == Event_SocketAction.SOCKETACTION_CLIENT_DISCONNECTED) {
@@ -65,6 +69,7 @@ public class TelemetryProtocolParser {
      *
      * @param event event.IsLocal = true : means I am probably a Drone and sending this data to GCS
      */
+    @Subscribe
     public void onEvent(final Event_FCBData event) {
 
         if (event.IsLocal == Event_SocketData.SOURCE_SIMULATED) return; // this could be  a loopback
@@ -80,6 +85,7 @@ public class TelemetryProtocolParser {
      *
      * @param event event.IsLocal = {@link Event_SocketData}.SOURCE_LOCAL: means I am a GCS and I am sending this data to other drones.
      */
+    @Subscribe
     public void onEvent(Event_SocketData event) {
 
         if (App.iEvent_socketData != null)

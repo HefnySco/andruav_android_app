@@ -2,7 +2,7 @@ package ap.andruav_ap.activities.baseview;
 
 import android.media.AudioManager;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by mhefny on 1/22/16.

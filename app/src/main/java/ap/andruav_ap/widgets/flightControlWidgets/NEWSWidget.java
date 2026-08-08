@@ -1,5 +1,7 @@
 package ap.andruav_ap.widgets.flightControlWidgets;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,7 +14,7 @@ import android.view.View;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 
 import ap.andruavmiddlelibrary.factory.math.Angles;
 
@@ -45,6 +47,7 @@ public class NEWSWidget extends View {
 
 
 
+    @Subscribe
     public void onEvent (final Event_GPS_Ready event_GPS)
     {
         // This is local IMU so return if local Unit is not selected
@@ -58,6 +61,7 @@ public class NEWSWidget extends View {
         if (mhandle != null)  mhandle.sendMessageDelayed(msg,0);
     }
 
+    @Subscribe
     public void onEvent (final Event_IMU_Ready a7adath_imu_ready)
     {
         // This is local IMU so return if local Unit is not selected

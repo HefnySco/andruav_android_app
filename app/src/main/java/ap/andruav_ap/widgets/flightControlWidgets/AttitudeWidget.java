@@ -1,5 +1,7 @@
 package ap.andruav_ap.widgets.flightControlWidgets;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
@@ -12,7 +14,7 @@ import android.widget.RelativeLayout;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.sensors.AndruavIMU;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.R;
 
 import com.andruav.event.droneReport_Event.Event_GPS_Ready;
@@ -46,6 +48,7 @@ public class AttitudeWidget extends RelativeLayout {
      * Local IMU events
      * @param a7adath_imu_ready
      */
+    @Subscribe
     public void onEvent (final Event_IMU_Ready a7adath_imu_ready)
     {
         // This is local IMU so return if local Unit is not selected
@@ -61,6 +64,7 @@ public class AttitudeWidget extends RelativeLayout {
 
 
 
+    @Subscribe
     public void onEvent (final Event_GPS_Ready a7adath_gps_ready)
     {
         // This is local IMU so return if local Unit is not selected

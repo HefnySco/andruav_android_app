@@ -2,6 +2,8 @@
 
 package ap.andruav_ap.activities.fpv.drone;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -53,7 +55,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 import ap.andruav_ap.DeviceManagerFacade;
 import ap.andruav_ap.R;
@@ -133,6 +135,7 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
     private CameraRecorder mcameraRecorder;
 
 
+    @Subscribe
     public void onEvent (final Event_CameraZoom adath_cameraZoom)
     {
         final Message msg = mHandle.obtainMessage();
@@ -141,6 +144,7 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
     }
 
 
+    @Subscribe
     public void onEvent (GUIEvent_EnableFlashing guiEvent_enableFlashing)
     {
         if (AndruavSettings.andruavWe7daBase.getIsCGS())
@@ -184,6 +188,7 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
     }
 
 
+    @Subscribe
     public void onEvent (final Event_Vehicle_Mode_Changed adath_vehicle_mode_changed)
     {
 
@@ -195,6 +200,7 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
     }
 
 
+    @Subscribe
     public void onEvent (final Event_Vehicle_Flying_Changed adath_vehicle_flying_changed)
     {
 
@@ -205,6 +211,7 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
         mHandle.sendMessageDelayed(msg,0);
     }
 
+    @Subscribe
     public void onEvent(final Event_FPV_CMD a7adath_fpv_CMD) {
 
         if(!DeviceManagerFacade.hasCamera()) return ;
@@ -213,6 +220,7 @@ public class FPVModuleRTCWebCamActivity extends Activity implements IRTCListener
         mHandle.sendMessageDelayed(msg,0);
     }
 
+    @Subscribe
     public void onEvent (final Event_WebRTC event_webRTC) {
         final Message msg = mHandle.obtainMessage();
         msg.obj = event_webRTC;

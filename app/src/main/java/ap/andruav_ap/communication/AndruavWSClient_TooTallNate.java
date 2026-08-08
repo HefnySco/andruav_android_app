@@ -1,5 +1,7 @@
 package ap.andruav_ap.communication;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.content.ContentValues;
 
 import com.andruav.AndruavDroneFacade;
@@ -55,7 +57,7 @@ import org.json.JSONException;
 
 import java.io.UnsupportedEncodingException;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 import ap.andruav_ap.Emergency;
 import com.andruav.event.fcb_event.Event_FCBData;
@@ -88,6 +90,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
     //////////BUS EVENT
 
+    @Subscribe(priority = 1)
     public void onEvent (final Event_ShutDown_Signalling event)
     {
         if (event.CloseOrder != 3) return ;
@@ -98,6 +101,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
     }
 
+    @Subscribe(priority = 1)
     public void onEvent (Event_GeoFence_Hit a7adath_geoFence_hit)
     {
         if (a7adath_geoFence_hit.andruavUnitBase.IsMe()) {
@@ -118,6 +122,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
     }
 
 
+    @Subscribe(priority = 1)
     public void onEvent (Event_GeoFence_Ready a7adath_geoFence_ready)
     {
         final AndruavUnitBase andruavUnitBase = a7adath_geoFence_ready.andruavWe7da;
@@ -132,6 +137,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
 
 
+    @Subscribe(priority = 1)
     public void onEvent (final Event_GPS_Ready a7adath_gps_ready)  {
         if (!a7adath_gps_ready.mAndruavWe7da.IsMe()) return ;
 
@@ -143,6 +149,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
     }
 
 
+    @Subscribe(priority = 1)
     public void onEvent (final Event_NAV_INFO_Ready a7adath_nav_info_ready)
     {
         if (getSocketState() != SOCKETSTATE_REGISTERED) {
@@ -162,6 +169,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
     final long sendServoOutputInfo_sent_duration = 5000;
     long sendServoOutputInfo_sent_time = 0;
+    @Subscribe(priority = 1)
     public void onEvent (final Event_SERVO_Outputs_Ready a7adath_servo_output_ready)
     {
         if (getSocketState() != SOCKETSTATE_REGISTERED) {
@@ -183,6 +191,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
 
 
+    @Subscribe(priority = 1)
     public void onEvent (final Event_IMU_Ready a7adath_imu_ready) throws JSONException {
 
         if (getSocketState() != SOCKETSTATE_REGISTERED) {
@@ -199,6 +208,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
     }
 
+    @Subscribe(priority = 1)
     public void onEvent (final Event_Battery_Ready a7adath_battery_ready) {
 
         if ((AndruavSettings.andruavWe7daBase.getIsCGS()) || (getSocketState()!= SOCKETSTATE_REGISTERED)) {
@@ -215,6 +225,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
 
 
+    @Subscribe(priority = 1)
     public void onEvent (final Event_HomeLocation_Ready a7adath_homeLocation_ready) throws JSONException {
         if (getSocketState() != SOCKETSTATE_REGISTERED) {
             return;
@@ -227,6 +238,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
 
 
+    @Subscribe(priority = 1)
     public void onEvent (final Event_TargetLocation_Ready a7adath_targetLocation_ready) throws JSONException {
         if (getSocketState() != SOCKETSTATE_REGISTERED) {
             return;
@@ -528,7 +540,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
         super(uri,extraHeaders);
 
 
-        EventBus.getDefault().register(this,1);
+        EventBus.getDefault().register(this);
 
         initHandlerClient();
     }

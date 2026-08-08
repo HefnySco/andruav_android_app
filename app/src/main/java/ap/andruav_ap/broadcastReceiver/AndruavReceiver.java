@@ -10,7 +10,7 @@ import com.andruav.AndruavSettings;
 import com.andruav.event.Event_Registering;
 import com.andruav.interfaces.INotification;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 
 public class AndruavReceiver extends BroadcastReceiver {

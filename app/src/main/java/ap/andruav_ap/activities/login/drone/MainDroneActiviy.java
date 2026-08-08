@@ -1,5 +1,7 @@
 package ap.andruav_ap.activities.login.drone;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,7 +24,7 @@ import com.andruav.AndruavSettings;
 
 import java.io.UnsupportedEncodingException;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 import ap.andruav_ap.R;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
@@ -62,6 +64,7 @@ public class MainDroneActiviy extends AppCompatActivity {
 
         //////////BUS EVENT
 
+        @Subscribe
         public void onEvent (final EventLoginClient event_LoginClient) {
 
             Message msg = new Message();

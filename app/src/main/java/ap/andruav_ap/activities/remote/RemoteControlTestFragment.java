@@ -1,5 +1,7 @@
 package ap.andruav_ap.activities.remote;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -12,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.DeviceManagerFacade;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_RemoteEngaged_CMD;
 import ap.andruav_ap.R;
@@ -51,6 +53,7 @@ public class RemoteControlTestFragment extends Fragment implements IFragmentSave
 
     //////////BUS EVENT
 
+    @Subscribe
     public void onEvent(Event_RemoteEngaged_CMD event_remoteEngaged_cmd) {
 
         final Message msg = mhandle.obtainMessage();

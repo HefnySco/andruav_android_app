@@ -1,6 +1,8 @@
 package ap.andruav_ap.communication.telemetry.BlueTooth;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 
 import com.andruav.AndruavEngine;
@@ -33,6 +35,7 @@ public class BlueToothFCB  implements IEvent_SocketData {
 
     //////////BUS EVENT
 
+    @Subscribe
     public void onEvent (final Event_ShutDown_Signalling event)
     {
         if (event.CloseOrder != 1) return ;
@@ -60,6 +63,7 @@ public class BlueToothFCB  implements IEvent_SocketData {
      * is set from the board reply only to ensure accuracy
      * @param event
      */
+    @Subscribe
     public void onEvent (final Event_SocketData event)
     {
        // if ((!Bluetooth.isConnected()) ||(event.IsLocal == Event_SocketData.SOURCE_LOCAL)) return ;

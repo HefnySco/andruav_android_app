@@ -1,5 +1,7 @@
 package ap.andruav_ap.activities.remote;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.R;
 import ap.android.valueBar.ValueBar;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_RemoteEngaged_CMD;
@@ -60,6 +62,7 @@ public class RemoteControlGamePadTestFragment extends Fragment implements IFragm
 
     //////////BUS EVENT
 
+    @Subscribe
     public void onEvent(Event_RemoteEngaged_CMD event_remoteEngaged_cmd) {
 
         final Message msg = mhandle.obtainMessage();

@@ -1,5 +1,7 @@
 package ap.andruav_ap.activities.main;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -29,7 +31,7 @@ import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.activities.HUBCommunication;
 import ap.andruav_ap.activities.remote.RemoteControlSettingGCSActivityTab;
 import ap.andruav_ap.activities.settings.SettingsDrone;
@@ -143,6 +145,7 @@ public class MainScreen extends BaseAndruavShasha {
 
 
 
+    @Subscribe
     public void onEvent(Event_UDP_Proxy event_protocolChanged) {
 
         if (!event_protocolChanged.mAndruavWe7da.IsMe()) return ;
@@ -152,6 +155,7 @@ public class MainScreen extends BaseAndruavShasha {
         mhandle.sendMessageDelayed(msg, 0);
     }
 
+    @Subscribe
     public void onEvent (final Event_GCSBlockedChanged a7adath_gcsBlockedChanged)
     {
 
@@ -160,6 +164,7 @@ public class MainScreen extends BaseAndruavShasha {
         mhandle.sendMessageDelayed(msg, 0);
     }
 
+    @Subscribe
     public void onEvent(Event_ProtocolChanged event_protocolChanged) {
 
         Message msg = new Message();
@@ -167,6 +172,7 @@ public class MainScreen extends BaseAndruavShasha {
         mhandle.sendMessageDelayed(msg, 0);
     }
 
+    @Subscribe
     public void onEvent(EventLoginClient event_LoginClient) {
 
         Message msg = new Message();
@@ -175,6 +181,7 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
 
+    @Subscribe
     public void onEvent(Andruav_2MR Andruav_2MR) {
 
         // sendMessageToModule all System messages and some of Communication messages
@@ -189,6 +196,7 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
 
+    @Subscribe
     public void onEvent(EventSocketState event) {
         Message msg = new Message();
         msg.obj = event;

@@ -17,7 +17,7 @@ import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 
 import ap.andruavmiddlelibrary.factory.communication.SMS;
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.App;
 import ap.andruav_ap.helpers.CheckAppPermissions;

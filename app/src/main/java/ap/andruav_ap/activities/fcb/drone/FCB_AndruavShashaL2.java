@@ -1,5 +1,7 @@
 package ap.andruav_ap.activities.fcb.drone;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.Manifest;
@@ -96,6 +98,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
     boolean bSaved = true;
 
 
+    @Subscribe
     public void onEvent (GUIEvent_UpdateConnection guiEvent_updateConnection)
     {
         if (!guiEvent_updateConnection.andruavUnitBase.IsMe()) return ;
@@ -103,6 +106,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
     }
 
 
+    @Subscribe
     public void onEvent (final Event_FCB_Changed adath_fcb_changed)
     {
         if (!adath_fcb_changed.andruavUnitBase.IsMe()) return;
@@ -112,6 +116,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
     }
 
 
+    @Subscribe
     public void onEvent(Event_ProtocolChanged event_protocolChanged) {
 
         Message msg = new Message();

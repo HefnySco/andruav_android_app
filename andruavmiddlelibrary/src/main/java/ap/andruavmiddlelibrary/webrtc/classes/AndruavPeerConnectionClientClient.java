@@ -1,5 +1,7 @@
 package ap.andruavmiddlelibrary.webrtc.classes;
 
+import org.greenrobot.eventbus.Subscribe;
+
 
 import android.os.Handler;
 import android.os.Message;
@@ -11,7 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.webrtc.PeerConnectionFactory;
 import java.util.HashMap;
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by mhefny on 4/28/16.
@@ -20,6 +22,7 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
 
 
 
+    @Subscribe
     public void onEvent (final Event_Signalling a7adath_signalling)
     {
 

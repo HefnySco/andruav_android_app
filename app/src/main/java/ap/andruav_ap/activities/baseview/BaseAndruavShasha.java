@@ -1,5 +1,7 @@
 package ap.andruav_ap.activities.baseview;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
@@ -37,6 +39,7 @@ public class BaseAndruavShasha extends AppCompatActivity {
 
     //////////BUS EVENT
 
+    @Subscribe
     public void onEvent(final _7adath_InitAndroidCamera adath_initAndroidCamera) {
 
         if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
@@ -55,6 +58,7 @@ public class BaseAndruavShasha extends AppCompatActivity {
     }
 
 
+    @Subscribe
     public void onEvent (GUIEvent_EnableFlashing guiEvent_enableFlashing)
     {
         if (AndruavSettings.andruavWe7daBase.getIsCGS())

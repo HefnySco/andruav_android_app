@@ -1,5 +1,7 @@
 package ap.andruav_ap.widgets.flightControlWidgets;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -19,7 +21,7 @@ import com.andruav.AndruavFacade;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.event.droneReport_Event.Event_Emergency_Changed;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.R;
 
 
@@ -55,6 +57,7 @@ public class SOSControl_Dlg extends DialogFragment {
 
 
 
+    @Subscribe
     public void onEvent (Event_Emergency_Changed a7adath_emergency_changed)
     {
         if ((andruavWe7da== null) || (!andruavWe7da.equals(a7adath_emergency_changed.mAndruavUnitBase))) return ;

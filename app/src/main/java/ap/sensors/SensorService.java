@@ -1,5 +1,7 @@
 package ap.sensors;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +25,7 @@ import com.andruav.AndruavSettings;
 
 import java.util.Timer;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 
 import com.andruav.andruavUnit.AndruavLocation;
@@ -82,6 +84,7 @@ public class SensorService extends Service {
     //////////BUS EVENT
 
 
+    @Subscribe
     public void onEvent (final Event_ShutDown_Signalling event)
     {
         if (event.CloseOrder != 1) return ;
@@ -92,6 +95,7 @@ public class SensorService extends Service {
     }
 
 
+    @Subscribe
     public void onEvent (final Event_IMU_CMD event)
     {
         switch (event.cmdID)

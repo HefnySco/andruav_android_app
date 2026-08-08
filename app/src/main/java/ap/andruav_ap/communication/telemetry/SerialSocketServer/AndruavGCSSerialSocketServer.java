@@ -1,5 +1,7 @@
 package ap.andruav_ap.communication.telemetry.SerialSocketServer;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -9,7 +11,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.Arrays;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 
 import com.andruav.AndruavFacade;
@@ -45,6 +47,7 @@ public class AndruavGCSSerialSocketServer {
     //////////BUS EVENT
 
 
+    @Subscribe
     public void onEvent (final Event_ShutDown_Signalling event)
     {
         if (event.CloseOrder != 1) return ;
@@ -58,6 +61,7 @@ public class AndruavGCSSerialSocketServer {
     /*
     * Data is comming from Drone-FCB to GCS and we need to forard it to GCS App from here.
     */
+    @Subscribe
     public void onEvent (final Event_FCBData event_FCBData)
     {
 

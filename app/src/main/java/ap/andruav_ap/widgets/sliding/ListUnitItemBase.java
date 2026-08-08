@@ -1,5 +1,7 @@
 package ap.andruav_ap.widgets.sliding;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
@@ -12,7 +14,7 @@ import android.widget.RelativeLayout;
 import com.andruav.andruavUnit.AndruavUnitShadow;
 import com.andruav.event.droneReport_Event.Event_GCSBlockedChanged;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 
 
 /**
@@ -41,6 +43,7 @@ public class ListUnitItemBase extends RelativeLayout {
 
 
 
+    @Subscribe
     public void onEvent(final Event_GCSBlockedChanged a7adath_gcsBlockedChanged) {
 
         if ((mAndruavUnit == null) || (!mAndruavUnit.equals(a7adath_gcsBlockedChanged.andruavUnitBase))) return;

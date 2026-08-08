@@ -26,7 +26,7 @@ import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.protocol.commands.ProtocolHeaders;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 import ap.andruav_ap.R;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;

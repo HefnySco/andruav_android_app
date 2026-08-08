@@ -1,5 +1,7 @@
 package ap.andruav_ap.activities.drone;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -24,7 +26,7 @@ import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.sensors.AndruavIMU;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.App;
 import ap.andruavmiddlelibrary.preference.Preference;
@@ -60,6 +62,7 @@ public class IMUShasha extends BaseAndruavShasha {
 
     //////////BUS EVENT
 
+    @Subscribe
     public void onEvent (final Event_IMU_Ready a7adath_imu_ready) {
         AndruavIMU event_IMU = AndruavSettings.andruavWe7daBase.LastEvent_IMU;
         htmlText = "<font color=#1D5E1D>Raw Sensor Data:</font><br>";

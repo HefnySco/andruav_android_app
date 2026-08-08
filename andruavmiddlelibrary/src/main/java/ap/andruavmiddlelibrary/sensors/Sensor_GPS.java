@@ -28,7 +28,7 @@ import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 import com.andruav.util.GPSHelper;
 import com.andruav.util.StringSplit;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_GPS_NMEA;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_IMU_CMD;
 

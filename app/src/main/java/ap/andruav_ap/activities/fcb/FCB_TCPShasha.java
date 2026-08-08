@@ -1,5 +1,7 @@
 package ap.andruav_ap.activities.fcb;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -21,7 +23,7 @@ import android.widget.ToggleButton;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.App;
 import com.andruav.AndruavFacade;
@@ -63,6 +65,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
     Boolean killMe = false;
 
 
+    @Subscribe
     public void onEvent (final Event_SocketAction eventSocketAction) {
         final Message msg = mhandle.obtainMessage();
         msg.obj = eventSocketAction;
@@ -72,6 +75,7 @@ public class FCB_TCPShasha extends BaseAndruavShasha implements Adapter_DroneTel
 
 
 
+    @Subscribe
     public void onEvent (final Event_FCB_Changed a7adath_fcb_changed)
     {
         if (!a7adath_fcb_changed.andruavUnitBase.IsMe()) return;

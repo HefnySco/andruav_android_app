@@ -1,5 +1,7 @@
 package ap.andruav_ap.communication.telemetry;
 
+import org.greenrobot.eventbus.Subscribe;
+
 
 import com.MAVLink.Parser;
 import com.andruav.AndruavEngine;
@@ -34,6 +36,7 @@ public class TelemetryDroneProtocolParser  extends TelemetryProtocolParser{
 
 
 
+    @Subscribe
     public void onEvent(Event_ProtocolChanged event_protocolChanged) {
 
         switch (AndruavSettings.andruavWe7daBase.telemetry_protocol) {
