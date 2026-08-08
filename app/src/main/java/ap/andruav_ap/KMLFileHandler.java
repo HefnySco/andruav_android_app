@@ -1,6 +1,8 @@
 package ap.andruav_ap;
 
 import android.location.Location;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -14,6 +16,7 @@ import com.andruav.sensors.AndruavIMU;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +48,7 @@ public class KMLFileHandler {
     private Handler mhandler;
     private Boolean mkillMe = false;
 
-    private FileOutputStream mfileOutputStream = null;
+    private OutputStream mfileOutputStream = null;
     private File mfile;
     private Boolean mclearToWrite;
 
@@ -55,6 +58,12 @@ public class KMLFileHandler {
     private File KMZ;
     private File IMG;
     private String VID;
+
+    // Scoped storage (API 29+): the trip lives under MediaStore Downloads instead of a File tree,
+    // so KML/images/video stay filesystem siblings (needed for the KML's relative href="files/...")
+    // while still surviving app uninstall and being visible in a normal File Manager.
+    private Uri kmlUri;
+    private String relativeRoot;
 
     private StringBuilder  Images;
     private StringBuilder  Path;
@@ -315,29 +324,46 @@ public class KMLFileHandler {
                     new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.UK).format(new Date());
 
             kmlFileName +="_" + timeStamp;
+            final String sanitizedName = kmlFileName.replace(' ','_');
 
-            File root = FileHelper.GetFolder("AndruavKML",null);
-            if (root == null)
-            {
-                stopKML = true;
-                EventBus.getDefault().register(this);
-                return ;
-            }
-            KMZ = FileHelper.GetFolder(kmlFileName.replace(' ','_'),root.getAbsolutePath());
-            IMG = FileHelper.GetFolder("files",KMZ.getAbsolutePath());
-            final File videoFile = FileHelper.GetFolder("video",KMZ.getAbsolutePath());
-            if (videoFile!= null) VID = videoFile.getAbsolutePath();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Scoped storage: keep path.kml and its files/ (images) and video/ subfolders as
+                // real filesystem siblings under the shared Downloads collection, so the KML's
+                // relative href="files/..." references still resolve after opening it elsewhere.
+                relativeRoot = "Download/AndruavKML/" + sanitizedName;
+                VID = relativeRoot + "/video";
 
-            mfile = new File(KMZ, "path.kml");
-            if (!mfile.exists())
-            {
-                if (!mfile.createNewFile())
+                kmlUri = FileHelper.createDownloadsEntry(relativeRoot, "path.kml", "application/vnd.google-earth.kml+xml");
+                if (kmlUri == null) {
+                    stopKML = true;
+                    EventBus.getDefault().register(this);
+                    return;
+                }
+                mfileOutputStream = App.getAppContext().getContentResolver().openOutputStream(kmlUri);
+            } else {
+                File root = FileHelper.GetFolder("AndruavKML",null);
+                if (root == null)
                 {
+                    stopKML = true;
+                    EventBus.getDefault().register(this);
                     return ;
                 }
-            }
+                KMZ = FileHelper.GetFolder(sanitizedName,root.getAbsolutePath());
+                IMG = FileHelper.GetFolder("files",KMZ.getAbsolutePath());
+                final File videoFile = FileHelper.GetFolder("video",KMZ.getAbsolutePath());
+                if (videoFile!= null) VID = videoFile.getAbsolutePath();
 
-            mfileOutputStream = new FileOutputStream(mfile.getAbsolutePath());
+                mfile = new File(KMZ, "path.kml");
+                if (!mfile.exists())
+                {
+                    if (!mfile.createNewFile())
+                    {
+                        return ;
+                    }
+                }
+
+                mfileOutputStream = new FileOutputStream(mfile.getAbsolutePath());
+            }
 
             initWayPoint();
             initImages();
@@ -389,6 +415,9 @@ public class KMLFileHandler {
                 mfileOutputStream.flush();
                 mfileOutputStream.close();
             }
+            if (kmlUri != null) {
+                FileHelper.markMediaStoreEntryComplete(kmlUri);
+            }
         } catch (IOException ex) {
             AndruavEngine.log().logException("exception_kml", ex);
         }
@@ -398,6 +427,17 @@ public class KMLFileHandler {
     {
         if (IMG == null) return null;
         return IMG;
+    }
+
+    /***
+     * Scoped storage (API 29+) equivalent of {@link #getImageFolder()} - relative path (under the
+     * shared Downloads collection) of this trip's images folder, or null below API 29 / before
+     * {@link #openKMZ} has run.
+     */
+    public String getImageRelativePath()
+    {
+        if (relativeRoot == null) return null;
+        return relativeRoot + "/files";
     }
 
     public File getKMZFolder()

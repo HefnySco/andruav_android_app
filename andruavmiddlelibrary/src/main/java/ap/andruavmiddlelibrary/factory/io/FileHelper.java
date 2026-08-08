@@ -1,12 +1,18 @@
 package ap.andruavmiddlelibrary.factory.io;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.andruav.AndruavEngine;
 
@@ -16,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import ap.andruavmiddlelibrary.factory.os.OS;
 
@@ -143,6 +150,85 @@ public class FileHelper {
             root.mkdirs();
         }
         return root;
+    }
+
+
+    /***
+     * Scoped storage (API 29+) equivalent of a "public, survives-uninstall" folder: creates a new
+     * entry under the shared Downloads collection via MediaStore, so it's visible in a normal File
+     * Manager and is not deleted when the app is uninstalled - unlike app-specific external storage.
+     * Multiple entries sharing the same relativeFolderPath end up as real filesystem siblings, which
+     * matters for e.g. a KML file that references image files next to it via a relative href.
+     *
+     * @param relativeFolderPath e.g. "Download/AndruavKML/Trip_20260808_120000/files"
+     * @param displayName file name, e.g. "IMG_1.jpg"
+     * @param mimeType e.g. "image/jpeg"
+     * @return the new item's content Uri, or null on failure
+     */
+    @RequiresApi(Build.VERSION_CODES.Q)
+    public static Uri createDownloadsEntry(final String relativeFolderPath, final String displayName, final String mimeType) {
+        try {
+            final ContentResolver resolver = AndruavEngine.getPreference().getContext().getContentResolver();
+            final ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName);
+            values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH, relativeFolderPath);
+            values.put(MediaStore.MediaColumns.IS_PENDING, 1);
+            return resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+        } catch (Exception ex) {
+            AndruavEngine.log().logException("exception_mediastore", ex);
+            return null;
+        }
+    }
+
+    /***
+     * Clears IS_PENDING on a MediaStore entry created via {@link #createDownloadsEntry}, making it
+     * visible to other apps (File Manager, gallery scanners, etc). Call once writing is finished.
+     */
+    @RequiresApi(Build.VERSION_CODES.Q)
+    public static void markMediaStoreEntryComplete(final Uri uri) {
+        if (uri == null) return;
+        try {
+            final ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.IS_PENDING, 0);
+            AndruavEngine.getPreference().getContext().getContentResolver().update(uri, values, null, null);
+        } catch (Exception ex) {
+            AndruavEngine.log().logException("exception_mediastore", ex);
+        }
+    }
+
+    /***
+     * Builds the same timestamped ".jpg" name {@link #savePic(Bitmap, String, File)} generates
+     * internally, exposed so MediaStore callers (which need the final name for their own bookkeeping,
+     * e.g. a KML href) can compute it once and reuse it for both the write and their own records.
+     */
+    public static String buildTimestampedJpgName(String strFileName) {
+        if ((strFileName == null) || (strFileName.length()==0)) {
+            strFileName = "FPV_IMG";
+        }
+        return strFileName + "_" + System.currentTimeMillis() + ".jpg";
+    }
+
+    /***
+     * Scoped-storage (API 29+) equivalent of {@link #savePic(Bitmap, String, File)} - saves under the
+     * shared Downloads collection instead of a File, so the image survives uninstall and is browsable.
+     * @param displayName final file name (see {@link #buildTimestampedJpgName})
+     * @return the new item's content Uri, or null on failure
+     */
+    @RequiresApi(Build.VERSION_CODES.Q)
+    public static Uri savePicToMediaStore(final Bitmap b, final String displayName, final String relativeFolderPath) {
+        final Uri uri = createDownloadsEntry(relativeFolderPath, displayName, "image/jpeg");
+        if (uri == null) return null;
+
+        try (OutputStream os = AndruavEngine.getPreference().getContext().getContentResolver().openOutputStream(uri)) {
+            if (os == null) return null;
+            b.compress(Bitmap.CompressFormat.JPEG, 90, os);
+        } catch (IOException ex) {
+            AndruavEngine.log().logException("exception_img", ex);
+            return null;
+        }
+        markMediaStoreEntryComplete(uri);
+        return uri;
     }
 
 

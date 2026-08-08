@@ -12,6 +12,7 @@ import org.webrtc.YuvHelper;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -23,7 +24,7 @@ public class AndruavVideoFileRenderer  implements VideoSink {
     private final Handler renderThreadHandler;
     private final HandlerThread fileThread;
     private final Handler fileThreadHandler;
-    private final FileOutputStream videoOutFile;
+    private final OutputStream videoOutFile;
     private final String outputFileName;
     private final int outputFileWidth;
     private final int outputFileHeight;
@@ -34,13 +35,22 @@ public class AndruavVideoFileRenderer  implements VideoSink {
     private int frameCount;
 
     public AndruavVideoFileRenderer(String outputFile, int FPS,  int outputFileWidth, int outputFileHeight, final EglBase.Context sharedContext) throws IOException {
+        this(new FileOutputStream(outputFile), outputFile, FPS, outputFileWidth, outputFileHeight, sharedContext);
+    }
+
+    /***
+     * Scoped-storage (API 29+) variant: writes to an already-open OutputStream (e.g. from a
+     * MediaStore Uri via ContentResolver.openOutputStream()) instead of opening a File directly -
+     * writing here is purely sequential/append, so a plain OutputStream is all that's needed.
+     */
+    public AndruavVideoFileRenderer(OutputStream outputStream, String outputFileName, int FPS, int outputFileWidth, int outputFileHeight, final EglBase.Context sharedContext) throws IOException {
         if ((outputFileWidth % 2 != 1) && (outputFileHeight % 2 != 1)) {
-            this.outputFileName = outputFile;
+            this.outputFileName = outputFileName;
             this.outputFileWidth = outputFileWidth;
             this.outputFileHeight = outputFileHeight;
             this.outputFrameSize = outputFileWidth * outputFileHeight * 3 / 2;
             this.outputFrameBuffer = ByteBuffer.allocateDirect(this.outputFrameSize);
-            this.videoOutFile = new FileOutputStream(outputFile);
+            this.videoOutFile = outputStream;
             this.videoOutFile.write(("YUV4MPEG2 C420 W" + outputFileWidth + " H" + outputFileHeight + " Ip F"+ FPS +":1 A1:1\n").getBytes(StandardCharsets.US_ASCII));
             this.renderThread = new HandlerThread("VideoFileRendererRenderThread");
             this.renderThread.start();

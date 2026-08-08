@@ -7,9 +7,12 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +47,7 @@ import org.webrtc.VideoSink;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -133,6 +137,7 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
     private VideoByteRenderer mVideoByteRenderer;
 
     private AndruavVideoFileRenderer mVideoFileRenderer;
+    private Uri mVideoFileRendererUri; // scoped storage (API 29+) MediaStore entry backing mVideoFileRenderer
     private CameraRecorder mcameraRecorder;
 
 
@@ -607,7 +612,22 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
 
                 if (MediaVideoEncoder.VIDEO_FORMAT== MediaVideoEncoder.MOBILE_WORK_FOR_ALL)
                 {
-                    mVideoFileRenderer = new AndruavVideoFileRenderer(App.KMLFile.getVideoPath() + "/v_" + Time_Helper.getDateTimeString()+".mp4",15,width,height, mPeerConnectionManager.getEglBaseContextTX());
+                    final String videoName = "v_" + Time_Helper.getDateTimeString() + ".mp4";
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        // Scoped storage: write to a MediaStore Downloads entry so the video
+                        // survives uninstall and is browsable in a File Manager.
+                        mVideoFileRendererUri = FileHelper.createDownloadsEntry(App.KMLFile.getVideoPath(), videoName, "video/mp4");
+                        if (mVideoFileRendererUri == null) {
+                            throw new IOException("Unable to create video file in Downloads");
+                        }
+                        java.io.OutputStream os = getContentResolver().openOutputStream(mVideoFileRendererUri);
+                        if (os == null) {
+                            throw new IOException("Unable to open video file for writing");
+                        }
+                        mVideoFileRenderer = new AndruavVideoFileRenderer(os, videoName, 15, width, height, mPeerConnectionManager.getEglBaseContextTX());
+                    } else {
+                        mVideoFileRenderer = new AndruavVideoFileRenderer(App.KMLFile.getVideoPath() + "/v_" + Time_Helper.getDateTimeString()+".mp4",15,width,height, mPeerConnectionManager.getEglBaseContextTX());
+                    }
                 }
                 else
                 {
@@ -656,6 +676,10 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
         if (mVideoFileRenderer!= null) {
             mVideoFileRenderer.release();
             mVideoFileRenderer = null;
+        }
+        if (mVideoFileRendererUri != null) {
+            FileHelper.markMediaStoreEntryComplete(mVideoFileRendererUri);
+            mVideoFileRendererUri = null;
         }
         if (mVideoByteRenderer!= null) {
             mVideoByteRenderer.release();
@@ -766,15 +790,39 @@ public class FPVDroneRTCWebCamActivity extends Activity implements IRTCListener,
                         if (mSaveImageLocally) {
                             final Bitmap bitmap2 = Image_Helper.createBMPfromJPG(pout);
                             Bitmap rotatedBmp = Image_Helper.rotateImage(bitmap2, bitmap2.getWidth(), bitmap2.getHeight(), Preference.getFPVActivityRotation(null));
-                            File savedImageFile = FileHelper.savePic(rotatedBmp, null, App.KMLFile.getImageFolder());
-                            if (savedImageFile == null) {
-                                // sendMessageToModule error messages to GCS Please
-                                bitmap.recycle();
-                                rotatedBmp.recycle();
-                                return;
-                            }
 
-                            Image_Helper.AddGPStoJpg(savedImageFile.getAbsolutePath(), AndruavSettings.andruavWe7daBase.getAvailableLocation());
+                            File savedImageFile;
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                // Scoped storage: save under MediaStore Downloads instead of a File so
+                                // the image survives uninstall and is browsable in a File Manager.
+                                final String imgName = FileHelper.buildTimestampedJpgName(null);
+                                final Uri savedImageUri = FileHelper.savePicToMediaStore(rotatedBmp, imgName, App.KMLFile.getImageRelativePath());
+                                if (savedImageUri == null) {
+                                    bitmap.recycle();
+                                    rotatedBmp.recycle();
+                                    return;
+                                }
+                                try (ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(savedImageUri, "rw")) {
+                                    if (pfd != null) {
+                                        Image_Helper.AddGPStoJpg(pfd.getFileDescriptor(), AndruavSettings.andruavWe7daBase.getAvailableLocation());
+                                    }
+                                } catch (IOException ex) {
+                                    AndruavEngine.log().logException("exception_img", ex);
+                                }
+                                // MediaStore items have no real filesystem path - this File only ever
+                                // needs to yield its name (KMLFileHandler.addImages() uses getName()).
+                                savedImageFile = new File(imgName);
+                            } else {
+                                savedImageFile = FileHelper.savePic(rotatedBmp, null, App.KMLFile.getImageFolder());
+                                if (savedImageFile == null) {
+                                    // sendMessageToModule error messages to GCS Please
+                                    bitmap.recycle();
+                                    rotatedBmp.recycle();
+                                    return;
+                                }
+
+                                Image_Helper.AddGPStoJpg(savedImageFile.getAbsolutePath(), AndruavSettings.andruavWe7daBase.getAvailableLocation());
+                            }
 
 
                             Event_FPV_Image event_fpv_image = new Event_FPV_Image();

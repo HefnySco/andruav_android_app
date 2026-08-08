@@ -1,6 +1,9 @@
 package ap.andruav_ap.activities.camera;
 
 import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Build;
+import android.os.ParcelFileDescriptor;
 import android.view.Surface;
 
 import com.andruav.AndruavEngine;
@@ -15,9 +18,11 @@ import ap.andruavmiddlelibrary.com.serenegiant.encoder.MediaEncoder;
 import ap.andruavmiddlelibrary.com.serenegiant.encoder.MediaMuxerWrapper;
 import ap.andruavmiddlelibrary.com.serenegiant.encoder.MediaVideoEncoder;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import ap.andruav_ap.App;
+import ap.andruavmiddlelibrary.factory.io.FileHelper;
 import ap.andruavmiddlelibrary.factory.util.Time_Helper;
 import ap.andruavmiddlelibrary.preference.Preference;
 
@@ -47,6 +52,11 @@ public class CameraRecorder extends CameraRecorderBase {
     private MediaAudioEncoder mAudioEncoder;
 
     private int twoENcodersFinished = 0;
+
+    // Scoped storage (API 29+): the MediaStore entry backing the current recording, kept around so
+    // handle_StopRecording() can close the FileDescriptor and clear IS_PENDING once done.
+    private Uri mVideoUri;
+    private ParcelFileDescriptor mVideoPfd;
 
 
 
@@ -226,6 +236,18 @@ public class CameraRecorder extends CameraRecorderBase {
             // you should not wait here
         }
 
+        if (mVideoPfd != null) {
+            try {
+                mVideoPfd.close();
+            } catch (IOException ex) {
+                AndruavEngine.log().logException("exception_camcorder", ex);
+            }
+            mVideoPfd = null;
+        }
+        if (mVideoUri != null) {
+            FileHelper.markMediaStoreEntryComplete(mVideoUri);
+            mVideoUri = null;
+        }
 
         mVideoEncoder = null;
         mAudioEncoder = null;
@@ -244,15 +266,31 @@ public class CameraRecorder extends CameraRecorderBase {
             if (App.KMLFile != null) {
                 outputPath = App.KMLFile.getVideoPath();
 
-                try {
-                    if (outputPath != null) {
-                        mVideoFile = App.KMLFile.getVideoPath() + "/v_" + Time_Helper.getDateTimeString()+".mp4";
-                    }
+                if (outputPath == null) return;
 
-                } catch (final Exception e) {
-                    throw new RuntimeException("This app has no permission of writing external storage");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    // Scoped storage: outputPath is a MediaStore relative folder path here (see
+                    // KMLFileHandler.openKMZ), not a filesystem path. MediaMuxer needs random-access
+                    // write, so drive it off a FileDescriptor opened from the MediaStore entry.
+                    final String displayName = "v_" + Time_Helper.getDateTimeString() + ".mp4";
+                    mVideoFile = displayName;
+                    mVideoUri = FileHelper.createDownloadsEntry(outputPath, displayName, "video/mp4");
+                    if (mVideoUri == null) {
+                        throw new RuntimeException("Unable to create video file in Downloads");
+                    }
+                    mVideoPfd = App.getAppContext().getContentResolver().openFileDescriptor(mVideoUri, "rw");
+                    if (mVideoPfd == null) {
+                        throw new RuntimeException("Unable to open video file for writing");
+                    }
+                    mMuxer = new MediaMuxerWrapper(mVideoPfd.getFileDescriptor());
+                } else {
+                    try {
+                        mVideoFile = outputPath + "/v_" + Time_Helper.getDateTimeString() + ".mp4";
+                    } catch (final Exception e) {
+                        throw new RuntimeException("This app has no permission of writing external storage");
+                    }
+                    mMuxer = new MediaMuxerWrapper(mVideoFile);    // if you record audio only, ".m4a" is also OK.
                 }
-                mMuxer = new MediaMuxerWrapper(mVideoFile);    // if you record audio only, ".m4a" is also OK.
                 // for video capturing using MediaVideoEncoder
 
                 mVideoEncoder = new MediaVideoEncoder(mMuxer, mMediaEncoderListener);

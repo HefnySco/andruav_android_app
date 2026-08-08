@@ -245,6 +245,25 @@ public class Image_Helper {
         AddGPStoJpg_p(filePath,locationInfo);
     }
 
+    /***
+     * Scoped-storage (API 29+) equivalent of {@link #AddGPStoJpg(String, Location)} - MediaStore
+     * items don't have a usable filesystem path, so ExifInterface has to be driven off an already-open
+     * FileDescriptor (opened read/write) instead of a file path.
+     */
+    public static void AddGPStoJpg (final java.io.FileDescriptor fd, final Location locationInfo)
+    {
+        if (locationInfo == null) return ;
+
+        ExifInterface exif;
+        try {
+            exif = new ExifInterface(fd);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ;
+        }
+        writeGPSAttributes(exif, locationInfo);
+    }
+
     private static void AddGPStoJpg_p (final String filePath, final Location locationInfo)
     {
 
@@ -257,6 +276,11 @@ public class Image_Helper {
             e.printStackTrace();
             return ;
         }
+        writeGPSAttributes(exif, locationInfo);
+    }
+
+    private static void writeGPSAttributes (final ExifInterface exif, final Location locationInfo)
+    {
         //String latitudeStr = "90/1,12/1,30/1";
         double lat = locationInfo.getLatitude();
         double alat = Math.abs(lat);

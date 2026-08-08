@@ -61,6 +61,19 @@ public class MediaMuxerWrapper {
 		mIsStarted = false;
 	}
 
+	/**
+	 * Constructor for scoped-storage (API 29+) output via a MediaStore-obtained FileDescriptor,
+	 * since MediaMuxer needs random-access write and can't be driven off a plain OutputStream.
+	 * @throws IOException
+	 */
+	@RequiresApi(Build.VERSION_CODES.O)
+	public MediaMuxerWrapper(final java.io.FileDescriptor fd) throws IOException {
+
+		mMediaMuxer = new MediaMuxer(fd, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+		mEncoderCount = mStatredCount = 0;
+		mIsStarted = false;
+	}
+
 	public void prepare(final int width,final int height, final int frameRate) throws IOException {
 		if (mVideoEncoder != null)
 			mVideoEncoder.prepare(width,height, frameRate);
