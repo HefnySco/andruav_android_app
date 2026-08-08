@@ -29,10 +29,6 @@ android {
         debug {
             debuggable true
             minifyEnabled false
-            jniDebuggable false
-            zipAlignEnabled true
-            testCoverageEnabled = false
-            renderscriptDebuggable true
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
                     outputFileName = "Andruav_debug_" + variant.properties.get('flavorName') + "." + defaultConfig.versionName + "." + releaseTime() + ".apk"
@@ -43,9 +39,7 @@ android {
         release {
             logger.info('Release Built')
             debuggable false
-            jniDebuggable false
             minifyEnabled false
-            zipAlignEnabled true
             signingConfig signingConfigs.debug
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
@@ -64,12 +58,6 @@ android {
 
 
 
-    flavorDimensions "audience"
-
-
-    productFlavors {
-
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -102,13 +90,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation project(':rangebar-release')
-}
-
-
-
-
-
-
-dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
+

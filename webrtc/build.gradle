@@ -1,7 +1,8 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion android_build_sdk_version
+    buildToolsVersion android_build_tools_version
 
     java {
         toolchain {
@@ -10,8 +11,6 @@ android {
     }
 
     defaultConfig {
-        compileSdkVersion android_build_sdk_version
-        buildToolsVersion android_build_tools_version
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
 

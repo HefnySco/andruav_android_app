@@ -1,2 +1,1 @@
-include ':app', ':andruavProtocol', ':andruavmiddlelibrary', ':ClientLib', ':Mavlink', ':rangebar', ':rangebar-release', ':webrtc'
-project(':rangebar').projectDir = new File('MaterialBar/rangebar')
+include ':app', ':andruavProtocol', ':andruavmiddlelibrary', ':ClientLib', ':Mavlink', ':rangebar-release', ':webrtc'

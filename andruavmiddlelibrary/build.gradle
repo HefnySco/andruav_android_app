@@ -18,17 +18,10 @@ android {
         release {
             buildConfigField "boolean", "IS_DEBUG", "false"
             minifyEnabled false
-            jniDebuggable false
-            zipAlignEnabled true
-            renderscriptDebuggable false
         }
         debug {
             buildConfigField "boolean", "IS_DEBUG", "true"
             minifyEnabled false
-            jniDebuggable false
-            testCoverageEnabled = false
-            renderscriptDebuggable true
-            zipAlignEnabled true
         }
     }
 

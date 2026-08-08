@@ -16,15 +16,9 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            jniDebuggable false
-            zipAlignEnabled true
         }
         debug {
             minifyEnabled false
-            jniDebuggable false
-            testCoverageEnabled = false
-            renderscriptDebuggable true
-            zipAlignEnabled true
         }
     }
 
