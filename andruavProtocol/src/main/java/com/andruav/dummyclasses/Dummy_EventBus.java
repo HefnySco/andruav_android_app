@@ -10,4 +10,9 @@ public class Dummy_EventBus implements IEventBus {
     public void post(Object object) {
 
     }
+
+    @Override
+    public void postSticky(Object object) {
+
+    }
 }

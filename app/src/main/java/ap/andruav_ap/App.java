@@ -1142,6 +1142,12 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         EventBus.getDefault().post(object);
     }
 
+    @Override
+    public void postSticky(Object object) {
+        if (object == null) return ;
+        EventBus.getDefault().postSticky(object);
+    }
+
     ///////////////////////////////////////////////// END OF Interface
 
 }
