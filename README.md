@@ -16,3 +16,14 @@ Only two mobile devices and Andruav are what you need to get Imaging & FPV Gears
 [![Ardupilot Cloud EcoSystem](https://cloud.ardupilot.org/_static/ardupilot_logo.png "Ardupilot 
 Cloud EcoSystem")](https://cloud.ardupilot.org "Ardupilot Cloud EcoSystem") **Andruav_AP** is part of Ardupilot Cloud Eco System
 
+## Project changelog & technical docs
+
+- **[CHANGELOG.md](CHANGELOG.md)** — what changed between the `Andruav_AP_Original`
+  baseline (v7.2.1) and the current `Andruav_AP_2026` branch (v9.0.1): architecture
+  migrations, dependency upgrades, permission/compatibility fixes, FPV/WebRTC streaming
+  reliability work, the new UI theme, and dead-code cleanup.
+- **[wiki/](wiki/Home.md)** — deeper technical write-ups of the larger efforts referenced
+  in the changelog (ClientLib de-AIDL-ification, EventBus/GreenDAO migrations, the
+  permission-handling rewrite, the WebRTC signaling race-condition fix, the UI theme
+  system and color palette).
+
