@@ -41,12 +41,13 @@ public class FPVActivityFactory {
                 //Log.d(TAG, "checkPermissionAndRequest failed");
                 return;
             }
-            if (!CheckAppPermissions.ensurePermission((Activity) context,
+            // Microphone is optional: video streaming does not use the mic, so a missing
+            // RECORD_AUDIO permission must not block FPV from starting. Still prompt/report
+            // so the user is aware, but ignore the result.
+            CheckAppPermissions.ensurePermission((Activity) context,
                     Manifest.permission.RECORD_AUDIO, AndruavMessage_Error.ERROR_CAMERA,
-                    INotification.INFO_TYPE_CAMERA, "Please grant Microphone Permission"))
-            {
-                return;
-            }
+                    INotification.INFO_TYPE_CAMERA, "Please grant Microphone Permission");
+
             Intent intent;
             if (AndruavSettings.andruavWe7daBase.mIsModule)
             {
