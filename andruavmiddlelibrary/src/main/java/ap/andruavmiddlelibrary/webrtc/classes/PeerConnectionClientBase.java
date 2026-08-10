@@ -65,12 +65,19 @@ public class PeerConnectionClientBase {
     protected PnPeer removePeer(final String id, final String channel) {
         final String pid = id+channel;
         final PnPeer peer = peers.get(pid);
+        if (peer == null) return null;
+        // Decide here, synchronously, whether the pc still needs closing. hangup() (the only path
+        // that reaches here while still connected) sets the peer's status to DISCONNECTED right
+        // after calling this method, i.e. before the posted Runnable below ever runs - re-checking
+        // peer.getStatus() inside the Runnable always saw DISCONNECTED and skipped pc.close(),
+        // leaking the native PeerConnection/encoder so the camera never actually stopped and a
+        // later rejoin couldn't get a working video track.
+        final boolean shouldClose = !peer.getStatus().equals(STATUS_DISCONNECTED);
         mhandler.post(new Runnable() {
             @Override
             public void run() {
-                final PnPeer peer = peers.get(pid);
                 try {
-                    if (!peer.getStatus().equals(STATUS_DISCONNECTED)) {
+                    if (shouldClose) {
                         peer.pc.close();
                     }
                     peers.remove(pid);

@@ -22,10 +22,17 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
 
 
 
-    @Subscribe
+    // sticky = true: the poster (AndruavWSClientBase) uses postSticky() because this signal can
+    // arrive before this object even exists yet (its EventBus registration happens at the end of
+    // PeerConnectionManager.init(), which the incoming "joinme" doesn't wait for). Sticky delivery
+    // means register() below still receives it immediately, however long that gap turns out to be,
+    // instead of it being silently dropped.
+    @Subscribe(sticky = true)
     public void onEvent (final Event_Signalling a7adath_signalling)
     {
-
+        // Consume immediately so this cached slot never lingers for/leaks into some later,
+        // unrelated registration (e.g. a fresh session after a disconnect/reconnect).
+        EventBus.getDefault().removeStickyEvent(Event_Signalling.class);
 
         if (!(a7adath_signalling.jsonObject instanceof JSONObject)) return; // Ignore if not valid JSON.
 
@@ -114,6 +121,8 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
     {
         killHandler();
         EventBus.getDefault().unregister(this);
+        // Don't leave a cached signal behind for the next session's registration to pick up.
+        EventBus.getDefault().removeStickyEvent(Event_Signalling.class);
     }
 
     private void killHandler()

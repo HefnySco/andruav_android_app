@@ -178,8 +178,6 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
             createPeerConnectionFactoryInternal (context);
 
             CameraID = channelName;
-            pnRTC3ameel = new PnRTC_3ameel(pcFactory);
-
 
             if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
                 // The capturing phone is rigidly mounted (e.g. on a drone) and always forced to
@@ -232,6 +230,15 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
                     mExternalVideoSink.onFrame(videoFrame);
                 });
             }
+
+            // Construct PnRTC_3ameel (and with it, the incoming-signaling/EventBus listener) only
+            // now that mediaStream/localVideoTrack are fully built. PnRTC_3ameel's constructor makes
+            // the signaling channel live immediately, so building it any earlier left a window where
+            // an incoming "joinme" could create a PnPeer (see PnPeer's ctor: pc.addStream(getLocalMediaStream()))
+            // before attachLocalMediaStream() below ever ran - producing a trackless offer that
+            // required the viewer to disconnect and rejoin to get a working video track.
+            pnRTC3ameel = new PnRTC_3ameel(pcFactory);
+
             // First attach the RTC Listener so that callback events will be triggered
             pnRTC3ameel.attachRTCListener(new AndruavRTCListener2(irtcListener));
 
