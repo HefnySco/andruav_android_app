@@ -15,6 +15,7 @@ import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
 
 import ap.andruav_ap.activities.fpv.drone.FPVModuleRTCWebCamActivity;
 import ap.andruav_ap.helpers.CheckAppPermissions;
+import ap.andruavmiddlelibrary.factory.DeviceFeatures;
 
 /**
  * Created by M.Hefny on 18-Jul-15.
@@ -34,6 +35,13 @@ public class FPVActivityFactory {
         }
         if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
         } else {  // you cannot use a drone if mobile does not have a cam
+            // Camera permission is only required when the device actually has a camera.
+            // On camera-less devices there is nothing to grant and nothing to stream from,
+            // so there is nothing to start either.
+            if (!DeviceFeatures.hasCamera)
+            {
+                return;
+            }
             if (!CheckAppPermissions.ensurePermission((Activity) context,
                     Manifest.permission.CAMERA, AndruavMessage_Error.ERROR_CAMERA,
                     INotification.INFO_TYPE_CAMERA, "Please grant Camera Permission"))

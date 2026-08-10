@@ -25,7 +25,7 @@
         android:required="false" />
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="true" />
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
@@ -49,7 +49,7 @@
         android:required="false" />
     <uses-feature
         android:name="android.hardware.location"
-        android:required="true" />
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.location.network"
         android:required="false" />

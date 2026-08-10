@@ -8,9 +8,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold"
         android:text="YAW"
         android:id="@+id/widget_channel_config_txtChannelName"
-        android:textColor="@color/btn_TXT_BLUE_DARKEST"
+        android:textColor="@color/header_title"
         android:layout_alignParentTop="false"
         android:layout_alignParentStart="false"
         android:layout_alignParentEnd="false"
@@ -31,7 +32,7 @@
         android:layout_below="@+id/widget_channel_config_txtChannelName"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
-        android:background="@color/btn_TXT_WHITE2" />
+        android:background="@drawable/chip_info_background" />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -39,7 +40,8 @@
         android:text="Reverse"
         android:id="@+id/widget_channel_config_chkReverse"
         android:layout_alignParentRight="false"
-        android:textColor="@color/btn_TXT_BLUE_DARKEST"
+        android:textColor="@color/chip_text"
+        android:buttonTint="@color/chip_icon"
         android:layout_marginLeft="3dp"
         android:layout_below="@+id/widget_channel_config_range"
         android:layout_alignWithParentIfMissing="false"
@@ -53,7 +55,8 @@
         android:layout_alignParentStart="false"
         android:layout_alignParentRight="false"
         android:layout_marginRight="3dp"
-        android:textColor="@color/btn_TXT_BLUE_DARKEST"
+        android:textColor="@color/chip_text"
+        android:buttonTint="@color/chip_icon"
         android:layout_below="@+id/widget_channel_config_chkReverse"
         android:layout_alignLeft="@+id/widget_channel_config_chkReverse" />
 
@@ -62,10 +65,12 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:id="@+id/widget_channel_config_edtDualRate"
-        android:background="@drawable/sel_edit_text"
+        android:background="@drawable/chip_info_background"
+        android:padding="8dp"
         android:autoText="false"
         android:hint="D/R %"
-        android:textColor="@color/btn_TXT_GREY_DARK"
+        android:textColor="@color/chip_text"
+        android:textColorHint="@color/header_subtitle"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/widget_channel_config_chkReverse"
         android:layout_marginRight="5dp" />

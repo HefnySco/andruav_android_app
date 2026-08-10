@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ap.andruav_ap.App;
+import ap.andruavmiddlelibrary.factory.DeviceFeatures;
 import ap.andruavmiddlelibrary.factory.util.DialogHelper;
 
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_REGISTERED;
@@ -71,10 +72,19 @@ public abstract class CheckAppPermissions {
             permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity,
                     Manifest.permission.READ_MEDIA_VIDEO);
         }
-        permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.CAMERA);
-        permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION);
+        // Camera/GPS/SMS are only required on devices that actually have that
+        // hardware -- a device without a camera, GPS, or telephony has nothing
+        // to grant, so don't hold up the app waiting on those permissions.
+        if (DeviceFeatures.hasCamera) {
+            permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.CAMERA);
+        }
+        if (DeviceFeatures.hasGPS || DeviceFeatures.hasLocation) {
+            permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION);
+        }
         permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.READ_PHONE_STATE);
-        permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.READ_SMS);
+        if (DeviceFeatures.hasSMSCapabilities) {
+            permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.READ_SMS);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             //https://developer.android.com/develop/ui/views/notifications/notification-permission
@@ -245,13 +255,21 @@ public abstract class CheckAppPermissions {
             perms.add(Manifest.permission.READ_MEDIA_VIDEO);
         }
 
-        perms.add(Manifest.permission.CAMERA);
+        // Only request permissions for hardware the device actually has --
+        // camera/GPS/SMS are no longer a "must" on devices lacking that hardware.
+        if (DeviceFeatures.hasCamera) {
+            perms.add(Manifest.permission.CAMERA);
+        }
         perms.add(Manifest.permission.RECORD_AUDIO);
-        perms.add(Manifest.permission.ACCESS_FINE_LOCATION);
-        perms.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        if (DeviceFeatures.hasGPS || DeviceFeatures.hasLocation) {
+            perms.add(Manifest.permission.ACCESS_FINE_LOCATION);
+            perms.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
         perms.add(Manifest.permission.READ_PHONE_STATE);
-        perms.add(Manifest.permission.READ_SMS);
-        perms.add(Manifest.permission.SEND_SMS);
+        if (DeviceFeatures.hasSMSCapabilities) {
+            perms.add(Manifest.permission.READ_SMS);
+            perms.add(Manifest.permission.SEND_SMS);
+        }
 
         // Bluetooth (API 31+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

@@ -210,12 +210,12 @@ try {
 
             rangeBar.setTickInterval(1.0f);
             rangeBar.setBarWeight(2.0f);
-            rangeBar.setBarColor(context.getResources().getColor(R.color.btn_TXT_WHITE));
+            rangeBar.setBarColor(context.getResources().getColor(R.color.chip_border));
             rangeBar.setConnectingLineWeight(3.0f);
-            rangeBar.setTickColor(context.getResources().getColor(R.color.btn_TXT_BLUE));
-            rangeBar.setConnectingLineColor(context.getResources().getColor(R.color.btn_TXT_BLUE_DARKEST));
-            rangeBar.setSelectorColor(context.getResources().getColor(R.color.btn_TXT_GREEN_DARKER));
-            rangeBar.setPinColor(context.getResources().getColor(R.color.btn_TXT_GREEN));
+            rangeBar.setTickColor(context.getResources().getColor(R.color.header_subtitle));
+            rangeBar.setConnectingLineColor(context.getResources().getColor(R.color.accent_fcb));
+            rangeBar.setSelectorColor(context.getResources().getColor(R.color.accent_fcb_dark));
+            rangeBar.setPinColor(context.getResources().getColor(R.color.accent_fcb));
             rangeBar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
                 @Override
                 public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {

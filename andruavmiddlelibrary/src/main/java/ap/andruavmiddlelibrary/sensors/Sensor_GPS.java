@@ -31,6 +31,7 @@ import com.andruav.util.StringSplit;
 import org.greenrobot.eventbus.EventBus;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_GPS_NMEA;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_IMU_CMD;
+import ap.andruavmiddlelibrary.factory.DeviceFeatures;
 
 
 /**
@@ -377,6 +378,14 @@ public  class Sensor_GPS   extends GenericLocationSensor implements LocationList
     {
         //if ((mregisteredSensor == true) || (isSupported() == false)) return ;
         if (mregisteredSensor) return ;
+        // GPS is only required when the device actually has location hardware.
+        // On devices without it, skip silently instead of nagging for a permission
+        // that could never be backed by a real location provider.
+        if (!DeviceFeatures.hasGPS && !DeviceFeatures.hasLocation)
+        {
+            Log.d("Sensor_GPS", "No GPS/location hardware present, skipping registration");
+            return;
+        }
         //check permission - start
         if (ActivityCompat.checkSelfPermission(AndruavEngine.AppContext,
             Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
