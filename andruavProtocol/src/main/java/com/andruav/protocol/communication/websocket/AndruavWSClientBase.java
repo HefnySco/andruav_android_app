@@ -913,8 +913,13 @@ public abstract class AndruavWSClientBase {
 
                     if (AndruavSettings.andruavWe7daBase.getIsCGS())
                     {
+                        // Sticky: the peer-connection client (subscriber) may not be registered
+                        // yet when this arrives (its EventBus registration only happens once
+                        // PeerConnectionManager.init() has run), so a plain post() can be silently
+                        // dropped forever. postSticky() caches it and it's delivered the instant
+                        // the subscriber registers, however long that takes.
                         Event_Signalling a7adath_signalling = new Event_Signalling(andruavMessage_signaling.getJsonResala(), andruavWe7da);
-                        AndruavEngine.getEventBus().post(a7adath_signalling);
+                        AndruavEngine.getEventBus().postSticky(a7adath_signalling);
 
                         return ;
                     }
@@ -928,9 +933,12 @@ public abstract class AndruavWSClientBase {
                         }
 
                         if (cameraModule.BuiltInModule) {
-                            // This is a local camera for this Andruav Device
+                            // This is a local camera for this Andruav Device.
+                            // Sticky for the same reason as the CGS branch above: the incoming
+                            // "joinme" can arrive before PeerConnectionManager.init() has finished
+                            // constructing and registering AndruavPeerConnectionClientClient.
                             Event_Signalling a7adath_signalling = new Event_Signalling(andruavMessage_signaling.getJsonResala(), andruavWe7da);
-                            AndruavEngine.getEventBus().post(a7adath_signalling);
+                            AndruavEngine.getEventBus().postSticky(a7adath_signalling);
                         } else {
                             // This is a camera module connected to Andruav Device
                             ((AndruavUDPServerBase) AndruavEngine.getAndruavUDP()).sendMessageToModule(cameraModule, andruav_2MR);
