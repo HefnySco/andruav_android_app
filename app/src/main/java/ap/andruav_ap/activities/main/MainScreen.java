@@ -21,6 +21,7 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -1055,13 +1056,7 @@ public class MainScreen extends BaseAndruavShasha {
             return true;
         } else if (id == R.id.mi_main_About) {
 
-            DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.gen_about), Html.fromHtml(String.format("<font color=#75A4D3><b>version:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>email:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>access code:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>pin code:</b></font><font color=#36AB36>%s</font><br>%s",
-                    App.versionName,
-                    GUI.writeTextEmail(),
-                    GUI.writeTextAccessCode(),
-                    AndruavSettings.andruavWe7daBase.PartyID,
-                    GUI.writeUdpProxy()
-            )), null);
+            showAboutDialog();
 
         }
         return super.onOptionsItemSelected(item);
@@ -1125,6 +1120,30 @@ public class MainScreen extends BaseAndruavShasha {
 
     private void doSettings_Drone() {
         startActivity(new Intent(MainScreen.this, SettingsDrone.class));
+    }
+
+    private void showAboutDialog() {
+
+        final View view = LayoutInflater.from(this).inflate(R.layout.dialog_about, null);
+
+        TextView txtVersion = view.findViewById(R.id.dialogabout_txtVersion);
+        TextView txtInfo = view.findViewById(R.id.dialogabout_txtInfo);
+        Button btnOk = view.findViewById(R.id.dialogabout_btnOk);
+
+        txtVersion.setText(String.format("version %s", App.versionName));
+        txtInfo.setText(Html.fromHtml(String.format("<font color=#75A4D3><b>email:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>access code:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>pin code:</b></font><font color=#36AB36>%s</font><br>%s",
+                GUI.writeTextEmail(),
+                GUI.writeTextAccessCode(),
+                AndruavSettings.andruavWe7daBase.PartyID,
+                GUI.writeUdpProxy()
+        )));
+
+        final AlertDialog dialog = new AlertDialog.Builder(Me).setView(view).create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+        btnOk.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
     }
 
     private void doSettings() {
