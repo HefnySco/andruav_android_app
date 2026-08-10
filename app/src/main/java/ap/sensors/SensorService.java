@@ -22,6 +22,8 @@ import androidx.core.app.NotificationCompat;
 import ap.andruav_ap.R;
 
 import com.andruav.AndruavSettings;
+import com.andruav.andruavUnit.AndruavUnitBase;
+import com.andruav.controlBoard.ControlBoardBase;
 
 import java.util.Timer;
 
@@ -58,6 +60,14 @@ public class SensorService extends Service {
     private boolean                 mkillme = false;
     private Handler                 mhandler;
     private HandlerThread           mhandlerThread;
+    /**
+     * Runs the FC-state sensor gate on the main thread, since that's the thread
+     * {@link #RegisterListeners()}/{@link #UnRegisterListeners()} originally registered
+     * hardware listeners from (LocationManager delivers callbacks on the calling thread's
+     * Looper, so toggling registration from a different thread would silently move them).
+     */
+    private final Handler           mGateHandler = new Handler(android.os.Looper.getMainLooper());
+    private static final long       SENSOR_GATE_INTERVAL_MS = 3000;
 
 
     ////// Sensor Variables
@@ -138,6 +148,8 @@ public class SensorService extends Service {
 
         mkillme = true;
 
+        mGateHandler.removeCallbacksAndMessages(null);
+
         if (mhandler != null) {
             mhandler.removeCallbacksAndMessages(null);
             mhandler = null;
@@ -200,6 +212,7 @@ public class SensorService extends Service {
         if (!Preference.isMobileSensorsDisabled(null)) {
 
             mhandler.postDelayed(runnableIMU, 50);
+            mGateHandler.postDelayed(runnableSensorGate, SENSOR_GATE_INTERVAL_MS);
         }
 
         mhandler.postDelayed(runnableBattery, 50);  // first time run fast
@@ -296,6 +309,79 @@ public class SensorService extends Service {
 
 
 
+    /**
+     * Re-evaluates whether the phone's own GPS/IMU should be on, so a flight controller
+     * connecting/disconnecting or arming/disarming mid-session takes effect without
+     * restarting this service.
+     */
+    private final Runnable runnableSensorGate = new Runnable() {
+        @Override
+        public void run() {
+
+            setMobileGpsImuActive(shouldMobileGpsImuRun());
+
+            if (!mkillme) {
+                mGateHandler.postDelayed(this, SENSOR_GATE_INTERVAL_MS);
+            }
+        }
+    };
+
+    /**
+     * Decides whether the phone's own GPS/IMU should be actively polling, vs. relying on the
+     * flight controller's MAVLink telemetry. Goal: stop heating the phone with redundant
+     * GPS/IMU sampling once the FC is armed and already has its own GPS fix, while keeping the
+     * phone active as a fallback location source (and as the source for MAVLink GPS injection)
+     * whenever the FC can't supply one itself. Respects explicit GCS commands via GPS_MODE.
+     */
+    private boolean shouldMobileGpsImuRun()
+    {
+        boolean fcConnected = (App.droneKitServer != null) && App.droneKitServer.isConnected();
+        if (!fcConnected) return true; // no FC telemetry at all - phone is the only location source
+
+        if (Preference.isGPSInjecttionEnabled(null)) return true; // FC is relying on the phone feeding it GPS
+
+        AndruavUnitBase unit = AndruavSettings.andruavWe7daBase;
+        int gpsMode = unit.getGPSMode();
+        if (gpsMode == AndruavUnitBase.GPS_MODE_MOBILE) return true; // GCS commanded explicit use of phone GPS
+        if (gpsMode == AndruavUnitBase.GPS_MODE_FCB) {
+            // GCS commanded exclusive FC GPS - phone sensors not needed (but still keep low rate if FC dies mid-flight)
+            ControlBoardBase fcBoard = unit.FCBoard;
+            return fcBoard == null || !fcBoard.isArmed();
+        }
+
+        // GPS_MODE_AUTO: smart switching based on FC state
+        ControlBoardBase fcBoard = unit.FCBoard;
+        if (fcBoard == null || !fcBoard.isArmed()) return true; // idle/preflight - keep a heartbeat so the unit is still locatable
+
+        return fcBoard.getGPSfixType() < 2; // armed with FC GPS fix -> FC is self-sufficient, else phone backs it up
+    }
+
+    /**
+     * Registers/unregisters just the phone's own GPS+IMU hardware listeners, independent of the
+     * battery receiver. Idempotent - safe to call repeatedly with the same value.
+     */
+    private boolean mMobileSensorsActive = false;
+    private void setMobileGpsImuActive(boolean active)
+    {
+        if (Preference.isMobileSensorsDisabled(null)) return; // manual override: sensor objects were never created
+
+        if (active == mMobileSensorsActive) return;
+        mMobileSensorsActive = active;
+
+        if (active) {
+            mEventAcc.registerSensor();
+            mEventGyro.registerSensor();
+            mEventMag.registerSensor();
+            mEventGPS.registerSensor();
+        } else {
+            mEventAcc.unregisterSensor();
+            mEventGyro.unregisterSensor();
+            mEventMag.unregisterSensor();
+            mEventGPS.unregisterSensor();
+        }
+    }
+
+
     private final Runnable runnableBattery = new Runnable() {
         @Override
         public void run() {
@@ -359,12 +445,7 @@ public class SensorService extends Service {
         if (!UnRegisterListenersCalled) return ;
         UnRegisterListenersCalled = false;
 
-        if (!Preference.isMobileSensorsDisabled(null)) {
-            mEventAcc.registerSensor();
-            mEventGyro.registerSensor();
-            mEventMag.registerSensor();
-            mEventGPS.registerSensor();
-        }
+        setMobileGpsImuActive(shouldMobileGpsImuRun());
 
         this.registerReceiver(this.mEventBattery,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
@@ -375,13 +456,7 @@ public class SensorService extends Service {
         if (UnRegisterListenersCalled) return ;
         UnRegisterListenersCalled = true;
 
-        if (!Preference.isMobileSensorsDisabled(null))
-        {
-            mEventAcc.unregisterSensor();
-            mEventGyro.unregisterSensor();
-            mEventMag.unregisterSensor();
-            mEventGPS.unregisterSensor();
-        }
+        setMobileGpsImuActive(false);
 
         this.unregisterReceiver(this.mEventBattery);
     }
@@ -439,6 +514,7 @@ public class SensorService extends Service {
 
 
         mkillme = true;
+        mGateHandler.removeCallbacksAndMessages(null);
         UnRegisterListeners();
         if (mhandler != null) {
             mhandler.removeCallbacksAndMessages(null);
