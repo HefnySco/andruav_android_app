@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Palette for the redesigned MainScreen ("magnetic" dark theme) -->
+
+    <color name="main_bg_top">#0C1526</color>
+    <color name="main_bg_bottom">#141F38</color>
+
+    <color name="card_surface">#17223C</color>
+    <color name="card_surface_light">#1E2C4C</color>
+    <color name="card_stroke_subtle">#2C3E63</color>
+
+    <color name="header_title">#F2F5FA</color>
+    <color name="header_subtitle">#8CA0C4</color>
+
+    <color name="chip_bg">#182747</color>
+    <color name="chip_border">#2E4470</color>
+    <color name="chip_icon">#5EA8FF</color>
+    <color name="chip_text">#C6D4EE</color>
+
+    <color name="accent_imu">#4FC3F7</color>
+    <color name="accent_imu_dark">#1D8FD6</color>
+    <color name="accent_fpv">#B388FF</color>
+    <color name="accent_fpv_dark">#7C4DFF</color>
+    <color name="accent_com">#2FE0BF</color>
+    <color name="accent_com_dark">#0EA98F</color>
+    <color name="accent_fcb">#FFB74D</color>
+    <color name="accent_fcb_dark">#F5891F</color>
+
+    <color name="badge_bg">#33FFFFFF</color>
+    <color name="badge_bg_pressed">#4DFFFFFF</color>
+
+    <color name="btn_glow_active">#3E75D375</color>
+    <color name="btn_glow_error">#3EF75050</color>
+
+    <color name="disabled_surface">#0F1729</color>
+    <color name="disabled_stroke">#1C2740</color>
+    <color name="disabled_text">#5B6B8C</color>
+</resources>

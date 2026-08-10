@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_card_bg"
+    android:elevation="12dp"
+    android:padding="24dp">
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_logo2"
+        android:contentDescription="@null" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center_horizontal"
+        android:text="@string/main_activity_header_title"
+        android:textColor="@color/header_title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.06" />
+
+    <TextView
+        android:id="@+id/dialogabout_txtVersion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="18dp"
+        android:gravity="center_horizontal"
+        android:textColor="@color/header_subtitle"
+        android:textSize="13sp"
+        android:fontFamily="sans-serif-condensed" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/chip_border"
+        android:layout_marginBottom="18dp" />
+
+    <TextView
+        android:id="@+id/dialogabout_txtInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="6dp"
+        android:textColor="@color/chip_text"
+        android:textSize="14sp"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/dialogabout_btnOk"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="@android:string/ok"
+        android:textAllCaps="false"
+        android:textColor="@color/sel_main_btn_text"
+        android:background="@drawable/sel_big_button_color"
+        android:elevation="4dp"
+        android:stateListAnimator="@null" />
+
+</LinearLayout>
