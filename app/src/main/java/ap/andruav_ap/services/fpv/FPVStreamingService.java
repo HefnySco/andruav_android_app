@@ -234,6 +234,20 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
         releaseWakeLock();
         stopForeground(true);
         stopSelf();
+        // stopSelf() only *requests* destruction - an FPV Activity still bound with BIND_AUTO_CREATE
+        // keeps this instance alive, so onDestroy() (previously the only place clearing App's "is
+        // streaming" flag and announcing the change) does not run yet. That is exactly the
+        // browser-side close case: the viewer hangs up while the FPV screen is in the foreground and
+        // bound, so the Activity never learned the stream died and stayed open, and
+        // App.startFPVStreamingService() stayed a no-op - no later remote start could revive
+        // streaming until the user pressed exit on the phone (which unbinds and finally lets us be
+        // destroyed). Announce from this funnel too; onDestroy() repeating it is harmless.
+        // The flag is cleared inline (a concurrent startFPVStreamingService() must not be skipped),
+        // the announcement is marshalled to the main thread because this funnel runs on whichever
+        // thread posted the stop - the websocket thread for a remote command - while subscribers
+        // react with UI calls (Activity.finish()).
+        App.iFPVStreamingService = null;
+        mHandle.post(() -> EventBus.getDefault().post(new _7adath_FPVStreamingStatusChanged()));
     }
 
     @Override
@@ -285,7 +299,25 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
 
     @Override
     public void onPeerConnectionClosed(final PnPeer peer) {
-        mHandle.post(() -> AndruavSettings.mVideoRequests.remove(peer.getConnectedPeer().PartyID));
+        // Posted (not run inline): the peer that just hung up is still in PeerConnectionManager's
+        // peers map at this exact callback point (its own removal is a separately-posted Runnable
+        // on the same main-thread queue, enqueued just before this listener call - see
+        // PeerConnectionClientBase.removePeer()/PnPeer.hangup()). Posting here queues us behind
+        // that pending removal so hasActivePeers() below reflects the post-hangup peer count.
+        mHandle.post(() -> {
+            AndruavSettings.mVideoRequests.remove(peer.getConnectedPeer().PartyID);
+
+            // The browser's own "close" button drives this via the WebRTC hangup signal, not the
+            // RemoteCommand_STREAMVIDEO Act:false path (mVideoRequests is only ever populated by
+            // that command's Act:true branch, which this webclient never sends - it starts a view
+            // with a bare "joinme"). Relying solely on that command's mVideoRequests bookkeeping
+            // left the camera running (and this Activity stuck open) after every browser-side close.
+            // The peer count is the one signal a plain hangup always produces, regardless of which
+            // command flow the viewer used to start - stop for real once nobody is left watching.
+            if ((mPeerConnectionManager != null) && (!mPeerConnectionManager.hasActivePeers())) {
+                EventBus.getDefault().post(new _7adath_StopAndroidCamera());
+            }
+        });
     }
 
     @Override

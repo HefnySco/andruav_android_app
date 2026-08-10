@@ -45,6 +45,8 @@ import com.andruav.AndruavSettings;
 import com.andruav.event.droneReport_Event.Event_CameraZoom;
 import com.andruav.event.droneReport_Event.Event_Vehicle_Flying_Changed;
 import com.andruav.event.droneReport_Event.Event_Vehicle_Mode_Changed;
+import com.andruav.event.fpv7adath._7adath_FPVStreamingStatusChanged;
+import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
 import com.andruav.event.fpv7adath._7adath_StopAndroidCamera;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.event.fpv7adath.Event_FPV_CMD;
@@ -254,6 +256,37 @@ public class FPVDroneRTCWebCamActivity extends Activity {
         final Message msg = mHandle.obtainMessage();
         msg.obj = event_webRTC;
         mHandle.sendMessageDelayed(msg,0);
+    }
+
+    @Subscribe
+    public void onEvent (final _7adath_FPVStreamingStatusChanged a7adath_fpvStreamingStatusChanged) {
+        // FPVStreamingService stopped itself (remote STREAMVIDEO Act:false once no viewer remains,
+        // or any other stop path) without going through our own stop button/finish(). Because this
+        // Activity is launchMode="singleTask", leaving it open here means the next remote start
+        // just re-fronts this stale instance via onNewIntent() (not overridden) instead of creating
+        // a fresh one - streaming could never actually restart until the user manually pressed the
+        // on-screen exit button. Close in step with the service so the next start works.
+        if (!App.isFPVStreamingServiceRunning()) {
+            finish();
+        }
+    }
+
+    @Subscribe
+    public void onEvent (final _7adath_InitAndroidCamera adath_initAndroidCamera) {
+        // A remote start (camera-list request / STREAMVIDEO Act:true) that lands while this screen
+        // is still up: BaseAndruavShasha is the only other subscriber and MainScreen unregisters
+        // from the bus in onPause(), so with us in the foreground nobody else can act on it - and
+        // singleTask re-fronting this instance runs no lifecycle callback that would restart
+        // capture. Bring the service back ourselves instead.
+        mHandle.post(() -> {
+            if (isFinishing()) return; // closing in step with a stop that just happened - let it close.
+            if (App.isFPVStreamingServiceRunning()) return;
+
+            App.startFPVStreamingService();
+            if (!mServiceBound) {
+                bindService(new Intent(this, FPVStreamingService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
+            }
+        });
     }
 
 
