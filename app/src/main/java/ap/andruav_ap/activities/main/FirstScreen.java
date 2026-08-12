@@ -52,6 +52,7 @@ public class FirstScreen extends BaseAndruavShasha {
     }
 
     private static final int PERMISSIONS_REQUEST_CODE = 1;
+    private static final int BATTERY_OPTIMIZATION_REQUEST_CODE = 2;
 
     private void initGUI ()
     {
@@ -83,7 +84,7 @@ public class FirstScreen extends BaseAndruavShasha {
                             getString(android.R.string.ok),
                             (dialogInterface, i) -> CheckAppPermissions.requestAllPermissions(Me, PERMISSIONS_REQUEST_CODE),
                             getString(android.R.string.cancel),
-                            (dialogInterface, i) -> proceedToMainScreen());
+                            (dialogInterface, i) -> checkBatteryOptimization());
 
                     // Safety net: never get stuck on this screen even if the user
                     // ignores the dialog, dismisses it by tapping outside, or the OS
@@ -92,16 +93,52 @@ public class FirstScreen extends BaseAndruavShasha {
                 }
                 else
                 {
-                    proceedToMainScreen();
+                    checkBatteryOptimization();
                 }
             }
         });
+    }
+
+    /***
+     * A background process can be killed by the system while Andruav is not the foreground app,
+     * silently dropping telemetry/FPV mid-flight even though FPVStreamingService/SensorService
+     * are proper foreground services - standard Doze/App-Standby battery optimization still
+     * applies to them unless the app is explicitly exempted. Ask once, using the plain AOSP
+     * exemption dialog (no OEM-specific settings screens - those aren't guaranteed to exist or
+     * keep the same component name across devices/ROM versions).
+     */
+    private void checkBatteryOptimization ()
+    {
+        if (CheckAppPermissions.isIgnoringBatteryOptimizations(Me))
+        {
+            proceedToMainScreen();
+            return;
+        }
+
+        DialogHelper.doModalDialog(Me,
+                getString(ap.andruavmiddlelibrary.R.string.gen_battery_optimization),
+                getString(ap.andruavmiddlelibrary.R.string.err_battery_optimization),
+                getString(android.R.string.ok),
+                (dialogInterface, i) -> CheckAppPermissions.requestIgnoreBatteryOptimizations(Me, BATTERY_OPTIMIZATION_REQUEST_CODE),
+                getString(android.R.string.cancel),
+                (dialogInterface, i) -> proceedToMainScreen());
+
+        // Safety net, same reasoning as the permissions dialog above.
+        mPermissionHandler.postDelayed(FirstScreen.this::proceedToMainScreen, 20000);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
+            checkBatteryOptimization();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == BATTERY_OPTIMIZATION_REQUEST_CODE) {
             proceedToMainScreen();
         }
     }

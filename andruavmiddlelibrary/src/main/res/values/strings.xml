@@ -302,6 +302,8 @@
     <string name="err_invalid_portnum">Invalid port number.</string>
     <string name="err_config_drone">Cannot be a drone mode andruav. no GPS or Compass</string>
     <string name="err_security">Missing Permissions. Please grant permissions.</string>
+    <string name="gen_battery_optimization">Background Restrictions</string>
+    <string name="err_battery_optimization">Andruav may be closed by the system while running in the background, stopping telemetry and video during flight. Allow it to run unrestricted in the background?</string>
     <string name="err_no_wifi">No wifi connection exists</string>
     <string name="err_invalid_unitname">Invalid Unit Name</string>
     <string name="err_nullValue">Empty Value</string>

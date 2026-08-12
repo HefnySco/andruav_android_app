@@ -2,11 +2,13 @@ package ap.andruav_ap.helpers;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import androidx.core.app.ActivityCompat;
@@ -37,6 +39,30 @@ public abstract class CheckAppPermissions {
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         App.getAppContext().startActivity(intent);
+    }
+
+    /***
+     * Whether the OS's standard Doze/App-Standby battery optimization is already disabled for
+     * this app. This is the plain AOSP mechanism every device exposes the same way - it says
+     * nothing about any additional OEM-specific background-process killer layered on top.
+     */
+    public static boolean isIgnoringBatteryOptimizations(final Activity activity)
+    {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true;
+        final PowerManager pm = (PowerManager) activity.getSystemService(Context.POWER_SERVICE);
+        return pm != null && pm.isIgnoringBatteryOptimizations(activity.getPackageName());
+    }
+
+    /***
+     * Launches the standard OS dialog asking the user to exempt this app from battery
+     * optimization, so its foreground services (telemetry link, FPV streaming) are less likely
+     * to be killed while backgrounded mid-flight.
+     */
+    public static void requestIgnoreBatteryOptimizations(final Activity activity, final int requestCode)
+    {
+        final Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                Uri.parse("package:" + activity.getPackageName()));
+        activity.startActivityForResult(intent, requestCode);
     }
 
 
