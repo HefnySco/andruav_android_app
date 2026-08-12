@@ -6,11 +6,25 @@
     android:background="@drawable/bg_main_gradient">
 
     <ImageView
+        android:id="@+id/firstscreen_logo"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.42"
         app:srcCompat="@drawable/logo" />
+
+    <ProgressBar
+        android:id="@+id/firstscreen_spinner"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/accent_com"
+        android:indeterminateTintMode="src_in"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/firstscreen_logo"
+        android:layout_marginTop="18dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

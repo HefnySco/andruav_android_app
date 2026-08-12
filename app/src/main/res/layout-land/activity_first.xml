@@ -11,14 +11,27 @@
     >
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/firstscreen_logo"
         android:layout_width="120dp"
         android:layout_height="120dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.42"
         app:srcCompat="@drawable/logo"
         />
+
+    <ProgressBar
+        android:id="@+id/firstscreen_spinner"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/accent_com"
+        android:indeterminateTintMode="src_in"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/firstscreen_logo"
+        android:layout_marginTop="20dp" />
 
  </androidx.constraintlayout.widget.ConstraintLayout>
