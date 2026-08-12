@@ -2,6 +2,7 @@ package ap.andruav_ap.activities.baseview;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
@@ -20,7 +21,9 @@ import ap.andruav_ap.R;
 import ap.andruav_ap.guiEvent.GUIEvent_EnableFlashing;
 import ap.andruav_ap.activities.fpv.FPVActivityFactory;
 import ap.andruav_ap.App;
+import ap.andruav_ap.helpers.CheckAppPermissions;
 import ap.andruav_ap.widgets.AlarmWidget;
+import ap.andruavmiddlelibrary.factory.DeviceFeatures;
 import ap.andruavmiddlelibrary.factory.util.ActivityMosa3ed;
 
 /**
@@ -45,6 +48,16 @@ public class BaseAndruavShasha extends AppCompatActivity {
         if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
             // you cannot switch screen for a user.
             return;
+        }
+
+        // Camera capture/publish must not depend on the FPV Activity being launchable. Android
+        // blocks starting a new Activity once the app has no visible window (e.g. right after the
+        // FPV PiP window is closed while the app is backgrounded), which used to leave the stream
+        // unable to restart until the user manually reopened the app. FPVStreamingService only
+        // needs a Context and already survives independently of any Activity, so start it
+        // directly here; the Activity launch below is then just a best-effort UI convenience.
+        if (DeviceFeatures.hasCamera && CheckAppPermissions.checkPermission(Manifest.permission.CAMERA)) {
+            App.startFPVStreamingService();
         }
 
         mbaseAndruavActivityHandler.post(new Runnable() {
