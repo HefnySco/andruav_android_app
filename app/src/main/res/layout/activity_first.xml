@@ -4,17 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="@drawable/bg_main_gradient"
     tools:context=".activities.main.FirstScreen" >
 
     <ImageView
-        android:layout_width = "match_parent"
-        android:layout_height = "match_parent"
-        android:layout_gravity="center"
+        android:id="@+id/firstscreen_logo"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/logo"
-        />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.42"
+        app:srcCompat="@drawable/logo" />
+
+    <ProgressBar
+        android:id="@+id/firstscreen_spinner"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/accent_com"
+        android:indeterminateTintMode="src_in"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/firstscreen_logo"
+        android:layout_marginTop="28dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

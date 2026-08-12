@@ -273,6 +273,7 @@
     <string name="gen_connectionlost">Connection Lost!</string>
     <string name="gen_connectiondisconnected">Disconnected</string>
     <string name="gen_stop">Stop</string>
+    <string name="gen_do_not_show_again">Do not show again.</string>
     <string name="gen_retrying">Retrying to connect</string>
     <string name="gen_commserver">Com</string>
     <string name="gen_speak_droneactivated">Drone Mode activated</string>
