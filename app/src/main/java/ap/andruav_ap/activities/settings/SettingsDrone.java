@@ -21,14 +21,13 @@ public class SettingsDrone extends PreferenceActivity {
 
     PreferenceActivity Me;
     protected EditTextPreference txtMobileNum;
-    protected EditTextPreference txtCommModuleIP;
     protected EditTextPreference txtGCSBlockChannelNumber;
     protected EditTextPreference txtGCSBlockPMWMinValue;
     protected EditTextPreference txtRCCamChannelNumber;
     protected EditTextPreference txtRCCamPMWMinValue;
     protected EditTextPreference txtBatteryMinPercentage;
-    protected CheckBoxPreference chkCommModuleIPAuto;
     protected CheckBoxPreference chkGPSInjection;
+    protected CheckBoxPreference chkIgnoreMobileSensors;
 
 
     @Override
@@ -100,14 +99,37 @@ public class SettingsDrone extends PreferenceActivity {
         txtGCSBlockChannelNumber = (EditTextPreference) findPreference("key_block_channel");
         txtGCSBlockPMWMinValue = (EditTextPreference) findPreference("key_block_pwm_min");
         txtBatteryMinPercentage = (EditTextPreference) findPreference("WiDVQ");
-        txtCommModuleIP = (EditTextPreference) findPreference("key_comm_ip");
-        chkCommModuleIPAuto = (CheckBoxPreference) findPreference("WSXG2IUCUUzrG1");
-        chkGPSInjection = (CheckBoxPreference) findPreference("key_gps_inject");
+        chkGPSInjection = (CheckBoxPreference) findPreference("gps_inject");
+        chkIgnoreMobileSensors = (CheckBoxPreference) findPreference("mePMWRUHZFwA");
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             chkGPSInjection.setEnabled(false);
             ap.andruavmiddlelibrary.preference.Preference.isGPSInjecttionEnabled(null, false);
         }
+
+        // GPS Injection relies on the phone's own GPS sensor to feed the FC, so it cannot be
+        // combined with "Ignore Mobile Sensors" (which keeps the phone GPS/IMU switched off).
+        chkGPSInjection.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (Boolean.TRUE.equals(newValue) && chkIgnoreMobileSensors.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "Disable 'Ignore Mobile Sensors' first to enable GPS Injection.", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+                return true;
+            }
+        });
+
+        chkIgnoreMobileSensors.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (Boolean.TRUE.equals(newValue) && chkGPSInjection.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "Disable 'GPS Injection' first to ignore mobile sensors.", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+                return true;
+            }
+        });
 
         txtRCCamChannelNumber.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
@@ -118,7 +140,7 @@ public class SettingsDrone extends PreferenceActivity {
                     return true;
                 } else {
                     // invalid you can show invalid message
-                    Toast.makeText(getApplicationContext(), "bad channel number. choose from 1 to 16", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "bad channel number. choose from 1 to 18", Toast.LENGTH_LONG).show();
                     return false;
                 }
             }

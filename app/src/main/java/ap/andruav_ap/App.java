@@ -935,7 +935,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         Preference.setBattery_min_value(null, 0);
         Preference.setDefaultCircleRadius(null, 30);
         Preference.setDefaultClimbAlt(null, 30);
-        Preference.isCommModuleIPAutoDetect(null,false);
         Preference.isGPSInjecttionEnabled(null,true);
 
         Preference.isMobileSensorsDisabled(null,false);
@@ -1122,19 +1121,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
     @Override
     public String getModuleType () {return Preference.getModuleType(null);}
-
-
-    @Override
-    public String getCommModuleIP () {
-        if (Preference.isCommModuleIPAutoDetect(null))
-        {
-            return "";
-        }
-        return Preference.getCommModuleIP(null);
-    }
-
-    @Override
-    public void setCommModuleIP (final String commModuleIP) {Preference.setCommModuleIP(null, commModuleIP);}
 
     @Override
     public void post(Object object) {

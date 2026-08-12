@@ -17,11 +17,6 @@ public interface IPreference {
 
     String getModuleType();
 
-
-    void setCommModuleIP(final String commModuleIP);
-
-    String getCommModuleIP();
-
     int getBattery_min_value();
 
     boolean isChannelReversed(final int channelNumber);

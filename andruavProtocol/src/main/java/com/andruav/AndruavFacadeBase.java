@@ -3,7 +3,6 @@ package com.andruav;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinaryBase;
 import com.andruav.protocol.commands.textMessages.AndruavMessageBase;
-import com.andruav.protocol.communication.uavos.AndruavUDPModuleBase;
 import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
 
 /**
@@ -15,36 +14,17 @@ public class AndruavFacadeBase {
 
     public static void sendMessage(final AndruavMessageBase andruavMessageBase, final AndruavUnitBase andruavUnitBase, final boolean instant)
     {
-        if (AndruavSettings.andruavWe7daBase.mIsModule)
-        {
-            ((AndruavUDPModuleBase)(AndruavEngine.getAndruavUDP())).sendMessageToServer(andruavMessageBase, andruavUnitBase);
-        }
-        else
-        {
-            sendMessageToCommServer(andruavMessageBase, andruavUnitBase, instant);
-        }
+        sendMessageToCommServer(andruavMessageBase, andruavUnitBase, instant);
     }
 
     public static void sendMessage(final AndruavResalaBinaryBase andruavResalaBinaryBase, final AndruavUnitBase andruavUnitBase, final boolean instant)
     {
-        if (AndruavSettings.andruavWe7daBase.mIsModule)
-        {
-            ((AndruavUDPModuleBase)(AndruavEngine.getAndruavUDP())).sendMessageToServer(andruavResalaBinaryBase, andruavUnitBase);
-        }
-        else {
-            sendMessageToCommServer(andruavResalaBinaryBase, andruavUnitBase, instant);
-        }
+        sendMessageToCommServer(andruavResalaBinaryBase, andruavUnitBase, instant);
     }
 
     public static void sendMessage(final AndruavMessageBase andruavMessageBase, final String target, final boolean instant)
     {
-        if (AndruavSettings.andruavWe7daBase.mIsModule)
-        {
-            ((AndruavUDPModuleBase)(AndruavEngine.getAndruavUDP())).sendMessageToServer(andruavMessageBase,target);
-        }
-        else {
-            sendMessageToCommServer(andruavMessageBase, target, instant);
-        }
+        sendMessageToCommServer(andruavMessageBase, target, instant);
     }
 
     public static void sendSystemCommandToCommServer(final AndruavMessageBase andruavMessageBase, final boolean addTime, final boolean instant) {

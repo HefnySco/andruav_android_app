@@ -86,22 +86,6 @@ public class Preference {
     }
 
 
-    public static String getCommModuleIP(final android.content.ContextWrapper contextWrapper) {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "key_comm_ip", "");
-    }
-
-    public static void setCommModuleIP(final android.content.ContextWrapper contextWrapper, String appversion) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_comm_ip", appversion);
-    }
-
-    public static boolean isCommModuleIPAutoDetect(final android.content.ContextWrapper contextWrapper) {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "WSXG2IUCUUzrG1", true);
-    }
-
-    public static void isCommModuleIPAutoDetect(final android.content.ContextWrapper contextWrapper, final boolean bEnabled) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "WSXG2IUCUUzrG1", bEnabled);
-    }
-
     ////////////////////Login Preference
 
     public static String getAppVersion(final android.content.ContextWrapper contextWrapper) {
@@ -1209,8 +1193,6 @@ public class Preference {
         Preference.enableGroupName(contextWrapper, false);
         Preference.isAndruavLogEnabled(contextWrapper, true);
         Preference.setModuleType(contextWrapper,ProtocolHeaders.UAVOS_COMM_MODULE_CLASS);
-        Preference.setCommModuleIP(contextWrapper,"");
-        Preference.isCommModuleIPAutoDetect(contextWrapper,false);
     }
 
 
