@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_magnetic_card_bg"
+    android:elevation="12dp"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/magneticdlg_txtTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textColor="@color/dlg_title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.03" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/dlg_border" />
+
+    <TextView
+        android:id="@+id/magneticdlg_txtMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:lineSpacingExtra="6dp"
+        android:textColor="@color/dlg_message"
+        android:textSize="14sp"
+        android:layout_marginBottom="24dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/magneticdlg_btnNegative"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:textAllCaps="false"
+            android:textColor="@color/dlg_negative_text"
+            android:background="@drawable/dialog_magnetic_btn_negative"
+            android:stateListAnimator="@null"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/magneticdlg_btnPositive"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:textColor="@color/dlg_accent_text"
+            android:background="@drawable/dialog_magnetic_btn_positive"
+            android:stateListAnimator="@null" />
+
+    </LinearLayout>
+
+</LinearLayout>

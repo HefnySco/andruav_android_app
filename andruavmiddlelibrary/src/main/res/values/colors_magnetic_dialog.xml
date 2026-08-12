@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Self-contained "magnetic" dark dialog palette for DialogHelper.
+         Mirrors app's colors_main_screen.xml so dialogs match the redesigned
+         MainScreen/FirstScreen look without andruavmiddlelibrary depending on app resources. -->
+
+    <color name="dlg_bg_card_light">#1E2C4C</color>
+    <color name="dlg_bg_card">#17223C</color>
+    <color name="dlg_border">#2E4470</color>
+
+    <color name="dlg_title">#F2F5FA</color>
+    <color name="dlg_message">#C6D4EE</color>
+
+    <color name="dlg_accent">#2FE0BF</color>
+    <color name="dlg_accent_text">#0C1526</color>
+
+    <color name="dlg_negative_text">#8CA0C4</color>
+</resources>

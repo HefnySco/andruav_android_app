@@ -513,7 +513,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
 
                 // TTS.getInstance().Speak("Disconnecting");
                 final String connstr = getString(ap.andruavmiddlelibrary.R.string.gen_bluetooth_disconnecting);
-                final ProgressDialog progress = DialogHelper.doModalProgressDialog(this, "FCB", connstr);
+                final android.app.Dialog progress = DialogHelper.doModalProgressDialog(this, "FCB", connstr);
                 App.mScheduleHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -528,7 +528,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
 
             } else {
                 final String connstr = getString(ap.andruavmiddlelibrary.R.string.gen_bluetooth_connecting);
-                final ProgressDialog progress = DialogHelper.doModalProgressDialog(this, "FCB", connstr);
+                final android.app.Dialog progress = DialogHelper.doModalProgressDialog(this, "FCB", connstr);
                 App.mScheduleHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
