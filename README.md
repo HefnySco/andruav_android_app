@@ -1,3 +1,5 @@
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/HefnySco/andruav_android_app)
+
 
 Andruav is an interconnected Android-based system that uses Android mobiles as companian computers to add advanced capabilities to your drones and rc-vehicles.
 
