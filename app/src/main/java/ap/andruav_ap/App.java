@@ -46,6 +46,7 @@ import com.andruav.AndruavEngine;
 import com.andruav.AndruavFacade;
 import com.andruav.AndruavSettings;
 import com.andruav.event.fcb_event._7adath_FCB_2AMR;
+import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
 import com.andruav.event.networkEvent._7adath_ConnectionQuality;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
 import com.andruav.andruavUnit.AndruavUnitMe;
@@ -215,6 +216,21 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         final Message msg = mhandle.obtainMessage();
         msg.obj = adath_fcb_2AMR;
         if (mhandle != null) mhandle.sendMessageDelayed(msg, 0);
+    }
+
+
+    @Subscribe
+    public void onEvent (final _7adath_InitAndroidCamera adath_initAndroidCamera)
+    {
+        // This Application instance registers with EventBus once in onCreate() and is never
+        // unregistered, unlike BaseAndruavShasha's subscriber for the same event (torn down in
+        // onPause() whenever no Activity is resumed). A remote/board-triggered camera start must
+        // reach FPVStreamingService (Context-only, independent of any Activity) even while the app
+        // is fully backgrounded - this is the one place guaranteed to still be listening then.
+        if (AndruavSettings.andruavWe7daBase.getIsCGS()) return;
+        if (DeviceFeatures.hasCamera && CheckAppPermissions.checkPermission(Manifest.permission.CAMERA)) {
+            startFPVStreamingService();
+        }
     }
 
 
