@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_card_bg"
+    android:elevation="12dp"
+    android:padding="24dp">
+
+    <ProgressBar
+        android:id="@+id/dialogconnect_spinner"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center_horizontal"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/accent_com"
+        android:indeterminateTintMode="src_in" />
+
+    <TextView
+        android:id="@+id/dialogconnect_txtTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center_horizontal"
+        android:text="@string/action_connect"
+        android:textColor="@color/header_title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.06" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/chip_border" />
+
+    <TextView
+        android:id="@+id/dialogconnect_txtMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="6dp"
+        android:textColor="@color/chip_text"
+        android:textSize="14sp"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/dialogconnect_btnStop"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="@string/gen_stop"
+        android:textAllCaps="false"
+        android:textColor="@color/sel_main_btn_text"
+        android:background="@drawable/sel_big_button_color"
+        android:elevation="4dp"
+        android:stateListAnimator="@null" />
+
+</LinearLayout>

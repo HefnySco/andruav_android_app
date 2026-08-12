@@ -498,6 +498,10 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
                 @Override
                 public void onSuccess(EventLoginClient eventLoginClient) {
+                    if (mkillMe) {
+                        // user stopped retrying while this validate-account call was in flight.
+                        return;
+                    }
                     if (eventLoginClient.LastError == LoginClient.ERR_SUCCESS) {
 
                         AndruavSettings.Account_SID = eventLoginClient.Parameters.get(LoginClient.CONST_SENDER_ID);

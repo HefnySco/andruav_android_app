@@ -5,7 +5,6 @@ import org.greenrobot.eventbus.Subscribe;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -122,7 +121,8 @@ public class MainScreen extends BaseAndruavShasha {
     private final int MSG_BOTH = 3;
     private final int MSG_DONE = 4;
 
-    private ProgressDialog mprogressDialog;
+    private AlertDialog mprogressDialog;
+    private TextView mprogressDialogMessage;
 
     private boolean onFinalConnectionSucceededCalled = false;
 
@@ -132,6 +132,7 @@ public class MainScreen extends BaseAndruavShasha {
      */
     private boolean isDisconnect = false;
     private boolean autoConnect = false;
+    private int mRetryCount = 0;
 
     /***
      * true when the app is called from a USB device.
@@ -222,18 +223,43 @@ public class MainScreen extends BaseAndruavShasha {
 
     private void doProgressDialog() {
 
-        mprogressDialog = new ProgressDialog(MainScreen.this);
-        mprogressDialog.setMessage(getString(ap.andruavmiddlelibrary.R.string.gen_step1) + getString(ap.andruavmiddlelibrary.R.string.action_init));
-        mprogressDialog.setTitle(getString(ap.andruavmiddlelibrary.R.string.action_connect));
-        mprogressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        if ((mprogressDialog != null) && (mprogressDialog.isShowing())) {
+            // already showing while retrying: keep it up instead of flashing it off & on.
+            return;
+        }
+
+        mRetryCount = 0;
+
+        final View view = LayoutInflater.from(this).inflate(R.layout.dialog_connect_progress, null);
+        mprogressDialogMessage = view.findViewById(R.id.dialogconnect_txtMessage);
+        mprogressDialogMessage.setText(getString(ap.andruavmiddlelibrary.R.string.gen_step1) + getString(ap.andruavmiddlelibrary.R.string.action_init));
+
+        final Button btnStop = view.findViewById(R.id.dialogconnect_btnStop);
+        btnStop.setOnClickListener(v -> stopConnectionRetry());
+
+        mprogressDialog = new AlertDialog.Builder(Me).setView(view).setCancelable(false).create();
+        if (mprogressDialog.getWindow() != null) {
+            mprogressDialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
         mprogressDialog.show();
     }
 
+    /***
+     * Stops any pending connect/reconnect attempt so the user can change login settings
+     * instead of waiting for a retry cycle to end.
+     */
+    private void stopConnectionRetry() {
+        mRetryCount = 0;
+        exitProgressDialog();
+        doLogout();
+        EventBus.getDefault().post(new EventSocketState(EventSocketState.ENUM_SOCKETSTATE.onDisconnect, "manual closing"));
+    }
+
     protected void progressDialogSetMessage(CharSequence message) {
-        if (mprogressDialog != null) {   // as we can reach this point with other messages when  the dialog is off
+        if (mprogressDialogMessage != null) {   // as we can reach this point with other messages when  the dialog is off
             // http://localhost:8080/mantis/view.php?id=30
 
-            mprogressDialog.setMessage(message);
+            mprogressDialogMessage.setText(message);
         }
     }
 
@@ -323,12 +349,15 @@ public class MainScreen extends BaseAndruavShasha {
                             DialogHelper.doModalDialog(Me, "Login", eventLoginClient.LastMessage, null);
                             break;
                         case LoginClient.ERR_SERVER_UNREACHABLE:
+                            mRetryCount++;
+                            progressDialogSetMessage(getString(ap.andruavmiddlelibrary.R.string.gen_retrying) + " (" + mRetryCount + ")");
                             mhandle.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    exitProgressDialog();
-                                    if (pauseToExit)
+                                    if (pauseToExit || isDisconnect)
                                     {
+                                        // user pressed Stop while we were waiting to retry.
+                                        exitProgressDialog();
                                         return;
                                     }
                                     doLogin(true);
@@ -351,12 +380,24 @@ public class MainScreen extends BaseAndruavShasha {
                         updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(), AndruavEngine.getAndruavWSAction());
                         progressDialogSetMessage(getString(ap.andruavmiddlelibrary.R.string.gen_step3) + getString(ap.andruavmiddlelibrary.R.string.gen_hostfound));
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onDisconnect) {
-                        exitProgressDialog();
+                        if (isDisconnect || (mprogressDialog == null) || (!mprogressDialog.isShowing())) {
+                            // user-initiated stop, or we were not in the middle of a connect attempt.
+                            exitProgressDialog();
+                        } else {
+                            // mid-connect failure: keep the dialog (with its Stop button) up while it retries in the background.
+                            mRetryCount++;
+                            progressDialogSetMessage(getString(ap.andruavmiddlelibrary.R.string.gen_retrying) + " (" + mRetryCount + ")");
+                        }
                         updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(), AndruavEngine.getAndruavWSAction());
 
 
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onError) {
-                        exitProgressDialog();
+                        if (isDisconnect || (mprogressDialog == null) || (!mprogressDialog.isShowing())) {
+                            exitProgressDialog();
+                        } else {
+                            mRetryCount++;
+                            progressDialogSetMessage(getString(ap.andruavmiddlelibrary.R.string.gen_retrying) + " (" + mRetryCount + ")");
+                        }
                         updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(), AndruavEngine.getAndruavWSAction());
 
 
