@@ -46,53 +46,62 @@ public abstract class CheckAppPermissions {
      */
     public static boolean isPermissionsOK (final  Activity activity)
     {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true;
+        return getMissingPermissions(activity).isEmpty();
+    }
 
-        boolean permissionsOK;
+    /***
+     * Same set of permissions checked by {@link #isPermissionsOK}, but returns the
+     * names of the ones that are NOT granted instead of collapsing them to a boolean --
+     * used to tell the user exactly what they denied instead of a generic message.
+     */
+    public static List<String> getMissingPermissions (final Activity activity)
+    {
+        final List<String> missing = new ArrayList<>();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return missing;
+
         //https://developer.android.com/reference/android/Manifest.permission#WRITE_EXTERNAL_STORAGE
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) //Q == API 29
         {
-            permissionsOK = CheckAppPermissions.checkPermission(activity,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            //Log.d("CheckAppPermissions", "isPermissionsOK 1a = " + permissionsOK);
+            addIfMissing(activity, missing, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
         else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
         {
-            permissionsOK = CheckAppPermissions.checkPermission(activity,
-                    Manifest.permission.READ_EXTERNAL_STORAGE);
-            //Log.d("CheckAppPermissions", "isPermissionsOK 1b = " + permissionsOK);
+            addIfMissing(activity, missing, Manifest.permission.READ_EXTERNAL_STORAGE);
         }
         else
         {
             //https://developer.android.com/about/versions/13/behavior-changes-13#granular-media-permissions
-            permissionsOK = CheckAppPermissions.checkPermission(activity,
-                    Manifest.permission.READ_MEDIA_AUDIO);
-            permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity,
-                    Manifest.permission.READ_MEDIA_IMAGES);
-            permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity,
-                    Manifest.permission.READ_MEDIA_VIDEO);
+            addIfMissing(activity, missing, Manifest.permission.READ_MEDIA_AUDIO);
+            addIfMissing(activity, missing, Manifest.permission.READ_MEDIA_IMAGES);
+            addIfMissing(activity, missing, Manifest.permission.READ_MEDIA_VIDEO);
         }
         // Camera/GPS/SMS are only required on devices that actually have that
         // hardware -- a device without a camera, GPS, or telephony has nothing
         // to grant, so don't hold up the app waiting on those permissions.
         if (DeviceFeatures.hasCamera) {
-            permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.CAMERA);
+            addIfMissing(activity, missing, Manifest.permission.CAMERA);
         }
         if (DeviceFeatures.hasGPS || DeviceFeatures.hasLocation) {
-            permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION);
+            addIfMissing(activity, missing, Manifest.permission.ACCESS_FINE_LOCATION);
         }
-        permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.READ_PHONE_STATE);
+        addIfMissing(activity, missing, Manifest.permission.READ_PHONE_STATE);
         if (DeviceFeatures.hasSMSCapabilities) {
-            permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity, Manifest.permission.READ_SMS);
+            addIfMissing(activity, missing, Manifest.permission.READ_SMS);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             //https://developer.android.com/develop/ui/views/notifications/notification-permission
-            permissionsOK = permissionsOK && CheckAppPermissions.checkPermission(activity,
-                    Manifest.permission.POST_NOTIFICATIONS);
+            addIfMissing(activity, missing, Manifest.permission.POST_NOTIFICATIONS);
         }
 
-        return permissionsOK;
+        return missing;
+    }
+
+    private static void addIfMissing (final Activity activity, final List<String> missing, final String permission)
+    {
+        if (!checkPermission(activity, permission)) {
+            missing.add(permission.replace("android.permission.", ""));
+        }
     }
 
     public static boolean checkPermission (final Activity activity,final String permission)

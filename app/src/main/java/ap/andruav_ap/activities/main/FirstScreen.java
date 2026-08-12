@@ -66,7 +66,8 @@ public class FirstScreen extends BaseAndruavShasha {
             @Override
             public void run() {
 
-                if (!CheckAppPermissions.isPermissionsOK(Me))
+                final java.util.List<String> missingPermissions = CheckAppPermissions.getMissingPermissions(Me);
+                if (!missingPermissions.isEmpty())
                 {
                     // Highlight and ask for permissions -- clearly visible, not a toast
                     // that can be missed. "Grant" triggers the real OS permission dialogs
@@ -74,9 +75,11 @@ public class FirstScreen extends BaseAndruavShasha {
                     // finishing the Activity right away would kill the dialogs before
                     // they can even show. "Skip" proceeds immediately. A safety timer
                     // guarantees we never get stuck here either way.
+                    final String message = getString(ap.andruavmiddlelibrary.R.string.err_security)
+                            + "\n\n" + android.text.TextUtils.join("\n", missingPermissions);
                     DialogHelper.doModalDialog(Me,
                             getString(ap.andruavmiddlelibrary.R.string.gen_security),
-                            getString(ap.andruavmiddlelibrary.R.string.err_security),
+                            message,
                             getString(android.R.string.ok),
                             (dialogInterface, i) -> CheckAppPermissions.requestAllPermissions(Me, PERMISSIONS_REQUEST_CODE),
                             getString(android.R.string.cancel),
