@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Closed/selected-value view for Spinners on the Home redesign's dark screens.
+     Stock android.R.layout.simple_spinner_item inherits AppTheme's text color, which is
+     dark (AppTheme is Theme.AppCompat.Light.DarkActionBar) - unreadable on our dark
+     backgrounds, hence this explicit-color replacement. -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:fontFamily="monospace"
+    android:textColor="@color/home_text_on_input"
+    android:textSize="14sp"
+    android:singleLine="true"
+    android:ellipsize="end" />

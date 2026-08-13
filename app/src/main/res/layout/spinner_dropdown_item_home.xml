@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dropdown popup row for Spinners on the Home redesign's dark screens - see
+     spinner_item_home.xml for why this can't be the stock simple_spinner_dropdown_item. -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
+    android:background="?attr/selectableItemBackground"
+    android:fontFamily="monospace"
+    android:textColor="@color/home_text_primary"
+    android:textSize="14sp" />

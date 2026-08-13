@@ -4,4 +4,56 @@
     <string name="main_activity_header_title">ANDRUAV</string>
     <string name="main_activity_tagline">Ground control station</string>
 
+    <!-- Home screen redesign -->
+    <string name="home_server_title">Mission Server</string>
+    <string name="home_server_status_connected">CONNECTED</string>
+    <string name="home_server_status_disconnected">DISCONNECTED</string>
+    <string name="home_btn_connect">CONNECT</string>
+    <string name="home_btn_disconnect">DISCONNECT</string>
+
+    <string name="home_telemetry_title">FLIGHT TELEMETRY</string>
+    <string name="home_telemetry_linked">LINKED</string>
+    <string name="home_telemetry_not_linked">NOT LINKED</string>
+    <string name="home_telemetry_helper">Link the flight controller via the FCB module below to view GPS, battery and signal.</string>
+    <string name="home_telemetry_subtitle_format">%1$s · via %2$s</string>
+    <string name="home_stat_gps">GPS FIX</string>
+    <string name="home_stat_battery">BATTERY</string>
+    <string name="home_stat_signal">SIGNAL</string>
+    <string name="home_sats_format">%1$d SATS</string>
+    <string name="home_battery_format">%1$d%%</string>
+    <string name="home_signal_format">%1$d dBm</string>
+    <string name="home_value_placeholder">–</string>
+
+    <string name="home_modules_title">MODULES</string>
+    <string name="home_tile_imu">IMU</string>
+    <string name="home_tile_fpv">FPV</string>
+    <string name="home_tile_com">Com</string>
+    <string name="home_tile_fcb">FCB</string>
+    <string name="home_tile_state_ready">READY</string>
+    <string name="home_tile_state_live">LIVE</string>
+    <string name="home_tile_state_offline">OFFLINE</string>
+    <string name="home_tile_state_linked">LINKED</string>
+    <string name="home_tile_state_tap_to_link">TAP TO LINK</string>
+
+    <string name="home_menu_settings">Settings</string>
+
+    <string name="home_fcb_sheet_title">TELEMETRY HUB · FCB CONNECTION</string>
+    <string name="home_fcb_bluetooth">Bluetooth</string>
+    <string name="home_fcb_usb">USB</string>
+    <string name="home_fcb_wifi">Wi-Fi / TCP-IP</string>
+    <string name="home_fcb_udp">UDP Broadcast</string>
+    <string name="home_fcb_bt_on">On</string>
+    <string name="home_fcb_bt_off">Off</string>
+    <string name="home_fcb_bt_scan">Scan</string>
+    <string name="home_fcb_bt_scanning">Scanning…</string>
+    <string name="home_fcb_bt_no_devices">No paired or discovered devices yet</string>
+    <string name="home_fcb_baud_rate_label">Baud rate</string>
+    <string name="home_fcb_usb_supported">USB host mode is supported on this device.</string>
+    <string name="home_fcb_usb_unsupported">This device does not support USB host mode.</string>
+    <string name="home_fcb_hub_ip_label">Hub IP</string>
+    <string name="home_fcb_local_ip_label">Local IP</string>
+    <string name="home_fcb_port_label">Port</string>
+    <string name="home_fcb_udp_port_label">Port</string>
+    <string name="home_fcb_udp_helper">Listens for broadcast telemetry on the local network.</string>
+
 </resources>

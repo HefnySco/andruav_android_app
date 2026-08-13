@@ -437,6 +437,7 @@ public class NetInfoAdapter {
 
         while (en.hasMoreElements()) {
             NetworkInterface intf = en.nextElement();
+            if (isMobileDataInterfaceName(intf.getName())) continue;
             for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
                 InetAddress inetAddress = enumIpAddr.nextElement();
                 if ((!inetAddress.isLoopbackAddress()) && (inetAddress instanceof Inet4Address) && isPrivateIPv4(inetAddress)) {
@@ -445,6 +446,20 @@ public class NetInfoAdapter {
             }
         }
         return null;
+    }
+
+    /***
+     * Cellular data interfaces (rmnet*, ccmni*, pdp*, clat*, seth_lte*) frequently carry a
+     * carrier-NAT private-range IPv4 address too, which otherwise looks identical to a real
+     * LAN address to {@link #getAnyPrivateIPv4()}'s scan - but a drone/GCS on the same Wi-Fi
+     * can't reach the phone through its cellular link. Excluded here so the Wi-Fi/LAN address
+     * wins even when a cellular interface happens to enumerate first (matches the same
+     * interface-name families {@link #getIP3G()} already treats as cellular).
+     */
+    private static boolean isMobileDataInterfaceName(final String name)
+    {
+        return name.contains("rmnet") || name.contains("ccmni") || name.startsWith("pdp")
+            || name.contains("clat") || name.contains("seth_lte");
     }
 
     private static boolean isPrivateIPv4(final InetAddress inetAddress)

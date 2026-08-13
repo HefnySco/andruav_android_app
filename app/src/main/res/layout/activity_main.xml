@@ -1,190 +1,605 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollView"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_main_gradient"
-    android:fillViewport="true"
-    android:clipToPadding="false">
+    android:orientation="vertical"
+    android:background="@color/home_bg"
+    tools:context=".activities.main.MainScreen">
 
+    <!-- Header: replaces the system ActionBar for this screen -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_height="64dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
 
-        <!-- Header -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <FrameLayout
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_home_logo_tile">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_logo"
+                    android:contentDescription="@null" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@string/main_activity_header_title"
+                android:textColor="@color/home_text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-black"
+                android:letterSpacing="0.09" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/home_btn_menu"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:padding="10dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_home_kebab"
+            android:contentDescription="@null" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/home_border" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:clipToPadding="false">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="24dp">
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="18dp"
+            android:paddingBottom="28dp">
 
-            <ImageView
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:background="@drawable/header_logo_glow"
-                android:padding="7dp"
-                android:src="@drawable/ic_logo2"
-                android:contentDescription="@null" />
+            <!-- Mission Server card -->
+            <LinearLayout
+                android:id="@+id/home_card_server"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_home_card_warning"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <FrameLayout
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_home_icon_tile">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_home_globe"
+                                android:contentDescription="@null" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/home_server_title"
+                                android:textColor="@color/home_text_primary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/home_txt_server_subtitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:textColor="@color/home_text_secondary"
+                                android:textSize="12sp"
+                                tools:text="gcs.andruav.com" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <View
+                            android:id="@+id/home_dot_server"
+                            android:layout_width="7dp"
+                            android:layout_height="7dp"
+                            android:background="@drawable/bg_home_status_dot" />
+
+                        <TextView
+                            android:id="@+id/home_txt_server_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="@string/home_server_status_disconnected"
+                            android:textColor="@color/home_red_text"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.04" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/home_btn_server_connect"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/bg_home_btn_amber"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="@string/home_btn_connect"
+                    android:textColor="@color/home_amber_on"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.03" />
+
+                <TextView
+                    android:id="@+id/home_btn_server_disconnect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_gravity="end"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:text="@string/home_btn_disconnect"
+                    android:textColor="@color/home_text_secondary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- Flight Telemetry card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
+                android:background="@drawable/bg_home_card"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/home_telemetry_title"
+                        android:textColor="@color/home_text_dim"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.09" />
+
+                    <TextView
+                        android:id="@+id/home_txt_telemetry_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_telemetry_not_linked"
+                        android:textColor="@color/home_text_dim"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.04" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/home_group_telemetry_linked"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/home_txt_drone_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/home_text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        tools:text="SKYHAWK X4" />
+
+                    <TextView
+                        android:id="@+id/home_txt_drone_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:textColor="@color/home_text_secondary"
+                        android:textSize="12sp"
+                        tools:text="Quadcopter · via Wi-Fi" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="14dp"
+                        android:background="@color/home_border_soft" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:src="@drawable/ic_home_gps"
+                                android:contentDescription="@null" />
+
+                            <TextView
+                                android:id="@+id/home_txt_gps"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:fontFamily="monospace"
+                                android:textColor="@color/home_text_primary"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                tools:text="11 SATS" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/home_stat_gps"
+                                android:textColor="@color/home_text_dim_darker"
+                                android:textSize="9sp"
+                                android:letterSpacing="0.07" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:src="@drawable/ic_home_battery"
+                                android:contentDescription="@null" />
+
+                            <TextView
+                                android:id="@+id/home_txt_battery"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:fontFamily="monospace"
+                                android:textColor="@color/home_text_primary"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                tools:text="78%" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/home_stat_battery"
+                                android:textColor="@color/home_text_dim_darker"
+                                android:textSize="9sp"
+                                android:letterSpacing="0.07" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:src="@drawable/ic_home_signal"
+                                android:contentDescription="@null" />
+
+                            <TextView
+                                android:id="@+id/home_txt_signal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:fontFamily="monospace"
+                                android:textColor="@color/home_text_primary"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                tools:text="-58 dBm" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/home_stat_signal"
+                                android:textColor="@color/home_text_dim_darker"
+                                android:textSize="9sp"
+                                android:letterSpacing="0.07" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/home_txt_telemetry_helper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/home_telemetry_helper"
+                    android:textColor="@color/home_text_dim"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/home_modules_title"
+                android:textColor="@color/home_text_dim"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.11" />
+
+            <!-- Modules: 2x2 grid, 10dp gaps. Each tile is a RelativeLayout (icon pinned
+                 top, label group pinned bottom) rather than a LinearLayout with a
+                 0dp/weight=1 spacer - that pattern measures against an unbounded height
+                 here (wrap_content tile inside a ScrollView) and blows up instead of
+                 collapsing to zero. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/home_tile_imu"
+                    android:layout_width="0dp"
+                    android:layout_height="104dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/bg_home_tile_gray"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="14dp">
+
+                    <ImageView
+                        android:id="@+id/home_icon_imu"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true"
+                        android:src="@drawable/ic_home_imu"
+                        android:contentDescription="@null" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentStart="true"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_tile_imu"
+                            android:textColor="@color/home_text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/home_state_imu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/home_tile_state_offline"
+                            android:textColor="@color/home_icon_gray"
+                            android:textSize="10sp"
+                            android:letterSpacing="0.05" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/home_tile_fpv"
+                    android:layout_width="0dp"
+                    android:layout_height="104dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/bg_home_tile_gray"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="14dp">
+
+                    <ImageView
+                        android:id="@+id/home_icon_fpv"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true"
+                        android:src="@drawable/ic_home_fpv"
+                        android:contentDescription="@null" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentStart="true"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_tile_fpv"
+                            android:textColor="@color/home_text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/home_state_fpv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/home_tile_state_offline"
+                            android:textColor="@color/home_icon_gray"
+                            android:textSize="10sp"
+                            android:letterSpacing="0.05" />
+                    </LinearLayout>
+                </RelativeLayout>
+            </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="14dp"
-                android:layout_marginStart="14dp"
-                android:orientation="vertical">
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/main_activity_header_title"
-                    android:textColor="@color/header_title"
-                    android:textSize="21sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium"
-                    android:letterSpacing="0.06" />
+                <RelativeLayout
+                    android:id="@+id/home_tile_com"
+                    android:layout_width="0dp"
+                    android:layout_height="104dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/bg_home_tile_gray"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="14dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="@string/main_activity_tagline"
-                    android:textColor="@color/header_subtitle"
-                    android:textSize="13sp"
-                    android:fontFamily="sans-serif-condensed" />
+                    <ImageView
+                        android:id="@+id/home_icon_com"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true"
+                        android:src="@drawable/ic_home_com"
+                        android:contentDescription="@null" />
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentStart="true"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_tile_com"
+                            android:textColor="@color/home_text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/home_state_com"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/home_tile_state_offline"
+                            android:textColor="@color/home_icon_gray"
+                            android:textSize="10sp"
+                            android:letterSpacing="0.05" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/home_tile_fcb"
+                    android:layout_width="0dp"
+                    android:layout_height="104dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/bg_home_tile_gray"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="14dp">
+
+                    <ImageView
+                        android:id="@+id/home_icon_fcb"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true"
+                        android:src="@drawable/ic_home_fcb"
+                        android:contentDescription="@null" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentStart="true"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_tile_fcb"
+                            android:textColor="@color/home_text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/home_state_fcb"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/home_tile_state_tap_to_link"
+                            android:textColor="@color/home_icon_gray"
+                            android:textSize="10sp"
+                            android:letterSpacing="0.05" />
+                    </LinearLayout>
+                </RelativeLayout>
             </LinearLayout>
 
         </LinearLayout>
+    </ScrollView>
 
-        <!-- Action grid: row 1 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btnIMU"
-                android:layout_width="0dp"
-                android:layout_height="148dp"
-                android:layout_weight="1"
-                android:layout_margin="6dp"
-                android:elevation="6dp"
-                android:stateListAnimator="@null"
-                android:background="@drawable/sel_big_button_color"
-                android:text="@string/main_activity_btn_IMU"
-                android:textAllCaps="false"
-                android:textColor="@color/sel_main_btn_text"
-                android:textSize="14sp"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:drawableTop="@drawable/badge_icon_imu"
-                android:drawablePadding="10dp"
-                android:paddingTop="10dp" />
-
-            <Button
-                android:id="@+id/btnFPV"
-                android:layout_width="0dp"
-                android:layout_height="148dp"
-                android:layout_weight="1"
-                android:layout_margin="6dp"
-                android:elevation="6dp"
-                android:stateListAnimator="@null"
-                android:background="@drawable/sel_big_button_color"
-                android:text="@string/main_activity_btn_FPV"
-                android:textAllCaps="false"
-                android:textColor="@color/sel_main_btn_text"
-                android:textSize="14sp"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:drawableTop="@drawable/badge_icon_fpv"
-                android:drawablePadding="10dp"
-                android:paddingTop="10dp" />
-
-        </LinearLayout>
-
-        <!-- Action grid: row 2 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btnCommServer"
-                android:layout_width="0dp"
-                android:layout_height="148dp"
-                android:layout_weight="1"
-                android:layout_margin="6dp"
-                android:elevation="6dp"
-                android:stateListAnimator="@null"
-                android:background="@drawable/sel_big_button_color"
-                android:text="@string/main_activity_btn_COM"
-                android:textAllCaps="false"
-                android:textColor="@color/sel_main_btn_text"
-                android:textSize="14sp"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:drawableTop="@drawable/badge_icon_com"
-                android:drawablePadding="10dp"
-                android:paddingTop="10dp" />
-
-            <Button
-                android:id="@+id/btnFCB"
-                android:layout_width="0dp"
-                android:layout_height="148dp"
-                android:layout_weight="1"
-                android:layout_margin="6dp"
-                android:elevation="6dp"
-                android:stateListAnimator="@null"
-                android:background="@drawable/sel_big_button_color"
-                android:text="@string/main_activity_btn_FCB"
-                android:textAllCaps="false"
-                android:textColor="@color/sel_main_btn_text"
-                android:textSize="14sp"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:drawableTop="@drawable/badge_icon_fcb"
-                android:drawablePadding="10dp"
-                android:paddingTop="10dp" />
-
-        </LinearLayout>
-
-        <!-- Info chips -->
-        <TextView
-            android:id="@+id/mainactivity_txtAccessCode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/chip_info_background"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:textColor="@color/chip_text"
-            android:textSize="13sp"
-            android:fontFamily="sans-serif-condensed"
-            android:hint="@string/main_activity_hint_access"
-            android:textColorHint="@color/header_subtitle" />
-
-        <TextView
-            android:id="@+id/mainactivity_txtUdpProxy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/chip_info_background"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:textColor="@color/chip_text"
-            android:textSize="13sp"
-            android:fontFamily="sans-serif-condensed"
-            android:hint="@string/main_activity_hint_telem"
-            android:textColorHint="@color/header_subtitle" />
-
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>

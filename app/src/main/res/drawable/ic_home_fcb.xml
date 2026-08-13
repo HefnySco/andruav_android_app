@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- runtime-tinted: gray/blue/green per FCB-link state, see MainScreen#updateModuleTiles -->
+    <path
+        android:pathData="M9,7 L15,7 A2,2 0 0 1 17,9 L17,15 A2,2 0 0 1 15,17 L9,17 A2,2 0 0 1 7,15 L7,9 A2,2 0 0 1 9,7 Z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.6"
+        android:fillColor="#00000000" />
+    <path
+        android:pathData="M9,2.5 L9,6 M15,2.5 L15,6 M9,18 L9,21.5 M15,18 L15,21.5 M2.5,9 L6,9 M2.5,15 L6,15 M18,9 L21.5,9 M18,15 L21.5,15"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.6"
+        android:fillColor="#00000000" />
+</vector>

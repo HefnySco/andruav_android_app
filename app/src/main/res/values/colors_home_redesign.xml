@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home screen redesign palette (dark "tactical" theme) -->
+    <!-- source: NEW_ANDRUAV_DESIGN/Mobile app design planning2/design_handoff_home_redesign/README.md -->
+
+    <color name="home_bg">#0C0D0F</color>
+    <color name="home_surface">#16181B</color>
+    <color name="home_surface_disabled_tile">#1D1F22</color>
+
+    <color name="home_border">#2B2E32</color>
+    <color name="home_border_soft">#242729</color>
+    <color name="home_border_input">#303337</color>
+
+    <color name="home_text_primary">#EDEEF0</color>
+    <color name="home_text_secondary">#7C8186</color>
+    <color name="home_text_dim">#606368</color>
+    <color name="home_text_dim_alt">#6E7277</color>
+    <color name="home_text_dim_darker">#5B5E62</color>
+    <color name="home_text_on_input">#CBCED1</color>
+
+    <color name="home_amber">#F4A437</color>
+    <color name="home_amber_on">#130C05</color>
+    <color name="home_amber_warning_border">#66693C00</color>
+
+    <color name="home_blue_icon">#56ACF0</color>
+    <color name="home_blue_border">#8C2D86C8</color>
+    <color name="home_blue_bg">#292677B2</color>
+
+    <color name="home_green_icon">#65C67D</color>
+    <color name="home_green_border">#8C36A558</color>
+    <color name="home_green_bg">#292E9E52</color>
+
+    <color name="home_red_dot">#E24947</color>
+    <color name="home_red_text">#FD736D</color>
+    <color name="home_red_border_soft">#80E24947</color>
+
+    <color name="home_scrim">#66000000</color>
+    <color name="home_popup_bg">#22242A</color>
+
+    <!-- Fixed (non state-driven) icon tones used by the globe/GPS/battery/signal/kebab glyphs -->
+    <color name="home_icon_muted">#9AA0A6</color>
+    <!-- Tint applied to module-tile icons/captions when offline/unavailable -->
+    <color name="home_icon_gray">#7A7E82</color>
+</resources>

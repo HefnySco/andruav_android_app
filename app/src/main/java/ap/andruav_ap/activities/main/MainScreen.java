@@ -20,14 +20,24 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.text.Html;
 import android.util.Log;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.ColorRes;
+import androidx.core.content.ContextCompat;
 
 import java.io.UnsupportedEncodingException;
 
@@ -47,6 +57,7 @@ import ap.andruav_ap.App;
 
 import com.andruav.AndruavInternalCommands;
 import com.andruav.AndruavFacade;
+import com.andruav.controlBoard.shared.common.VehicleTypes;
 
 import ap.andruav_ap.helpers.CheckAppPermissions;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_ProtocolChanged;
@@ -103,12 +114,42 @@ public class MainScreen extends BaseAndruavShasha {
     // https://developers.google.com/+/mobile/android/recommend
     // The request code must be 0 or greater.
     private final boolean pauseToExit = false;
-    private Button mbtnIMU;
-    private Button mbtnFPV;
-    private Button mbtnConnection;
-    private Button mbtnFCB;
-    private TextView mtxtAccessCode;
-    private TextView mtxtUDPProxy;
+
+    private ImageButton mBtnMenu;
+
+    private View mCardServer;
+    private View mDotServer;
+    private TextView mTxtServerStatus;
+    private TextView mTxtServerSubtitle;
+    private TextView mBtnServerConnect;
+    private TextView mBtnServerDisconnect;
+
+    private TextView mTxtTelemetryStatus;
+    private View mGroupTelemetryLinked;
+    private TextView mTxtDroneName;
+    private TextView mTxtDroneSubtitle;
+    private TextView mTxtGps;
+    private TextView mTxtBattery;
+    private TextView mTxtSignal;
+    private TextView mTxtTelemetryHelper;
+
+    // module grid tiles: container (tap target), icon (runtime-tinted), state caption
+    private View mTileImu;
+    private View mTileFpv;
+    private View mTileCom;
+    private View mTileFcb;
+    private ImageView mIconImu;
+    private ImageView mIconFpv;
+    private ImageView mIconCom;
+    private ImageView mIconFcb;
+    private TextView mStateImu;
+    private TextView mStateFpv;
+    private TextView mStateCom;
+    private TextView mStateFcb;
+
+    // mirrors the enabled-state the old ActionBar menu items carried, applied to the new kebab popup rows
+    private boolean mMenuActionsEnabled = true;
+    private boolean mSettingsEnabled = true;
 
     private Handler mhandle;
 
@@ -297,7 +338,6 @@ public class MainScreen extends BaseAndruavShasha {
                         AndruavEngine.notification().Speak(getString(com.andruav.protocol.R.string.udp_proxy_dis));
                     }
 
-                    writeUDPProxy();
                     AndruavFacade.sendUdpProxyStatus(null);
 
                 }
@@ -331,7 +371,6 @@ public class MainScreen extends BaseAndruavShasha {
                             progressDialogSetMessage(getString(ap.andruavmiddlelibrary.R.string.gen_step2) + getString(ap.andruavmiddlelibrary.R.string.gen_accesscodevalid));
                             AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_accesscodevalid));
                             startAndruavConnection();
-                            writeInfoLabel();
                             break;
                         case LoginClient.ERR_OLD_APP_VERSION:
                             exitProgressDialog();
@@ -519,37 +558,47 @@ public class MainScreen extends BaseAndruavShasha {
 
         if (isInEditMode) return;
 
-        mbtnIMU = findViewById(R.id.btnIMU);
-        mbtnIMU.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
+        mBtnMenu = findViewById(R.id.home_btn_menu);
+        mBtnMenu.setOnClickListener(this::showOverflowMenu);
 
+        mCardServer = findViewById(R.id.home_card_server);
+        mDotServer = findViewById(R.id.home_dot_server);
+        mTxtServerStatus = findViewById(R.id.home_txt_server_status);
+        mTxtServerSubtitle = findViewById(R.id.home_txt_server_subtitle);
+        mBtnServerConnect = findViewById(R.id.home_btn_server_connect);
+        mBtnServerDisconnect = findViewById(R.id.home_btn_server_disconnect);
+        mBtnServerConnect.setOnClickListener(v -> onServerConnectToggle());
+        mBtnServerDisconnect.setOnClickListener(v -> onServerConnectToggle());
+        mTxtServerSubtitle.setText(Preference.getAuthServerURL(null));
 
-                startActivity(new Intent(MainScreen.this, IMUShasha.class));
-            }
-        });
-        mbtnFPV = findViewById(R.id.btnFPV);
-        mbtnFPV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
+        mTxtTelemetryStatus = findViewById(R.id.home_txt_telemetry_status);
+        mGroupTelemetryLinked = findViewById(R.id.home_group_telemetry_linked);
+        mTxtDroneName = findViewById(R.id.home_txt_drone_name);
+        mTxtDroneSubtitle = findViewById(R.id.home_txt_drone_subtitle);
+        mTxtGps = findViewById(R.id.home_txt_gps);
+        mTxtBattery = findViewById(R.id.home_txt_battery);
+        mTxtSignal = findViewById(R.id.home_txt_signal);
+        mTxtTelemetryHelper = findViewById(R.id.home_txt_telemetry_helper);
 
+        mTileImu = findViewById(R.id.home_tile_imu);
+        mTileFpv = findViewById(R.id.home_tile_fpv);
+        mTileCom = findViewById(R.id.home_tile_com);
+        mTileFcb = findViewById(R.id.home_tile_fcb);
+        mIconImu = findViewById(R.id.home_icon_imu);
+        mIconFpv = findViewById(R.id.home_icon_fpv);
+        mIconCom = findViewById(R.id.home_icon_com);
+        mIconFcb = findViewById(R.id.home_icon_fcb);
+        mStateImu = findViewById(R.id.home_state_imu);
+        mStateFpv = findViewById(R.id.home_state_fpv);
+        mStateCom = findViewById(R.id.home_state_com);
+        mStateFcb = findViewById(R.id.home_state_fcb);
 
-                FPVActivityFactory.startFPVActivity(MainScreen.this);
-
-            }
-        });
-        mbtnConnection = findViewById(R.id.btnCommServer);
-        mbtnConnection.setOnClickListener(arg0 -> startActivity(new Intent(MainScreen.this, HUBCommunication.class)));
-
-
-
-        mbtnFCB = findViewById(R.id.btnFCB);
-        mbtnFCB.setOnClickListener(new View.OnClickListener() {
+        mTileImu.setOnClickListener(v -> startActivity(new Intent(MainScreen.this, IMUShasha.class)));
+        mTileFpv.setOnClickListener(v -> FPVActivityFactory.startFPVActivity(MainScreen.this));
+        mTileCom.setOnClickListener(v -> startActivity(new Intent(MainScreen.this, HUBCommunication.class)));
+        mTileFcb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
-
 
                 if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
                     if ((App.telemetryProtocolParser instanceof TelemetryGCSProtocolParser))
@@ -558,33 +607,19 @@ public class MainScreen extends BaseAndruavShasha {
                         App.telemetryProtocolParser = null;
                     }
 
-                    startActivity(new Intent(MainScreen.this, FCB_AndruavShashaL2.class));
+                    FcbConnectionSheet.newInstance().show(getSupportFragmentManager(), FcbConnectionSheet.TAG);
                 }
 
             }
         });
 
-        mtxtAccessCode = findViewById(R.id.mainactivity_txtAccessCode);
-        mtxtUDPProxy = findViewById(R.id.mainactivity_txtUdpProxy);
-        writeInfoLabel();
-        writeUDPProxy();
-
         // Define UI Handler
         UIHandler();
 
-
-        View parentLayout = findViewById(android.R.id.content);
         App.notification.showSnack(INotification.NOTIFICATION_TYPE_NORMAL, "Info", "Andruav version: " + App.versionName);
 
-
-    }
-
-    private void writeInfoLabel() {
-        mtxtAccessCode.setText(Html.fromHtml(String.format("<font color=#75A4D3><b>access code: </b></font><font color=#36AB36>%s</font>", GUI.writeTextAccessCode())));
-    }
-
-    private void writeUDPProxy() {
-        mtxtUDPProxy.setText(Html.fromHtml(GUI.writeUdpProxy()));
+        updateServerCard();
+        updateModuleTiles();
     }
 
 
@@ -718,6 +753,7 @@ public class MainScreen extends BaseAndruavShasha {
     protected void updateConnectionIconsStatus(final int status, final int  action) {
         if (miConnect == null) return; // issue 42
         updateButtonsStatus(status, action);
+        updateServerCard();
         switch (status) {
             case SOCKETSTATE_CONNECTED:
                 miConnect.setIcon(R.drawable.connected_w_32x32);
@@ -754,7 +790,7 @@ public class MainScreen extends BaseAndruavShasha {
             BigButtonsenabled = false;
             enabled = false;
             if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                mbtnFCB.setEnabled(false);
+                mTileFcb.setEnabled(false);
             }
 
         }
@@ -765,14 +801,14 @@ public class MainScreen extends BaseAndruavShasha {
                     BigButtonsenabled = false;
                     enabled = false;
                     if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                        mbtnFCB.setEnabled(false);
+                        mTileFcb.setEnabled(false);
                     }
                     break;
                 case SOCKETSTATE_REGISTERED:
                     enabled = false;
                     BigButtonsenabled = true;
                     if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                        mbtnFCB.setEnabled(AndruavSettings.andruavWe7daBase.canTelemetry());
+                        mTileFcb.setEnabled(AndruavSettings.andruavWe7daBase.canTelemetry());
                     }
 
                     break;
@@ -781,12 +817,12 @@ public class MainScreen extends BaseAndruavShasha {
                     enabled = true;
                     BigButtonsenabled = false;
                     if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                        mbtnFCB.setEnabled(false);
+                        mTileFcb.setEnabled(false);
                     }
                     break;
                 case SOCKETSTATE_FREASH:
                     if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                        mbtnFCB.setEnabled(false);
+                        mTileFcb.setEnabled(false);
                     }
                     enabled = true;
                     BigButtonsenabled = true;
@@ -795,7 +831,7 @@ public class MainScreen extends BaseAndruavShasha {
                     enabled = true;
                     BigButtonsenabled = true;
                     if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                        mbtnFCB.setEnabled(false);
+                        mTileFcb.setEnabled(false);
                     }
                     break;
             }
@@ -803,78 +839,235 @@ public class MainScreen extends BaseAndruavShasha {
         }
         mMenu.findItem(R.id.mi_main_ResetFactory).setEnabled(enabled);
         mMenu.findItem(R.id.mi_main_signout).setEnabled(enabled);
+        mMenuActionsEnabled = enabled;
 
-        mbtnConnection.setEnabled(BigButtonsenabled && enabled);
+        mTileCom.setEnabled(BigButtonsenabled && enabled);
 
         if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
-            mbtnFCB.setEnabled(BigButtonsenabled);
-            mbtnIMU.setEnabled(BigButtonsenabled && enabled);
-            mbtnFPV.setEnabled(BigButtonsenabled);
+            mTileFcb.setEnabled(BigButtonsenabled);
+            mTileImu.setEnabled(BigButtonsenabled && enabled);
+            mTileFpv.setEnabled(BigButtonsenabled);
 
             mMenu.findItem(R.id.mi_main_Settings_drone).setEnabled(enabled);
+            mSettingsEnabled = enabled;
         }
         else
         {
 
-            mbtnIMU.setEnabled(false);
-            mbtnFPV.setEnabled(false);
+            mTileImu.setEnabled(false);
+            mTileFpv.setEnabled(false);
 
             mMenu.findItem(R.id.mi_main_Settings_drone).setEnabled(false);
-        }
-
-
-
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            // a Lollypop Issue http://stackoverflow.com/questions/26958909/why-is-my-button-text-coerced-to-all-caps-on-lollipop
-            mbtnIMU.setTransformationMethod(null);
+            mSettingsEnabled = false;
         }
     }
 
     protected void updateFCBButton() {
-        if ((App.isSocketListenerRunning()  && AndruavSettings.andruavWe7daBase.getIsCGS()))
-        {
-            if (AndruavSettings.remoteTelemetryAndruavWe7da.getisGCSBlockedFromBoard())
-            {
-                // Traffic is BLOCKED
-                mbtnFCB.setBackgroundResource(R.drawable.big_button_shape_error);
-            }
-            else
-            if (!AndruavSettings.andruavWe7daBase.canTelemetry())
-            {
-                mbtnFCB.setBackgroundResource(R.drawable.big_button_shape_disabled);
-            }
-            else
-            {
-                mbtnFCB.setBackgroundResource(R.drawable.big_button_shape_active);
-            }
-        } else
-        if  ((TelemetryModeer.getConnectionInfo() != TelemetryModeer.CURRENTCONNECTION_NON) && !AndruavSettings.andruavWe7daBase.getIsCGS())
-        {
-            if (AndruavSettings.andruavWe7daBase.getisGCSBlockedFromBoard())
-            {
-                // Traffic is BLOCKED
-                mbtnFCB.setBackgroundResource(R.drawable.big_button_shape_error);
-            }
-            else
-            {
-                mbtnFCB.setBackgroundResource(R.drawable.big_button_shape_active);
-            }
-        }
-        else
-        {
-            mbtnFCB.setBackgroundResource(R.drawable.sel_big_button_color);
-        }
-
+        updateModuleTiles();
     }
 
     protected void updateFPVButton() {
-        if (App.isFPVStreamingServiceRunning())
-        {
-            mbtnFPV.setBackgroundResource(R.drawable.big_button_shape_active);
+        updateModuleTiles();
+    }
+
+    /***
+     * Recomputes the IMU/FPV/Com/FCB module tile styling and the Flight Telemetry
+     * card from current connection state, per the Home screen redesign state rules:
+     * IMU/FPV follow the FCB link, Com follows the Mission Server link, FCB reflects
+     * both (green when linked, blue when server-connected but not yet linked, gray
+     * otherwise).
+     */
+    private void updateModuleTiles() {
+        final boolean serverConnected = AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED);
+        final boolean fcbConnected = TelemetryModeer.getConnectionInfo() != TelemetryModeer.CURRENTCONNECTION_NON;
+
+        setTileState(mTileImu, mIconImu, mStateImu,
+                fcbConnected ? TileState.BLUE : TileState.GRAY,
+                fcbConnected ? R.string.home_tile_state_ready : R.string.home_tile_state_offline);
+        setTileState(mTileFpv, mIconFpv, mStateFpv,
+                fcbConnected ? TileState.BLUE : TileState.GRAY,
+                fcbConnected ? R.string.home_tile_state_ready : R.string.home_tile_state_offline);
+        setTileState(mTileCom, mIconCom, mStateCom,
+                serverConnected ? TileState.GREEN : TileState.GRAY,
+                serverConnected ? R.string.home_tile_state_live : R.string.home_tile_state_offline);
+
+        final TileState fcbState = fcbConnected ? TileState.GREEN : (serverConnected ? TileState.BLUE : TileState.GRAY);
+        final float fcbOpacity = fcbConnected ? 1f : (serverConnected ? 0.85f : 0.55f);
+        final int fcbCaption = fcbConnected ? R.string.home_tile_state_linked : R.string.home_tile_state_tap_to_link;
+        setTileState(mTileFcb, mIconFcb, mStateFcb, fcbState, fcbCaption, fcbOpacity);
+
+        updateTelemetryCard(fcbConnected);
+    }
+
+    private enum TileState {
+        GRAY(R.drawable.bg_home_tile_gray, R.color.home_icon_gray, 0.55f),
+        BLUE(R.drawable.bg_home_tile_blue, R.color.home_blue_icon, 1f),
+        GREEN(R.drawable.bg_home_tile_green, R.color.home_green_icon, 1f);
+
+        final int background;
+        final int colorRes;
+        final float opacity;
+
+        TileState(int background, int colorRes, float opacity) {
+            this.background = background;
+            this.colorRes = colorRes;
+            this.opacity = opacity;
+        }
+    }
+
+    private void setTileState(View tile, ImageView icon, TextView caption, TileState state, int captionRes) {
+        setTileState(tile, icon, caption, state, captionRes, state.opacity);
+    }
+
+    private void setTileState(View tile, ImageView icon, TextView caption, TileState state, int captionRes, float opacity) {
+        tile.setBackgroundResource(state.background);
+        final int color = ContextCompat.getColor(this, state.colorRes);
+        icon.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
+        icon.setAlpha(opacity);
+        caption.setText(captionRes);
+        caption.setTextColor(color);
+        caption.setAlpha(opacity);
+    }
+
+    private void updateTelemetryCard(boolean fcbConnected) {
+        mTxtTelemetryStatus.setText(fcbConnected ? R.string.home_telemetry_linked : R.string.home_telemetry_not_linked);
+        mTxtTelemetryStatus.setTextColor(ContextCompat.getColor(this,
+                fcbConnected ? R.color.home_green_icon : R.color.home_text_dim));
+
+        mGroupTelemetryLinked.setVisibility(fcbConnected ? View.VISIBLE : View.GONE);
+        mTxtTelemetryHelper.setVisibility(fcbConnected ? View.GONE : View.VISIBLE);
+
+        if (!fcbConnected) return;
+
+        final com.andruav.andruavUnit.AndruavUnitBase unit = AndruavSettings.andruavWe7daBase;
+
+        mTxtDroneName.setText(unit.UnitID);
+
+        final int vehicleType = unit.getVehicleType();
+        final String vehicleLabel = (vehicleType >= 0 && vehicleType < VehicleTypes.vechicleTypes.length)
+                ? VehicleTypes.vechicleTypes[vehicleType] : "";
+        mTxtDroneSubtitle.setText(getString(R.string.home_telemetry_subtitle_format, vehicleLabel, linkTypeLabel(Preference.getFCBTargetComm(null))));
+
+        mTxtGps.setText(getString(R.string.home_sats_format, unit.getActiveIMU().SATC));
+        mTxtBattery.setText(getString(R.string.home_battery_format, (int) unit.LastEvent_Battery.FCB_BatteryRemaining));
+        mTxtSignal.setText(getString(R.string.home_signal_format, unit.getSignalLevel()));
+    }
+
+    private String linkTypeLabel(int fcbTargetComm) {
+        if (fcbTargetComm == Preference.FCB_COM_BT) return "Bluetooth";
+        if (fcbTargetComm == Preference.FCB_COM_USB) return "USB";
+        if (fcbTargetComm == Preference.FCB_COM_TCP) return "Wi-Fi";
+        if (fcbTargetComm == Preference.FCB_COM_UDP) return "UDP";
+        return "";
+    }
+
+    private void updateServerCard() {
+        final boolean connected = AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED);
+
+        mCardServer.setBackgroundResource(connected ? R.drawable.bg_home_card : R.drawable.bg_home_card_warning);
+        setViewColor(mDotServer, connected ? R.color.home_green_icon : R.color.home_red_dot);
+
+        mTxtServerStatus.setText(connected ? R.string.home_server_status_connected : R.string.home_server_status_disconnected);
+        mTxtServerStatus.setTextColor(ContextCompat.getColor(this,
+                connected ? R.color.home_green_icon : R.color.home_red_text));
+
+        mBtnServerConnect.setVisibility(connected ? View.GONE : View.VISIBLE);
+        mBtnServerDisconnect.setVisibility(connected ? View.VISIBLE : View.GONE);
+    }
+
+    private void setViewColor(View view, @ColorRes int colorRes) {
+        final Drawable bg = view.getBackground();
+        if (bg instanceof GradientDrawable) {
+            ((GradientDrawable) bg.mutate()).setColor(ContextCompat.getColor(this, colorRes));
+        }
+    }
+
+    /***
+     * Mirrors the previous ActionBar "connect" icon behavior (now the Mission Server
+     * card's CONNECT/DISCONNECT control): toggles the server link and briefly disables
+     * itself to guard against double taps while the tap is being processed.
+     */
+    private void onServerConnectToggle() {
+        mBtnServerConnect.setEnabled(false);
+        mBtnServerDisconnect.setEnabled(false);
+        mhandle.postDelayed(() -> {
+            mBtnServerConnect.setEnabled(true);
+            mBtnServerDisconnect.setEnabled(true);
+        }, 1500);
+
+        final int status = AndruavEngine.getAndruavWSStatus();
+        final int action = AndruavEngine.getAndruavWSAction();
+
+        if ((status == SOCKETSTATE_CONNECTED) || (status == SOCKETSTATE_REGISTERED)) {
+            doLogout();
+        } else if ((status == SOCKETSTATE_DISCONNECTED) || (status == SOCKETSTATE_FREASH)) {
+            doLogin(true);
+        } else if ((status == SOCKETSTATE_ERROR) || (action == SOCKETACTION_CONNECTING)) {
+            doLogout();
+            EventBus.getDefault().post(new EventSocketState(EventSocketState.ENUM_SOCKETSTATE.onDisconnect, "manual closing"));
+        }
+    }
+
+    private void showOverflowMenu(View anchor) {
+        final View content = LayoutInflater.from(this).inflate(R.layout.popup_home_overflow, null);
+
+        final PopupWindow popup = new PopupWindow(content, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        popup.setOutsideTouchable(true);
+        popup.setElevation(12f);
+
+        final boolean isGCS = AndruavSettings.andruavWe7daBase.getIsCGS();
+
+        bindMenuRow(content, R.id.home_menu_row_help, popup, this::doHelp, true);
+        bindMenuRow(content, R.id.home_menu_row_settings, popup, this::doSettings_Drone, mSettingsEnabled && !isGCS);
+        bindMenuRow(content, R.id.home_menu_row_reset, popup, this::doFactoryReset, mMenuActionsEnabled);
+        bindMenuRow(content, R.id.home_menu_row_exit, popup, this::doExit, true);
+        bindMenuRow(content, R.id.home_menu_row_remote, popup, this::doRemoteSettings, true);
+        bindMenuRow(content, R.id.home_menu_row_about, popup, this::showAboutDialog, true);
+        bindMenuRow(content, R.id.home_menu_row_signout, popup, this::doSignOut, mMenuActionsEnabled);
+
+        popup.showAsDropDown(anchor, -150, 4, Gravity.END);
+    }
+
+    private void bindMenuRow(View content, int rowId, PopupWindow popup, Runnable action, boolean enabled) {
+        final View row = content.findViewById(rowId);
+        row.setEnabled(enabled);
+        row.setAlpha(enabled ? 1f : 0.4f);
+        row.setOnClickListener(v -> {
+            popup.dismiss();
+            if (enabled) action.run();
+        });
+    }
+
+    private void doHelp() {
+        GMail.sendGMail(this, getString(ap.andruavmiddlelibrary.R.string.email_title), getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject), getString(ap.andruavmiddlelibrary.R.string.email_body), null);
+    }
+
+    private void doFactoryReset() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(Me);
+        builder.setMessage(getString(ap.andruavmiddlelibrary.R.string.conf_factoryReset))
+                .setCancelable(false)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Preference.FactoryReset(null);
+                        finish();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void doRemoteSettings() {
+        if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
+            startActivity(new Intent(MainScreen.this, RemoteControlSettingGCSActivityTab.class));
         }
         else
         {
-            mbtnFPV.setBackgroundResource(R.drawable.sel_big_button_color);
+            startActivity(new Intent(MainScreen.this, RemoteControlSettingActivityTab.class));
         }
     }
 
@@ -967,6 +1160,8 @@ public class MainScreen extends BaseAndruavShasha {
             androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
             if (actionBar == null) return;
             actionBar.setHomeButtonEnabled(false);
+            // the Home screen redesign draws its own in-layout header; hide the system one.
+            actionBar.hide();
         } catch (Throwable I) {
             // https://github.com/google/iosched/issues/79 SAMSUNG ISSUE
         }
@@ -1065,35 +1260,11 @@ public class MainScreen extends BaseAndruavShasha {
         } else if (id == R.id.mi_main_Settings_drone) {
             doSettings_Drone();
         } else if (id == R.id.mi_main_ResetFactory) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(Me);
-            builder.setMessage(getString(ap.andruavmiddlelibrary.R.string.conf_factoryReset))
-                    .setCancelable(false)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Preference.FactoryReset(null);
-                            finish();
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
-
-
+            doFactoryReset();
         } else if (id == R.id.mi_main_Help) {
-            GMail.sendGMail(this, getString(ap.andruavmiddlelibrary.R.string.email_title), getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject), getString(ap.andruavmiddlelibrary.R.string.email_body), null);
-
+            doHelp();
         } else if (id == R.id.mi_remotesettings) {
-            if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                startActivity(new Intent(MainScreen.this, RemoteControlSettingGCSActivityTab.class));
-            }
-            else
-            {
-                startActivity(new Intent(MainScreen.this, RemoteControlSettingActivityTab.class));
-            }
+            doRemoteSettings();
             return true;
         } else if (id == R.id.mi_main_About) {
 
@@ -1127,9 +1298,9 @@ public class MainScreen extends BaseAndruavShasha {
             // define unit if available unit is GCS or null
             App.defineAndruavUnit(false);
         }
-        mbtnIMU.setEnabled(true);
-        mbtnFPV.setEnabled(true);
-        mbtnFCB.setEnabled(true);
+        mTileImu.setEnabled(true);
+        mTileFpv.setEnabled(true);
+        mTileFcb.setEnabled(true);
         mMenu.findItem(R.id.mi_remotesettings).setVisible(true);
         // Dont Reset Vehicle Type if Connected to FCB.
         if (!AndruavSettings.andruavWe7daBase.useFCBIMU()) {
@@ -1280,11 +1451,6 @@ public class MainScreen extends BaseAndruavShasha {
         {
             Log.d("ac","autoconnect resume false");
         }
-
-
-
-
-       writeInfoLabel();
     }
 
     @Override

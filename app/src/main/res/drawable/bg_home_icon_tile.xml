@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!-- static 44dp icon tile behind the Mission Server card's globe glyph -->
+    <solid android:color="@color/home_surface_disabled_tile" />
+    <corners android:radius="10dp" />
+</shape>

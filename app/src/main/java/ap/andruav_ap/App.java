@@ -28,6 +28,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -360,37 +361,42 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         @Override
         public void onSignalStrengthsChanged(SignalStrength sStrength) {
-//            if (shutdown || AndruavSettings.andruavWe7daBase.getIsCGS()) return;
-//
-//            int dbm = 0;
-//            final String[] parts = sStrength.toString().split(" ");
-//
-//            if (sStrength.isGsm())
-//            {
-//                dbm = sStrength.getGsmSignalStrength();
-//                if (dbm ==0) dbm = Integer.parseInt(parts[3]);
-//            }else
-//            if (sStrength.getCdmaDbm()>0)
-//            {
-//                dbm = sStrength.getCdmaDbm();
-//            }else if(sStrength.getEvdoDbm()>0)
-//            {
-//                dbm = sStrength.getEvdoDbm();
-//            }
-//
-//            if (dbm >=0) {
-//                if (mManager.getNetworkType() == TelephonyManager.NETWORK_TYPE_LTE) {
-//                    dbm = Integer.parseInt(parts[11]);
-//                } else {
-//                    dbm = -113 + 2 * dbm;
-//                }
-//            }
-//
-//            //TTS.getInstance().Speak(String.valueOf(dbm));
-//
-//
-//            AndruavSettings.andruavWe7daBase.setSignal(mManager.getNetworkType(), dbm);
-//            EventBus.getDefault().post(new _7adath_ConnectionQuality());
+            if (shutdown || AndruavSettings.andruavWe7daBase.getIsCGS()) return;
+
+            final int dbm = extractDbm(sStrength);
+
+            AndruavSettings.andruavWe7daBase.setSignal(mManager.getNetworkType(), dbm);
+            EventBus.getDefault().post(new _7adath_ConnectionQuality());
+        }
+
+        /***
+         * Best-effort dBm extraction, deliberately defensive: SignalStrength's shape (and
+         * even its toString() layout, which this used to parse) varies across Android
+         * versions and OEM telephony stacks - e.g. 5G NR fields shift the token positions
+         * that the old Integer.parseInt(toString().split(" ")[...]) approach relied on,
+         * which crashed the app outright on a modern device. A failure here is just a
+         * missing UI stat, not worth taking the app down for, so any exception falls back
+         * to 0 instead of propagating.
+         */
+        private int extractDbm(SignalStrength sStrength) {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    final java.util.List<android.telephony.CellSignalStrength> strengths = sStrength.getCellSignalStrengths();
+                    if (!strengths.isEmpty()) {
+                        return strengths.get(0).getDbm();
+                    }
+                }
+
+                if (sStrength.isGsm()) {
+                    final int asu = sStrength.getGsmSignalStrength();
+                    if (asu != 0 && asu != 99) return -113 + 2 * asu; // ASU -> dBm
+                }
+                if (sStrength.getCdmaDbm() > 0) return sStrength.getCdmaDbm();
+                if (sStrength.getEvdoDbm() > 0) return sStrength.getEvdoDbm();
+            } catch (Exception e) {
+                AndruavEngine.log().logException("signal_strength", e);
+            }
+            return 0;
         }
     };
 
