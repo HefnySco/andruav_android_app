@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="32"
+    android:viewportHeight="32">
+
+    <!-- Android mascot head (blue circle) -->
+    <path
+        android:pathData="M 16,5 A 7,7 0 1,0 16,19 A 7,7 0 1,0 16,5"
+        android:fillColor="#56ACF0" />
+
+    <!-- Left antenna line -->
+    <path
+        android:pathData="M 10,5 Q 8,2 6,1"
+        android:strokeColor="#56ACF0"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round" />
+
+    <!-- Left antenna dot -->
+    <path
+        android:pathData="M 6,1 A 1,1 0 1,0 6,1"
+        android:fillColor="#56ACF0" />
+
+    <!-- Right antenna line -->
+    <path
+        android:pathData="M 22,5 Q 24,2 26,1"
+        android:strokeColor="#56ACF0"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round" />
+
+    <!-- Right antenna dot -->
+    <path
+        android:pathData="M 26,1 A 1,1 0 1,0 26,1"
+        android:fillColor="#56ACF0" />
+
+    <!-- Body -->
+    <path
+        android:pathData="M 12,18 L 20,18 L 20,28 L 12,28 Z"
+        android:fillColor="#56ACF0" />
+
+    <!-- Left arm -->
+    <path
+        android:pathData="M 8,20 L 12,20 L 12,26 L 8,26 Z"
+        android:fillColor="#56ACF0" />
+
+    <!-- Right arm -->
+    <path
+        android:pathData="M 20,20 L 24,20 L 24,26 L 20,26 Z"
+        android:fillColor="#56ACF0" />
+
+    <!-- WiFi arc 1 (innermost) -->
+    <path
+        android:pathData="M 22,18 Q 24,20 26,22"
+        android:strokeColor="#F4A437"
+        android:strokeWidth="1.2"
+        android:strokeLineCap="round" />
+
+    <!-- WiFi arc 2 (middle) -->
+    <path
+        android:pathData="M 20.5,16.5 Q 24,21 27.5,25"
+        android:strokeColor="#F4A437"
+        android:strokeWidth="1.2"
+        android:strokeLineCap="round" />
+
+    <!-- WiFi dot -->
+    <path
+        android:pathData="M 24,26 A 1,1 0 1,0 24,26"
+        android:fillColor="#F4A437" />
+</vector>

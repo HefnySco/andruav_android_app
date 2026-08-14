@@ -23,18 +23,12 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <FrameLayout
+            <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:background="@drawable/bg_home_logo_tile">
-
-                <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_logo"
-                    android:contentDescription="@null" />
-            </FrameLayout>
+                android:src="@drawable/ic_logo2"
+                android:contentDescription="@null"
+                android:scaleType="fitCenter" />
 
             <TextView
                 android:layout_width="wrap_content"
