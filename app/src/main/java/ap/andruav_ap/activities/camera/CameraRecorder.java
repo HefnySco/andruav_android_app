@@ -156,15 +156,9 @@ public class CameraRecorder extends CameraRecorderBase {
 
 
 
-        if (Preference.useStreamVideoHD(null)) {
-            VIDEO_HEIGHT  = 1080;
-            VIDEO_WIDTH = 720;
-        }
-        else
-        {
-            VIDEO_HEIGHT  = 640;
-            VIDEO_WIDTH = 480;
-        }
+        final int[] recordDimensions = Preference.getActiveCameraDimensions(null);
+        VIDEO_WIDTH = recordDimensions[0];
+        VIDEO_HEIGHT = recordDimensions[1];
     }
 
 

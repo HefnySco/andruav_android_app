@@ -328,14 +328,9 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
 
     private void startRecording() {
         mRecordVideo = false;
-        final int height, width;
-        if (Preference.useStreamVideoHD(null)) {
-            height = 1080;
-            width = 720;
-        } else {
-            height = 640;
-            width = 480;
-        }
+        final int[] recordDimensions = Preference.getActiveCameraDimensions(null);
+        final int width = recordDimensions[0];
+        final int height = recordDimensions[1];
         try {
             try {
                 if (MediaVideoEncoder.VIDEO_FORMAT == MediaVideoEncoder.MOBILE_WORK_FOR_ALL) {

@@ -575,7 +575,7 @@ public class FPVModuleRTCWebCamActivity extends Activity {
     }
 
     private PictureInPictureParams buildPipParams() {
-        final Rational aspect = Preference.useStreamVideoHD(null) ? new Rational(16, 9) : new Rational(4, 3);
+        final Rational aspect = Preference.isActiveCameraHD(null) ? new Rational(16, 9) : new Rational(4, 3);
         final PictureInPictureParams.Builder builder = new PictureInPictureParams.Builder().setAspectRatio(aspect);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             builder.setActions(Collections.singletonList(buildStopRemoteAction()));

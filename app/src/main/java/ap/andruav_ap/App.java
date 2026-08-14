@@ -551,6 +551,17 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
                 boolean supportFlash = getAppContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
 
+                // The web/GCS camera dialog treats every CameraList entry as an independently
+                // dialable & switchable video source (its own signaling channel + its own
+                // CameraSwitch target - see jsc_cameraDialogControl.jsx). This device only has a
+                // single capture pipeline/video track and CameraSwitch still just blind-toggles
+                // (see PeerConnectionManager.switchCamera()), so it must stay a single entry -
+                // reporting one per physical lens breaks both switching and video signaling.
+                final int[] captureDimensions = Preference.getActiveCameraDimensions(null);
+                final int captureWidth = captureDimensions[0];
+                final int captureHeight = captureDimensions[1];
+                final int captureFps = captureDimensions[2];
+
                 // Define Camera
                 JSONObject camera = new JSONObject();
                 camera.put(UAVOSConstants.CAMERA_SUPPORT_VIDEO, true);
@@ -564,6 +575,9 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                         | UAVOSConstants.CAMERA_SPECIFICATION_SUPPORT_FLASHING);
                 camera.put(UAVOSConstants.CAMERA_RECORDING_NOW, false);
                 camera.put(UAVOSConstants.CAMERA_ACTIVE, 1);
+                camera.put(UAVOSConstants.CAMERA_ACTUAL_FPS, captureFps);
+                camera.put(UAVOSConstants.CAMERA_WIDTH, captureWidth);
+                camera.put(UAVOSConstants.CAMERA_HEIGHT, captureHeight);
                 if (AndruavEngine.getPreference().getModuleType().contains(ProtocolHeaders.UAVOS_CAMERA_MODULE_CLASS)) {
                     camera.put(UAVOSConstants.CAMERA_LOCAL_NAME, AndruavSettings.andruavWe7daBase.UnitID);
                 }
@@ -923,8 +937,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
      */
     public void onFirstAndruavRun ()
     {
-        Preference.isAutoUDPProxyConnect(null, true);
-        Preference.useStreamVideoHD(null,true);
+        Preference.isAutoUDPProxyConnect(null, false);
         Preference.setFCBTargetLib(null, Preference.FCB_LIB_3DR);
         Preference.isEmergencyFlightModeFailSafeEnabled(null, 0); //FlightMode.CONST_FLIGHT_CONTROL_RTL);
 
@@ -949,10 +962,9 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     public void onFirstUpdatedVersionRun(String currentlyInstalledVersion)
     {
 
-        Preference.isAutoUDPProxyConnect(null, true);
+        Preference.isAutoUDPProxyConnect(null, false);
         Preference.isLocalServer(null,false);
         Preference.setFirstServer(null,0);
-        Preference.useStreamVideoHD(null,true);
         Preference.FactoryReset_Tracker(null);
         Preference.setBattery_min_value(null, 0);
         Preference.setDefaultCircleRadius(null, 30);

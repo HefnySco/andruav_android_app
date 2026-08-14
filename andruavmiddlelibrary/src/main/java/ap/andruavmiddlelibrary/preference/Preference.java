@@ -948,14 +948,6 @@ public class Preference {
     }
 
 
-    public static boolean useStreamVideoHD(final android.content.ContextWrapper contextWrapper) {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "BDhGXszAC", false);
-    }
-
-    public static void useStreamVideoHD(final android.content.ContextWrapper contextWrapper, final boolean value) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "BDhGXszAC" , value);
-    }
-
     public static boolean useLocalStunServerOnly(final android.content.ContextWrapper contextWrapper) {
         return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "AxU1KiBEH2w", false);
     }
@@ -979,6 +971,56 @@ public class Preference {
 
     public static void setCameraNumber(final android.content.ContextWrapper contextWrapper, final int cameraNum) {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "MwESFWhA", String.valueOf(cameraNum));
+    }
+
+    /***
+     * Streaming resolution mode for a given camera facing.
+     */
+    public static final int STREAM_RESOLUTION_SD  = 0; // 640x480
+    public static final int STREAM_RESOLUTION_HD  = 1; // 1280x720
+    public static final int STREAM_RESOLUTION_MAX = 2; // camera's max supported resolution
+
+    public static int getStreamResolutionModeBack(final android.content.ContextWrapper contextWrapper) {
+        return Integer.parseInt(SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "streamResModeBack", String.valueOf(STREAM_RESOLUTION_HD)));
+    }
+
+    public static void setStreamResolutionModeBack(final android.content.ContextWrapper contextWrapper, final int mode) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "streamResModeBack", String.valueOf(mode));
+    }
+
+    public static int getStreamResolutionModeFront(final android.content.ContextWrapper contextWrapper) {
+        return Integer.parseInt(SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "streamResModeFront", String.valueOf(STREAM_RESOLUTION_HD)));
+    }
+
+    public static void setStreamResolutionModeFront(final android.content.ContextWrapper contextWrapper, final int mode) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "streamResModeFront", String.valueOf(mode));
+    }
+
+    /***
+     * Resolution mode of whichever camera (back/front) is currently selected via {@link #getCameraNumber}.
+     */
+    private static int getActiveStreamResolutionMode(final android.content.ContextWrapper contextWrapper) {
+        return (getCameraNumber(contextWrapper) == 1) ? getStreamResolutionModeFront(contextWrapper) : getStreamResolutionModeBack(contextWrapper);
+    }
+
+    /***
+     * Whether the active camera is set above Standard resolution. Used by consumers (recording,
+     * capability reporting, aspect ratio) that only need a coarse HD/SD distinction rather than
+     * the exact resolution - which for {@link #STREAM_RESOLUTION_MAX} is only known to
+     * {@link ap.andruavmiddlelibrary.webrtc.classes.PeerConnectionManager} once it queries the camera's
+     * actual supported formats.
+     */
+    public static boolean isActiveCameraHD(final android.content.ContextWrapper contextWrapper) {
+        return getActiveStreamResolutionMode(contextWrapper) != STREAM_RESOLUTION_SD;
+    }
+
+    /***
+     * Nominal {width, height, fps} for the active camera's resolution mode. MAX is approximated
+     * as HD here since the real device-max dimensions are only resolved against actual camera
+     * formats inside {@link ap.andruavmiddlelibrary.webrtc.classes.PeerConnectionManager}.
+     */
+    public static int[] getActiveCameraDimensions(final android.content.ContextWrapper contextWrapper) {
+        return isActiveCameraHD(contextWrapper) ? new int[]{1280, 720, 15} : new int[]{640, 480, 10};
     }
 
 
@@ -1138,7 +1180,7 @@ public class Preference {
 
         Preference.setSerialServerPort(contextWrapper, AndruavEngine.getPreference().getContext().getResources().getInteger(R.integer.pref_hub_Port));
         Preference.isAutoFCBConnect(contextWrapper, false);
-        Preference.isAutoUDPProxyConnect(contextWrapper, true);
+        Preference.isAutoUDPProxyConnect(contextWrapper, false);
         Preference.isMobileSensorsDisabled(contextWrapper, false);
 
 
@@ -1210,7 +1252,8 @@ public class Preference {
         Preference.setRTCCamMirrored(contextWrapper, false);
         Preference.useUDPCamera(contextWrapper, true);
         Preference.setVideoImageSizeQuality(contextWrapper, 0);
-        Preference.useStreamVideoHD(contextWrapper, true);
+        Preference.setStreamResolutionModeBack(contextWrapper, STREAM_RESOLUTION_HD);
+        Preference.setStreamResolutionModeFront(contextWrapper, STREAM_RESOLUTION_HD);
         Preference.setSendBackImages(contextWrapper, true);
         Preference.useLocalStunServerOnly(contextWrapper, false);
         Preference.setSTUNServer(contextWrapper, "");

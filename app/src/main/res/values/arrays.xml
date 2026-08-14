@@ -16,6 +16,16 @@
         <item>0</item>
         <item>1</item>
     </string-array>
+    <string-array name="pref_gr_fpv_streamres_options">
+        <item>Standard (640x480)</item>
+        <item>HD (1280x720)</item>
+        <item>Maximum (device max)</item>
+    </string-array>
+    <string-array name="pref_gr_fpv_streamres_options_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
     <string-array name="pref_gr_fcb_smarttelemetrylevel">
         <item>OFF</item>
         <item>Low Opimization</item>

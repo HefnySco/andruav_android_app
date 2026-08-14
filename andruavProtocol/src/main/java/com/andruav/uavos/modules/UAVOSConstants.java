@@ -22,6 +22,9 @@ final public class UAVOSConstants {
     public final static String CAMERA_SUPPORT_ZOOM      = "z";
     public final static String CAMERA_SUPPORT_FLASH     = "f";
     public final static String CAMERA_ACTIVE            = "active";
+    public final static String CAMERA_ACTUAL_FPS        = "a";
+    public final static String CAMERA_WIDTH             = "w";
+    public final static String CAMERA_HEIGHT            = "h";
 
     public final static int CAMERA_SPECIFICATION_SUPPORT_ZOOMING    = 0x1;
     public final static int CAMERA_SPECIFICATION_SUPPORT_ROTATION   = 0x2;

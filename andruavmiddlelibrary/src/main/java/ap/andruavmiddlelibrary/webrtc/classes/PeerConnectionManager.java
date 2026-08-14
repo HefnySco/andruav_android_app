@@ -5,11 +5,14 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Surface;
 
+import java.util.List;
+
 import com.andruav.AndruavDroneFacade;
 import com.andruav.AndruavEngine;
 
 import org.webrtc.Camera1Enumerator;
 import org.webrtc.Camera2Enumerator;
+import org.webrtc.CameraEnumerationAndroid;
 import org.webrtc.CameraEnumerator;
 import org.webrtc.CameraVideoCapturer;
 import org.webrtc.CapturerObserver;
@@ -49,6 +52,9 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     private PeerConnectionFactory pcFactory;
     private PnRTC_3ameel pnRTC3ameel;
     private VideoCapturer capturer;
+    private int mCaptureWidth = 1280;
+    private int mCaptureHeight = 720;
+    private int mCaptureFps = 15;
 
     private VideoSink mExternalVideoSink;
     /**
@@ -205,13 +211,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
                 capturer.initialize(mVideoCapturerSurfaceTextureHelper, context, localVideoSource.getCapturerObserver());
 
-                if (Preference.useStreamVideoHD(null)) {
-                    capturer.startCapture(1280, 720, 15);
-                }
-                else
-                {
-                    capturer.startCapture(640, 480, 10);
-                }
+                capturer.startCapture(mCaptureWidth, mCaptureHeight, mCaptureFps);
             }
 
             // We start out with an emptly MediaStream object, created with help from our PeerConnectionFactory
@@ -285,20 +285,18 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
         }
     }
 
+    private CameraEnumerator createCameraEnumerator() {
+        if (Camera2Enumerator.isSupported(mContext)) {
+            return new Camera2Enumerator(mContext);
+        }
+
+        return new Camera1Enumerator();
+    }
+
     private VideoCapturer createVideoCapturer() {
 
-
-        CameraEnumerator enumerator;
+        final CameraEnumerator enumerator = createCameraEnumerator();
         String deviceName;
-
-
-
-        if (Camera2Enumerator.isSupported(mContext)) {
-            enumerator = new Camera2Enumerator(mContext);
-        }
-        else {
-            enumerator = new Camera1Enumerator();
-        }
 
         if(enumerator.getDeviceNames().length == 1) {
             deviceName = enumerator.getDeviceNames()[0];
@@ -308,9 +306,48 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
             deviceName = enumerator.getDeviceNames()[camNum];
         }
 
-
+        resolveCaptureFormat(enumerator, deviceName);
 
         return enumerator.createCapturer(deviceName, this);
+    }
+
+    /***
+     * Resolves the actual capture width/height/fps to use for the selected camera, based on the
+     * per-facing (front/back) resolution preference, and stores it in mCaptureWidth/Height/Fps
+     * for {@link #init} to pass to VideoCapturer.startCapture().
+     */
+    private void resolveCaptureFormat(final CameraEnumerator enumerator, final String deviceName) {
+        final boolean isFront = enumerator.isFrontFacing(deviceName);
+        final int mode = isFront ? Preference.getStreamResolutionModeFront(null) : Preference.getStreamResolutionModeBack(null);
+
+        if (mode == Preference.STREAM_RESOLUTION_MAX) {
+            final List<CameraEnumerationAndroid.CaptureFormat> formats = enumerator.getSupportedFormats(deviceName);
+            if (formats != null && !formats.isEmpty()) {
+                CameraEnumerationAndroid.CaptureFormat best = formats.get(0);
+                for (final CameraEnumerationAndroid.CaptureFormat format : formats) {
+                    if ((long) format.width * format.height > (long) best.width * best.height) {
+                        best = format;
+                    }
+                }
+                mCaptureWidth = best.width;
+                mCaptureHeight = best.height;
+                // framerate.max is expressed in fps*1000; cap it to a sane streaming range.
+                mCaptureFps = Math.max(10, Math.min(30, best.framerate.max / 1000));
+                return;
+            }
+            // No format info available: fall through to HD below as a safe default.
+        }
+
+        if (mode == Preference.STREAM_RESOLUTION_SD) {
+            mCaptureWidth = 640;
+            mCaptureHeight = 480;
+            mCaptureFps = 10;
+        }
+        else {
+            mCaptureWidth = 1280;
+            mCaptureHeight = 720;
+            mCaptureFps = 15;
+        }
     }
 
     /***
@@ -318,7 +355,10 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
      */
     public void switchCamera () {
 
-        Preference.setCameraNumber(null,(Preference.getCameraNumber(null) + 1) % 2);
+        final int deviceCount = createCameraEnumerator().getDeviceNames().length;
+        if (deviceCount <= 1) return;
+
+        Preference.setCameraNumber(null,(Preference.getCameraNumber(null) + 1) % deviceCount);
         ((CameraVideoCapturer) capturer).switchCamera(null);
 
     }

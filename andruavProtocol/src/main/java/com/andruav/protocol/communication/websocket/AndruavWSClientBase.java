@@ -827,6 +827,7 @@ public abstract class AndruavWSClientBase {
                     ex.printStackTrace();
                 }
             }
+            break;
             case AndruavMessage_CameraSwitch.TYPE_AndruavMessage_CameraSwitch:
             {
                 try
@@ -864,6 +865,7 @@ public abstract class AndruavWSClientBase {
                     e.printStackTrace();
                 }
             }
+            break;
             case AndruavMessage_CameraZoom.TYPE_AndruavMessage_CameraZoom:
             {
                 try

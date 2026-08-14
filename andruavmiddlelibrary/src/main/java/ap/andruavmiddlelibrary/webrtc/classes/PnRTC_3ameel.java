@@ -60,18 +60,11 @@ public class PnRTC_3ameel {
             pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "false"));
         }
 
-        MediaConstraints videoConstraints = null;
-        if (Preference.useStreamVideoHD(null)) {
-            // Enable HD
-            videoConstraints = new MediaConstraints();
-            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxWidth", "1280"));
-            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxHeight", "720"));
-            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("minWidth", "1280"));
-            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("minHeight", "720"));
-        }
-
-
-        PnSignalingParams params = new PnSignalingParams(pcConstraints, videoConstraints, null);
+        // Actual capture resolution is fixed directly on the VideoCapturer by
+        // PeerConnectionManager (per-facing Camera Resolution preference); videoConstraints here
+        // is legacy getUserMedia-style SDP constraint plumbing with no reader (PnRTC_3ameel#videoConstraints()
+        // is never called), so it's left at the default rather than tied to a resolution preference.
+        PnSignalingParams params = new PnSignalingParams(pcConstraints, null, null);
 
 
 

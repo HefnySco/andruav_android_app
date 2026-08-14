@@ -111,6 +111,7 @@ public class SensorService extends Service {
         switch (event.cmdID)
         {
             case Event_IMU_CMD.IMU_CMD_UpdateZeroTilt:
+                if (Preference.isMobileSensorsDisabled(null)) break; // mobile sensors overridden off: mEventAcc was never created
                 Preference.setAccZeroTilt(null,new double[]{AndruavSettings.andruavWe7daBase.LastEvent_IMU.P, AndruavSettings.andruavWe7daBase.LastEvent_IMU.R,0.0});
                 mEventAcc.tiltValues = Preference.getAccZeroTilt(null);
                 break;
