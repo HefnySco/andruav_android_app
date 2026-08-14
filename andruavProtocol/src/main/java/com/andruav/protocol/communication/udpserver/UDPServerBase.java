@@ -74,8 +74,6 @@ public abstract class UDPServerBase {
 
         if (socketUDP == null || socketUDP.isClosed()) {
             socketUDP = new DatagramSocket(port);
-            //socketUDP.setReuseAddress(true);
-            //socketUDP.bind(new InetSocketAddress(port));
             socketUDP.setBroadcast(true);
         }
 
@@ -144,7 +142,6 @@ public abstract class UDPServerBase {
                                 }
                                 else {
                                     // could happen mostly to the servers thread
-                                    // connHandler.obtainMessage(CONNECTOR_STATE.MSG_CONN_SERVER_CLIENT_DISCONNECTED.ordinal()).sendToTarget();
                                     mRunning = false;
                                 }
 
@@ -152,7 +149,6 @@ public abstract class UDPServerBase {
                             }
                             catch (Exception e) {
                                 // could happen mostly to the client thread
-                                // Log.d(TAG, "** UDP packet receive exception**" + e.getMessage());
                                 if (e.getMessage().equals("Socket closed")) return ; // ignore
                                 AndruavEngine.log().logException("udp",e);
 
@@ -194,7 +190,6 @@ public abstract class UDPServerBase {
 
     protected void shutDown()
     {
-        // EventBus.getDefault().unregister(this);
 
         StopPersistentConnection();
     }
@@ -238,7 +233,6 @@ public abstract class UDPServerBase {
 
             if (dataSocketSender != null) {
 
-                //dataSocketSender.disconnect();
                 dataSocketSender.close();
                 dataSocketSender = null;
             }

@@ -6,7 +6,6 @@ import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.sensors.AndruavIMU;
 import com.andruav.controlBoard.shared.geoFence.GeoFenceManager;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_IMU;
-import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_IMUStatistics;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_ServoOutput;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_CameraFlash;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_CameraList;
@@ -154,7 +153,6 @@ public class AndruavDroneFacade extends AndruavFacadeBase {
             andruavMessage_nav_info.wp_dist= andruavIMU.nav_WayPointDistance;
 
             sendMessage(andruavMessage_nav_info, (AndruavUnitBase)null, Boolean.TRUE);
-            //broadcastMessageToGroup(andruavResala_nav_info, Boolean.TRUE);
             /*
             if (size > 1) { //boradcast IMU if two or more listeners
                 broadcastMessageToGroup(andruavResala_nav_info, Boolean.TRUE);
@@ -193,7 +191,6 @@ public class AndruavDroneFacade extends AndruavFacadeBase {
                 andruavMessage_imu.PitchTilt =  andruavIMU.PT;
                 if (size > 1) { //boradcast IMU if two or more listeners
                     sendMessage(andruavMessage_imu, null, Boolean.TRUE);
-                    //broadcastMessageToGroup(andruavMessage_imu, Boolean.TRUE);
                 } else {
                     AndruavUnitBase andruavUnit =  AndruavSettings.mIMURequests.get(0);
                     sendMessage(andruavMessage_imu, andruavUnit, Boolean.FALSE); // time here can be used on the other side ofr calculation.
@@ -213,7 +210,6 @@ public class AndruavDroneFacade extends AndruavFacadeBase {
         monBATTEventTime = now;
 
         sendMessage(createPowerInfoMessage(), (AndruavUnitBase)null, Boolean.FALSE);
-        //broadcastMessageToGroup(createPowerInfoMessage(), Boolean.FALSE);
 
 
     }

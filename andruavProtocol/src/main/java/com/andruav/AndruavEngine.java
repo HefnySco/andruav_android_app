@@ -19,7 +19,6 @@ import com.andruav.protocol.communication.sms.AndruavSMSClientParserBase;
 import com.andruav.protocol.communication.uavos.AndruavUDPBase;
 import com.andruav.protocol.communication.uavos.AndruavUDPServerBase;
 import com.andruav.protocol.communication.udpproxy.UDPProxy;
-import com.andruav.protocol.communication.udpserver.UDPServerBase;
 import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
 import com.andruav.uavos.modules.UAVOSException;
 import com.andruav.uavos.modules.UAVOSMapBase;

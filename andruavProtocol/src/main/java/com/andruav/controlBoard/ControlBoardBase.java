@@ -714,7 +714,6 @@ public class ControlBoardBase {
                 break;
 
             //case FlightMode.CONST_FLIGHT_CONTROL_CIRCLE:
-            //    do_Circle(null);
             //    break;
             case FlightMode.CONST_FLIGHT_CONTROL_LOITER:
                 do_Loiter(iControlBoard_callback);

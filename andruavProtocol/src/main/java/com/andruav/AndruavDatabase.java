@@ -77,7 +77,6 @@ public class AndruavDatabase extends SQLiteOpenHelper  {
 
             db.insert(tableName, null, values);
 
-           // db.close();
         }
         catch (Exception ex)
         {
@@ -101,7 +100,6 @@ public class AndruavDatabase extends SQLiteOpenHelper  {
             final Cursor cursor = getRecords (tableName, null);
             final int count = cursor.getCount();
 
-           // this.db.close();
 
             return count;
         }
@@ -120,7 +118,6 @@ public class AndruavDatabase extends SQLiteOpenHelper  {
 
             db.execSQL("DELETE FROM " + tableName);
 
-          //  db.close();
         }
         catch (Exception ex)
         {

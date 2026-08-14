@@ -189,7 +189,6 @@ public class GPSHelper {
             final double distance = calculateDistance (NewLocation,CurrentLocation);
             final double TimeDelta = NewLocation.getTime() - CurrentLocation.getTime();	// in milliseconds.
 
-            // Log.d("GPS-speed", String.format("%3.1f", TimeDelta));
             return (distance * 1000 /TimeDelta);	// m/s
         }
         catch (Exception ex)

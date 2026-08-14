@@ -176,7 +176,6 @@ public class Polygon
 			{
 				if (intersect(ray, side))
 				{
-					// System.out.println("intersection++");
 					intersection++;
 				}
 			}
@@ -238,8 +237,6 @@ public class Polygon
 			return false;
 		}
 
-		// System.out.println("Ray: " + ray.toString() + " ,Side: " + side);
-		// System.out.println("Intersect point: " + intersectPoint.toString());
 
 		return side.isInside(intersectPoint) && ray.isInside(intersectPoint);
 

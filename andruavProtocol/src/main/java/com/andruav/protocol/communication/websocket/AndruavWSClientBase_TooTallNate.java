@@ -29,7 +29,6 @@ public abstract class AndruavWSClientBase_TooTallNate extends AndruavWSClientBas
     public void setSocketAction (int value)
     {
         mSocketAction = value;
-        //Log.d("ac","mSocketAction   = " + value);
     }
 
 

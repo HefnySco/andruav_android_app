@@ -49,7 +49,6 @@ public class PanicFacade {
     public static void andruavModuleAdded (final int notification_Type, final int errorNumber, final String description, final String target)
     {
         AndruavEngine.notification().displayNotification(notification_Type, ErrorLevel[notification_Type], description, true, INotification.INFO_TYPE_CAMERA, false);
-        //AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_Lo7etTa7akom, notification_Type, errorNumber, description, null);
         AndruavEngine.notification().Speak(description);
 
     }

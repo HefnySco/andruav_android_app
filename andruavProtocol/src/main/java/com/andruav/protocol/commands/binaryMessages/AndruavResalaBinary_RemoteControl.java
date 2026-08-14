@@ -107,7 +107,6 @@ public class AndruavResalaBinary_RemoteControl extends AndruavResalaBinaryBase {
 
         setData(channels);
 
-        //    Log.d("RX:", AndruavSettings.andruavWe7daBase.UnitID + " " + String.valueOf(Throttle));
     }
 
     /***
@@ -129,9 +128,7 @@ public class AndruavResalaBinary_RemoteControl extends AndruavResalaBinaryBase {
         BinaryHelper.putInt(Aux2, data, 21);
         BinaryHelper.putInt(Aux3, data, 25);
         BinaryHelper.putInt(Aux4, data, 29);
-       // BinaryHelper.putInt(RTC, data, 33);
 
-        //  Log.d("RX:", AndruavSettings.andruavWe7daBase.UnitID + " " + String.valueOf(Throttle));
 
         return data;
     }

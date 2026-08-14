@@ -353,7 +353,6 @@ public abstract class AndruavWSClientBase {
                 break;
         }
 
-        //Log.d("ac","mSocketState   = " + value);
     }
 
     public void resetDataCounters()
@@ -383,7 +382,6 @@ public abstract class AndruavWSClientBase {
     public void setSocketAction (int value)
     {
         mSocketAction = value;
-        //Log.d("ac","mSocketAction   = " + value);
     }
 
     public enum enum_socketState {
@@ -528,7 +526,6 @@ public abstract class AndruavWSClientBase {
                 }
                 catch (Exception e)
                 {
-                    //Log.e("WS", e.getMessage());
                     if (exception_MainLoop_counter>0) {
                         AndruavEngine.log().logException(AndruavSettings.Account_SID, "exception_socketmainloop", e);
                         exception_MainLoop_counter = exception_MainLoop_counter -1;
@@ -973,8 +970,6 @@ public abstract class AndruavWSClientBase {
                     // should be POST EVENT
                     AndruavSettings.andruavWe7daBase.doPutMissionintoFCB(andruavMessage_uploadWayPoints.MissionText);
                 } else {
-                    // AndruavFacade.sendHomeLocation(andruavUnit);
-                    //AndruavFacade.sendWayPoints(andruavUnit);
                 }
             }
             break;
@@ -1006,7 +1001,6 @@ public abstract class AndruavWSClientBase {
 
                 AndruavSettings.andruavWe7daBase.updateExternalWayPoints(mohemmaMapBase);
 
-                // AndruavMo7arek.getEventBus().post(new _7adath_WayPointsRecieved(andruavWe7da));
             }
             break;
 
@@ -1288,7 +1282,6 @@ public abstract class AndruavWSClientBase {
 
     protected void executeInternalBinaryCommand_default(final AndruavBinary_2MR andruav_2MR) {
 
-        //AndruavMo7arek.getAndruavWe7daMapBase().updateLastActiveTime (andruavCMD.PartyID);
 
         switch (andruav_2MR.andruavResalaBinaryBase.messageTypeID) {
 
@@ -1318,7 +1311,6 @@ public abstract class AndruavWSClientBase {
 
                 AndruavSettings.andruavWe7daBase.updateExternalWayPoints(mohemmaMapBase);
 
-                // AndruavMo7arek.getEventBus().post(new _7adath_WayPointsRecieved(andruavWe7da));
             }
             break;
 
@@ -1596,8 +1588,6 @@ public abstract class AndruavWSClientBase {
      * @throws org.json.JSONException
      */
     protected boolean executeSystemCommand(final Andruav_2MR andruav2MR) throws JSONException {
-//        if (!(andruav2MR.andruavResalaBase instanceof AndruavResala_String))
-//            return true;
 
         final AndruavMessageBase andruavMessageBase = andruav2MR.andruavMessageBase;
 
@@ -1640,69 +1630,6 @@ public abstract class AndruavWSClientBase {
             break;
         }
 
-//        if ((cmd.equals(CMD_SYS_ADD) || cmd.equals(CMD_SYS_ADD_ENFORCE))) {
-//            if (reply.equals("OK:add") || reply.equals("OK:addd")) {
-//                synchronized (mSocketStateSync) {
-//                    //socketState = enum_socketState.REGISTERED;
-//
-//
-//                    setSocketState  (SOCKETSTATE_REGISTERED);
-//                    setSocketAction (SOCKETACTION_NONE);
-//
-//                }
-//                //AndruavMo7arek.log().LogDeviceInfo(AndruavMo7arek.getPreference().getLoginUserName(), "INFO-Registered");
-//
-//
-//            } else {
-//                andruav2MR.IsErr = true;
-//            }
-//            onAdded(!andruav2MR.IsErr);
-//        } else
-//
-//        if (cmd.equals(CMD_SYS_DEL)) {
-//            if (andruavMessage_string.getJsonMessage().equals("OK:del")) {
-//                // socketState = enum_socketState.CONNECTED; // socket is connected as "TCP" but NOT REGISTERED
-//
-//                setSocketState  (SOCKETSTATE_CONNECTED);
-//                setSocketAction (SOCKETACTION_NONE);
-//
-//
-//                merrorRecovery = false; /// are should be safe now
-//            } else {
-//                andruav2MR.IsErr = true;
-//            }
-//            onDeleted(!andruav2MR.IsErr);
-//        } else
-//
-//        if(cmd.equals(CMD_SYS_CONNECTED)) {
-//            //TODO: pls update message reply to contain parsable JSON
-//            //raw:{"type":"sys","cmd":"connected","message":"41.199.138.33 connected from port 5393"}
-//
-//            String[] S = StringSplit.fastSplit(andruavMessage_string.getJsonMessage(),':');
-//            if (S[0].equals("OK")) {
-//                // S[2] contains tcp4 or tcp6   {OK:connected:tcp4:217.55.182.240:34371}
-//                mIP = S[3];
-//                mport = S[4];
-//                Boolean benForce;
-//                if (merrorRecovery) {
-//                    // enforce addd as maybe the our socket name still exists in the server due to improper disconnection.
-//
-//                    //setSocketState  (SOCKETSTATE_ERROR);
-//                    setSocketState  (SOCKETSTATE_CONNECTED);
-//
-//                    benForce = true;
-//                }
-//                else
-//                {
-//                    benForce = getEnforceNameStatus();
-//                }
-//                addMe(benForce);
-//            }
-//            else
-//            {
-//                andruav2MR.IsErr=true;
-//            }
-//        }
 
         return false;
     }
@@ -1902,10 +1829,7 @@ public abstract class AndruavWSClientBase {
                 return ;
             }
             //Dont broadcast local messages  - performance-.
-            //EventBus.getDefault().post(andruavCMD);
             final byte[] finalMsg = andruavBinary2MR.getJscon(addTime);
-            //msg.what=2;
-            // msg.obj = finalMsg;
 
             TotalBinaryBytesSent += finalMsg.length;
             TotalBinaryPacketsSent +=1;
@@ -1944,7 +1868,6 @@ public abstract class AndruavWSClientBase {
                 return ;
             }
             //Dont broadcast local messages  - performance-.
-            //EventBus.getDefault().post(andruav2MR);
             final String finalMsg = andruav2MR.getJscon(addTime);
 
             TotalBytesSent += finalMsg.length();

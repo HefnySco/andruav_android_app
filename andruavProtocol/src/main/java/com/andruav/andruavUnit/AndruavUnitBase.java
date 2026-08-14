@@ -831,7 +831,6 @@ public class AndruavUnitBase {
                 }
 
                 // sendMessageToModule Toggle Event
-                // AndruavMo7arek.log().log(AndruavSettings.AccessCode, "apm", "f ");
 
             }
 
@@ -1046,7 +1045,6 @@ public class AndruavUnitBase {
         //BUG: concurrency issue can happen here betweem MapActivity and this function.
         for (int i=0; i<size;++i)
         {
-            //andruavWe7da.getMohemmaMapBase().remove(mohemmaMapBase.keyAt(i));
             mMohemmaMapBase.put(mohemmaMapBase.keyAt(i), mohemmaMapBase.valueAt(i));
         }
     }

@@ -285,28 +285,6 @@ public class GeoFenceManager {
     }
 
 
-//    /**
-//     * Check all fences and take actions.
-//     * @param andruavWe7daBase
-//     */
-//    public static void determineFenceValidationAction(final AndruavWe7daBase andruavWe7daBase)
-//    {
-//        final int size = GeoFenceManager.size();
-//
-//        for (int i = 0; i < size; ++i) {
-//            final GeoFenceBase geoLinearFenceMapBase = GeoFenceManager.valueAt(i);
-//
-//
-//            final _7adath_GeoFence_Hit geoFence_hit = geoLinearFenceMapBase.mAndruavUnits.get(andruavWe7daBase.PartyID);
-//
-//            if (geoFence_hit.hasValue)
-//            {
-//                // potential bug here... what if I violated multiple hard fences what action should I talk.
-//                // but this should not geo fences are designed bad.
-//                determineFenceValidationAction(geoFence_hit.inZone, geoFence_hit.shouldKeepOutside, geoLinearFenceMapBase);
-//            }
-//        }
-//    }
 
     /***
      * Handle fence violtion actions by Me.

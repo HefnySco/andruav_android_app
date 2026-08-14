@@ -1,10 +1,8 @@
 package com.andruav.protocol.commands.textMessages;
 
 
-import android.util.Base64;
 
 import com.andruav.AndruavEngine;
-import com.andruav.AndruavSettings;
 import com.andruav.interfaces.INotification;
 import com.andruav.protocol.commands.Andruav_Parser;
 import com.andruav.protocol.commands.ProtocolHeaders;

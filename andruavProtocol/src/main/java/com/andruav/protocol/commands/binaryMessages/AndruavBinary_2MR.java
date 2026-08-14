@@ -1,8 +1,6 @@
 package com.andruav.protocol.commands.binaryMessages;
 
-import com.andruav.AndruavSettings;
 import com.andruav.protocol.commands.ProtocolHeaders;
-import com.andruav.util.Ciphering;
 
 import org.json.JSONObject;
 

@@ -1,7 +1,6 @@
 package com.andruav.andruavUnit;
 
 import com.andruav.AndruavEngine;
-import com.andruav.TelemetryProtocol;
 import com.andruav.controlBoard.shared.common.FlightMode;
 
 /*
