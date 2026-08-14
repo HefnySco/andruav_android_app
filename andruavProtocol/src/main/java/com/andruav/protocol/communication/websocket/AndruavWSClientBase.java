@@ -85,6 +85,7 @@ import com.andruav.uavos.modules.UAVOSModuleCamera;
 import com.andruav.util.CustomCircularBuffer;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URI;
 import java.util.List;
@@ -99,6 +100,11 @@ public abstract class AndruavWSClientBase {
 
 
     public static final String MESSAGE_TYPE_SYSTEM = ProtocolHeaders.CMD_TYPE_SYS;
+
+
+    // Security item 2.1: frame-based WS auth message types.
+    public static final String CMD_SYS_DE_AUTH     = "de_auth";
+    public static final String CMD_SYS_DE_AUTH_ACK = "de_auth_ack";
 
 
     public static final String CMD_SYS_CONNECTED = "connected";
@@ -168,6 +174,11 @@ public abstract class AndruavWSClientBase {
 
 
     protected boolean mIgnoreConnect = false;
+
+    // Security item 2.1: true while waiting for the de_auth_ack frame from
+    // the server.  Set in sendAuthFrame(), cleared when the ack is received
+    // (or on close/error).
+    protected boolean mAuthPending = false;
 
 
     public abstract boolean isConnected();
@@ -322,6 +333,11 @@ public abstract class AndruavWSClientBase {
         {
             case SOCKETSTATE_REGISTERED:
 
+                // Only now can system commands (e.g. UDP proxy start/stop) actually be sent -
+                // sendSystemCommandToCommServer() silently drops them until this state is reached,
+                // so onConnect/onOpen is too early for anything gated on server registration.
+                AndruavEngine.getEventBus().post(new EventSocketState(EventSocketState.ENUM_SOCKETSTATE.onRegistered, "Registered"));
+
                 mhandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -422,6 +438,7 @@ public abstract class AndruavWSClientBase {
     protected void onClose(final int code, final String reason)
     {
 
+        mAuthPending = false; // Security item 2.1: clear auth state on close.
         AndruavEngine.getEventBus().post(new EventSocketState(EventSocketState.ENUM_SOCKETSTATE.onDisconnect, reason));
 
 
@@ -435,6 +452,69 @@ public abstract class AndruavWSClientBase {
 
         merrorRecovery = true; /// are should be safe now
         mIgnoreConnect = false;
+
+        // Security item 2.1: send the de_auth frame as the first WS message.
+        // The server validates credentials from this frame instead of the
+        // URL query string.
+        sendAuthFrame();
+    }
+
+
+    /***
+     * Security item 2.1: sends the de_auth frame to the server immediately
+     * after the WS handshake completes.  The server replies with a
+     * de_auth_ack frame which is handled by {@link #handleAuthAck}.
+     */
+    protected void sendAuthFrame ()
+    {
+        try
+        {
+            mAuthPending = true;
+            final JSONObject json_auth = new JSONObject();
+            json_auth.put(ProtocolHeaders.MSG_ROUTING, ProtocolHeaders.CMD_TYPE_SYS);
+            json_auth.put(ProtocolHeaders.MessageType, CMD_SYS_DE_AUTH);
+            json_auth.put("f", AndruavSettings.WEBMOFTA7);
+            json_auth.put("s", AndruavSettings.andruavWe7daBase.PartyID);
+            socketSendTextMessage(json_auth.toString());
+        }
+        catch (final Exception e)
+        {
+            AndruavEngine.log().logException(AndruavSettings.Account_SID, "sendAuthFrame", e);
+        }
+    }
+
+
+    /***
+     * Security item 2.1: checks whether an incoming text message is a
+     * de_auth_ack frame and, if so, consumes it.
+     * <br>Returns <b>true</b> when the message was a de_auth_ack (consumed),
+     * <b>false</b> when it should be passed to the normal parser.
+     *
+     * @param message raw text message received from the server
+     */
+    protected boolean handleAuthAck (final String message)
+    {
+        try
+        {
+            final JSONObject json = new JSONObject(message);
+            if (ProtocolHeaders.CMD_TYPE_SYS.equals(json.optString(ProtocolHeaders.MSG_ROUTING))
+                    && CMD_SYS_DE_AUTH_ACK.equals(json.optString(ProtocolHeaders.MessageType)))
+            {
+                mAuthPending = false;
+                final String result = json.optString("r");
+                if (!"ok".equals(result))
+                {
+                    final String errMsg = json.optString("em", "auth rejected");
+                    AndruavEngine.log().log(AndruavSettings.Account_SID, "ws_auth_fail", errMsg);
+                }
+                return true; // consumed
+            }
+        }
+        catch (final Exception e)
+        {
+            // not a valid JSON or not an auth ack — fall through to normal parsing
+        }
+        return false;
     }
 
 
@@ -575,6 +655,18 @@ public abstract class AndruavWSClientBase {
 
     protected void onTextMessage(final String message)
     {
+
+        // Security item 2.1: while waiting for the de_auth_ack frame, check
+        // every incoming text message.  The server may send the
+        // ConnectedCommServer welcome message before the de_auth_ack, so
+        // non-ack messages are allowed to fall through to normal parsing.
+        if (mAuthPending)
+        {
+            if (handleAuthAck(message))
+            {
+                return; // consumed by auth handler
+            }
+        }
 
         Andruav_2MR andruav2MR = Andruav_Parser.parseText(message);
         if (andruav2MR == null) {

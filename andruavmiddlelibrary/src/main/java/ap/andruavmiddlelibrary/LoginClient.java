@@ -115,9 +115,12 @@ public class LoginClient {
 
     public static String getWSURL ()
     {
+        // Security item 2.1: credentials are no longer sent in the URL query
+        // string.  The WS client now sends a de_auth frame as the first
+        // message after connect (see AndruavWSClientBase.sendAuthFrame).
         String url;
         int portnum = Integer.parseInt(AndruavSettings.WebServerPort );
-        url = AndruavSettings.WebServerURL  + ":" + portnum + "?" +  "f=" + AndruavSettings.WEBMOFTA7 +  "&s=" + AndruavSettings.andruavWe7daBase.PartyID;
+        url = AndruavSettings.WebServerURL  + ":" + portnum;
 
         return url;
     }

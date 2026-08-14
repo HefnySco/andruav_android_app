@@ -71,8 +71,6 @@
     <string name="pref_gr_general_settings">General Settings</string>
     <string name="pref_gr_advanced_settings">Advanced &amp;  Settings</string>
     <string name="pref_gr_fpv_settings">FPV &amp;  Settings</string>
-    <string name="pref_gr_fpv_onlylocal_stunserver">Local STUN Server Only</string>
-    <string name="pref_gr_fpv_onlylocal_stunserver_summary">Donot connect to external STUN Servers</string>
     <string name="pref_gr_fpv_stunserver">STUN Server</string>
     <string name="pref_gr_fpv_stunserver_summary">e.g. stun:192.168.1.42:3478</string>
     <string name="pref_gr_fpv_videoframerate">Video Frames Rate</string>

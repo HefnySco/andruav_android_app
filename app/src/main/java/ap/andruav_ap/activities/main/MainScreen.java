@@ -72,6 +72,7 @@ import com.andruav.event.fpv7adath._7adath_FPVStreamingStatusChanged;
 import com.andruav.event.networkEvent.EventLoginClient;
 import com.andruav.event.networkEvent.EventSocketState;
 
+import ap.andruav_ap.guiEvent.GUIEvent_UpdateConnection;
 import ap.andruav_ap.helpers.GUI;
 import ap.andruav_ap.helpers.RemoteControl;
 import com.andruav.FeatureSwitch;
@@ -217,6 +218,14 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
     @Subscribe
+    public void onEvent(GUIEvent_UpdateConnection guiEvent_updateConnection) {
+
+        Message msg = new Message();
+        msg.obj = guiEvent_updateConnection;
+        mhandle.sendMessageDelayed(msg, 0);
+    }
+
+    @Subscribe
     public void onEvent(final _7adath_FPVStreamingStatusChanged a7adath_fpvStreamingStatusChanged) {
 
         Message msg = new Message();
@@ -321,6 +330,12 @@ public class MainScreen extends BaseAndruavShasha {
 
                 if (msg.obj instanceof Event_ProtocolChanged)
                 {
+                    updateFCBButton();
+                }
+                else if (msg.obj instanceof GUIEvent_UpdateConnection)
+                {
+                    // FCB connect/disconnect (e.g. FcbConnectionSheet's Disconnect button)
+                    // posts this - refresh the FCB/IMU/FPV tiles and Flight Telemetry card.
                     updateFCBButton();
                 }
                 else if (msg.obj instanceof _7adath_FPVStreamingStatusChanged)
@@ -754,6 +769,7 @@ public class MainScreen extends BaseAndruavShasha {
         if (miConnect == null) return; // issue 42
         updateButtonsStatus(status, action);
         updateServerCard();
+        updateModuleTiles(); // Com tile (and dependents) track server link too - keep in sync.
         switch (status) {
             case SOCKETSTATE_CONNECTED:
                 miConnect.setIcon(R.drawable.connected_w_32x32);

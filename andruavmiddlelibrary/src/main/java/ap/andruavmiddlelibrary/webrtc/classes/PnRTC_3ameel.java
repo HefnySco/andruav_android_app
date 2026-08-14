@@ -70,42 +70,26 @@ public class PnRTC_3ameel {
 
         // Add Stun & Turn Servers [ICE SERVERS]
 
-        if (!Preference.useLocalStunServerOnly(null)) {
+        List<PeerConnection.IceServer> servers = new ArrayList<PeerConnection.IceServer>(); //XirSysRequest.getXirSysIceServers();
+        // Add a local STUN anyway
+        String stunIP = Preference.getSTUNServer(null);
+        if (!stunIP.isEmpty() && !stunIP.equals("")) {
 
-            List<PeerConnection.IceServer> servers = new ArrayList<PeerConnection.IceServer>(); //XirSysRequest.getXirSysIceServers();
-            // Add a local STUN anyway
-            String stunIP = Preference.getSTUNServer(null);
-            if (!stunIP.isEmpty() && !stunIP.equals("")) {
-
-                if (stunIP.indexOf("stun:") == -1) {
-                    stunIP = "stun:" + stunIP; // correct Human error if forget to add stun:
-                }
-                //params.iceServers.clear();
-                // params.iceServers.add(params.iceServers.size(), new PeerConnection.IceServer(stunIP, "", ""));
-                servers.add(servers.size(), new PeerConnection.IceServer(stunIP, "", ""));
-            }
-
-            if (!servers.isEmpty()) {
-                //////  remove default ICE Servers params.iceServers.clear();
-                for (int i =0, j = servers.size(); i<j; i = i +1)
-                {
-                    params.iceServers.add(i,servers.get(i));
-
-                }
-
-            }
-
-        }
-
-        else
-        {
-            // ONLY use LOCAL STUN
-            String stunIP = Preference.getSTUNServer(null);
             if (stunIP.indexOf("stun:") == -1) {
                 stunIP = "stun:" + stunIP; // correct Human error if forget to add stun:
             }
-            params.iceServers.clear();
-            params.iceServers.add(params.iceServers.size(), new PeerConnection.IceServer(stunIP, "", ""));
+            //params.iceServers.clear();
+            // params.iceServers.add(params.iceServers.size(), new PeerConnection.IceServer(stunIP, "", ""));
+            servers.add(servers.size(), new PeerConnection.IceServer(stunIP, "", ""));
+        }
+
+        if (!servers.isEmpty()) {
+            //////  remove default ICE Servers params.iceServers.clear();
+            for (int i =0, j = servers.size(); i<j; i = i +1)
+            {
+                params.iceServers.add(i,servers.get(i));
+
+            }
 
         }
 

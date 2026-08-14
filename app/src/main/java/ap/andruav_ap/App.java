@@ -266,6 +266,10 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                         App.notification.displayNotification(INotification.NOTIFICATION_TYPE_NORMAL, "Andruav", connection, true, INotification.INFO_TYPE_PROTOCOL, true);
 
                         App.gui_ConnectionIconID = R.drawable.connected_w_32x32;
+                    } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onRegistered) {
+                        // Only once the server has confirmed registration can system commands
+                        // actually be sent - doing this on onConnect instead is too early and
+                        // gets silently dropped by sendSystemCommandToCommServer().
                         if (Preference.isAutoUDPProxyConnect(null)) {
                             // Start it if it is not started on server.
                             AndruavFacade.StartUdpProxyTelemetry();
@@ -937,7 +941,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
      */
     public void onFirstAndruavRun ()
     {
-        Preference.isAutoUDPProxyConnect(null, false);
+        Preference.isAutoUDPProxyConnect(null, true);
         Preference.setFCBTargetLib(null, Preference.FCB_LIB_3DR);
         Preference.isEmergencyFlightModeFailSafeEnabled(null, 0); //FlightMode.CONST_FLIGHT_CONTROL_RTL);
 
@@ -962,7 +966,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     public void onFirstUpdatedVersionRun(String currentlyInstalledVersion)
     {
 
-        Preference.isAutoUDPProxyConnect(null, false);
+        Preference.isAutoUDPProxyConnect(null, true);
         Preference.isLocalServer(null,false);
         Preference.setFirstServer(null,0);
         Preference.FactoryReset_Tracker(null);

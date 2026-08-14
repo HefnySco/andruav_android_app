@@ -374,18 +374,10 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
             emergency.triggerConnectionEmergency(false);
         }
 
-        if (Preference.isAutoUDPProxyConnect(null)) {
-            // Start it if it is not started on server.
-            AndruavFacade.StartUdpProxyTelemetry();
-        }
-        else
-        {
-            // stop any previous running UDP if you do not want them.
-            // do not stop when exit to avoid changing ports.
-            // stop when you do not need it.
-            AndruavFacade.StopUdpProxyTelemetry();
-        }
-
+        // Auto UDP proxy start/stop happens once the socket is actually REGISTERED
+        // (see App.UIHandler's onRegistered handling) - at onOpen() the server hasn't
+        // confirmed registration yet, so sendSystemCommandToCommServer() would silently
+        // drop the request.
     }
 
     @Override
@@ -1054,11 +1046,33 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                                     }
                                         break;
                                     case Event_TelemetryGCSRequest.REQUEST_RESUME: {
-                                        AndruavEngine.getUDPProxy().setPause(false);
+                                        if (!AndruavSettings.andruavWe7daBase.isUdpProxyEnabled()) {
+                                            // proxy not created on server yet — request creation.
+                                            // server response triggers setUdpConfig -> sendUdpProxyStatus broadcast.
+                                            AndruavFacade.StartUdpProxyTelemetry();
+                                        } else {
+                                            AndruavEngine.getUDPProxy().setPause(false);
+                                            AndruavFacade.sendUdpProxyStatus(andruavUnit);
+                                        }
+                                        if (andruavUnit.canTelemetry()) {
+                                            if (!AndruavSettings.mTelemetryRequests.contains(andruavUnit)) {
+                                                AndruavSettings.mTelemetryRequests.add(andruavUnit);
+                                                AndruavEngine.getEventBus().post(new Event_TelemetryGCSRequest(andruavUnit, Event_TelemetryGCSRequest.REQUEST_START));
+                                            } else {
+                                                AndruavEngine.getEventBus().post(new Event_TelemetryGCSRequest(andruavUnit, Event_TelemetryGCSRequest.REQUEST_RESUME));
+                                            }
+                                            final int LVL = andruavResala_remoteExecute.getIntValue("LVL", Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
+                                            if (LVL != Constants.SMART_TELEMETRY_LEVEL_NEGLECT) {
+                                                Preference.setSmartMavlinkTelemetry(null, LVL);
+                                            }
+                                        }
                                     }
                                     break;
                                     case Event_TelemetryGCSRequest.REQUEST_PAUSE: {
-                                        AndruavEngine.getUDPProxy().setPause(true);
+                                        if (AndruavSettings.andruavWe7daBase.isUdpProxyEnabled()) {
+                                            AndruavEngine.getUDPProxy().setPause(true);
+                                        }
+                                        AndruavFacade.sendUdpProxyStatus(andruavUnit);
                                     }
                                     break;
                                     default:
@@ -1081,6 +1095,14 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                                             final int LVL = andruavResala_remoteExecute.getIntValue("LVL", Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
                                             if (LVL != Constants.SMART_TELEMETRY_LEVEL_NEGLECT) {
                                                 Preference.setSmartMavlinkTelemetry(null, LVL);
+                                            }
+
+                                            // Create UDP proxy on server if not already created.
+                                            // server response triggers setUdpConfig -> sendUdpProxyStatus broadcast.
+                                            if (!AndruavSettings.andruavWe7daBase.isUdpProxyEnabled()) {
+                                                AndruavFacade.StartUdpProxyTelemetry();
+                                            } else {
+                                                AndruavFacade.sendUdpProxyStatus(andruavUnit);
                                             }
                                         }
                                     }

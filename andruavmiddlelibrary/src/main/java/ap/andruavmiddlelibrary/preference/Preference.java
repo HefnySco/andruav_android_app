@@ -948,15 +948,6 @@ public class Preference {
     }
 
 
-    public static boolean useLocalStunServerOnly(final android.content.ContextWrapper contextWrapper) {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "AxU1KiBEH2w", false);
-    }
-
-    public static void useLocalStunServerOnly(final android.content.ContextWrapper contextWrapper, final boolean value) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "AxU1KiBEH2w" , value);
-    }
-
-
     public static String getSTUNServer(final android.content.ContextWrapper contextWrapper) {
         return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "ufcQwjT6FEe", "");
     }
@@ -1180,7 +1171,7 @@ public class Preference {
 
         Preference.setSerialServerPort(contextWrapper, AndruavEngine.getPreference().getContext().getResources().getInteger(R.integer.pref_hub_Port));
         Preference.isAutoFCBConnect(contextWrapper, false);
-        Preference.isAutoUDPProxyConnect(contextWrapper, false);
+        Preference.isAutoUDPProxyConnect(contextWrapper, true);
         Preference.isMobileSensorsDisabled(contextWrapper, false);
 
 
@@ -1255,7 +1246,6 @@ public class Preference {
         Preference.setStreamResolutionModeBack(contextWrapper, STREAM_RESOLUTION_HD);
         Preference.setStreamResolutionModeFront(contextWrapper, STREAM_RESOLUTION_HD);
         Preference.setSendBackImages(contextWrapper, true);
-        Preference.useLocalStunServerOnly(contextWrapper, false);
         Preference.setSTUNServer(contextWrapper, "");
         Preference.setCameraNumber(contextWrapper, 0); //backFacingCam
         Preference.setFPVActivityRotation(contextWrapper, Surface.ROTATION_0);

@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ap.andruavmiddlelibrary.preference.Preference;
-
 /**
  * <h1>Define {@link MediaConstraints} and {@link PeerConnection.IceServer} for WebRTC PeerConnections</h1>
  * <pre>
@@ -141,13 +139,11 @@ import ap.andruavmiddlelibrary.preference.Preference;
 
     public static List<PeerConnection.IceServer> defaultIceServers(){
        final  List<PeerConnection.IceServer> iceServers = new ArrayList<PeerConnection.IceServer>(25);
-        if (!Preference.useLocalStunServerOnly(null)) {
 
-            // Extra Defaults - 19 STUN servers + 4 initial = 23 severs (+2 padding) = Array cap 25
-            iceServers.add(new PeerConnection.IceServer("turn:airgap.droneengage.com:3478","airgap","1234"));
-            iceServers.add(new PeerConnection.IceServer("turn:104.131.188.164:3478","andruav_ap","1234"));
-            iceServers.add(new PeerConnection.IceServer("stun:stun3.l.google.com:19302"));
-        }
+        // Extra Defaults - 19 STUN servers + 4 initial = 23 severs (+2 padding) = Array cap 25
+        iceServers.add(new PeerConnection.IceServer("turn:airgap.droneengage.com:3478","airgap","1234"));
+        iceServers.add(new PeerConnection.IceServer("turn:104.131.188.164:3478","andruav_ap","1234"));
+        iceServers.add(new PeerConnection.IceServer("stun:stun3.l.google.com:19302"));
         return iceServers;
     }
 

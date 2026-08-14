@@ -50,13 +50,6 @@
         android:entryValues="@array/pref_gr_fpv_streamres_options_value"
         android:defaultValue="1" />
 
-    <CheckBoxPreference
-        android:title="@string/pref_gr_fpv_onlylocal_stunserver"
-        android:key="AxU1KiBEH2w"
-        android:summary="@string/pref_gr_fpv_onlylocal_stunserver_summary"
-        android:defaultValue="false"
-        />
-
     <EditTextPreference
         android:title="@string/pref_gr_fpv_stunserver"
         android:key="ufcQwjT6FEe"

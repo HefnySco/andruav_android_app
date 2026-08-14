@@ -42,13 +42,6 @@ public class PreferenceValidator {
 
     public static boolean isValidWebRTC ()
     {
-        if (Preference.useLocalStunServerOnly(null))
-        {
-            final String stunIP = Preference.getSTUNServer(null);
-            return !stunIP.isEmpty() && !stunIP.equals("");
-
-        }
-
         return true;
     }
 
