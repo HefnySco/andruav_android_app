@@ -1,10 +1,11 @@
 # Changelog: `Andruav_AP_Original` → `Andruav_AP_2026`
 
 This document summarizes everything that changed between the `Andruav_AP_Original`
-baseline (version 7.2.1, 2025-09-26) and `Andruav_AP_2026` (version 9.0.1, 2026-08-11).
+baseline (version 7.2.1, 2025-09-26) and `Andruav_AP_2026` (version 11.0.2, 2026-08-15).
 
-**Scope:** 33 commits · 189 files changed · +3,881 / −7,559 lines (net code reduction,
-despite the new features, from aggressive dead-code removal alongside the rewrite).
+**Scope:** 33 commits · 189 files changed · +3,881 / −7,559 lines for the v7.2.1 → v9.0.1
+baseline rewrite (net code reduction, despite the new features, from aggressive dead-code
+removal alongside the rewrite), followed by 27 commits for v10.0.0 → v11.0.2.
 
 For deeper technical write-ups of individual efforts, see the [`wiki/`](wiki/) folder:
 - [Architecture Migration](wiki/Architecture-Migration.md) — ClientLib de-AIDL-ification, EventBus 2→3, GreenDAO 2→3
@@ -25,7 +26,13 @@ For deeper technical write-ups of individual efforts, see the [`wiki/`](wiki/) f
 | 7.6.0 | `c809882` | 2026-08-08 |
 | 8.0.0 | `df950e7` | 2026-08-09 |
 | 9.0.0 ("New UI") | `b9a4af2` | 2026-08-09 |
-| 9.0.1 (current) | `7ddadbb` | 2026-08-11 |
+| 9.0.1 | `7ddadbb` | 2026-08-11 |
+| 10.0.0 | `894e315` | 2026-08-11 |
+| 10.1.0 | `6fca9e0` | 2026-08-12 |
+| 10.2.0 | `229c097` | 2026-08-13 |
+| 11.0.0 | `10f6d21` | 2026-08-15 |
+| 11.0.1 | `7fc5b3a` | 2026-08-15 |
+| 11.0.2 (current) | `70a8390` | 2026-08-15 |
 
 ---
 
@@ -165,7 +172,107 @@ Full detail, including the color palette reference, in [UI Theme System](wiki/UI
 
 ---
 
-## Contributors
+## v10.0.0 – v11.0.2 (2026-08-11 → 2026-08-15)
 
-Commits in this range include AI-assisted changes co-authored by Claude (Anthropic) and
-one commit (`3f2dc71`) co-authored by Devin (Cognition), alongside manual engineering work.
+27 commits continuing the rewrite: a full home-screen redesign, FPV/camera
+background-restart reliability, a battery-optimization exemption prompt, a
+themed-dialog overhaul, a telemetry/sensor/camera preferences rework, and
+several connection-state bug fixes.
+
+### 🏠 Home screen redesign (v10.0.0)
+
+- **`38c6650`** — "SUPER REFACTOR - UI": complete `MainScreen` redesign. New
+  `activity_main.xml` layout, a `FcbConnectionSheet` bottom sheet for Bluetooth
+  pairing, a new home drawable set (`bg_home_*`, `ic_home_*`), a
+  `colors_home_redesign.xml` palette, and a `popup_home_overflow` menu.
+  41 files, +2,316 / −334.
+- **`e6c2d12`** — GUI fixes: removed unused `list_item_tlog_info` and
+  `widget_cardwheel` layouts; adjusted `activity_first.xml` across all size
+  qualifiers (normal, land, small, xlarge).
+- **`0e287df`** — app icon update.
+
+### 📹 FPV / camera streaming reliability
+
+- **`772ff0d`** — decoupled camera capture/publish (`FPVStreamingService`) from
+  the FPV Activity being launchable. When the app is backgrounded with no visible
+  window (e.g. after PiP closes), Android blocks `startActivity()` but allows
+  service starts; the Activity launch is now best-effort UI only and no longer
+  gates whether the stream restarts — fixes camera permanently unable to restart
+  after a power-button press during flight.
+- **`fbe5169`** — moved the camera-restart `EventBus` subscriber from
+  `BaseAndruavShasha` (only alive while an Activity is resumed) to `App` (registered
+  once in `onCreate()`, never unregistered), so a remote "start streaming" command
+  posted while backgrounded is no longer silently dropped.
+- **`3d915a0`** (partial) — removed the redundant Stream-in-HD toggle; per-facing
+  Camera Resolution (SD/HD/Max) now fully controls capture. Derived the remaining
+  consumers (GCS capability report, local recording, PiP aspect ratio) from Camera
+  Resolution via new `Preference.isActiveCameraHD`/`getActiveCameraDimensions`
+  helpers, fixing a width/height swap bug in the recording path along the way.
+
+### 🔋 Battery optimization exemption
+
+- **`e45913f`** — one-time startup prompt (on `FirstScreen`, alongside the
+  permissions dialog) using the standard AOSP
+  `ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` dialog. Background OS battery
+  management (Doze/App Standby) could kill the foreground telemetry/FPV services
+  mid-flight even with proper foreground-service notifications.
+
+### 🎨 UI / UX: themed dialogs & startup
+
+- **`9f5f773`** — replaced deprecated `ProgressDialog` with custom-styled magnetic
+  dialogs (`dialog_magnetic_modal.xml`, `dialog_magnetic_progress.xml`) and a new
+  magnetic dialog color palette; added `DialogHelper.buildMagneticDialog()` factory.
+- **`42a8b81`** — replaced the connect/reconnect `ProgressDialog` with a themed
+  `dialog_connect_progress.xml` and added a Stop button so the user can cancel the
+  retry cycle instead of waiting for it to exhaust. Guarded `AndruavWSClient` login
+  `onSuccess` against `mkillMe` so a stopped retry doesn't proceed.
+- **`e7c1f54`** — startup dialog now lists the specific denied permissions
+  (`CheckAppPermissions.getMissingPermissions()`) instead of a generic error.
+- **`d8088f1`** — adjusted `activity_first.xml` spacing/sizing across all size
+  qualifiers; removed legacy `dialog_reminder.xml`; updated dialog strings.
+
+### ⚙️ Settings / preferences rework
+
+- **`08a9fb`** — fixed GPS Injection checkbox key mismatch (XML `key_gps_inject`
+  vs. runtime `gps_inject` made the toggle a no-op); added mutual-exclusion with
+  Ignore Mobile Sensors to prevent feeding stale GPS to the FC; removed dead
+  `AndruavUDPModuleBase` and Comm-Module-IP preference plumbing; fixed RC-Cam
+  channel validator Toast (1-18, not 1-16); added `wiki/RC-Channel-Triggers.md`.
+- **`3d915a0`** — reworked telemetry/sensor/camera preferences to close
+  remote-control gaps: dropped the manual Smart Telemetry Settings entry (level is
+  driven by the `LVL` field on remote `TELEMETRYCTRL` messages); dropped the manual
+  Auto Connect UDP Telemetry entry and defaulted it OFF; guarded
+  `RemoteCommand_MAKETILT` against NPE on sensor objects never created because the
+  pref disabled them; pruned the string resources used only by removed entries.
+
+### 🐛 Telemetry / connection state fixes
+
+- **`e3d74cb`** — fixed three bugs: (1) UDP telemetry never auto-started —
+  auto-start/stop calls fired at `onOpen()` before the socket became
+  `SOCKETSTATE_REGISTERED`, silently dropped; moved to a new `onRegistered` event
+  posted when the server confirms registration. (2) FCB "Disconnect" left the tile
+  green — `MainScreen` never subscribed to `GUIEvent_UpdateConnection` from
+  `TelemetryModeer`; added the missing `@Subscribe` handler wired to
+  `updateFCBButton()`. (3) Com tile stayed "Live" after Server Disconnect —
+  `updateConnectionIconsStatus()` refreshed the server card but not module tiles;
+  added `updateModuleTiles()`. Also restored `isAutoUDPProxyConnect` defaults to
+  `true` in first-run / factory-reset paths.
+- **`ef51de2`** — fixed COM port issue in `UsbHohoConnection` and
+  `DroneKitServer`.
+- **`28e95d6`** — improved Bluetooth FCB connection UI (`FcbConnectionSheet`) and
+  added auto-connect on device select.
+
+### 🧹 Code cleanup & tooling
+
+- **`d418fee`** — `andruavProtocol`: removed 12 unused imports across 7 files and
+  123 lines of commented-out dead code across 12 files; explanatory/design-rationale
+  comments preserved.
+- **`0e9019a`** — added the reusable `java-clean` skill
+  (`.devin/skills/java-clean/`) bundling 4 Python scripts for unused-import and
+  dead-code detection/removal (CRLF-safe).
+- **`3d49f02`** — added `build_release_apk.sh` release build script.
+- **`a288c23`** — added DeepWiki link to `README.md`.
+
+---
+
+
