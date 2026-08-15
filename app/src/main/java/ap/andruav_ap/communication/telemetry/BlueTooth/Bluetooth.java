@@ -134,7 +134,7 @@ public class Bluetooth {
 
     public Boolean isDiscovering() {
         try {
-            if (isEnabled()) return false;
+            if (!isEnabled()) return false;
 
             return mBluetoothAdapter.isDiscovering();
         } catch (Exception e) {
@@ -156,6 +156,7 @@ public class Bluetooth {
     }
 
     public Boolean startDiscovery() {
+        if (!hasScanPermission()) return false;
         try {
             return mBluetoothAdapter.startDiscovery();
     } catch (Exception e) {

@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -35,6 +35,7 @@ import ap.andruav_ap.activities.fcb.drone.Adapter_BluetoothList;
 import ap.andruav_ap.activities.fcb.drone.ListItem_BluetoothUnit;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 import ap.andruavmiddlelibrary.factory.communication.NetInfoAdapter;
+import ap.andruavmiddlelibrary.factory.util.ProgressDialogHelper;
 import ap.andruavmiddlelibrary.preference.Preference;
 
 /***
@@ -61,7 +62,8 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
     private View groupBt, groupUsb, groupWifi, groupUdp;
     private TextView btnBtToggle;
     private TextView btnBtScan;
-    private ListView listBt;
+    private LinearLayout listBt;
+    private View listBtScroll;
     private Adapter_BluetoothList btAdapter;
     private View selectedBtRow;
     private Spinner spinnerBaud;
@@ -81,12 +83,14 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
                 final BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if ((device != null) && (btAdapter != null)) {
                     btAdapter.add(device);
-                    btAdapter.notifyDataSetChanged();
+                    refreshBtList();
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 btnBtScan.setText(getString(R.string.home_fcb_bt_scanning));
+                ProgressDialogHelper.doProgressDialog(requireContext(), getString(R.string.home_fcb_bluetooth));
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 btnBtScan.setText(getString(R.string.home_fcb_bt_scan));
+                ProgressDialogHelper.exitProgressDialog();
             }
         }
     };
@@ -131,6 +135,7 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
         } catch (IllegalArgumentException ignored) {
             // was never registered (e.g. onViewCreated threw before onStart) - nothing to undo.
         }
+        ProgressDialogHelper.exitProgressDialog();
     }
 
     private void bindViews(View view) {
@@ -152,6 +157,7 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
         btnBtToggle = view.findViewById(R.id.fcb_sheet_btn_bt_toggle);
         btnBtScan = view.findViewById(R.id.fcb_sheet_btn_bt_scan);
         listBt = view.findViewById(R.id.fcb_sheet_list_bt);
+        listBtScroll = view.findViewById(R.id.fcb_sheet_list_bt_scroll);
 
         spinnerBaud = view.findViewById(R.id.fcb_sheet_spinner_baud);
         txtUsbStatus = view.findViewById(R.id.fcb_sheet_txt_usb_status);
@@ -226,8 +232,15 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
         rowBt.setEnabled(usable);
         rowBt.setAlpha(usable ? 1f : 0.55f);
 
+        // Ensure the adapter handle is initialized even if the user never taps
+        // the toggle (e.g. BT is already on via system settings). Without this,
+        // mBluetoothAdapter stays null and isEnabled()/startDiscovery() no-op.
+        if (usable && App.BT.Bluetooth != null) {
+            App.BT.Bluetooth.GetAdapter();
+        }
+
         btAdapter = new Adapter_BluetoothList(requireActivity(), this);
-        listBt.setAdapter(btAdapter);
+        refreshBtList();
 
         btnBtToggle.setOnClickListener(v -> {
             if (App.BT.Bluetooth.isEnabled()) {
@@ -267,8 +280,8 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
             App.BT.Bluetooth.cancelDiscovery();
         }
         btAdapter.clear();
-        btAdapter.notifyDataSetChanged();
         selectedBtRow = null;
+        refreshBtList();
         App.BT.Bluetooth.startDiscovery();
     }
 
@@ -276,7 +289,21 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
         final boolean on = (App.BT.Bluetooth != null) && App.BT.Bluetooth.isEnabled();
         btnBtToggle.setText(on ? R.string.home_fcb_bt_on : R.string.home_fcb_bt_off);
         btnBtToggle.setBackgroundResource(on ? R.drawable.bg_home_bt_toggle_on : R.drawable.bg_home_bt_toggle_off);
-        listBt.setVisibility(on ? View.VISIBLE : View.GONE);
+        listBtScroll.setVisibility(on ? View.VISIBLE : View.GONE);
+    }
+
+    /***
+     * Rebuilds the Bluetooth device list. The container is wrapped in its own
+     * NestedScrollView with maxHeight so it scrolls independently when there are
+     * many devices, avoiding bottom-sheet collapse gesture interference.
+     */
+    private void refreshBtList() {
+        listBt.removeAllViews();
+        final int count = btAdapter.getCount();
+        for (int i = 0; i < count; i++) {
+            final View child = btAdapter.getView(i, null, listBt);
+            listBt.addView(child);
+        }
     }
 
     @Override
@@ -292,6 +319,13 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
         }
         aView.setBackgroundResource(R.drawable.bg_home_bt_row_selected);
         selectedBtRow = aView;
+
+        if (App.BT.Bluetooth.isDiscovering()) {
+            App.BT.Bluetooth.cancelDiscovery();
+        }
+        savePreferences();
+        TelemetryModeer.connectToPreferredConnection(requireActivity(), false);
+        dismiss();
     }
 
     private void loadFields() {

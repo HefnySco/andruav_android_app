@@ -117,15 +117,21 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <ListView
-                    android:id="@+id/fcb_sheet_list_bt"
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/fcb_sheet_list_bt_scroll"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="wrap_content"
+                    android:maxHeight="240dp"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/bg_home_bt_list"
-                    android:divider="@color/home_border_input"
-                    android:dividerHeight="1dp"
-                    android:visibility="gone" />
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:id="@+id/fcb_sheet_list_bt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </androidx.core.widget.NestedScrollView>
             </LinearLayout>
 
             <!-- USB -->

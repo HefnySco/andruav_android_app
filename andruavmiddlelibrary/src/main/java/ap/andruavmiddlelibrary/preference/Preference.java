@@ -1177,7 +1177,7 @@ public class Preference {
 
         Preference.setFCBBlueToothName(contextWrapper, "");
         Preference.setFCBBlueToothMAC(contextWrapper, "");
-        Preference.setFCBUSBBaudRateSelector(contextWrapper, -1);
+        Preference.setFCBUSBBaudRateSelector(contextWrapper, 1);
         Preference.setFCBDroneTCPServerIP(contextWrapper, "10.1.1.1");
         Preference.setFCBDroneTCPServerPort(contextWrapper, "5760");
         Preference.setFCBDroneUDPServerPort(contextWrapper, "14550");
