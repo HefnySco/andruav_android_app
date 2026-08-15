@@ -446,7 +446,11 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
                 case Preference.FCB_COM_USB:
                     if (!DeviceManagerFacade.hasUSBHost()) return; // should not happen
                     selectedConnectionType = ConnectionType.TYPE_USB;
-                    connectionParams = ConnectionParameter.newUsbConnection(Constants.baudRateItemsValue[Preference.getFCBUSBBaudRateSelector(null)], null);
+                    int baudIndex = Preference.getFCBUSBBaudRateSelector(null);
+                    if (baudIndex < 0 || baudIndex >= Constants.baudRateItemsValue.length) {
+                        baudIndex = 0;
+                    }
+                    connectionParams = ConnectionParameter.newUsbConnection(Constants.baudRateItemsValue[baudIndex], null);
                     break;
                 case Preference.FCB_COM_BT:
                     // Guard: do not attempt Bluetooth if hardware or permission is unavailable.

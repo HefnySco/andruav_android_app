@@ -85,11 +85,17 @@ public class UsbHohoConnection extends UsbConnection.UsbConnectionImpl {
     protected UsbHohoConnection(Context context, UsbConnection parentConn, int baudRate) {
         super(context, parentConn, baudRate);
         int flags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_MUTABLE : 0;
-        this.usbPermissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), flags);
+        Intent usbPermissionRequestIntent = new Intent(ACTION_USB_PERMISSION);
+        usbPermissionRequestIntent.setPackage(context.getPackageName());
+        this.usbPermissionIntent = PendingIntent.getBroadcast(context, 0, usbPermissionRequestIntent, flags);
 
     }
     private void registerUsbPermissionBroadcastReceiver() {
-        mContext.registerReceiver(broadcastReceiver, intentFilter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            mContext.registerReceiver(broadcastReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            mContext.registerReceiver(broadcastReceiver, intentFilter);
+        }
     }
 
     private void unregisterUsbPermissionBroadcastReceiver() {
@@ -177,7 +183,9 @@ public class UsbHohoConnection extends UsbConnection.UsbConnectionImpl {
             // enter here if user has not given permission for accessing USB.
             usbPermission = UsbPermission.Requested;
             int flags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_MUTABLE : 0;
-            PendingIntent usbPermissionIntent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), flags);
+            Intent usbPermissionRequestIntent = new Intent(ACTION_USB_PERMISSION);
+            usbPermissionRequestIntent.setPackage(mContext.getPackageName());
+            PendingIntent usbPermissionIntent = PendingIntent.getBroadcast(mContext, 0, usbPermissionRequestIntent, flags);
             usbManager.requestPermission(driver.getDevice(), usbPermissionIntent);
             return;
         }
