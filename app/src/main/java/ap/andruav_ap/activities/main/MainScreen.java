@@ -85,6 +85,7 @@ import ap.andruavmiddlelibrary.factory.tts.TTS;
 import ap.andruavmiddlelibrary.factory.util.GMail;
 import ap.andruavmiddlelibrary.factory.tts.SoundManager;
 import ap.andruavmiddlelibrary.factory.util.DialogHelper;
+import ap.andruavmiddlelibrary.log.ExceptionHTTPLogger;
 
 import com.andruav.AndruavEngine;
 import com.andruav.andruavUnit.AndruavUnitBase;
@@ -1039,6 +1040,8 @@ public class MainScreen extends BaseAndruavShasha {
         bindMenuRow(content, R.id.home_menu_row_exit, popup, this::doExit, true);
         bindMenuRow(content, R.id.home_menu_row_remote, popup, this::doRemoteSettings, true);
         bindMenuRow(content, R.id.home_menu_row_about, popup, this::showAboutDialog, true);
+        bindMenuRow(content, R.id.home_menu_row_export_logs, popup, this::doExportErrorLogs, true);
+        bindMenuRow(content, R.id.home_menu_row_clear_logs, popup, this::doClearErrorLogs, true);
         bindMenuRow(content, R.id.home_menu_row_signout, popup, this::doSignOut, mMenuActionsEnabled);
 
         popup.showAsDropDown(anchor, -150, 4, Gravity.END);
@@ -1372,6 +1375,45 @@ public class MainScreen extends BaseAndruavShasha {
         }
         btnOk.setOnClickListener(v -> dialog.dismiss());
         dialog.show();
+    }
+
+    private void doExportErrorLogs() {
+        final ExceptionHTTPLogger logger = App.exceptionHTTPLogger;
+        if (logger == null) {
+            Toast.makeText(Me, getString(R.string.home_menu_export_logs) + ": logger unavailable", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        new Thread(() -> {
+            final Uri uri = logger.exportExceptionLogAsCSV();
+            runOnUiThread(() -> {
+                if (uri != null) {
+                    Toast.makeText(Me, "Error logs exported to " + uri, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(Me, "No error logs to export", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }).start();
+    }
+
+    private void doClearErrorLogs() {
+        final ExceptionHTTPLogger logger = App.exceptionHTTPLogger;
+        if (logger == null) {
+            Toast.makeText(Me, getString(R.string.home_menu_clear_logs) + ": logger unavailable", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(Me);
+        builder.setMessage("Delete all error logs?")
+                .setCancelable(false)
+                .setPositiveButton(android.R.string.yes, (dialog, id) -> {
+                    new Thread(() -> {
+                        final boolean ok = logger.clearExceptionLog();
+                        runOnUiThread(() -> Toast.makeText(Me,
+                                ok ? "Error logs deleted" : "Failed to delete error logs",
+                                Toast.LENGTH_SHORT).show());
+                    }).start();
+                })
+                .setNegativeButton(android.R.string.no, (dialog, id) -> dialog.cancel());
+        builder.create().show();
     }
 
     private void doSettings() {

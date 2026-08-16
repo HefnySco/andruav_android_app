@@ -1,189 +1,79 @@
 package ap.andruavmiddlelibrary.log;
 
+import android.net.Uri;
 import android.os.Build;
-import android.util.Base64;
 import android.util.Log;
 
 import com.andruav.FeatureSwitch;
-import ap.andruavmiddlelibrary.factory.communication.NetInfoAdapter;
-import ap.andruavmiddlelibrary.preference.Preference;
+import ap.andruavmiddlelibrary.factory.io.FileHelper;
 import ap.andruavmiddlelibrary.database.DaoManager;
-import ap.andruavmiddlelibrary.database.GenericDataDao;
-import ap.andruavmiddlelibrary.database.GenericDataRow;
 import ap.andruavmiddlelibrary.database.LogDao;
 import ap.andruavmiddlelibrary.database.LogRow;
 
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.interfaces.ILog;
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 
 
 /**
  * Created by mhefny on 1/31/16.
+ *
+ * Web/HTTP logging has been removed. This class now only performs DAO logging:
+ * exceptions and waypoints (the latter via GenericDataDao from KMLFileHandler) are persisted
+ * locally in the greenDAO database. Use {@link #exportExceptionLogAsCSV()} to dump the exception
+ * log to a CSV file under Download/AndruavLogs, and {@link #clearExceptionLog()} to wipe it.
  */
 public class ExceptionHTTPLogger implements ILog {
 
 
-    private static final String Default_LOG_PATH ="http://andruav.com:9911";
-    private static final String LOCAL_LOG_PATH ="http://192.168.1.144:9911"; //"http://192.168.1.139:9911"; //"http://192.168.2.42:9911";
-
-
-    // protected  static AndroidLogger mlogentries;
     protected  final static String LINE_SEPARATOR = "\r\n";
 
-    protected final static OkHttpClient mclientHTTP = new OkHttpClient();
-    protected final static String  pageName = "www/ws_andruavlogger.php";
 
-
-    private static class MyRunnable implements Runnable {
-        private final String text;
+    private static class InsertRunnable implements Runnable {
         private final String userName;
         private final String tag;
-        private final boolean skipLocal;
+        private final String text;
 
-        MyRunnable(final String userName,final String tag, final String text, final boolean skipLocal) {
+        InsertRunnable(final String userName, final String tag, final String text) {
             this.userName = userName;
             this.tag = tag;
             this.text = text;
-            this.skipLocal = skipLocal;
         }
 
+        @Override
         public void run() {
             android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-
-            String query = null;
-            /*try {
-                query = URLEncoder.encode( text, "utf-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }*/
-
-            query = Base64.encodeToString(text.getBytes(), Base64.NO_WRAP);
-
-           // String url =  "http://" + FeatureSwitch.Default_LOG_PATH +  "/" + pageName + "?cmd=s&id=" + userName + "&tag=" +  tag + "&msg=" +  query;
-            String url;
-            if ((FeatureSwitch.DEBUG_LOG_MODE)  && (FeatureSwitch.DEBUG_MODE))
-            {
-                url = LOCAL_LOG_PATH; // + "?cmd=s&id=" + userName + "&tag=" +  tag + "&msg=" +  query;
-            }
-            else
-            {
-                url = Default_LOG_PATH; //  + "?cmd=s&id=" + userName + "&tag=" +  tag + "&msg=" +  query;
-            }
-
-
-
-
-            if (FeatureSwitch.Disable_LOG_In_Local_Server && Preference.isLocalServer(null) && !skipLocal)
-            {
-                return ;
-            }
-            url = url.replace("+","%20");
-            if (FeatureSwitch.DEBUG_MODE) {
-                Log.e("ExceptionHTTPLogger", url);
-            }
-            if (query.isEmpty()) query="NA";
-            Request request = new Request.Builder()
-                    .url(url)
-                    .addHeader("cmd","s")
-                    .addHeader("id",userName)
-                    .addHeader("tag",tag)
-                    .addHeader("msg",query)
-                    .build();
-
-            Call call = mclientHTTP.newCall(request);
             try {
-                Response response = call.execute();
-                ResponseBody responseBody =  response.body();
-
-                if (FeatureSwitch.DEBUG_MODE) {
-                    Log.e("logfpv", responseBody.string());
+                final LogDao logDao = DaoManager.getLogDao();
+                if (logDao == null) {
+                    // could be null if crash before DaoManager.init() has been called
+                    return;
                 }
+                if (FeatureSwitch.DEBUG_MODE) {
+                    Log.e("fpv", "Insert in Database");
+                }
+                logDao.insert(new LogRow(null, userName, tag, text));
             } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-
-
-    }
-
-
-    /***
-     * Send Logs Data in Generic Table
-     */
-    public void sendOldErrors2 ()
-    {
-        if (FeatureSwitch.DEBUG_MODE) {
-            Log.e("fpv", "SendOldError Called");
-        }
-        GenericDataDao genericDataDao=DaoManager.getGenericDataDao();
-        if (genericDataDao==null) return;
-
-        try {
-
-            final List genericDataRowList = genericDataDao.queryBuilder().list();
-            final int size = genericDataRowList.size();
-            for (int i=0;i<size; i=i+1)
-            {
-
-                GenericDataRow genericDataRow = (GenericDataRow) genericDataRowList.get(i);
-                //LogRow logRow =(LogRow) genericDataRow.getId() + ;
-                log(Preference.getLoginUserName(null), "GDR" + " " + genericDataRow.getType().toString() , genericDataRow.getData());
-            }
-            if (FeatureSwitch.DEBUG_MODE) {
-                Log.e("fpv", "SendOldError FOund");
-            }
-        }
-        catch (Exception e)
-        {
-
-        }
-    }
-
-
-    public void sendOldErrors ()
-    {
-        if (FeatureSwitch.DEBUG_MODE) {
-            Log.e("fpv", "SendOldError Called");
-        }
-        LogDao logDao=DaoManager.getLogDao();
-        if (logDao==null) return;
-
-        try {
-
-            final List logs = logDao.queryBuilder().list();
-            final int size = logs.size();
-            for (int i=0;i<size; i=i+1)
-            {
-                LogRow logRow =(LogRow) logs.get(i);
-                _log2(logRow.getUserName(), logRow.getTag(), logRow.getError());
-            }
-            if (FeatureSwitch.DEBUG_MODE) {
-                Log.e("fpv", "SendOldError FOund");
-            }
-        }
-        catch (Exception e)
-        {
-
-        }
-        finally {
-            if (logDao != null) {
-                logDao.deleteAll();
+                if (FeatureSwitch.DEBUG_MODE) {
+                    Log.e("ExceptionHTTPLogger", "insert failed", e);
+                }
             }
         }
     }
+
 
     public void logException (final String tag, final Exception exception) {
         logException(AndruavSettings.AccessCode,tag,exception);
@@ -326,74 +216,30 @@ public class ExceptionHTTPLogger implements ILog {
 
 
     /***
-     * @http http://www.andruav.com/www/ws_andruavlogger.php?cmd=s&id=me@there.com&err=THIS_IS_ERROR
+     * Persists a log entry into the local DAO database (no network).
      * @param userName
+     * @param tag
      * @param text
      */
     public void log(final String userName, final String tag, final String text)
     {
-
-        // if ((NetInfoAdapter.isWifiInternetEnabled()==false) &&  (NetInfoAdapter.isMobileNetworkConnected()==false))
         try {
-
-            Thread t = new Thread(new MyRunnable(
-                    userName, /*.replaceAll("'", "%27").replaceAll("\"", "%22"), */
-                    tag, //.replaceAll("'", "%27").replaceAll("\"", "%22"),
-                    text, //.replaceAll("'", "%27").replaceAll("\"", "%22"),
-                    false));
+            Thread t = new Thread(new InsertRunnable(userName, tag, text));
             t.setDaemon(true);
             t.start();
-
         }
         catch (Exception e)
         {
-          //  Log.e("fpv",e.getMessage());
-        }
-
-    }
-
-
-    private void _log2(final String userName, final String tag, final String text)
-    {
-
-        try {
-            if ((!NetInfoAdapter.isOnline())||(!NetInfoAdapter.isHasValidIPAddress())) {
-                // NO INTERNET ACCESS
-                //TODO: you may need to log here.
-                final LogDao logDao = DaoManager.getLogDao();
-                if (logDao!= null)
-                {
-                    // could be null if crash before DaoManager.init() has been called
-                    if (FeatureSwitch.DEBUG_MODE) {
-                        Log.e("fpv", "Insert in Database");
-                    }
-                    logDao.insert(new LogRow(null, userName, tag, text));
-                }
-                return;
+            if (FeatureSwitch.DEBUG_MODE) {
+                Log.e("ExceptionHTTPLogger", "log failed", e);
             }
-
-            //  Log.e("logfpv", " Start a Thread");
-
-            Thread t = new Thread(new MyRunnable(
-                    userName, /*.replaceAll("'", "%27").replaceAll("\"", "%22"), */
-                    tag, //.replaceAll("'", "%27").replaceAll("\"", "%22"),
-                    text, //.replaceAll("'", "%27").replaceAll("\"", "%22"),
-                    true
-            ));
-            t.setDaemon(true);
-            t.start();
-
         }
-        catch (Exception e)
-        {
-            //  Log.e("fpv",e.getMessage());
-        }
-
     }
+
 
     @Override
     public void log2(String userName, String tag, String text) {
-        _log2(userName, tag, text);
+        log(userName, tag, text);
     }
 
 
@@ -401,6 +247,139 @@ public class ExceptionHTTPLogger implements ILog {
     {
 
         log(userName, tag, "\n************ DEVICE INFORMATION ***********\n" + "Brand: " + Build.BRAND + LINE_SEPARATOR + "Device: " + Build.DEVICE + LINE_SEPARATOR + "Model: " + Build.MODEL + LINE_SEPARATOR + "id: " + Build.ID + LINE_SEPARATOR + "Product: " + Build.PRODUCT + LINE_SEPARATOR + "\n************ FIRMWARE ************\n" + "SDK: " + Build.VERSION.SDK + LINE_SEPARATOR + "Release: " + Build.VERSION.RELEASE + LINE_SEPARATOR + "Incremental: " + Build.VERSION.INCREMENTAL + LINE_SEPARATOR + "App version: " + AndruavEngine.getPreference().getVersionName());
+    }
+
+
+    /***
+     * Exports all rows currently stored in the exception log (the {@link LogDao} table) to a CSV
+     * file under the shared Downloads collection: {@code Download/AndruavLogs/exceptions_<timestamp>.csv}
+     * on API 29+ (via MediaStore, so it survives app uninstall and is visible in File Manager), or
+     * {@code AndruavLogs/exceptions_<timestamp>.csv} under the public Downloads directory on older
+     * APIs.
+     *
+     * Columns: {@code id,tag,error}. The {@code error} field is RFC 4180 quoted and escapes embedded
+     * double quotes by doubling them, so embedded newlines/commas/quotes are preserved.
+     *
+     * @return the content Uri of the written file on API 29+, or the absolute path as a
+     *         {@code file://}-style Uri on older APIs, or {@code null} on failure / empty log.
+     */
+    public Uri exportExceptionLogAsCSV ()
+    {
+        final LogDao logDao = DaoManager.getLogDao();
+        if (logDao == null) {
+            return null;
+        }
+
+        final List<LogRow> rows;
+        try {
+            rows = logDao.queryBuilder().list();
+        } catch (Exception e) {
+            if (FeatureSwitch.DEBUG_MODE) {
+                Log.e("ExceptionHTTPLogger", "exportExceptionLogAsCSV query failed", e);
+            }
+            return null;
+        }
+
+        if ((rows == null) || rows.isEmpty()) {
+            return null;
+        }
+
+        final String timeStamp =
+                new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.UK).format(new Date());
+        final String fileName = "exceptions_" + timeStamp + ".csv";
+
+        final StringBuilder csv = new StringBuilder();
+        csv.append("id,tag,error\n");
+        for (LogRow row : rows) {
+            csv.append(csvId(row.getId()));
+            csv.append(',');
+            csv.append(csvField(row.getTag()));
+            csv.append(',');
+            csv.append(csvField(row.getError()));
+            csv.append('\n');
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            final String relativeFolderPath = "Download/AndruavLogs";
+            final Uri uri = FileHelper.createDownloadsEntry(relativeFolderPath, fileName, "text/csv");
+            if (uri == null) {
+                return null;
+            }
+            try (OutputStream os = AndruavEngine.getPreference().getContext().getContentResolver().openOutputStream(uri)) {
+                if (os == null) {
+                    return null;
+                }
+                os.write(csv.toString().getBytes());
+                os.flush();
+            } catch (IOException ex) {
+                AndruavEngine.log().logException("exception_log_export", ex);
+                return null;
+            }
+            FileHelper.markMediaStoreEntryComplete(uri);
+            return uri;
+        } else {
+            final File root = FileHelper.GetFolder("AndruavLogs", null);
+            if (root == null) {
+                return null;
+            }
+            final File file = new File(root, fileName);
+            try {
+                if (!file.exists() && !file.createNewFile()) {
+                    return null;
+                }
+                try (FileOutputStream fos = new FileOutputStream(file.getAbsolutePath())) {
+                    fos.write(csv.toString().getBytes());
+                    fos.flush();
+                }
+                return Uri.fromFile(file);
+            } catch (IOException ex) {
+                AndruavEngine.log().logException("exception_log_export", ex);
+                return null;
+            }
+        }
+    }
+
+
+    /***
+     * Deletes every row from the exception log (the {@link LogDao} table). After this call
+     * {@link #exportExceptionLogAsCSV()} will return {@code null} until new exceptions are logged.
+     *
+     * @return {@code true} if the table was cleared; {@code false} if the DAO was unavailable or
+     *         the delete failed.
+     */
+    public boolean clearExceptionLog ()
+    {
+        final LogDao logDao = DaoManager.getLogDao();
+        if (logDao == null) {
+            return false;
+        }
+        try {
+            logDao.deleteAll();
+            return true;
+        } catch (Exception e) {
+            if (FeatureSwitch.DEBUG_MODE) {
+                Log.e("ExceptionHTTPLogger", "clearExceptionLog failed", e);
+            }
+            return false;
+        }
+    }
+
+
+    private static String csvId(final Long id) {
+        // id is a primary key (integer); no quoting needed. null becomes empty.
+        return (id == null) ? "" : id.toString();
+    }
+
+    /***
+     * Quotes a CSV field per RFC 4180: wrap in double quotes and double any embedded double quotes.
+     * Embedded newlines/commas are preserved inside the quotes.
+     */
+    private static String csvField(final String value) {
+        if (value == null) {
+            return "\"\"";
+        }
+        // Escape backslashes first? RFC 4180 has no backslash escaping - only double-quote doubling.
+        return "\"" + value.replace("\"", "\"\"") + "\"";
     }
 
 }

@@ -152,7 +152,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     /*public static USBFCB usbConn;
     public static FTDIFCB ftdiusbConn;*/
     public static String versionName;
-    private static ExceptionHTTPLogger exceptionHTTPLogger;
+    public static ExceptionHTTPLogger exceptionHTTPLogger;
     public static Notification notification;
 
     public static TelemetryProtocolParser telemetryProtocolParser;
@@ -785,8 +785,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
             e.printStackTrace();
         }
         AndruavEngine.setUDPProxy(udpProxy);
-
-        exceptionHTTPLogger.sendOldErrors();
 
         // should be early so that settings in Preferences will be reflected below
         getAppVersion();

@@ -36,6 +36,8 @@
     <string name="home_tile_state_tap_to_link">TAP TO LINK</string>
 
     <string name="home_menu_settings">Settings</string>
+    <string name="home_menu_export_logs">Export Error Logs</string>
+    <string name="home_menu_clear_logs">Delete Error Logs</string>
 
     <string name="home_fcb_sheet_title">TELEMETRY HUB · FCB CONNECTION</string>
     <string name="home_fcb_bluetooth">Bluetooth</string>
