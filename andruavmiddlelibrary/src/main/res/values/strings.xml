@@ -360,7 +360,7 @@
 
 
     <string name="websocket_Ping">Ping</string>
-    <string name="login_Title">Access Code</string>
+    <string name="login_Title">Login</string>
     <string name="login_register_Title">Account Registration</string>
     <string name="login_email">Email</string>
     <string name="login_login">Join</string>

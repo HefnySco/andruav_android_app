@@ -35,7 +35,6 @@ import ap.andruavmiddlelibrary.factory.util.DialogHelper;
 import ap.andruavmiddlelibrary.factory.util.GMail;
 import ap.andruavmiddlelibrary.preference.Preference;
 
-import static ap.andruavmiddlelibrary.LoginClient.CONST_ACCOUNT_NAME_PARAMETER;
 import static ap.andruavmiddlelibrary.LoginClient.CONST_ERROR_MSG;
 
 public class MainDroneActiviy extends AppCompatActivity {
@@ -54,6 +53,7 @@ public class MainDroneActiviy extends AppCompatActivity {
         protected DroneLoginShasha Me;
         private Handler mhandle;
         protected Button btnJoin;
+        protected EditText edtEmail;
         protected EditText edtAccessCode;
 
         protected TextView txtSubscribe;
@@ -82,11 +82,11 @@ public class MainDroneActiviy extends AppCompatActivity {
                 public void handleMessage(Message msg) {
                     super.handleMessage(msg);
                     final EventLoginClient event_LoginClient = (EventLoginClient)msg.obj;
-                    if (event_LoginClient.Cmd == LoginClient.CMD_RetrieveAccountName) {
+                    if (event_LoginClient.Cmd == LoginClient.CMD_ValidateAccount) {
                         exitProgressDialog();
 
                         if (event_LoginClient.LastError == 0) {
-                            email = event_LoginClient.Parameters.get(CONST_ACCOUNT_NAME_PARAMETER);
+                            email = edtEmail.getText().toString().trim();
 
                             AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.login_action_joined));
                             savePreference();
@@ -132,7 +132,7 @@ public class MainDroneActiviy extends AppCompatActivity {
         {
             // Do Save
             //mchkAutoLogin.setChecked(Preference.isLoginAuto(null));
-            //medtEmail.setText(Preference.getLoginUserName(null));
+            edtEmail.setText(Preference.getLoginUserName(null));
             edtAccessCode.setText(Preference.getLoginAccessCode(null));
 
         }
@@ -141,8 +141,9 @@ public class MainDroneActiviy extends AppCompatActivity {
 
             btnJoin         = findViewById(R.id.droneloginactivity_btnSaveAccessCode);
             txtSubscribe    = findViewById(R.id.droneloginactivity_txtSubscribe);
+            edtEmail        = findViewById(R.id.droneloginactivity_edtEmail);
             edtAccessCode   = findViewById(R.id.droneloginactivity_edtAccessCode);
-            edtAccessCode.addTextChangedListener(new TextWatcher() {
+            TextWatcher enableWatcher = new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -155,9 +156,11 @@ public class MainDroneActiviy extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    btnJoin.setEnabled((edtAccessCode.getText().length() > 0));
+                    btnJoin.setEnabled((edtEmail.getText().length() > 0) && (edtAccessCode.getText().length() > 0));
                 }
-            });
+            };
+            edtEmail.addTextChangedListener(enableWatcher);
+            edtAccessCode.addTextChangedListener(enableWatcher);
 
             txtSubscribe.setOnClickListener(new View.OnClickListener(){
                                                 public void onClick(View v){
@@ -179,11 +182,16 @@ public class MainDroneActiviy extends AppCompatActivity {
 
 
         /***
-         * Retreives Account Name -email- of an Access Key and saves both
+         * Login using email (Account Name) & Access Code via /agent/al,
+         * mirroring the C++ DE client doAuthentication().
          */
         private void doSaveAccessCode()
         {
-            if (edtAccessCode.getText().length() == 0)
+            if (edtEmail.getText().length() == 0)
+            {
+                DialogHelper.doModalDialog(this, getString(ap.andruavmiddlelibrary.R.string.login_email), getString(ap.andruavmiddlelibrary.R.string.err_nullValue), null);
+            }
+            else if (edtAccessCode.getText().length() == 0)
             {
                 DialogHelper.doModalDialog(this, getString(ap.andruavmiddlelibrary.R.string.login_access_code), getString(ap.andruavmiddlelibrary.R.string.err_nullValue), null);
             }
@@ -195,7 +203,7 @@ public class MainDroneActiviy extends AppCompatActivity {
                     AndruavSettings.AuthPort =Preference.getAuthServerPort(null);
 
 
-                    LoginClient.RetrieveAccountName(edtAccessCode.getText().toString());
+                    LoginClient.ValidateAccount(edtEmail.getText().toString(), edtAccessCode.getText().toString(), Preference.getWebServerGroupName(null), null);
                 }
                 catch (UnsupportedEncodingException e )
                 {

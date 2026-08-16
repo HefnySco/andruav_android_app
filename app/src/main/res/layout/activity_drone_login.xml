@@ -53,6 +53,29 @@ tools:context=".activities.login.drone.MainDroneActiviy$DroneLoginShasha">
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/login_email"
+        android:id="@+id/droneloginactivity_txtEmail"
+        android:textColor="@color/chip_text"
+        android:layout_marginBottom="6dp" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/droneloginactivity_edtEmail"
+        android:background="@drawable/chip_info_background"
+        android:textColor="@color/chip_text"
+        android:textColorHint="@color/header_subtitle"
+        android:padding="14dp"
+        android:autoText="false"
+        android:layout_marginBottom="20dp"
+        android:hint="email used to register your account" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/login_access_code"
         android:id="@+id/droneloginactivity_txtAccessCode"
         android:textColor="@color/chip_text"
@@ -61,7 +84,7 @@ tools:context=".activities.login.drone.MainDroneActiviy$DroneLoginShasha">
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
+        android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/droneloginactivity_edtAccessCode"
         android:background="@drawable/chip_info_background"

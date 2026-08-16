@@ -1,12 +1,15 @@
 # Build Environment
 
-This project requires no system-wide installs — the full Android toolchain lives
-in userspace under `~/android-build/`.
+This project needs a JDK 17 and the Android SDK — the exact install locations
+are not important as long as the versions match. `local.properties` already
+points `sdk.dir` at the correct SDK for this machine, so you usually only need
+to set `JAVA_HOME` before building.
 
-## Toolchain (userspace)
+## Toolchain requirements
 
-- **JDK 17**: `~/android-build/jdk` (Eclipse Temurin 17.0.13)
-- **Android SDK**: `~/android-build/sdk`
+- **JDK 17** (any distribution: Temurin, OpenJDK, Oracle…). The toolchain JDK
+  is 17 while `compileOptions` targets Java 11 bytecode.
+- **Android SDK** (location read from `local.properties` → `sdk.dir`), with:
   - `cmdline-tools/latest`
   - `platform-tools`
   - `build-tools;34.0.0`
@@ -14,15 +17,18 @@ in userspace under `~/android-build/`.
 - **Gradle 8.14**: auto-downloaded by the wrapper to `~/.gradle/wrapper/dists/`
 - **Android Gradle Plugin**: 8.4.2
 
-`local.properties` points `sdk.dir` at `~/android-build/sdk`.
-
 ## Build commands
 
-Always export these env vars first (no system `java`/`gradle` on PATH):
+Set `JAVA_HOME` to a JDK 17 install and `ANDROID_HOME` to the SDK directory
+(from `local.properties`). For example:
 
 ```bash
-export JAVA_HOME=~/android-build/jdk
-export ANDROID_HOME=~/android-build/sdk
+# Detect a system JDK 17 if one is installed:
+export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))   # only if `javac` is JDK 17
+# Or point at it explicitly, e.g.:
+# export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+
+export ANDROID_HOME=$(grep '^sdk.dir=' local.properties | cut -d= -f2)
 export PATH="$JAVA_HOME/bin:$PATH"
 ```
 
@@ -44,7 +50,7 @@ Output APKs land in `app/build/outputs/apk/<variant>/`.
 ## Verify APK signature
 
 ```bash
-~/android-build/sdk/build-tools/34.0.0/apksigner verify --verbose <apk>
+"$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose <apk>
 ```
 
 ## Notes
