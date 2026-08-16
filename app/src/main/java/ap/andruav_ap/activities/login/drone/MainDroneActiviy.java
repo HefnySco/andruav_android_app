@@ -86,8 +86,6 @@ public class MainDroneActiviy extends AppCompatActivity {
                         exitProgressDialog();
 
                         if (event_LoginClient.LastError == 0) {
-                            email = edtEmail.getText().toString().trim();
-
                             AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.login_action_joined));
                             savePreference();
                             DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.login_login), getString(ap.andruavmiddlelibrary.R.string.login_action_joined), null,
@@ -202,8 +200,8 @@ public class MainDroneActiviy extends AppCompatActivity {
                     AndruavSettings.AuthIp = Preference.getAuthServerURL(null);
                     AndruavSettings.AuthPort =Preference.getAuthServerPort(null);
 
-
-                    LoginClient.ValidateAccount(edtEmail.getText().toString(), edtAccessCode.getText().toString(), Preference.getWebServerGroupName(null), null);
+                    email = edtEmail.getText().toString().trim();
+                    LoginClient.ValidateAccount(email, edtAccessCode.getText().toString(), Preference.getWebServerGroupName(null), null);
                 }
                 catch (UnsupportedEncodingException e )
                 {
