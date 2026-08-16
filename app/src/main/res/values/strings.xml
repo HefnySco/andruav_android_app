@@ -10,6 +10,7 @@
     <string name="home_server_status_disconnected">DISCONNECTED</string>
     <string name="home_btn_connect">CONNECT</string>
     <string name="home_btn_disconnect">DISCONNECT</string>
+    <string name="home_btn_signin">SIGN-IN</string>
 
     <string name="home_telemetry_title">FLIGHT TELEMETRY</string>
     <string name="home_telemetry_linked">LINKED</string>

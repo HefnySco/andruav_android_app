@@ -123,6 +123,7 @@ public class MainScreen extends BaseAndruavShasha {
     private View mDotServer;
     private TextView mTxtServerStatus;
     private TextView mTxtServerSubtitle;
+    private TextView mBtnServerSignIn;
     private TextView mBtnServerConnect;
     private TextView mBtnServerDisconnect;
 
@@ -581,8 +582,10 @@ public class MainScreen extends BaseAndruavShasha {
         mDotServer = findViewById(R.id.home_dot_server);
         mTxtServerStatus = findViewById(R.id.home_txt_server_status);
         mTxtServerSubtitle = findViewById(R.id.home_txt_server_subtitle);
+        mBtnServerSignIn = findViewById(R.id.home_btn_server_signin);
         mBtnServerConnect = findViewById(R.id.home_btn_server_connect);
         mBtnServerDisconnect = findViewById(R.id.home_btn_server_disconnect);
+        mBtnServerSignIn.setOnClickListener(v -> doSignOut());
         mBtnServerConnect.setOnClickListener(v -> onServerConnectToggle());
         mBtnServerDisconnect.setOnClickListener(v -> onServerConnectToggle());
         mTxtServerSubtitle.setText(Preference.getAuthServerURL(null));
@@ -988,6 +991,7 @@ public class MainScreen extends BaseAndruavShasha {
         mTxtServerStatus.setTextColor(ContextCompat.getColor(this,
                 connected ? R.color.home_green_icon : R.color.home_red_text));
 
+        mBtnServerSignIn.setVisibility(connected ? View.GONE : View.VISIBLE);
         mBtnServerConnect.setVisibility(connected ? View.GONE : View.VISIBLE);
         mBtnServerDisconnect.setVisibility(connected ? View.VISIBLE : View.GONE);
     }
@@ -1037,12 +1041,11 @@ public class MainScreen extends BaseAndruavShasha {
         bindMenuRow(content, R.id.home_menu_row_help, popup, this::doHelp, true);
         bindMenuRow(content, R.id.home_menu_row_settings, popup, this::doSettings_Drone, mSettingsEnabled && !isGCS);
         bindMenuRow(content, R.id.home_menu_row_reset, popup, this::doFactoryReset, mMenuActionsEnabled);
-        bindMenuRow(content, R.id.home_menu_row_exit, popup, this::doExit, true);
         bindMenuRow(content, R.id.home_menu_row_remote, popup, this::doRemoteSettings, true);
-        bindMenuRow(content, R.id.home_menu_row_about, popup, this::showAboutDialog, true);
         bindMenuRow(content, R.id.home_menu_row_export_logs, popup, this::doExportErrorLogs, true);
         bindMenuRow(content, R.id.home_menu_row_clear_logs, popup, this::doClearErrorLogs, true);
-        bindMenuRow(content, R.id.home_menu_row_signout, popup, this::doSignOut, mMenuActionsEnabled);
+        bindMenuRow(content, R.id.home_menu_row_about, popup, this::showAboutDialog, true);
+        bindMenuRow(content, R.id.home_menu_row_exit, popup, this::doExit, true);
 
         popup.showAsDropDown(anchor, -150, 4, Gravity.END);
     }
