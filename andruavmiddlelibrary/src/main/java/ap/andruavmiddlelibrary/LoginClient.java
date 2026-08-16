@@ -81,7 +81,6 @@ public class LoginClient {
     public final static String CONST_ACCESS_CODE_PARAMETER          = "pwd";
     public final static String CONST_APP_NAME_PARAMETER             = "app";
     public final static String CONST_GROUP_PARAMETER                = "gr";
-    public final static String CONST_APP_VER_PARAMETER              = "ver";
     public final static String CONST_EXTRA_PARAMETER                = "ex";
 
 
