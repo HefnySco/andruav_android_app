@@ -150,7 +150,10 @@ public class Andruav_Parser {
                 break;
 
             default:
-                throw new IllegalArgumentException("unknown messageType:" + messageType);
+                // Unknown binary message type.
+                // Receive peacefully without processing; handling will be added later.
+                andruavResalaBinaryBase = new AndruavResalaBinaryBase();
+                break;
 
         }
 
@@ -350,7 +353,10 @@ public class Andruav_Parser {
                 break;
 
             default:
-                throw new IllegalArgumentException("unknown messageType:" + messageType);
+                // Unknown message type (e.g. 9001-9004 AndruavSystem task commands).
+                // Receive peacefully without processing; handling will be added later.
+                andruavMessageBase = new AndruavMessage_String();
+                break;
 
         }
 
