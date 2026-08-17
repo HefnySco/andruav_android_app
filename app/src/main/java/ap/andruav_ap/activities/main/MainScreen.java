@@ -1460,6 +1460,13 @@ public class MainScreen extends BaseAndruavShasha {
         updateFPVButton();
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
+        // onPause calls mhandle.removeCallbacksAndMessages(null) which cancels
+        // the postDelayed re-enable from onServerConnectToggle. Re-enable here
+        // so the buttons are not stuck disabled after returning from a sub-activity
+        // (e.g. login screen opened by doLogin).
+        if (mBtnServerConnect != null) mBtnServerConnect.setEnabled(true);
+        if (mBtnServerDisconnect != null) mBtnServerDisconnect.setEnabled(true);
+
         EventBus.getDefault().register(this);
         //SMS.sendSMS("01029000028","HI that is me ANdroid");
 

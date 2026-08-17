@@ -77,6 +77,11 @@ public class AndruavMessage_RemoteExecute extends AndruavMessage_Control_Base {
      */
     public final static int RemoteCommand_IMUCTRL = 106;
 
+    /***
+     * Instruct target unit to sendMessageToModule SMS containing GPS location info.
+     * <br>Optional variable <b>n</b> selects a custom receiver phone number.
+     * <br>When <b>n</b> is omitted the unit's configured recovery phone number is used.
+     */
     public final static int RemoteCommand_SMSwGPS = 107;
 
     /***

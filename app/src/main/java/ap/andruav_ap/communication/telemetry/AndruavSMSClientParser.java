@@ -62,7 +62,7 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
                 if (andruavIMU == null) return;
 
                 if (andruavIMU.hasCurrentLocation()) {
-                    AndruavEngine.getEmergency().sendSMSLocation(sender);
+                    AndruavEngine.getEmergency().sendSMSLocation(sender, true);
                 }
             }
                 break;

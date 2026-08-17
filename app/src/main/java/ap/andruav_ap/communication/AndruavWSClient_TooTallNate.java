@@ -1133,6 +1133,26 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
                             break;
 
+                        case AndruavMessage_RemoteExecute.RemoteCommand_SMSwGPS: {
+                            if ((andruavUnit != null) && (!andruavUnit.canControl())) break;
+
+                            andruav_2MR.processed = true;
+                            final Emergency emergencySMSwGPS = (Emergency) AndruavEngine.getEmergency();
+                            if (emergencySMSwGPS != null) {
+                                // Optional variable "n" selects a custom receiver phone number.
+                                // When omitted, falls back to the unit's configured recovery number.
+                                if (andruavResala_remoteExecute.Variables.containsKey("n")) {
+                                    final String receiverNum = andruavResala_remoteExecute.Variables.get("n");
+                                    if (receiverNum != null && !receiverNum.isEmpty()) {
+                                        emergencySMSwGPS.sendSMSLocation(receiverNum, true);
+                                        break;
+                                    }
+                                }
+                                emergencySMSwGPS.sendSMS(true);
+                            }
+                        }
+                        break;
+
 
                         default:
                             // unknown command ... maybe a new protocol version

@@ -151,6 +151,6 @@ public abstract class EmergencyBase {
     protected  abstract void doFlash (final boolean enable,final boolean ignorePermission);
     public  abstract void sendSMS (final boolean ignoreTiming);
 
-    public  abstract void sendSMSLocation (final String receiver_num);
+    public  abstract void sendSMSLocation (final String receiver_num, final boolean b_forced);
 
 }

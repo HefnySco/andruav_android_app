@@ -274,7 +274,7 @@ public class Emergency extends EmergencyBase {
             }
             String sms_target = Preference.getRecoveryPhoneNo(null);
             if (sms_target!="") {
-                sendSMSLocation(sms_target);
+                sendSMSLocation(sms_target, false);
             }
 
 
@@ -286,11 +286,10 @@ public class Emergency extends EmergencyBase {
     }
 
 
-    public  void sendSMSLocation (final String receiver_num) {
+    public  void sendSMSLocation (final String receiver_num, final boolean b_forced) {
         try
         {
-
-            if (!Preference.isSMSTXEnabled(null))
+            if (!b_forced && !Preference.isSMSTXEnabled(null))
             {
                 return ; // ModuleFeatures is disabled by user.
             }
