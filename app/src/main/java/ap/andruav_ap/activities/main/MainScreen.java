@@ -1408,16 +1408,10 @@ public class MainScreen extends BaseAndruavShasha {
 
                 }
             },100);
-        }
-        else
-       {
-           Log.d("ac","autoconnect resume false");
-       }
 
-        if (autoConnect)
-        {
-
-            Log.d("ac","autoconnect resume true");
+            // FCB auto-connect: posted with a longer delay so it runs after the
+            // WS-connect runnable above. Kept as a separate post so the FCB
+            // attempt does not block on network availability checks.
             mhandle.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -1428,9 +1422,9 @@ public class MainScreen extends BaseAndruavShasha {
             },300);
         }
         else
-        {
-            Log.d("ac","autoconnect resume false");
-        }
+       {
+           Log.d("ac","autoconnect resume false");
+       }
     }
 
     @Override
