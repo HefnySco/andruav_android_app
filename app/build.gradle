@@ -11,8 +11,8 @@ android {
         applicationId 'arudpilot.andruav'
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
-        versionName '11.3.2'
-        versionCode 60400
+        versionName '11.3.4'
+        versionCode 1110304
         multiDexEnabled true
     }
 
