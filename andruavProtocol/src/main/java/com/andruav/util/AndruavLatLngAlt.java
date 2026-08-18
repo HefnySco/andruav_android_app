@@ -58,10 +58,8 @@ public class AndruavLatLngAlt extends  AndruavLatLng{
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AndruavLatLngAlt)) return false;
+        if (!(o instanceof AndruavLatLngAlt that)) return false;
         if (!super.equals(o)) return false;
-
-        AndruavLatLngAlt that = (AndruavLatLngAlt) o;
 
         return Double.compare(that.mAltitude, mAltitude) == 0;
 

@@ -238,10 +238,9 @@ public class PeerConnection {
       if (obj == this) {
         return true;
       }
-      if (!(obj instanceof IceServer)) {
+      if (!(obj instanceof IceServer other)) {
         return false;
       }
-      IceServer other = (IceServer) obj;
       return (uri.equals(other.uri) && urls.equals(other.urls) && username.equals(other.username)
           && password.equals(other.password) && tlsCertPolicy.equals(other.tlsCertPolicy)
           && hostname.equals(other.hostname) && tlsAlpnProtocols.equals(other.tlsAlpnProtocols)

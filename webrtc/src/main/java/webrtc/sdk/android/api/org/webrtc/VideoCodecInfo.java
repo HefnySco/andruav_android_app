@@ -56,10 +56,9 @@ public class VideoCodecInfo {
       return false;
     if (obj == this)
       return true;
-    if (!(obj instanceof VideoCodecInfo))
+    if (!(obj instanceof VideoCodecInfo otherInfo))
       return false;
 
-    VideoCodecInfo otherInfo = (VideoCodecInfo) obj;
     return name.equalsIgnoreCase(otherInfo.name) && params.equals(otherInfo.params);
   }
 

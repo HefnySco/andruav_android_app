@@ -121,8 +121,7 @@ public class AndruavResalaBinary_WayPointsUpdates extends AndruavResalaBinaryBas
             byteIndex = i * WAYPOINT_SIZE;
             final MissionBase missionBase = mMohemmaMapBase.valueAt(i);
 
-            if (missionBase instanceof WayPointStep) {
-                final WayPointStep wayPointStep= (WayPointStep) missionBase;
+            if (missionBase instanceof WayPointStep wayPointStep) {
 
                 BinaryHelper.putInt(WayPointStep.TYPE_WAYPOINTSTEP, data, byteIndex);
                 BinaryHelper.putInt(wayPointStep.Sequence, data, byteIndex + 1);
@@ -133,29 +132,25 @@ public class AndruavResalaBinary_WayPointsUpdates extends AndruavResalaBinaryBas
                 BinaryHelper.putDouble(wayPointStep.TimeToStay, data, byteIndex + 33);
 
             }
-            else if (missionBase instanceof MissionEkla3)
+            else if (missionBase instanceof MissionEkla3 mohemmaEkla3)
             {
-                final MissionEkla3 mohemmaEkla3 = (MissionEkla3) missionBase;
                 BinaryHelper.putInt(MissionEkla3.TYPE_EKLA3, data, byteIndex);
                 BinaryHelper.putInt(mohemmaEkla3.Sequence, data, byteIndex + 1);
                 BinaryHelper.putDouble(mohemmaEkla3.getAltitude(), data, byteIndex + 5);
                 BinaryHelper.putDouble(mohemmaEkla3.getPitch(), data, byteIndex + 13);
             }
-            else if (missionBase instanceof MissionHoboot)
+            else if (missionBase instanceof MissionHoboot mohemmaHoboot)
             {
-                final MissionHoboot mohemmaHoboot = (MissionHoboot) missionBase;
                 BinaryHelper.putInt(MissionHoboot.TYPE_HOBOOT, data, byteIndex);
                 BinaryHelper.putInt(mohemmaHoboot.Sequence, data, byteIndex + 1);
             }
-            else if (missionBase instanceof MissionRTL)
+            else if (missionBase instanceof MissionRTL mohemmaRTL)
             {
-                final MissionRTL mohemmaRTL = (MissionRTL) missionBase;
                 BinaryHelper.putInt(MissionRTL.TYPE_RTL, data, byteIndex);
                 BinaryHelper.putInt(mohemmaRTL.Sequence, data, byteIndex + 1);
             }
-            else if (missionBase instanceof MissionCameraTrigger)
+            else if (missionBase instanceof MissionCameraTrigger mohemmaCamera)
             {
-                final MissionCameraTrigger mohemmaCamera = (MissionCameraTrigger) missionBase;
                 BinaryHelper.putInt(MissionCameraTrigger.TYPE_CAMERA_TRIGGER, data, byteIndex);
                 BinaryHelper.putInt(mohemmaCamera.Sequence, data, byteIndex + 1);
             }

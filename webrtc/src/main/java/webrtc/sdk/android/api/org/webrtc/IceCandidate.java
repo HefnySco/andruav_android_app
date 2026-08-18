@@ -61,11 +61,10 @@ public class IceCandidate {
   /** equals() checks sdpMid, sdpMLineIndex, and sdp for equality. */
   @Override
   public boolean equals(@Nullable Object object) {
-    if (!(object instanceof IceCandidate)) {
+    if (!(object instanceof IceCandidate that)) {
       return false;
     }
 
-    IceCandidate that = (IceCandidate) object;
     return objectEquals(this.sdpMid, that.sdpMid) && this.sdpMLineIndex == that.sdpMLineIndex
         && objectEquals(this.sdp, that.sdp);
   }

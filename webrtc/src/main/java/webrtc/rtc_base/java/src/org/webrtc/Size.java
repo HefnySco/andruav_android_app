@@ -30,10 +30,9 @@ public class Size {
 
   @Override
   public boolean equals(Object other) {
-    if (!(other instanceof Size)) {
+    if (!(other instanceof Size otherSize)) {
       return false;
     }
-    final Size otherSize = (Size) other;
     return width == otherSize.width && height == otherSize.height;
   }
 

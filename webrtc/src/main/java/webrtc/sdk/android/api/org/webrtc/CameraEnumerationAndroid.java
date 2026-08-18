@@ -66,10 +66,9 @@ public class CameraEnumerationAndroid {
 
       @Override
       public boolean equals(Object other) {
-        if (!(other instanceof FramerateRange)) {
+        if (!(other instanceof FramerateRange otherFramerate)) {
           return false;
         }
-        final FramerateRange otherFramerate = (FramerateRange) other;
         return min == otherFramerate.min && max == otherFramerate.max;
       }
 
@@ -125,10 +124,9 @@ public class CameraEnumerationAndroid {
 
     @Override
     public boolean equals(Object other) {
-      if (!(other instanceof CaptureFormat)) {
+      if (!(other instanceof CaptureFormat otherFormat)) {
         return false;
       }
-      final CaptureFormat otherFormat = (CaptureFormat) other;
       return width == otherFormat.width && height == otherFormat.height
           && framerate.equals(otherFormat.framerate);
     }

@@ -73,9 +73,7 @@ public class AndruavLatLng {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AndruavLatLng)) return false;
-
-        AndruavLatLng AndruavLatLng = (AndruavLatLng) o;
+        if (!(o instanceof AndruavLatLng AndruavLatLng)) return false;
 
         if (Double.compare(AndruavLatLng.latitude, latitude) != 0) return false;
         return Double.compare(AndruavLatLng.longitude, longitude) == 0;

@@ -86,8 +86,7 @@ public class RTCStats {
   }
 
   private static void appendValue(StringBuilder builder, Object value) {
-    if (value instanceof Object[]) {
-      Object[] arrayValue = (Object[]) value;
+    if (value instanceof Object[] arrayValue) {
       builder.append('[');
       for (int i = 0; i < arrayValue.length; ++i) {
         if (i != 0) {

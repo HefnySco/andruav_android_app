@@ -730,8 +730,7 @@ public class MediaCodecVideoEncoder {
       checkKeyFrameRequired(isKeyframe, presentationTimestampUs);
 
       VideoFrame.Buffer buffer = frame.getBuffer();
-      if (buffer instanceof VideoFrame.TextureBuffer) {
-        VideoFrame.TextureBuffer textureBuffer = (VideoFrame.TextureBuffer) buffer;
+      if (buffer instanceof VideoFrame.TextureBuffer textureBuffer) {
         eglBase.makeCurrent();
         // TODO(perkj): glClear() shouldn't be necessary since every pixel is covered anyway,
         // but it's a workaround for bug webrtc:5147.
