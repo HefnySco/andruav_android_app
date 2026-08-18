@@ -29,6 +29,12 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <!-- Theme for PreferenceFragmentCompat-based settings activities.
+         AppCompat themes do not include preferenceTheme, so we overlay it here. -->
+    <style name="SettingsTheme" parent="AppTheme">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+    </style>
+
 
     <style name="generalNumberSpinner">
         <item name="android:fontFamily">sans-serif-condensed</item>

@@ -2,12 +2,13 @@ package ap.andruav_ap.activities.settings;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.EditTextPreference;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.CheckBoxPreference;
+import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 import com.andruav.Constants;
 
@@ -15,200 +16,175 @@ import ap.andruav_ap.R;
 
 /**
  * Created by mhefny on 2/27/17.
+ * <p>
+ * Migrated from the deprecated {@code android.preference.PreferenceActivity} to
+ * {@link AppCompatActivity} + {@link PreferenceFragmentCompat} (androidx.preference).
  */
-
-public class SettingsDrone extends PreferenceActivity {
-
-    PreferenceActivity Me;
-    protected EditTextPreference txtMobileNum;
-    protected EditTextPreference txtGCSBlockChannelNumber;
-    protected EditTextPreference txtGCSBlockPMWMinValue;
-    protected EditTextPreference txtRCCamChannelNumber;
-    protected EditTextPreference txtRCCamPMWMinValue;
-    protected EditTextPreference txtBatteryMinPercentage;
-    protected CheckBoxPreference chkGPSInjection;
-    protected CheckBoxPreference chkIgnoreMobileSensors;
-
+public class SettingsDrone extends AppCompatActivity {
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        setupSimplePreferencesScreen();
-    }
-
-    @Override
-    public boolean onIsMultiPane() {
-        return false;
-    }
-
-
-    private PreferenceCategory addTitle(int title) {
-
-        PreferenceCategory preferenceCategory = new PreferenceCategory(this);
-        preferenceCategory.setTitle(title);
-        getPreferenceScreen().addPreference(preferenceCategory);
-
-        return preferenceCategory;
-    }
-
-    private void addSection(int sectionID) {
-        addPreferencesFromResource(sectionID);
-
-    }
-
-
-    private void setupSimplePreferencesScreen() {
-
-
-        Me = this;
-
-        // In the simplified UI, fragments are not used at all and we instead
-        // use the older PreferenceActivity APIs.
-
-        // Add 'general' preferences.
-        PreferenceCategory preferenceCategory;
-        addPreferencesFromResource(R.xml.pref_general);
-
-        // Add 'notifications' preferences, and a corresponding header.
-        // preferenceCategory = addTitle(R.string.pref_gr_general_settings);
-        //addSection(R.xml.pref_general);
-
-        preferenceCategory = addTitle(ap.andruavmiddlelibrary.R.string.pref_gr_fcb);
-        addSection(R.xml.pref_drone_fcbsettings);
-
-
-        preferenceCategory = addTitle(ap.andruavmiddlelibrary.R.string.pref_gr_fpv_settings);
-        addSection(R.xml.pref_drone_fpvsettings_noexternalcam);
-
-
-        // Add 'notifications' preferences, and a corresponding header.
-        preferenceCategory = addTitle(ap.andruavmiddlelibrary.R.string.pref_gr_recovery);
-        addSection(R.xml.pref_drone_systemrecovery);
-
-        // Add 'data and sync' preferences, and a corresponding header.
-        preferenceCategory = addTitle(ap.andruavmiddlelibrary.R.string.pref_feedback_support);
-        addSection(R.xml.feedback_support);
-
-        //preferenceCategory = addTitle(R.string.pref_gr_advanced_settings);
-        //addSection(R.xml.pref_advancedsettings);
-
-        txtRCCamChannelNumber = (EditTextPreference) findPreference("sw_cam_rc_num");
-        txtRCCamPMWMinValue = (EditTextPreference) findPreference("sw_cam_rc_pwm");
-        txtMobileNum = (EditTextPreference) findPreference("key_mobile_recovery");
-        txtGCSBlockChannelNumber = (EditTextPreference) findPreference("key_block_channel");
-        txtGCSBlockPMWMinValue = (EditTextPreference) findPreference("key_block_pwm_min");
-        txtBatteryMinPercentage = (EditTextPreference) findPreference("WiDVQ");
-        chkGPSInjection = (CheckBoxPreference) findPreference("gps_inject");
-        chkIgnoreMobileSensors = (CheckBoxPreference) findPreference("mePMWRUHZFwA");
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            chkGPSInjection.setEnabled(false);
-            ap.andruavmiddlelibrary.preference.Preference.isGPSInjecttionEnabled(null, false);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, new SettingsDroneFragment())
+                    .commit();
         }
-
-        // GPS Injection relies on the phone's own GPS sensor to feed the FC, so it cannot be
-        // combined with "Ignore Mobile Sensors" (which keeps the phone GPS/IMU switched off).
-        chkGPSInjection.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (Boolean.TRUE.equals(newValue) && chkIgnoreMobileSensors.isChecked()) {
-                    Toast.makeText(getApplicationContext(), "Disable 'Ignore Mobile Sensors' first to enable GPS Injection.", Toast.LENGTH_LONG).show();
-                    return false;
-                }
-                return true;
-            }
-        });
-
-        chkIgnoreMobileSensors.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (Boolean.TRUE.equals(newValue) && chkGPSInjection.isChecked()) {
-                    Toast.makeText(getApplicationContext(), "Disable 'GPS Injection' first to ignore mobile sensors.", Toast.LENGTH_LONG).show();
-                    return false;
-                }
-                return true;
-            }
-        });
-
-        txtRCCamChannelNumber.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                int val = Integer.parseInt(newValue.toString());
-                if ((val >= 1) && (val <= 18)) {
-
-                    return true;
-                } else {
-                    // invalid you can show invalid message
-                    Toast.makeText(getApplicationContext(), "bad channel number. choose from 1 to 18", Toast.LENGTH_LONG).show();
-                    return false;
-                }
-            }
-        });
-        txtGCSBlockChannelNumber.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                int val = Integer.parseInt(newValue.toString());
-                if ((val >= 1) && (val <= 16)) {
-
-                    return true;
-                } else {
-                    // invalid you can show invalid message
-                    Toast.makeText(getApplicationContext(), "bad channel number. choose from 1 to 16", Toast.LENGTH_LONG).show();
-                    return false;
-                }
-            }
-        });
-
-        txtRCCamPMWMinValue.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                int val = Integer.parseInt(newValue.toString());
-                if ((val >= Constants.Default_RC_MIN_VALUE) && (val <= Constants.Default_RC_MAX_VALUE)) {
-
-                    return true;
-                } else {
-                    // invalid you can show invalid message
-                    Toast.makeText(getApplicationContext(), "error range number in PWM", Toast.LENGTH_LONG).show();
-                    return false;
-                }
-            }
-        });
-
-        txtGCSBlockPMWMinValue.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                int val = Integer.parseInt(newValue.toString());
-                if ((val >= Constants.Default_RC_MIN_VALUE) && (val <= Constants.Default_RC_MAX_VALUE)) {
-
-                    return true;
-                } else {
-                    // invalid you can show invalid message
-                    Toast.makeText(getApplicationContext(), "error range number in PWM", Toast.LENGTH_LONG).show();
-                    return false;
-                }
-            }
-        });
-
-        txtBatteryMinPercentage.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                int val = Integer.parseInt(newValue.toString());
-                if ((val >= 0) && (val <= 100)) {
-
-                    return true;
-                } else {
-                    // invalid you can show invalid message
-                    Toast.makeText(getApplicationContext(), "BAttery percentage from 0% to 100%", Toast.LENGTH_LONG).show();
-                    return false;
-                }
-            }
-        });
     }
 
 
-    @Override
-    protected void onPause() {
-        super.onPause();
+    /**
+     * Preference fragment that hosts all drone-related settings.
+     * Loads {@code R.xml.pref_drone_root} which consolidates the previously
+     * separate preference XMLs (general, fcb, fpv, recovery, feedback) into
+     * a single resource with {@code PreferenceCategory} sections.
+     */
+    public static class SettingsDroneFragment extends PreferenceFragmentCompat {
+
+        private EditTextPreference txtMobileNum;
+        private EditTextPreference txtGCSBlockChannelNumber;
+        private EditTextPreference txtGCSBlockPMWMinValue;
+        private EditTextPreference txtRCCamChannelNumber;
+        private EditTextPreference txtRCCamPMWMinValue;
+        private EditTextPreference txtBatteryMinPercentage;
+        private CheckBoxPreference chkGPSInjection;
+        private CheckBoxPreference chkIgnoreMobileSensors;
+
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            setPreferencesFromResource(R.xml.pref_drone_root, rootKey);
+
+            txtRCCamChannelNumber = findPreference("sw_cam_rc_num");
+            txtRCCamPMWMinValue = findPreference("sw_cam_rc_pwm");
+            txtMobileNum = findPreference("key_mobile_recovery");
+            txtGCSBlockChannelNumber = findPreference("key_block_channel");
+            txtGCSBlockPMWMinValue = findPreference("key_block_pwm_min");
+            txtBatteryMinPercentage = findPreference("WiDVQ");
+            chkGPSInjection = findPreference("gps_inject");
+            chkIgnoreMobileSensors = findPreference("mePMWRUHZFwA");
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                chkGPSInjection.setEnabled(false);
+                ap.andruavmiddlelibrary.preference.Preference.isGPSInjecttionEnabled(null, false);
+            }
+
+            // GPS Injection relies on the phone's own GPS sensor to feed the FC, so it cannot be
+            // combined with "Ignore Mobile Sensors" (which keeps the phone GPS/IMU switched off).
+            chkGPSInjection.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    if (Boolean.TRUE.equals(newValue) && chkIgnoreMobileSensors.isChecked()) {
+                        Toast.makeText(getContext(), "Disable 'Ignore Mobile Sensors' first to enable GPS Injection.", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                    return true;
+                }
+            });
+
+            chkIgnoreMobileSensors.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    if (Boolean.TRUE.equals(newValue) && chkGPSInjection.isChecked()) {
+                        Toast.makeText(getContext(), "Disable 'GPS Injection' first to ignore mobile sensors.", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                    return true;
+                }
+            });
+
+            txtRCCamChannelNumber.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    int val;
+                    try {
+                        val = Integer.parseInt(newValue.toString());
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(getContext(), "bad channel number. choose from 1 to 18", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                    if ((val >= 1) && (val <= 18)) {
+                        return true;
+                    } else {
+                        Toast.makeText(getContext(), "bad channel number. choose from 1 to 18", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                }
+            });
+            txtGCSBlockChannelNumber.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    int val;
+                    try {
+                        val = Integer.parseInt(newValue.toString());
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(getContext(), "bad channel number. choose from 1 to 16", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                    if ((val >= 1) && (val <= 16)) {
+                        return true;
+                    } else {
+                        Toast.makeText(getContext(), "bad channel number. choose from 1 to 16", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                }
+            });
+
+            txtRCCamPMWMinValue.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    int val;
+                    try {
+                        val = Integer.parseInt(newValue.toString());
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(getContext(), "error range number in PWM", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                    if ((val >= Constants.Default_RC_MIN_VALUE) && (val <= Constants.Default_RC_MAX_VALUE)) {
+                        return true;
+                    } else {
+                        Toast.makeText(getContext(), "error range number in PWM", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                }
+            });
+            txtGCSBlockPMWMinValue.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    int val;
+                    try {
+                        val = Integer.parseInt(newValue.toString());
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(getContext(), "error range number in PWM", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                    if ((val >= Constants.Default_RC_MIN_VALUE) && (val <= Constants.Default_RC_MAX_VALUE)) {
+                        return true;
+                    } else {
+                        Toast.makeText(getContext(), "error range number in PWM", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                }
+            });
+
+            txtBatteryMinPercentage.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    int val;
+                    try {
+                        val = Integer.parseInt(newValue.toString());
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(getContext(), "Battery percentage from 0% to 100%", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                    if ((val >= 0) && (val <= 100)) {
+                        return true;
+                    } else {
+                        Toast.makeText(getContext(), "Battery percentage from 0% to 100%", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                }
+            });
+        }
     }
 }

@@ -191,7 +191,8 @@
             android:name="ap.andruav_ap.activities.settings.SettingsDrone"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_settings"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:theme="@style/SettingsTheme" />
         <activity
             android:name="ap.andruav_ap.activities.fcb.FCB_TCPShasha"
             android:configChanges="orientation|screenSize|keyboardHidden"
