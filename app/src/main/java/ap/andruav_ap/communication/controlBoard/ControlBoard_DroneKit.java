@@ -324,6 +324,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
 
 
+    @Subscribe(priority = 1)
     public  void onEvent (final Event_Remote_ChannelsCMD a7adathRemote_channelsCMD)
     {
 
