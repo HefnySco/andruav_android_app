@@ -803,7 +803,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
 
 
-        defineAndruavUnit(Preference.isGCS(null));
+        defineAndruavUnit(false);
         //exceptionHTTPLogger.Logentris(AndruavSettings.AccessCode,"INFO","Started");
 
 

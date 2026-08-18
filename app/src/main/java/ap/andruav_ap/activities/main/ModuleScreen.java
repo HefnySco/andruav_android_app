@@ -32,7 +32,6 @@ import ap.andruav_ap.R;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.activities.fpv.FPVActivityFactory;
 import ap.andruav_ap.activities.remote.RemoteControlSettingActivityTab;
-import ap.andruav_ap.activities.remote.RemoteControlSettingGCSActivityTab;
 import ap.andruav_ap.activities.settings.SettingsDrone;
 import ap.andruav_ap.helpers.GUI;
 import ap.andruavmiddlelibrary.factory.tts.TTS;
@@ -251,13 +250,7 @@ public class ModuleScreen extends BaseAndruavShasha {
             GMail.sendGMail(this, getString(ap.andruavmiddlelibrary.R.string.email_title), getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject), getString(ap.andruavmiddlelibrary.R.string.email_body), null);
 
         } else if (id == R.id.mi_remotesettings) {
-            if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                startActivity(new Intent(ModuleScreen.this, RemoteControlSettingGCSActivityTab.class));
-            }
-            else
-            {
-                startActivity(new Intent(ModuleScreen.this, RemoteControlSettingActivityTab.class));
-            }
+            startActivity(new Intent(ModuleScreen.this, RemoteControlSettingActivityTab.class));
             return true;
         } else if (id == R.id.mi_main_About) {
 
@@ -337,10 +330,7 @@ public class ModuleScreen extends BaseAndruavShasha {
     protected void activateDroneMode() {
 
 
-        Preference.isGCS(null, false);
-        //AndruavSettings.andruavWe7daBase.IsCGS = false;
-        if ((AndruavSettings.andruavWe7daBase== null) || (AndruavSettings.andruavWe7daBase.getIsCGS())) {
-            // define unit if available unit is GCS or null
+        if (AndruavSettings.andruavWe7daBase == null) {
             App.defineAndruavUnit(false);
         }
 //        mbtnIMU.setEnabled(true);

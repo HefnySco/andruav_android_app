@@ -19,16 +19,13 @@ public class BOOT_Receiver  extends BroadcastReceiver {
         Log.d("AS","autoconnect BROADCAST");
         if (Preference.isAutoStart(null)) {
             Log.d("AS","autoconnect BROADCAST ON 1");
-            if (!Preference.isGCS(null)) {
-                Log.d("AS","autoconnect BROADCAST ON 2");
-                App.restartApp(10,true);
+            Log.d("AS","autoconnect BROADCAST ON 2");
+            App.restartApp(10,true);
 
-                 //Intent startIntent = new Intent(App.getAppContext(), MainShasha.class);
-                 //startIntent.putExtra("autoconnect", true);
-                 //startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                 //App.getAppContext().startActivity(startIntent);
-
-            }
+             //Intent startIntent = new Intent(App.getAppContext(), MainShasha.class);
+             //startIntent.putExtra("autoconnect", true);
+             //startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+             //App.getAppContext().startActivity(startIntent);
 
         }
     }

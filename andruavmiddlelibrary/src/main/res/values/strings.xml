@@ -274,7 +274,6 @@
     <string name="gen_retrying">Retrying to connect</string>
     <string name="gen_commserver">Com</string>
     <string name="gen_speak_droneactivated">Drone Mode activated</string>
-    <string name="gen_speak_GCSactivated">Ground Station Mode Activated</string>
     <string name="gen_speak_connecting">Connecting to Server</string>
     <string name="gen_FactoryReset">Factory Reset</string>
     <string name="gen_hostfound">Host Found</string>
@@ -337,7 +336,6 @@
     <string name="separator">separator</string>
     <!-- Menu Items [non actions] -->
     <string name="mi_main_drone">Drone</string>
-    <string name="mi_main_GCS">GCS</string>
 
     <!-- Titles & Labels -->
     <string name="imu_calibration">IMPORTANT\nPut the mobile on a flat horizontal surface and press OK.</string>
@@ -422,10 +420,6 @@
     <string name="title_activity_remote_control_setting_activity_tab_section2">Tracking Settings</string>
     <string name="title_activity_remote_control_setting_activity_tab_section3">Test</string>
 
-    <string name="title_activity_remote_control_setting_GCS_activity_tab_section1">TX Mode</string>
-    <string name="title_activity_remote_control_setting_GCS_activity_tab_section2">Test</string>
-    <string name="title_activity_remote_control_setting_GCS_activity_tab_section3">JoyStick</string>
-
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_data_activity_fragment">DataActivityFragment</string>
@@ -482,7 +476,6 @@
 
     <!--FirstLoginActivity-->
     <string name="firstlogin_activity_btn_DRONE">Drone</string>
-    <string name="firstlogin_activity_btn_GCS">Ground</string>
     <string name="title_activity_main_launcher">MainLauncherActivity</string>
     <string name="title_activity_fcb__drone">FCB Connection</string>
 

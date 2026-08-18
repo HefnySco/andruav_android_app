@@ -33,7 +33,7 @@ public class MainActivityBuilder extends AppCompatActivity {
         //Preference.gui_ShowAndruavModeDialog(null,true);
         boolean USBIntent = false;
         Intent intent = getIntent();
-        if ((intent.getBooleanExtra("autoconnect",false)  || Preference.isAutoStart(null)) && (!Preference.isGCS(null)))
+        if ((intent.getBooleanExtra("autoconnect",false)  || Preference.isAutoStart(null)))
         {
 
             Intent startIntent = new Intent(this, MainScreen.class);

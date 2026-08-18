@@ -43,7 +43,6 @@ import java.io.UnsupportedEncodingException;
 
 import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.activities.HUBCommunication;
-import ap.andruav_ap.activities.remote.RemoteControlSettingGCSActivityTab;
 import ap.andruav_ap.activities.settings.SettingsDrone;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.activities.data.DataShashaTab;
@@ -63,7 +62,6 @@ import ap.andruav_ap.helpers.CheckAppPermissions;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_ProtocolChanged;
 import ap.andruavmiddlelibrary.LoginClient;
 import ap.andruav_ap.communication.telemetry.TelemetryDroneProtocolParser;
-import ap.andruav_ap.communication.telemetry.TelemetryGCSProtocolParser;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 import ap.andruav_ap.DeviceManagerFacade;
 
@@ -370,8 +368,7 @@ public class MainScreen extends BaseAndruavShasha {
                             exitProgressDialog();
                             AndruavSettings.Account_SID = eventLoginClient.Parameters.get(LoginClient.CONST_SENDER_ID);
                             AndruavSettings.andruavWe7daBase.setPermissions(eventLoginClient.Parameters.get(LoginClient.CONST_PERMISSION));
-                            if ((!AndruavSettings.andruavWe7daBase.canBeGCS() && AndruavSettings.andruavWe7daBase.getIsCGS())
-                                || (!AndruavSettings.andruavWe7daBase.canBeDrone() && !AndruavSettings.andruavWe7daBase.getIsCGS()))
+                            if (!AndruavSettings.andruavWe7daBase.canBeDrone())
                             {
                                 // cannot be in this Mode
                                 progressDialogSetMessage(getString(ap.andruavmiddlelibrary.R.string.gen_step2) + getString(ap.andruavmiddlelibrary.R.string.err_per_bad_mode));
@@ -548,17 +545,8 @@ public class MainScreen extends BaseAndruavShasha {
 
 
 
-        if (AndruavSettings.andruavWe7daBase.getIsCGS())
-        {
-            ap.andruavmiddlelibrary.Voting.onConnectToServer();
-
-
-        }
-        else
-        {
-            AndruavSettings.loadGenericPermanentTasks();
-            AndruavSettings.loadMyPermanentTasksByPartyID();
-        }
+        AndruavSettings.loadGenericPermanentTasks();
+        AndruavSettings.loadMyPermanentTasksByPartyID();
 
         if (Preference.isAutoFCBConnect(null))
         {
@@ -619,15 +607,7 @@ public class MainScreen extends BaseAndruavShasha {
             @Override
             public void onClick(View view) {
 
-                if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                    if ((App.telemetryProtocolParser instanceof TelemetryGCSProtocolParser))
-                    {
-                        App.telemetryProtocolParser.shutDown();
-                        App.telemetryProtocolParser = null;
-                    }
-
-                    FcbConnectionSheet.newInstance().show(getSupportFragmentManager(), FcbConnectionSheet.TAG);
-                }
+                FcbConnectionSheet.newInstance().show(getSupportFragmentManager(), FcbConnectionSheet.TAG);
 
             }
         });
@@ -674,9 +654,7 @@ public class MainScreen extends BaseAndruavShasha {
 
         //final JSch jsch = new JSch();
         //SshConnection ssh = new SshConnection("192.168.1.2","ss","ss",null);
-        if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
-            RemoteControl.loadDualRates();
-        }
+        RemoteControl.loadDualRates();
 
 
 
@@ -759,11 +737,6 @@ public class MainScreen extends BaseAndruavShasha {
         AndruavSettings.andruavWe7daBase.setShutdown(true);
         App.stopAndruavWS(false);
 
-        if (AndruavSettings.andruavWe7daBase.getIsCGS())
-        {
-            ap.andruavmiddlelibrary.Voting.onDisconnecFromServerSafely();
-        }
-
         AndruavSettings.andruavWe7daBase.getMohemmaMapBase().clear();
         AndruavEngine.getAndruavWe7daMapBase().clear();
         App.stopSensorService();
@@ -809,9 +782,6 @@ public class MainScreen extends BaseAndruavShasha {
         {
             BigButtonsenabled = false;
             enabled = false;
-            if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                mTileFcb.setEnabled(false);
-            }
 
         }
         else {
@@ -820,39 +790,23 @@ public class MainScreen extends BaseAndruavShasha {
                 case SOCKETSTATE_CONNECTED:
                     BigButtonsenabled = false;
                     enabled = false;
-                    if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                        mTileFcb.setEnabled(false);
-                    }
                     break;
                 case SOCKETSTATE_REGISTERED:
                     enabled = false;
                     BigButtonsenabled = true;
-                    if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                        mTileFcb.setEnabled(AndruavSettings.andruavWe7daBase.canTelemetry());
-                    }
-
                     break;
 
                 case SOCKETSTATE_ERROR:
                     enabled = true;
                     BigButtonsenabled = false;
-                    if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                        mTileFcb.setEnabled(false);
-                    }
                     break;
                 case SOCKETSTATE_FREASH:
-                    if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                        mTileFcb.setEnabled(false);
-                    }
                     enabled = true;
                     BigButtonsenabled = true;
                     break;
                 case SOCKETSTATE_DISCONNECTED:
                     enabled = true;
                     BigButtonsenabled = true;
-                    if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                        mTileFcb.setEnabled(false);
-                    }
                     break;
             }
 
@@ -863,23 +817,12 @@ public class MainScreen extends BaseAndruavShasha {
 
         mTileCom.setEnabled(BigButtonsenabled && enabled);
 
-        if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
-            mTileFcb.setEnabled(BigButtonsenabled);
-            mTileImu.setEnabled(BigButtonsenabled && enabled);
-            mTileFpv.setEnabled(BigButtonsenabled);
+        mTileFcb.setEnabled(BigButtonsenabled);
+        mTileImu.setEnabled(BigButtonsenabled && enabled);
+        mTileFpv.setEnabled(BigButtonsenabled);
 
-            mMenu.findItem(R.id.mi_main_Settings_drone).setEnabled(enabled);
-            mSettingsEnabled = enabled;
-        }
-        else
-        {
-
-            mTileImu.setEnabled(false);
-            mTileFpv.setEnabled(false);
-
-            mMenu.findItem(R.id.mi_main_Settings_drone).setEnabled(false);
-            mSettingsEnabled = false;
-        }
+        mMenu.findItem(R.id.mi_main_Settings_drone).setEnabled(enabled);
+        mSettingsEnabled = enabled;
     }
 
     protected void updateFCBButton() {
@@ -1036,10 +979,8 @@ public class MainScreen extends BaseAndruavShasha {
         popup.setOutsideTouchable(true);
         popup.setElevation(12f);
 
-        final boolean isGCS = AndruavSettings.andruavWe7daBase.getIsCGS();
-
         bindMenuRow(content, R.id.home_menu_row_help, popup, this::doHelp, true);
-        bindMenuRow(content, R.id.home_menu_row_settings, popup, this::doSettings_Drone, mSettingsEnabled && !isGCS);
+        bindMenuRow(content, R.id.home_menu_row_settings, popup, this::doSettings_Drone, mSettingsEnabled);
         bindMenuRow(content, R.id.home_menu_row_reset, popup, this::doFactoryReset, mMenuActionsEnabled);
         bindMenuRow(content, R.id.home_menu_row_remote, popup, this::doRemoteSettings, true);
         bindMenuRow(content, R.id.home_menu_row_export_logs, popup, this::doExportErrorLogs, true);
@@ -1084,13 +1025,7 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
     private void doRemoteSettings() {
-        if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-            startActivity(new Intent(MainScreen.this, RemoteControlSettingGCSActivityTab.class));
-        }
-        else
-        {
-            startActivity(new Intent(MainScreen.this, RemoteControlSettingActivityTab.class));
-        }
+        startActivity(new Intent(MainScreen.this, RemoteControlSettingActivityTab.class));
     }
 
     protected void doSignOut() {
@@ -1162,7 +1097,7 @@ public class MainScreen extends BaseAndruavShasha {
 
 
 
-        if ((getIntent().getBooleanExtra("autoconnect",false)  || Preference.isAutoStart(null)) && (!Preference.isGCS(null)))
+        if ((getIntent().getBooleanExtra("autoconnect",false)  || Preference.isAutoStart(null)))
         {
 
             autoConnect = true;
@@ -1314,10 +1249,7 @@ public class MainScreen extends BaseAndruavShasha {
     protected void activateDroneMode() {
 
 
-        Preference.isGCS(null, false);
-        //AndruavSettings.andruavWe7daBase.IsCGS = false;
-        if ((AndruavSettings.andruavWe7daBase== null) || (AndruavSettings.andruavWe7daBase.getIsCGS())) {
-            // define unit if available unit is GCS or null
+        if (AndruavSettings.andruavWe7daBase == null) {
             App.defineAndruavUnit(false);
         }
         mTileImu.setEnabled(true);
@@ -1330,25 +1262,6 @@ public class MainScreen extends BaseAndruavShasha {
         }
 
         AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_speak_droneactivated));
-    }
-
-
-
-    protected void ToggleGCS_Drone() {
-
-        TelemetryModeer.closeAllConnections();
-
-        if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-            // GCS & Switch to Drone
-            if (DeviceManagerFacade.canBeDroneAndruav()) {
-                activateDroneMode();
-            } else {
-                final String msg = getString(ap.andruavmiddlelibrary.R.string.err_config_drone);
-                AndruavEngine.notification().Speak(msg);
-                DialogHelper.doModalDialog(this, "Device Limitation", msg, null);
-            }
-        }
-
     }
 
 

@@ -46,21 +46,6 @@ public class Preference {
      * @param contextWrapper
      * @return
      */
-    public static boolean isGCS(final android.content.ContextWrapper contextWrapper) {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "kR0dv", true);
-    }
-
-    public static void isGCS(final android.content.ContextWrapper contextWrapper, final boolean bEnabled) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "kR0dv", bEnabled);
-    }
-
-
-    /**
-     * is ground station
-     *
-     * @param contextWrapper
-     * @return
-     */
     public static int getVehicleType(final android.content.ContextWrapper contextWrapper) {
         return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "WelG2IUCUUzrG9", 0);
     }
@@ -1142,7 +1127,6 @@ public class Preference {
     /***
      * Retrieve original Andruav Settings for login
      * <br>empty email & AccessCode
-     * <br>isGCS = false
      * <br>isLocalServer = false
      * @param contextWrapper
      */
@@ -1150,7 +1134,6 @@ public class Preference {
         Preference.isLoginAuto(contextWrapper, false);
         Preference.setLoginUserName(contextWrapper, "");
         Preference.setLoginAccessCode(contextWrapper, "");
-        Preference.isGCS(contextWrapper, false);
         Preference.setVehicleType(null, VehicleTypes.VEHICLE_UNKNOWN);
 
     }
