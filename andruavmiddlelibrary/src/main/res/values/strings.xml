@@ -422,12 +422,6 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_data_activity_fragment">DataActivityFragment</string>
-
-
-    <string name="title_data_activity_tab_section1">Network</string>
-    <string name="title_data_activity_tab_section2">Social</string>
-    <string name="title_data_activity_tab_section3">Others</string>
     <string name="gen_lang_arabic">عربى</string>
     <string name="gen_lang_english">English</string>
 

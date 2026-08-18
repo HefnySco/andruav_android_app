@@ -45,7 +45,6 @@ import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.activities.HUBCommunication;
 import ap.andruav_ap.activities.settings.SettingsDrone;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
-import ap.andruav_ap.activities.data.DataShashaTab;
 import ap.andruav_ap.activities.drone.IMUShasha;
 import ap.andruav_ap.activities.fcb.drone.FCB_AndruavShashaL2;
 import ap.andruav_ap.activities.fpv.FPVActivityFactory;
