@@ -8,6 +8,8 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
@@ -228,7 +230,53 @@ public class DroidPlannerService extends Service {
                 .setPriority(Notification.PRIORITY_MIN) //NotificationManager.IMPORTANCE_MIN)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .build();
-        startForeground(FOREGROUND_ID, notification);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            int type = computeForegroundServiceType();
+            try {
+                if (type != 0) {
+                    startForeground(FOREGROUND_ID, notification, type);
+                } else {
+                    startForeground(FOREGROUND_ID, notification);
+                }
+            } catch (SecurityException e) {
+                // A type's permission was revoked between check and call, or the system
+                // requires a permission we couldn't check (e.g. per-device USB permission
+                // for a USB telemetry radio without BLUETOOTH_CONNECT). Retry with the
+                // untyped overload - on API 34+ with manifest-declared types this uses the
+                // manifest types, which may still throw, but we've exhausted our options.
+                startForeground(FOREGROUND_ID, notification);
+            }
+        } else {
+            startForeground(FOREGROUND_ID, notification);
+        }
+    }
+
+    /**
+     * Computes the foreground service type mask for API 29+ based on which runtime permissions
+     * are currently granted. The manifest declares {@code location|connectedDevice}, but on
+     * Android 14+ the typed {@code startForeground} call throws
+     * {@code ForegroundServiceTypeNotAllowed} if the permission backing a passed type isn't
+     * granted. By passing only the subset whose permissions are held, the service can still
+     * enter the foreground when only some permissions are available (e.g. a USB connection
+     * without location permission, or location without Bluetooth).
+     */
+    private int computeForegroundServiceType() {
+        int type = 0;
+        if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            type |= ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION;
+        }
+        // BLUETOOTH_CONNECT is an API 31+ runtime permission. On API 29-30 the legacy
+        // BLUETOOTH permission is install-time, so connectedDevice is always available.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (checkSelfPermission(android.Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
+                type |= ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE;
+            }
+        } else {
+            type |= ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE;
+        }
+        return type;
     }
 
 

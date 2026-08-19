@@ -132,8 +132,26 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
                 .build();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(FOREGROUND_ID, notification,
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA | ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE);
+            // On Android 14+ the typed startForeground throws ForegroundServiceTypeNotAllowed
+            // if the permission backing a passed type isn't granted. Gate each type on its
+            // runtime permission so a START_STICKY restart after a partial revocation doesn't
+            // crash; fall back to the untyped overload when no type permission is held.
+            int type = 0;
+            if (checkSelfPermission(android.Manifest.permission.CAMERA) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                type |= ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA;
+            }
+            if (checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                type |= ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE;
+            }
+            try {
+                if (type != 0) {
+                    startForeground(FOREGROUND_ID, notification, type);
+                } else {
+                    startForeground(FOREGROUND_ID, notification);
+                }
+            } catch (SecurityException e) {
+                startForeground(FOREGROUND_ID, notification);
+            }
         } else {
             startForeground(FOREGROUND_ID, notification);
         }

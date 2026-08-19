@@ -190,7 +190,25 @@ public class SensorService extends Service {
                 .build();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(FOREGROUND_ID, notification, android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION);
+            // On Android 14+ the typed startForeground throws ForegroundServiceTypeNotAllowed
+            // if the permission backing the type isn't granted. Gate on ACCESS_FINE/COARSE_LOCATION
+            // so a START_STICKY restart after a permission revocation doesn't crash; fall back to
+            // the untyped overload (uses manifest-declared type) when location permission is held
+            // but the check raced, or when no type permission is held at all.
+            int type = 0;
+            if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED
+                    || checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                type = android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION;
+            }
+            try {
+                if (type != 0) {
+                    startForeground(FOREGROUND_ID, notification, type);
+                } else {
+                    startForeground(FOREGROUND_ID, notification);
+                }
+            } catch (SecurityException e) {
+                startForeground(FOREGROUND_ID, notification);
+            }
         } else {
             startForeground(FOREGROUND_ID, notification);
         }
