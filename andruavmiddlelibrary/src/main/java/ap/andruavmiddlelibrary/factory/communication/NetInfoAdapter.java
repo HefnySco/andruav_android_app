@@ -110,18 +110,16 @@ public class NetInfoAdapter {
         putInMap("Cell", "false");
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (tm != null) {
-            putInMap("Cell", "true");
-            // if ( tm.getCellLocation() != null) {
-            //    infoMap.put("Cell location", tm.getCellLocation().toString());
-            // Require USer Permission in Android M No Need for it right now
-            // http://stackoverflow.com/questions/32742327/neither-user-10102-nor-current-process-has-android-permission-read-phone-state
-            //}
-            putInMap("Country", tm.getNetworkCountryIso());
-
-            putInMap("Cell type", getPhoneType(tm.getPhoneType()));
-            putInMap("NO", tm.getNetworkOperator());
-            putInMap("NW-Name", tm.getNetworkOperatorName());
-
+            try {
+                putInMap("Cell", "true");
+                putInMap("Country", tm.getNetworkCountryIso());
+                putInMap("Cell type", getPhoneType(tm.getPhoneType()));
+                putInMap("NO", tm.getNetworkOperator());
+                putInMap("NW-Name", tm.getNetworkOperatorName());
+            } catch (SecurityException e) {
+                // READ_PHONE_STATE denied — these calls are nominally safe but
+                // some OEMs throw. Skip silently rather than crash.
+            }
         }
 
         // Find out if we're connected to a network

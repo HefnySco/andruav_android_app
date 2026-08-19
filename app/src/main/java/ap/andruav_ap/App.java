@@ -397,11 +397,16 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         public void onSignalStrengthsChanged(SignalStrength sStrength) {
             if (shutdown || AndruavSettings.andruavWe7daBase.getIsCGS()) return;
 
-            final int dbm = extractDbm(sStrength);
+            try {
+                final int dbm = extractDbm(sStrength);
 
-            AndruavSettings.andruavWe7daBase.setSignal(mManager.getNetworkType(), dbm);
-            updateMobileInfo();
-            EventBus.getDefault().post(new _7adath_ConnectionQuality());
+                AndruavSettings.andruavWe7daBase.setSignal(mManager.getNetworkType(), dbm);
+                updateMobileInfo();
+                EventBus.getDefault().post(new _7adath_ConnectionQuality());
+            } catch (SecurityException e) {
+                // READ_PHONE_STATE was revoked after the listener was registered.
+                AndruavEngine.log().logException("signal_strength", e);
+            }
         }
 
         /***
