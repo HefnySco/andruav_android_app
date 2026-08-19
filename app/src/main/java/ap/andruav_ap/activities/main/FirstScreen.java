@@ -19,7 +19,6 @@ import com.andruav.AndruavSettings;
 import ap.andruavmiddlelibrary.factory.communication.SMS;
 import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
-import ap.andruav_ap.App;
 import ap.andruav_ap.helpers.CheckAppPermissions;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
 import ap.andruavmiddlelibrary.factory.util.DialogHelper;
@@ -217,8 +216,6 @@ public class FirstScreen extends BaseAndruavShasha {
             EventBus.getDefault().post(new Event_ShutDown_Signalling(3));
 
             EventBus.getDefault().post(new Event_ShutDown_Signalling(4));
-
-            App.stopUDPServer();
 
 
         }

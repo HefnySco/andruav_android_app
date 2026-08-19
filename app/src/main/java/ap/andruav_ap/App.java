@@ -91,9 +91,7 @@ import com.andruav.protocol.commands.ProtocolHeaders;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_CameraList;
 import com.andruav.protocol.communication.udpproxy.UDPProxy;
 import com.andruav.uavos.modules.UAVOSConstants;
-import com.andruav.uavos.modules.UAVOSException;
 import com.andruav.uavos.modules.UAVOSModuleCamera;
-import com.andruav.uavos.modules.UAVOSModuleFCB;
 import com.andruav.util.RandomString;
 
 import org.json.JSONArray;
@@ -112,7 +110,6 @@ import ap.andruav_ap.services.fpv.FPVStreamingService;
 import ap.andruavmiddlelibrary.database.DaoManager;
 
 import static com.andruav.uavos.modules.UAVOSConstants.UAVOS_MODULE_TYPE_CAMERA;
-import static com.andruav.uavos.modules.UAVOSConstants.UAVOS_MODULE_TYPE_FCB;
 
 /**
  * Created by M.Hefny on 11-Sep-14.
@@ -167,8 +164,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     static private boolean shutdown = false;
 
     private static ScheduledExecutorService rcRepeater;
-
-    private static boolean mAndruavUDP = false;
 
 
     private android.os.Handler mhandle = null;
@@ -314,25 +309,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
                 }
                 else if (msg.obj instanceof Event_ProtocolChanged) {
-                    try {
-
-                        if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-
-                        } else if ((TelemetryModeer.getConnectionInfo() != TelemetryModeer.CURRENTCONNECTION_NON) && !AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                            UAVOSModuleFCB uavosModuleFCB = new UAVOSModuleFCB();
-                            uavosModuleFCB.ModuleId = UAVOS_MODULE_TYPE_FCB;
-                            uavosModuleFCB.BuiltInModule = true;
-
-                            AndruavEngine.getUAVOSMapBase().put(uavosModuleFCB.ModuleId, uavosModuleFCB);
-                        } else {
-                            AndruavEngine.getUAVOSMapBase().remove(UAVOS_MODULE_TYPE_FCB);
-                        }
-                    }
-                    catch (final UAVOSException e)
-                    {
-                        // yavos is not available.
-                        // speak UAVOSException error.
-                    }
                 }
                 }
         };
@@ -602,33 +578,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         {
             e.printStackTrace();
         }
-    }
-
-    public static void initializeAndruavUDP()
-    {
-        try {
-            stopUDPServer();
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static boolean isAndruavUDPOn()
-    {
-        return mAndruavUDP;
-    }
-
-    public static void startUDPServer ()
-    {
-        stopUDPServer();
-    }
-
-    public static void stopUDPServer ()
-    {
-
-        mAndruavUDP = false;
     }
 
     public static void startAndruavSMS()
@@ -1003,7 +952,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
             EventBus.getDefault().post(new Event_ShutDown_Signalling(4));
 
-            App.stopUDPServer();
             App.stopSensorService();
 
 

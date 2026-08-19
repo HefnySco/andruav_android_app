@@ -12,10 +12,6 @@ final public class UAVOSConstants {
     public final static String UAVOS_MODULE_TYPE_CAMERA ="camera";
 
 
-    public final static String UAVOS_MODULE_TYPE_FCB ="FCB_CTRL";
-    public final static String UAVOS_MODULE_TYPE_DNN_TRK ="DNN_TRK";
-
-
     public final static String CAMERA_LOCAL_NAME        = "ln";
     public final static String CAMERA_UNIQUE_NAME       = "id";
     public final static String CAMERA_SUPPORT_VIDEO     = "v";
@@ -34,7 +30,6 @@ final public class UAVOSConstants {
     public final static int CAMERA_SPECIFICATION_SUPPORT_FLASHING   = 0x20;
     public final static String CAMERA_TYPE              = "p";
 
-    //public final static String CAMERA_ANDROID_DUAL_CAM  = "f";
     public final static String CAMERA_RECORDING_NOW     = "r";
 
     public final static String CAMERA_SPECIFICATION     = "s";

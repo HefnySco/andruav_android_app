@@ -72,13 +72,6 @@ final public  class ProtocolHeaders {
      */
     public static final String CMD_TYPE_SYS = "s";
 
-    /***
-     * InterModules command
-     * <br>example:
-     * <br> ModuleID or any other normal AndruavProtocol Messages that needs to be interpreted by another module
-     */
-    public static final String CMD_TYPE_INTERMODULE = "uv";
-
     //******************************************   COMMAND VALUES
 
     /***
@@ -123,7 +116,6 @@ final public  class ProtocolHeaders {
 
 
     // if update then update in resources as well
-    public static final String UAVOS_COMM_MODULE_ID = "MT_A";
     public static final String UAVOS_COMM_MODULE_CLASS = "comm";
 
     public static final String UAVOS_CAMERA_MODULE_CLASS = "camera";

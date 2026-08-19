@@ -16,11 +16,8 @@ import com.andruav.interfaces.INotification;
 import com.andruav.interfaces.IPreference;
 import com.andruav.protocol.commands.Andruav_Parser;
 import com.andruav.protocol.communication.sms.AndruavSMSClientParserBase;
-import com.andruav.protocol.communication.uavos.AndruavUDPBase;
-import com.andruav.protocol.communication.uavos.AndruavUDPServerBase;
 import com.andruav.protocol.communication.udpproxy.UDPProxy;
 import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
-import com.andruav.uavos.modules.UAVOSException;
 import com.andruav.uavos.modules.UAVOSMapBase;
 
 /**
@@ -83,11 +80,6 @@ public class AndruavEngine {
 
     private static AndruavSMSClientParserBase andruavSMSClientParserBase;
 
-    /**
-     * This represents {@link AndruavUDPServerBase} or updated version of it.
-     */
-    private static AndruavUDPBase andruavAndruavUDPServerBase;
-
     private static UDPProxy udpProxy;
 
     public static IPreference getPreference() {
@@ -140,28 +132,9 @@ public class AndruavEngine {
 
 
 
-    /**
-     * Returns the active instance of {@link #andruavAndruavUDPServerBase}
-     *
-     * @return
-     */
-    public static AndruavUDPBase getAndruavUDP() {
-
-        return andruavAndruavUDPServerBase;
-    }
-
     public static UDPProxy getUDPProxy() {
 
         return udpProxy;
-    }
-
-    /**
-     * Set active instance for {@link #andruavAndruavUDPServerBase}
-     *
-     * @param AndruavUDP
-     */
-    public static void setAndruavUDP(AndruavUDPBase AndruavUDP) {
-        andruavAndruavUDPServerBase = AndruavUDP;
     }
 
 
@@ -190,7 +163,7 @@ public class AndruavEngine {
         andruavUnitMapBase = andruavUnitMap;
     }
 
-    public static UAVOSMapBase getUAVOSMapBase() throws UAVOSException {
+    public static UAVOSMapBase getUAVOSMapBase() {
         return uavosMapBase;
     }
 

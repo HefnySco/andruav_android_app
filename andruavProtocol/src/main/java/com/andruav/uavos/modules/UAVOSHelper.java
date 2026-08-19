@@ -20,7 +20,7 @@ public final  class UAVOSHelper {
 
         /*
             jsonVideoSource[CAMERA_SUPPORT_VIDEO "v"]       = true;
-            jsonVideoSource[CAMERA_SUPPORT_VIDEO "r"]      = true; // recording
+            jsonVideoSource[CAMERA_RECORDING_NOW "r"]       = true; // recording
             jsonVideoSource[CAMERA_SUPPORT_FLASH "f"]       = true;
             jsonVideoSource[CAMERA_SUPPORT_ZOOM "z"]        = true;
             jsonVideoSource[CAMERA_LOCAL_NAME "ln"]         = deviceInfo.local_name;

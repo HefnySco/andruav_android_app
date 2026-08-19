@@ -7,10 +7,6 @@ package com.andruav.uavos.modules;
   Date Jan 2020
  */
 
-import org.json.JSONArray;
-
-import java.net.InetAddress;
-
 /**
  * Created By M.Hefny on 19-Jan-2020
  */
@@ -21,15 +17,9 @@ public class UAVOSModuleUnit {
      * For linux version it is defined in the config file.
      */
     public String ModuleId;
-    public String ModuleKey;
     public String ModuleClass;
-    public JSONArray ModuleCapturedMessages;
-    public JSONArray ModuleFeatures;
 
-    public int Port;
-    public InetAddress ModuleAddress;
     public boolean BuiltInModule = false;
-    public long lastActiveTime;
 
 
     private  Object ModuleMessages; // other modules should have its own specific types.

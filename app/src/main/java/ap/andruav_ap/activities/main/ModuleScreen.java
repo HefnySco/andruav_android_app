@@ -211,17 +211,6 @@ public class ModuleScreen extends BaseAndruavShasha {
                 doExit(true, getString(ap.andruavmiddlelibrary.R.string.gen_must_exit));
             }
 
-            if (App.isAndruavUDPOn())
-            {
-                App.stopUDPServer();
-            }
-            else
-            {
-                App.initializeAndruavUDP();
-
-                App.startUDPServer();
-            }
-
         } else if (id == R.id.mi_main_signout) {
         } else if (id == R.id.mi_main_Exit) {
             doExit();
@@ -264,14 +253,7 @@ public class ModuleScreen extends BaseAndruavShasha {
 
     protected void updateConnectionIconsStatus() {
 
-        if (App.isAndruavUDPOn())
-        {
-            miConnect.setIcon(R.drawable.connected_color_32x32);
-        }
-        else
-        {
-            miConnect.setIcon(R.drawable.connect_w_32x32);
-        }
+        miConnect.setIcon(R.drawable.connect_w_32x32);
     }
 
     private void doSettings_Drone() {

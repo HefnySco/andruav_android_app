@@ -42,8 +42,8 @@ public class UAVOSModuleCamera extends UAVOSModuleUnit {
             jsonVideoSource[CAMERA_UNIQUE_NAME "id"]            = deviceInfo.unique_name;
             jsonVideoSource[CAMERA_ACTIVE "active"]             = deviceInfo.active;
             jsonVideoSource[CAMERA_TYPE "p"]                    = EXTERNAL_CAMERA_TYPE_RTCWEBCAM;
-            jsonVideoSource[CAMERA_TYPE "f"]                    = ANDROID_DUAL_CAM; facing/rearing (true,false)
-            jsonVideoSource[CAMERA_TYPE "z"]					= Support Zooming
+            jsonVideoSource[CAMERA_SUPPORT_FLASH "f"]           = ANDROID_DUAL_CAM; facing/rearing (true,false)
+            jsonVideoSource[CAMERA_SUPPORT_ZOOM "z"]            = Support Zooming
         */
     }
 

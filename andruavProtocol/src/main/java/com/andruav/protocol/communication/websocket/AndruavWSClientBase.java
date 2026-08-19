@@ -79,7 +79,6 @@ import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_L
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_Ping;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_UdpProxy;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_UDPProxy_Info;
-import com.andruav.protocol.communication.uavos.AndruavUDPServerBase;
 import com.andruav.uavos.modules.UAVOSHelper;
 import com.andruav.uavos.modules.UAVOSModuleCamera;
 import com.andruav.util.CustomCircularBuffer;
@@ -909,9 +908,6 @@ public abstract class AndruavWSClientBase {
                         a7adath_fpv_cmd.ACT = (andruavMessage_cameraFlash.FlashOn == AndruavMessage_CameraFlash.FLASH_ON);
                         a7adath_fpv_cmd.Requester = andruavWe7da;
                         AndruavEngine.getEventBus().post(a7adath_fpv_cmd);
-                    } else {
-                        // This is a camera module connected to Andruav Device
-                        ((AndruavUDPServerBase) AndruavEngine.getAndruavUDP()).sendMessageToModule(cameraModule, andruav_2MR);
                     }
                 }
                 catch (final Exception ex)
@@ -947,9 +943,6 @@ public abstract class AndruavWSClientBase {
                         a7adath_fpv_cmd.Variables.put("SendBackTo", andruavMessage_cameraSwitch.CameraUniqueName);
                         a7adath_fpv_cmd.Requester = andruavWe7da;
                         AndruavEngine.getEventBus().post(a7adath_fpv_cmd);
-                    } else {
-                        // This is a camera module connected to Andruav Device
-                        ((AndruavUDPServerBase) AndruavEngine.getAndruavUDP()).sendMessageToModule(cameraModule, andruav_2MR);
                     }
                 }
                 catch (final Exception e)
@@ -982,9 +975,6 @@ public abstract class AndruavWSClientBase {
                         // This is a local camera for this Andruav Device
                         Event_CameraZoom adath_cameraZoom = new Event_CameraZoom(andruavMessage_cameraZoom);
                         AndruavEngine.getEventBus().post(adath_cameraZoom);
-                    } else {
-                        // This is a camera module connected to Andruav Device
-                        ((AndruavUDPServerBase) AndruavEngine.getAndruavUDP()).sendMessageToModule(cameraModule, andruav_2MR);
                     }
                 }
                 catch (final Exception e)
@@ -1030,9 +1020,6 @@ public abstract class AndruavWSClientBase {
                             // constructing and registering AndruavPeerConnectionClientClient.
                             Event_Signalling a7adath_signalling = new Event_Signalling(andruavMessage_signaling.getJsonResala(), andruavWe7da);
                             AndruavEngine.getEventBus().postSticky(a7adath_signalling);
-                        } else {
-                            // This is a camera module connected to Andruav Device
-                            ((AndruavUDPServerBase) AndruavEngine.getAndruavUDP()).sendMessageToModule(cameraModule, andruav_2MR);
                         }
                     }
                 }

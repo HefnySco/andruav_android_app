@@ -51,7 +51,6 @@ import com.andruav.protocol.commands.textMessages.Configuration.AndruavMessage_C
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_Ctrl_Camera;
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_RemoteExecute;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_UDPProxy_Info;
-import com.andruav.protocol.communication.uavos.AndruavUDPServerBase;
 import com.andruav.protocol.communication.websocket.AndruavWSClientBase_TooTallNate;
 
 import org.json.JSONException;
@@ -979,7 +978,6 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
                                     return ;
                                 }
-                                ((AndruavUDPServerBase) AndruavEngine.getAndruavUDP()).sendMessageToModule(andruav_2MR);
 
                             } else {
                                 //TODO: enh upi may create a temp record just to be able to sendMessageToModule data to this unit before it replies with full data

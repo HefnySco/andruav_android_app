@@ -44,7 +44,6 @@
     <string name="pref_auth_URL">Cloud.Ardupilot.org</string>
     <string name="pref_ws_URL">Andruav.com</string>
     <string name="pref_gr_fcb">FCB &amp; Telemetry</string>
-    <string name="pref_gr_uavos">Module &amp; Types</string>
     <string name="pref_gr_recovery">Safety &amp; Recovery</string>
     <string name="pref_gr_recovery_fm_chk">Flight Mode Fail Safe</string>
     <string name="pref_gr_recovery_fm_chk_summary">In case of losing Internet connection activate RTL or Loiter after 60 seconds.</string>
@@ -120,12 +119,6 @@
     <string name="pref_gr_fcb_gps_injection_summary">Inject mobile GPS into FCB.</string>
     <string name="pref_gr_unitmetric">Units</string>
     <string name="pref_gr_unitmetric_summary">Use Metric or Imperial System</string>
-    <string name="pref_gr_uavos_module_type">Module Type</string>
-    <string name="pref_gr_uavos_module_type_summary">Select what type of drone device this is.</string>
-    <string name="pref_gr_uavos_module_comm_ip">Comm Module IP</string>
-    <string name="pref_gr_uavos_module_comm_ip_summary">Comm Module IP used by other types modules</string>
-    <string name="pref_gr_uavos_module_comm_ip_discover">Auto Comm Detection</string>
-    <string name="pref_gr_uavos_module_comm_ip_discover_summary">Detect Comm Module IP automatically</string>
 
     <integer name="pref_auth_Port">19408</integer>
     <integer name="pref_ws_Port">9210</integer>

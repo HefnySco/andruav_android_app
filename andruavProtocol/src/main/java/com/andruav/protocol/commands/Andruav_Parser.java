@@ -69,7 +69,6 @@ import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_L
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_Ping;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_UdpProxy;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_UDPProxy_Info;
-import com.andruav.protocol.commands.textMessages.uavosCommands.AndruavModule_ID;
 
 import org.json.JSONObject;
 
@@ -347,9 +346,6 @@ public class Andruav_Parser {
                 break;
             case AndruavSystem_UdpProxy.TYPE_AndruavSystem_UdpProxy:
                 andruavMessageBase = new AndruavSystem_UdpProxy();
-                break;
-            case AndruavModule_ID.TYPE_AndruavModule_ID:
-                andruavMessageBase = new AndruavModule_ID();
                 break;
 
             default:

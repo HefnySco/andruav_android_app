@@ -8,8 +8,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.andruav.uavos.modules.UAVOSConstants.UAVOS_MODULE_TYPE_CAMERA;
-
 /**
  * Created by M.Hefny on 21-Jul-15.
  * <br>cmd: <b>1012</b>
@@ -104,13 +102,6 @@ public class AndruavMessage_CameraList extends AndruavMessageBase {
 
     @Override
     public String getJsonMessage() throws org.json.JSONException {
-        JSONObject json_track = new JSONObject();
-        json_track.put("v",1);
-        json_track.put("id",IP);
-        json_track.put("ln",UAVOS_MODULE_TYPE_CAMERA);
-        JSONArray json_tracks = new JSONArray();
-        json_tracks .put(json_track);
-
         JSONObject json_data = new JSONObject();
 
         if (isReply) {
