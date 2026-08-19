@@ -108,6 +108,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /> <!-- keep foreground services (telemetry/FPV) alive in background -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" /> <!-- bring app to foreground for remote FPV start while backgrounded (Android 14+ cannot start camera/mic FGS from background) -->
 
     <application
         android:name="ap.andruav_ap.App"

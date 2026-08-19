@@ -51,6 +51,10 @@ import ap.andruavmiddlelibrary.factory.tts.TTS;
 public  class Notification implements INotification{
 
     public static final String CHANNEL_ID = "andruav_notifications";
+    /** High-importance channel used for the full-screen FPV-start notification (Android 14+). */
+    public static final String CHANNEL_ID_FPV_URGENT = "andruav_fpv_urgent";
+    /** Notification / PendingIntent request code for the FPV full-screen intent. */
+    public static final int FPV_URGENT_NOTIFICATION_ID = INotification.INFO_TYPE_CAMERA;
 
     final long SPEEK_MIN_TIME = 500;
     Random rnd = new Random();
@@ -86,6 +90,15 @@ public  class Notification implements INotification{
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
                     "Andruav Notifications", NotificationManager.IMPORTANCE_DEFAULT);
             mNotificationManager.createNotificationChannel(channel);
+
+            // High-importance channel for the full-screen FPV-start notification. On Android 14+
+            // a camera/microphone foreground service cannot be started from the background, so a
+            // remote FPV request posts a full-screen notification here to bring the app to the
+            // foreground first; the actual service start then happens from the resumed Activity.
+            NotificationChannel fpvChannel = new NotificationChannel(CHANNEL_ID_FPV_URGENT,
+                    "Andruav FPV Requests", NotificationManager.IMPORTANCE_HIGH);
+            fpvChannel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
+            mNotificationManager.createNotificationChannel(fpvChannel);
         }
 
         EventBus.getDefault().register(this);
@@ -198,6 +211,41 @@ public  class Notification implements INotification{
         mBuilder.setContentIntent(contentIntent);
 
         mNotificationManager.notify(Id, mBuilder.build());
+    }
+
+
+    /**
+     * Posts a high-priority notification with a full-screen intent to bring the app to the
+     * foreground. Used when a remote FPV/video request arrives while the app is backgrounded:
+     * Android 14+ forbids starting a camera/microphone foreground service from the background,
+     * so the app must be foregrounded first. If the screen is on the notification appears as a
+     * heads-up banner; if the screen is off the full-screen intent launches directly. Tapping
+     * the notification (or the full-screen launch) brings the app to the foreground, where the
+     * resumed Activity re-posts the pending FPV event and starts the service safely.
+     */
+    public void displayFullScreenNotificationForFPV() {
+        // Use the launcher intent so the correct home screen (MainScreen or ModuleScreen) is
+        // shown, rather than hard-coding one.
+        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        if (launchIntent == null) {
+            launchIntent = new Intent(context, MainScreen.class);
+        }
+        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
+        int pendingFlags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
+        PendingIntent fullScreenIntent = PendingIntent.getActivity(context, 0, launchIntent, pendingFlags);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID_FPV_URGENT)
+                .setSmallIcon(R.drawable.ic_logo2)
+                .setContentTitle("Andruav")
+                .setContentText("Remote video request - tap to start streaming")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_CALL)
+                .setFullScreenIntent(fullScreenIntent, true)
+                .setAutoCancel(true)
+                .setContentIntent(fullScreenIntent);
+
+        mNotificationManager.notify(FPV_URGENT_NOTIFICATION_ID, mBuilder.build());
     }
 
 

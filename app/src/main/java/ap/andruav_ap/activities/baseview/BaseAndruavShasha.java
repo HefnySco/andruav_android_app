@@ -1,5 +1,6 @@
 package ap.andruav_ap.activities.baseview;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import android.app.AlertDialog;
@@ -137,6 +138,23 @@ public class BaseAndruavShasha extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         App.activeActivity = this;
+
+        // If a remote FPV/camera request arrived while the app was backgrounded, App.onEvent set
+        // pendingFPVStart and posted a full-screen notification instead of starting the camera|
+        // microphone FGS (which Android 14+ forbids from the background). Now that an Activity is
+        // resumed the app is in an eligible state. Re-post the event so the normal foreground flow
+        // runs: App starts FPVStreamingService and BaseAndruavShasha launches the FPV Activity.
+        // Posted to the handler so it runs AFTER the subclass's onResume() completes its
+        // EventBus.register(this) - otherwise this subscriber wouldn't receive the re-posted event.
+        if (App.pendingFPVStart) {
+            App.pendingFPVStart = false;
+            mbaseAndruavActivityHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    EventBus.getDefault().post(new _7adath_InitAndroidCamera());
+                }
+            });
+        }
     }
 
 

@@ -125,6 +125,14 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
      * <br> other values from {@link ActivityInfo}
      */
     public static Activity activeActivity = null;
+    /**
+     * Set when a remote FPV/camera request ({@link _7adath_InitAndroidCamera}) arrives while the
+     * app is backgrounded. On Android 14+ a camera/microphone foreground service cannot start from
+     * the background, so instead of crashing we post a full-screen notification to bring the app
+     * to the foreground, and set this flag. The next resumed Activity checks/clears it and
+     * re-posts the event so the normal foreground flow (start service + launch FPV Activity) runs.
+     */
+    public static boolean pendingFPVStart = false;
     public static int gui_ConnectionIconID;
     public boolean D = false; // debug
     public final static String TAG = "RCMOB";
@@ -224,8 +232,47 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         // reach FPVStreamingService (Context-only, independent of any Activity) even while the app
         // is fully backgrounded - this is the one place guaranteed to still be listening then.
         if (AndruavSettings.andruavWe7daBase.getIsCGS()) return;
-        if (DeviceFeatures.hasCamera && CheckAppPermissions.checkPermission(Manifest.permission.CAMERA)) {
+        if (!DeviceFeatures.hasCamera || !CheckAppPermissions.checkPermission(Manifest.permission.CAMERA)) {
+            return;
+        }
+
+        if (activeActivity != null) {
+            // App is in the foreground (an Activity is resumed) - safe to start the camera|
+            // microphone foreground service directly on Android 14+.
             startFPVStreamingService();
+        } else {
+            // App is backgrounded. Android 14+ (API 34) forbids starting a camera/microphone
+            // foreground service from the background (SecurityException -> crash). We must bring
+            // the app to the foreground first, then start the service from the resumed Activity.
+            //
+            // This device may be mounted on a drone with no human to tap a notification, so the
+            // primary path is a direct activity launch (no user interaction). This is allowed
+            // because SensorService (a location-type FGS, which IS background-eligible) is already
+            // running while the drone is connected, and a running FGS exempts the app from the
+            // background-activity-start restriction. The full-screen notification is only a
+            // fallback if the direct launch is blocked (e.g. no FGS running).
+            pendingFPVStart = true;
+
+            boolean launched = false;
+            try {
+                Intent launchIntent = context.getPackageManager()
+                        .getLaunchIntentForPackage(context.getPackageName());
+                if (launchIntent != null) {
+                    launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    context.startActivity(launchIntent);
+                    launched = true;
+                }
+            } catch (Exception e) {
+                // Background-activity-start restriction may still block us if no FGS is running.
+                AndruavEngine.log().logException("fpv_bg_launch", e);
+            }
+
+            if (!launched && notification != null) {
+                // Fallback: full-screen notification. Auto-launches if the screen is off; shows a
+                // heads-up banner (needs a tap) if the screen is on.
+                notification.displayFullScreenNotificationForFPV();
+            }
         }
     }
 
