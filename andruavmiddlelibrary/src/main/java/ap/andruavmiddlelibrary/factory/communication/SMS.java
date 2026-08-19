@@ -30,6 +30,7 @@ public class SMS {
             // skip silently instead of nagging for a permission that could
             // never be backed by a real SMS channel.
             if (!DeviceFeatures.hasSMSCapabilities) {
+                AndruavEngine.log().log2("SMS", "sms_skip", "sendSMS skipped: no SMS capabilities (to=" + phoneNo + ")");
                 return;
             }
             if (ActivityCompat.checkSelfPermission(AndruavEngine.AppContext, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
@@ -40,6 +41,7 @@ public class SMS {
                 //                                          int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
+                AndruavEngine.log().log2("SMS", "sms_skip", "sendSMS skipped: SEND_SMS permission denied (to=" + phoneNo + ")");
                 if (AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED)) {
                     AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_TELEMETRY, INotification.NOTIFICATION_TYPE_ERROR,
                             0, "SMS permission denied (SEND_SMS)", null);
@@ -47,12 +49,17 @@ public class SMS {
                 return;
             }
             SmsManager smsManager = SmsManager.getDefault();
-            if (smsManager == null) return;
+            if (smsManager == null) {
+                AndruavEngine.log().log2("SMS", "sms_skip", "sendSMS skipped: SmsManager.getDefault() returned null (to=" + phoneNo + ")");
+                return;
+            }
             ArrayList<String> msgArray=smsManager.divideMessage(msg);
             smsManager.sendMultipartTextMessage(phoneNo, null, msgArray, null, null);
+            AndruavEngine.log().log2("SMS", "sms_tx", "sendSMS sent to=" + phoneNo + " parts=" + msgArray.size());
         }
         catch (Exception e)
         {
+            AndruavEngine.log().logException("SMS", "sendSMS_failed", e);
             e.printStackTrace();
         }
     }

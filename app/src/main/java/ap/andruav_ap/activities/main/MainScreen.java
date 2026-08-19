@@ -60,7 +60,6 @@ import com.andruav.controlBoard.shared.common.VehicleTypes;
 import ap.andruav_ap.helpers.CheckAppPermissions;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_ProtocolChanged;
 import ap.andruavmiddlelibrary.LoginClient;
-import ap.andruav_ap.communication.telemetry.TelemetryDroneProtocolParser;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 import ap.andruav_ap.DeviceManagerFacade;
 

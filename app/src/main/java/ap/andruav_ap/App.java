@@ -372,8 +372,15 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         }
         mManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (mManager != null) {
-            mManager.listen(mListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS |
-                    PhoneStateListener.LISTEN_CELL_LOCATION);
+            try {
+                // LISTEN_CELL_LOCATION was removed: it requires ACCESS_FINE_LOCATION on
+                // API 31+ and a single SecurityException on that flag would prevent
+                // LISTEN_SIGNAL_STRENGTHS from registering too. The cell-location
+                // handler was a no-op anyway.
+                mManager.listen(mListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+            } catch (SecurityException e) {
+                AndruavEngine.log().logException("signal_monitor", e);
+            }
         }
     }
 
@@ -393,6 +400,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
             final int dbm = extractDbm(sStrength);
 
             AndruavSettings.andruavWe7daBase.setSignal(mManager.getNetworkType(), dbm);
+            updateMobileInfo();
             EventBus.getDefault().post(new _7adath_ConnectionQuality());
         }
 
@@ -426,6 +434,31 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
             return 0;
         }
     };
+
+
+    /***
+     * Reads operator name, country ISO, and data roaming state from TelephonyManager
+     * and pushes them to AndruavSettings so they get transmitted in CommSignalsStatus.
+     * Called from onSignalStrengthsChanged so the info stays fresh alongside dBm.
+     */
+    private void updateMobileInfo() {
+        if (mManager == null) return;
+        try {
+            final String opName = mManager.getNetworkOperatorName();
+            final String country = mManager.getNetworkCountryIso();
+            int state = 0; // 0=disconnected
+            int netType = mManager.getNetworkType();
+            if (netType != TelephonyManager.NETWORK_TYPE_UNKNOWN) {
+                state = 1; // connected
+                if (mManager.isNetworkRoaming()) state = 2; // roaming
+            }
+            AndruavSettings.andruavWe7daBase.setMobileInfo(opName, country, state);
+        } catch (SecurityException e) {
+            // READ_PHONE_STATE was revoked or not granted — skip silently.
+        } catch (Exception e) {
+            AndruavEngine.log().logException("mobile_info", e);
+        }
+    }
 
 
     /***
@@ -867,6 +900,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     private final Runnable mSchedulRunnable = new Runnable()
     {
         long mlastTimeUDPBroadCast =0;
+        long mlastTimeSignalSend = 0;
         @Override
         public void run() {
 
@@ -884,6 +918,20 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                 if (diff > 2000) {
                        mlastTimeUDPBroadCast = now;
                     }
+
+                // Periodically send signal status — onSignalStrengthsChanged is
+                // event-driven and may never fire if signal is stable or if the
+                // deprecated PhoneStateListener is unreliable on newer Android.
+                // This guarantees the web client gets mobile info at least every 15s.
+                if (mManager != null && !shutdown
+                        && AndruavSettings.andruavWe7daBase != null
+                        && !AndruavSettings.andruavWe7daBase.getIsCGS()) {
+                    if ((now - mlastTimeSignalSend) > 15000) {
+                        mlastTimeSignalSend = now;
+                        updateMobileInfo();
+                        AndruavDroneFacade.sendCommSignalStatus(null, false);
+                    }
+                }
 
             }
             catch (Exception ex)

@@ -10,17 +10,6 @@ public class FeatureSwitch {
     public static final String _PRIVATE_ = "PRIVATE_";
 
 
-    public static final int Default_Video_FrameResumeSize = 25;
-    public static final int Default_Video_FrameFreezeSize = 30;
-
-
-    public static final int Default_Video_FrameRate = 200;
-
-
-    public static final int Default_MAX_ALTITUDE = 3000;
-    public static final int Default_ALTITUDE = 20;
-    public static final int Default_MAX_Delay = 60;
-
     /***
      * Should be acending valuesAndruavResala_ID
      */
@@ -63,12 +52,10 @@ public class FeatureSwitch {
      * Logging Path for Andruav
      */
 
-    public static final boolean Save_ImageCapturedFromDroneinCGS = true;
 
 
 
     //////////////////// FlightControlBoards Integration
-    public static final boolean Disable_NativeFCBConnections    = true;
     public static final boolean Disable_3DRFCBConnections       = false;
 
 

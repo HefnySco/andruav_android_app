@@ -91,13 +91,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- Board Interface -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- Board Interface: GSM signal strength monitoring for link quality -->
     <uses-permission android:name="android.hardware.usb.host" /> <!-- Social Media -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- WEB RTC -->
     <!-- Auto Reboot -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -108,7 +105,6 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /> <!-- keep foreground services (telemetry/FPV) alive in background -->
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" /> <!-- bring app to foreground for remote FPV start while backgrounded (Android 14+ cannot start camera/mic FGS from background) -->
 
     <application
         android:name="ap.andruav_ap.App"

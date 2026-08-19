@@ -1,6 +1,8 @@
 package ap.andruav_ap;
 
 import android.location.Location;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.Toast;
 
 import com.andruav.AndruavDroneFacade;
@@ -244,11 +246,13 @@ public class Emergency extends EmergencyBase {
 
             if (!ignoreTiming && (AndruavEngine.getAndruavWSStatus() == AndruavWSClientBase.SOCKETSTATE_REGISTERED))
             {
+                AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMS skipped: WS registered");
                 return;
             }
 
-            if (!Preference.isSMSTXEnabled(null))
+            if (!ignoreTiming && !Preference.isSMSTXEnabled(null))
             {
+                AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMS skipped: SMS TX disabled");
                 return ; // ModuleFeatures is disabled by user.
             }
 
@@ -258,6 +262,7 @@ public class Emergency extends EmergencyBase {
                 if (mlatestSMSTime == 0)
                 {
                     mlatestSMSTime = now;
+                    AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMS skipped: first-call timing gate");
                     return ;
                 }
                 if ((now - mlatestSMSTime) >=mSMSSeparationPeriod)
@@ -268,13 +273,16 @@ public class Emergency extends EmergencyBase {
                 }
                 else
                 {
+                    AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMS skipped: too-soon timing gate (now-last=" + (now - mlatestSMSTime) + "ms < " + mSMSSeparationPeriod + "ms)");
                     return ;
                 }
 
             }
             String sms_target = Preference.getRecoveryPhoneNo(null);
-            if (sms_target!="") {
-                sendSMSLocation(sms_target, false);
+            if (sms_target.isEmpty()) {
+                AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMS skipped: recovery phone number is empty");
+            } else {
+                sendSMSLocation(sms_target, ignoreTiming);
             }
 
 
@@ -291,14 +299,21 @@ public class Emergency extends EmergencyBase {
         {
             if (!b_forced && !Preference.isSMSTXEnabled(null))
             {
+                AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMSLocation skipped: SMS TX disabled (to=" + receiver_num + ")");
                 return ; // ModuleFeatures is disabled by user.
             }
 
             Location loc = AndruavDroneFacade.getLastKnownLocation();
 
             if (loc == null) {
-                Toast.makeText(App.getAppContext(),
-                        "No Location to sendMessageToModule in SMS", Toast.LENGTH_LONG).show();
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(App.getAppContext(),
+                                "No Location to sendMessageToModule in SMS", Toast.LENGTH_LONG).show();
+                    }
+                });
+                AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMSLocation skipped: no location (to=" + receiver_num + ")");
                 return;
             }
 
@@ -309,21 +324,27 @@ public class Emergency extends EmergencyBase {
 
             if (DeviceFeatures.hasSMSCapabilities) {
 
-                Toast.makeText(App.getAppContext(),
-                        "Sending Location SMS", Toast.LENGTH_LONG).show();
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(App.getAppContext(),
+                                "Sending Location SMS", Toast.LENGTH_LONG).show();
+                    }
+                });
 
 
-                if (!FeatureSwitch.DEBUG_MODE) {
-                    // dont cost me money
-                    //SMS.sendSMS(Preference.getRecoveryPhoneNo(null), msgold);
                     SMS.sendSMS(receiver_num, msg);
-                }
-
             }
             else
             {
-                Toast.makeText(App.getAppContext(),
-                        "Phone does not have SMS Capabilities", Toast.LENGTH_LONG).show();
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(App.getAppContext(),
+                                "Phone does not have SMS Capabilities", Toast.LENGTH_LONG).show();
+                    }
+                });
+                AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMSLocation skipped: no SMS capabilities (to=" + receiver_num + ")");
 
             }
         }

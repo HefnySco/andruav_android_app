@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import com.andruav.AndruavEngine;
+
 import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
 import ap.andruavmiddlelibrary.preference.Preference;
 
@@ -29,20 +31,33 @@ public class SMSReceiver extends BroadcastReceiver {
                 if (pdus != null) {
                     for (Object pdu : pdus) {
                         SmsMessage smsMessage;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            String format = extras.getString("format");
-                            smsMessage = SmsMessage.createFromPdu((byte[]) pdu, format);
-                        } else {
-                            smsMessage = SmsMessage.createFromPdu((byte[]) pdu);
+                        try {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                String format = extras.getString("format");
+                                if (format != null) {
+                                    smsMessage = SmsMessage.createFromPdu((byte[]) pdu, format);
+                                } else {
+                                    smsMessage = SmsMessage.createFromPdu((byte[]) pdu);
+                                }
+                            } else {
+                                smsMessage = SmsMessage.createFromPdu((byte[]) pdu);
+                            }
+                        } catch (Exception e) {
+                            AndruavEngine.log().logException("SMSReceiver", e);
+                            Log.e(TAG, "createFromPdu failed", e);
+                            continue;
                         }
+                        if (smsMessage == null) continue;
+
                         String sender = smsMessage.getDisplayOriginatingAddress();
                         String messageBody = smsMessage.getMessageBody();
 
-                        Log.d(TAG, "Received SMS from: " + sender);
-                        Log.d(TAG, "Message: " + messageBody);
-
-                        andruavSMSClientParser.executeCommand (sender, messageBody);
-                        // Process or display the received SMS as per your app's requirements
+                        try {
+                            andruavSMSClientParser.executeCommand (sender, messageBody);
+                        } catch (Exception e) {
+                            AndruavEngine.log().logException("SMSReceiver", e);
+                            Log.e(TAG, "executeCommand failed", e);
+                        }
                     }
                 }
             }

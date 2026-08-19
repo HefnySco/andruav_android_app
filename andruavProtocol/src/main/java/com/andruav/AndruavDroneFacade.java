@@ -273,6 +273,9 @@ public class AndruavDroneFacade extends AndruavFacadeBase {
 
             commSignalsStatus.signalLevel = AndruavSettings.andruavWe7daBase.getSignalLevel();
             commSignalsStatus.signalType = AndruavSettings.andruavWe7daBase.getSignalType();
+            commSignalsStatus.operatorName = AndruavSettings.andruavWe7daBase.getOperatorName();
+            commSignalsStatus.countryIso = AndruavSettings.andruavWe7daBase.getCountryIso();
+            commSignalsStatus.dataState = AndruavSettings.andruavWe7daBase.getDataState();
 
             sendMessage(commSignalsStatus, target, Boolean.FALSE);
         }

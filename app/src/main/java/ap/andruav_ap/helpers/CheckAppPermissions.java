@@ -113,6 +113,8 @@ public abstract class CheckAppPermissions {
         addIfMissing(activity, missing, Manifest.permission.READ_PHONE_STATE);
         if (DeviceFeatures.hasSMSCapabilities) {
             addIfMissing(activity, missing, Manifest.permission.READ_SMS);
+            addIfMissing(activity, missing, Manifest.permission.SEND_SMS);
+            addIfMissing(activity, missing, Manifest.permission.RECEIVE_SMS);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -304,6 +306,7 @@ public abstract class CheckAppPermissions {
         if (DeviceFeatures.hasSMSCapabilities) {
             perms.add(Manifest.permission.READ_SMS);
             perms.add(Manifest.permission.SEND_SMS);
+            perms.add(Manifest.permission.RECEIVE_SMS);
         }
 
         // Bluetooth (API 31+)

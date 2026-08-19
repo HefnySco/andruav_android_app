@@ -1119,20 +1119,28 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
 
                         case AndruavMessage_RemoteExecute.RemoteCommand_SENDSMS:
-                            if ((andruavUnit != null) && (!andruavUnit.canControl())) break;
+                            if ((andruavUnit != null) && (!andruavUnit.canControl())) {
+                                AndruavEngine.log().log2(andruav_2MR.partyID, "sms_skip", "SENDSMS skipped: unit not controllable");
+                                break;
+                            }
 
                             // sendMessageToModule SMS immediate long as there is a current mLocation defined.
                             andruav_2MR.processed = true;
                             final Emergency emergency = (Emergency) AndruavEngine.getEmergency();
                             if (emergency != null) {
                                 emergency.sendSMS(true);
+                            } else {
+                                AndruavEngine.log().log2(andruav_2MR.partyID, "sms_skip", "SENDSMS skipped: Emergency module is null");
                             }
 
 
                             break;
 
                         case AndruavMessage_RemoteExecute.RemoteCommand_SMSwGPS: {
-                            if ((andruavUnit != null) && (!andruavUnit.canControl())) break;
+                            if ((andruavUnit != null) && (!andruavUnit.canControl())) {
+                                AndruavEngine.log().log2(andruav_2MR.partyID, "sms_skip", "SMSwGPS skipped: unit not controllable");
+                                break;
+                            }
 
                             andruav_2MR.processed = true;
                             final Emergency emergencySMSwGPS = (Emergency) AndruavEngine.getEmergency();
@@ -1142,11 +1150,15 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                                 if (andruavResala_remoteExecute.Variables.containsKey("n")) {
                                     final String receiverNum = andruavResala_remoteExecute.Variables.get("n");
                                     if (receiverNum != null && !receiverNum.isEmpty()) {
+                                        AndruavEngine.log().log2(andruav_2MR.partyID, "sms_cmd", "SMSwGPS: sending to " + receiverNum);
                                         emergencySMSwGPS.sendSMSLocation(receiverNum, true);
                                         break;
                                     }
                                 }
+                                AndruavEngine.log().log2(andruav_2MR.partyID, "sms_cmd", "SMSwGPS: no 'n' variable, falling back to recovery number");
                                 emergencySMSwGPS.sendSMS(true);
+                            } else {
+                                AndruavEngine.log().log2(andruav_2MR.partyID, "sms_skip", "SMSwGPS skipped: Emergency module is null");
                             }
                         }
                         break;

@@ -493,6 +493,9 @@ public class AndruavUnitBase {
      * -113 is OFF , above 90 is OK
      */
     protected int signalLevel; // GSM of other drone
+    protected String operatorName;
+    protected String countryIso;
+    protected int dataState; // 0=disconnected, 1=connected, 2=roaming
 
     public int getSignalType ()
     {
@@ -513,6 +516,24 @@ public class AndruavUnitBase {
     public int getSignalLevel ()
     {
         return signalLevel;
+    }
+
+    public String getOperatorName () { return operatorName; }
+    public String getCountryIso ()   { return countryIso; }
+    public int getDataState ()       { return dataState; }
+
+    public void setMobileInfo (final String p_operatorName, final String p_countryIso, final int p_dataState)
+    {
+        final boolean changed = !java.util.Objects.equals(operatorName, p_operatorName)
+                || !java.util.Objects.equals(countryIso, p_countryIso)
+                || (dataState != p_dataState);
+        operatorName = p_operatorName;
+        countryIso   = p_countryIso;
+        dataState    = p_dataState;
+        if (changed && IsMe())
+        {
+            AndruavDroneFacade.sendCommSignalStatus(null, false);
+        }
     }
 
 

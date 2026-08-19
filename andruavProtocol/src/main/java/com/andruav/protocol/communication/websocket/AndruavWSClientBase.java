@@ -1319,6 +1319,9 @@ public abstract class AndruavWSClientBase {
                 if (andruavWe7da != null) {
                     final AndruavMessage_CommSignalsStatus andruavMessage_commSignalsStatus = (AndruavMessage_CommSignalsStatus) andruav_2MR.andruavMessageBase;
                     andruavWe7da.setSignal(andruavMessage_commSignalsStatus.signalType, andruavMessage_commSignalsStatus.signalLevel);
+                    andruavWe7da.setMobileInfo(andruavMessage_commSignalsStatus.operatorName,
+                            andruavMessage_commSignalsStatus.countryIso,
+                            andruavMessage_commSignalsStatus.dataState);
                 }
             }
             break;
