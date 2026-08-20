@@ -14,11 +14,6 @@
         app:showAsAction="always"
         android:title="@string/action_signout"
         android:icon="@drawable/signout_w_32x32"/>
-    <item android:id="@+id/mi_remotesettings"
-        android:title="@string/actionremote_settings"
-        android:orderInCategory="100"
-        app:showAsAction="never"
-        android:icon="@drawable/joystick_w_32x32"/>
     <item android:id="@+id/mi_main_Settings_drone"
         android:title="@string/action_settings_drone"
         android:orderInCategory="100"

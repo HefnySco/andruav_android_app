@@ -197,16 +197,6 @@
             android:label="@string/title_activity_fcb"
             android:launchMode="singleTask" />
         <activity
-            android:name="ap.andruav_ap.activities.remote.RemoteControlActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:label="@string/title_activity_remote_control"
-            android:launchMode="singleTask" />
-        <activity
-            android:name="ap.andruav_ap.activities.remote.RemoteControlSettingActivityTab"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:label="@string/title_activity_remote_control_setting_activity_tab"
-            android:launchMode="singleTask" />
-        <activity
             android:name="ap.andruav_ap.activities.drone.FlashActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_data_activity_flash"

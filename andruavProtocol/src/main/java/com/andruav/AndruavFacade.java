@@ -3,7 +3,6 @@ package com.andruav;
 import android.location.Location;
 
 import com.andruav.controlBoard.shared.missions.MissionBase;
-import com.andruav.event.fcb_event.Event_FCB_RemoteControlSettings;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitShadow;
 import com.andruav.event.droneReport_Event.Event_GeoFence_Hit;
@@ -23,8 +22,6 @@ import com.andruav.protocol.commands.textMessages.AndruavMessage_GeoFence;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_GeoFenceAttachStatus;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_HomeLocation;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_ID;
-import com.andruav.protocol.commands.textMessages.AndruavMessage_RemoteControl2;
-import com.andruav.protocol.commands.textMessages.AndruavMessage_RemoteControlSettings;
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_RemoteExecute;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_Signaling;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_DistinationLocation;
@@ -527,14 +524,6 @@ public class AndruavFacade extends AndruavFacadeBase{
     }
 
 
-    public static void sendRemoteControlMessage (final int[] channels, final boolean engaged, final AndruavUnitBase target)
-    {
-        if (!AndruavSettings.andruavWe7daBase.canControl()) return ;
-        final AndruavMessage_RemoteControl2 andruavMessage_remoteControl2 = new AndruavMessage_RemoteControl2(channels,engaged);
-        sendMessage(andruavMessage_remoteControl2,target, Boolean.FALSE);
-    }
-
-
     /***
      * currently it sends onlt RTC status, as other values are scalled locally in Drone
      * @param target notmally it is a global message
@@ -560,52 +549,6 @@ public class AndruavFacade extends AndruavFacadeBase{
     }
 
 
-    /**
-     * Tell drone that I will send you control -gamepad- info.
-     * @param andruavUnitBase
-     */
-    public static void engageRX (final AndruavUnitBase andruavUnitBase)
-    {
-
-        
-
-    }
-
-    /**
-     * Tell drone that I will send you control -gamepad- info.
-     * <b>MAKE SURE</b> that no other drone is already engaged.
-     * @param andruavUnitBase
-     */
-    public static void engageGamePad (final AndruavUnitBase andruavUnitBase)
-    {
-
-        if (andruavUnitBase == null) return ;
-
-        sendRemoteControlSettings (andruavUnitBase, Event_FCB_RemoteControlSettings.RC_SUB_ACTION_JOYSTICK_CHANNELS);
-
-    }
-
-
-    public static void disengageGamePad (final AndruavUnitBase andruavUnitBase)
-    {
-
-        if (andruavUnitBase == null) return ;
-
-        sendRemoteControlSettings (andruavUnitBase, Event_FCB_RemoteControlSettings.RC_SUB_ACTION_RELEASED);
-
-    }
-
-
-    private static void sendRemoteControlSettings (final AndruavUnitBase andruavUnitBase, final int rcSubAction)
-    {
-
-        if (andruavUnitBase == null) return ;
-
-        final AndruavMessage_RemoteControlSettings andruavMessage_remoteExecute = new AndruavMessage_RemoteControlSettings();
-        andruavMessage_remoteExecute.rcSubAction = rcSubAction;
-        sendMessage(andruavMessage_remoteExecute , andruavUnitBase, Boolean.FALSE);
-
-    }
 
     /***
      * This message is used to exchange webrtc communication data between parties.
