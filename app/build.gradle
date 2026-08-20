@@ -2,17 +2,26 @@ apply plugin: 'com.android.application'
 
 
 
+// Load release signing credentials from a gitignored keystore.properties
+// at the project root when present. Falls back to the debug keystore
+// otherwise so the build never breaks for contributors without the key.
+def keystorePropsFile = rootProject.file('keystore.properties')
+def keystoreProps = new Properties()
+if (keystorePropsFile.exists()) {
+    keystoreProps.load(new FileInputStream(keystorePropsFile))
+}
+
 android {
 
     compileSdkVersion android_build_sdk_version
     buildToolsVersion android_build_tools_version
 
     defaultConfig {
-        applicationId 'arudpilot.andruav'
+        applicationId 'ardupilot.andruav'
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
-        versionName '11.5.0'
-        versionCode 1110500
+        versionName '12.0.0'
+        versionCode 1120000
         multiDexEnabled true
     }
 
@@ -23,6 +32,16 @@ android {
     namespace 'ap.andruav_ap'
     // Jai - update for gradle 8.x
 
+    signingConfigs {
+        release {
+            if (keystorePropsFile.exists()) {
+                storeFile file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
 
     buildTypes {
 
@@ -40,7 +59,7 @@ android {
             logger.info('Release Built')
             debuggable false
             minifyEnabled false
-            signingConfig signingConfigs.debug
+            signingConfig keystorePropsFile.exists() ? signingConfigs.release : signingConfigs.debug
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
                     outputFileName = "Andruav_release_" + variant.properties.get('flavorName') + "." + defaultConfig.versionName + "." + releaseTime() + ".apk"
