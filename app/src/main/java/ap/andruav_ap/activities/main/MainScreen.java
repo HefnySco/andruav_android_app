@@ -44,7 +44,6 @@ import androidx.core.os.LocaleListCompat;
 import java.io.UnsupportedEncodingException;
 
 import org.greenrobot.eventbus.EventBus;
-import ap.andruav_ap.activities.HUBCommunication;
 import ap.andruav_ap.activities.settings.SettingsDrone;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.activities.drone.IMUShasha;
@@ -601,7 +600,7 @@ public class MainScreen extends BaseAndruavShasha {
 
         mTileImu.setOnClickListener(v -> startActivity(new Intent(MainScreen.this, IMUShasha.class)));
         mTileFpv.setOnClickListener(v -> FPVActivityFactory.startFPVActivity(MainScreen.this));
-        mTileCom.setOnClickListener(v -> startActivity(new Intent(MainScreen.this, HUBCommunication.class)));
+        mTileCom.setOnClickListener(v -> HubConnectionSheet.newInstance().show(getSupportFragmentManager(), HubConnectionSheet.TAG));
         mTileFcb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1226,7 +1225,7 @@ public class MainScreen extends BaseAndruavShasha {
     private void startAndruavConnection() {
 
         if (!PreferenceValidator.isValidWebSocket()) {
-            startActivity(new Intent(MainScreen.this, HUBCommunication.class));
+            HubConnectionSheet.newInstance().show(getSupportFragmentManager(), HubConnectionSheet.TAG);
         }
         if (!App.isAndruavWSConnected()) {
             doProgressDialog();
