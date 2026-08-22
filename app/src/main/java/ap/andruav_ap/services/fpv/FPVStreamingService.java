@@ -506,19 +506,16 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
             // The peer count is the one signal a plain hangup always produces, regardless of which
             // command flow the viewer used to start - stop for real once nobody is left watching.
             //
-            // BUT: when screen capture (MediaProjection) is active, do NOT auto-stop. A
-            // MediaProjection consent intent is single-use — once the capturer stops, the
-            // projection is revoked and cannot be restarted without re-granting permission via
-            // the system dialog. Auto-stopping on viewer disconnect would kill the projection,
-            // making it impossible for the same viewer (or any other) to reconnect without the
-            // user re-long-pressing on the phone. The user controls when screen streaming stops
-            // (via the FPV exit button); viewer connect/disconnect just changes whether anyone
-            // is watching, not whether capture is alive.
-            if ((mPeerConnectionManager != null)
-                    && !mPeerConnectionManager.isScreenCapture()
-                    && !mPeerConnectionManager.hasActivePeers()) {
-                EventBus.getDefault().post(new _7adath_StopAndroidCamera());
-            }
+            // NOTE: We do NOT auto-stop on viewer disconnect for either camera or screen capture.
+            // Stopping the service kills the PeerConnectionManager, but the FPV Activity is still
+            // bound (BIND_AUTO_CREATE), so the service stays alive as a shell with no PCM. When the
+            // web reconnects, startFPVStreamingService() is a no-op (iFPVStreamingService was cleared)
+            // but the old service instance is still alive — the new startForegroundService() call
+            // delivers onStartCommand to the old shell, which SHOULD call initRTC()... but in
+            // practice the web's "joinme" doesn't reliably trigger _7adath_InitAndroidCamera after
+            // a stop, leaving the user unable to restream. Keeping capture alive across viewer
+            // connect/disconnect (like we do for screen capture) fixes restream for both modes.
+            // The user controls when streaming stops via the FPV exit button.
         });
     }
 

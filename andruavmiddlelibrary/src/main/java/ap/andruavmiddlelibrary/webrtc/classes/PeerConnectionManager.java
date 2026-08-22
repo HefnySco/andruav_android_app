@@ -58,14 +58,6 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     private PeerConnectionFactory pcFactory;
     private PnRTC_3ameel pnRTC3ameel;
     private VideoCapturer capturer;
-
-    /**
-     * Debug flag: when true, {@link #init} skips camera capturer creation and idles (no capturer)
-     * until a screen-capture intent is provided via {@link #setScreenCaptureIntent(Intent)} and
-     * {@link #switchCaptureSource(Context, Intent)} is called. This was used to verify screen
-     * streaming works in isolation — set to false for normal camera operation.
-     */
-    private static final boolean DEBUG_DISABLE_CAMERA_STREAMING = true;
     /**
      * When non-null, {@link #init} builds a {@link ScreenCapturerAndroid} (device-screen capture
      * via {@link MediaProjection}) instead of a camera capturer. Must be the result-Intent of a
@@ -493,11 +485,12 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
             CameraID = channelName;
 
             if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                if (DEBUG_DISABLE_CAMERA_STREAMING && screenCaptureIntent == null) {
-                    // Debug mode: no camera, no screen intent yet — idle until screen permission
-                    // is granted and switchCaptureSource() is called. The video source/track and
-                    // peer connections are still set up below so signaling works; only the capturer
-                    // is deferred.
+                final boolean screenStreamingPref = Preference.isScreenStreamingEnabled(null);
+                if (screenStreamingPref && screenCaptureIntent == null) {
+                    // Screen-streaming preference is ON but no MediaProjection intent yet — idle
+                    // with no capturer until screen permission is granted via long-press and
+                    // switchCaptureSource() is called. The video source/track and peer connections
+                    // are still set up below so signaling works; only the capturer is deferred.
                     mIsScreenCapture = false;
                     capturer = null;
                 } else if (screenCaptureIntent != null) {
