@@ -49,7 +49,6 @@ import ap.andruav_ap.activities.drone.IMUShasha;
 import ap.andruav_ap.activities.fcb.drone.FCB_AndruavShashaL2;
 import ap.andruav_ap.activities.fpv.FPVActivityFactory;
 
-import ap.andruav_ap.activities.remote.RemoteControlSettingActivityTab;
 import ap.andruav_ap.App;
 
 
@@ -980,7 +979,6 @@ public class MainScreen extends BaseAndruavShasha {
         bindMenuRow(content, R.id.home_menu_row_help, popup, this::doHelp, true);
         bindMenuRow(content, R.id.home_menu_row_settings, popup, this::doSettings_Drone, mSettingsEnabled);
         bindMenuRow(content, R.id.home_menu_row_reset, popup, this::doFactoryReset, mMenuActionsEnabled);
-        bindMenuRow(content, R.id.home_menu_row_remote, popup, this::doRemoteSettings, true);
         bindMenuRow(content, R.id.home_menu_row_export_logs, popup, this::doExportErrorLogs, true);
         bindMenuRow(content, R.id.home_menu_row_clear_logs, popup, this::doClearErrorLogs, true);
         bindMenuRow(content, R.id.home_menu_row_about, popup, this::showAboutDialog, true);
@@ -1020,10 +1018,6 @@ public class MainScreen extends BaseAndruavShasha {
                 });
         AlertDialog alert = builder.create();
         alert.show();
-    }
-
-    private void doRemoteSettings() {
-        startActivity(new Intent(MainScreen.this, RemoteControlSettingActivityTab.class));
     }
 
     protected void doSignOut() {
@@ -1218,9 +1212,6 @@ public class MainScreen extends BaseAndruavShasha {
             doFactoryReset();
         } else if (id == R.id.mi_main_Help) {
             doHelp();
-        } else if (id == R.id.mi_remotesettings) {
-            doRemoteSettings();
-            return true;
         } else if (id == R.id.mi_main_About) {
 
             showAboutDialog();
@@ -1253,7 +1244,6 @@ public class MainScreen extends BaseAndruavShasha {
         mTileImu.setEnabled(true);
         mTileFpv.setEnabled(true);
         mTileFcb.setEnabled(true);
-        mMenu.findItem(R.id.mi_remotesettings).setVisible(true);
         // Dont Reset Vehicle Type if Connected to FCB.
         if (!AndruavSettings.andruavWe7daBase.useFCBIMU()) {
             AndruavSettings.andruavWe7daBase.setVehicleType(Preference.getVehicleType(null));

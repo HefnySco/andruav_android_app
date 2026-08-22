@@ -950,6 +950,21 @@ public class Preference {
     }
 
     /***
+     * When enabled, the FPV screen shows a source picker (Back Camera / Front Camera / Screen)
+     * on open and the camera list advertised to the web/GCS includes three separately-selectable
+     * entries (front, back, screen) instead of a single camera entry. When disabled, everything
+     * behaves as before the screen-streaming feature: single camera entry, auto-start back camera,
+     * no picker.
+     */
+    public static boolean isScreenStreamingEnabled(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "allow_screen_streaming", false);
+    }
+
+    public static void setScreenStreamingEnabled(final android.content.ContextWrapper contextWrapper, final boolean enabled) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "allow_screen_streaming", enabled);
+    }
+
+    /***
      * Streaming resolution mode for a given camera facing.
      */
     public static final int STREAM_RESOLUTION_SD  = 0; // 640x480

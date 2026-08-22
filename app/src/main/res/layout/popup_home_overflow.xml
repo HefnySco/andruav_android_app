@@ -67,26 +67,6 @@
         android:background="@color/home_border_soft" />
 
     <TextView
-        android:id="@+id/home_menu_row_remote"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="13dp"
-        android:paddingBottom="13dp"
-        android:text="@string/actionremote_settings"
-        android:textColor="@color/home_text_primary"
-        android:textSize="14sp" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/home_border_soft" />
-
-    <TextView
         android:id="@+id/home_menu_row_export_logs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -47,6 +47,12 @@
     <!-- FPV & Settings -->
     <PreferenceCategory android:title="@string/pref_gr_fpv_settings">
 
+        <CheckBoxPreference
+            android:title="@string/pref_gr_fpv_screen_streaming"
+            android:key="allow_screen_streaming"
+            android:summary="@string/pref_gr_fpv_screen_streaming_summary"
+            android:defaultValue="false" />
+
         <ListPreference
             android:title="@string/pref_gr_fpv_videocameraselect"
             android:key="MwESFWhA"

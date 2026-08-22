@@ -31,7 +31,6 @@ import ap.andruav_ap.App;
 import ap.andruav_ap.R;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.activities.fpv.FPVActivityFactory;
-import ap.andruav_ap.activities.remote.RemoteControlSettingActivityTab;
 import ap.andruav_ap.activities.settings.SettingsDrone;
 import ap.andruav_ap.helpers.GUI;
 import ap.andruavmiddlelibrary.factory.tts.TTS;
@@ -238,9 +237,6 @@ public class ModuleScreen extends BaseAndruavShasha {
         } else if (id == R.id.mi_main_Help) {
             GMail.sendGMail(this, getString(ap.andruavmiddlelibrary.R.string.email_title), getString(ap.andruavmiddlelibrary.R.string.email_to), getString(ap.andruavmiddlelibrary.R.string.email_subject), getString(ap.andruavmiddlelibrary.R.string.email_body), null);
 
-        } else if (id == R.id.mi_remotesettings) {
-            startActivity(new Intent(ModuleScreen.this, RemoteControlSettingActivityTab.class));
-            return true;
         } else if (id == R.id.mi_main_About) {
 
             DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.gen_about), Html.fromHtml(String.format("<font color=#75A4D3><b>version:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>email:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>access code:</b></font><font color=#36AB36>%s</font><br><font color=#75A4D3><b>pin code:</b></font><font color=#36AB36>%s</font>", App.versionName, GUI.writeTextEmail(),GUI.writeTextAccessCode(),AndruavSettings.andruavWe7daBase.PartyID)), null);
@@ -317,7 +313,6 @@ public class ModuleScreen extends BaseAndruavShasha {
         }
 //        mbtnIMU.setEnabled(true);
 //        mbtnFCB.setEnabled(true);
-        //mMenu.findItem(R.id.mi_remotesettings).setVisible(true);
         // Dont Reset Vehicle Type if Connected to FCB.
         if (!AndruavSettings.andruavWe7daBase.useFCBIMU()) {
             AndruavSettings.andruavWe7daBase.setVehicleType(Preference.getVehicleType(null));

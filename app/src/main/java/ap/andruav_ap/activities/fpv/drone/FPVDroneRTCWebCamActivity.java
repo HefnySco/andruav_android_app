@@ -5,9 +5,11 @@ package ap.andruav_ap.activities.fpv.drone;
 import org.greenrobot.eventbus.Subscribe;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
 import android.app.RemoteAction;
+import android.content.DialogInterface;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -80,6 +82,7 @@ import ap.andruavmiddlelibrary.factory.io.FileHelper;
 import ap.andruavmiddlelibrary.factory.util.ActivityMosa3ed;
 import ap.andruavmiddlelibrary.factory.util.Image_Helper;
 import ap.andruavmiddlelibrary.webrtc.events.Event_WebRTC;
+import ap.andruavmiddlelibrary.webrtc.classes.PeerConnectionManager;
 import ap.andruav_ap.widgets.flightControlWidgets.NEWSWidget;
 import ap.andruav_ap.R;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_IMU_CMD;
@@ -125,6 +128,13 @@ public class FPVDroneRTCWebCamActivity extends Activity {
     private boolean mSendBackImages = false;
     private AndruavUnitBase mSendBackTo = null; // name of Image requester
 
+    /**
+     * True until the source picker has been shown once for this Activity instance. Prevents
+     * re-showing the picker on every onResume() (e.g. returning from PiP or from the permission
+     * activity) — the user picks a source once on open and it sticks for the session.
+     */
+    private boolean mSourcePickerPending = true;
+
 
     ////// ActivityMosa3ed Variables
     private TextView txtVideoStatus;
@@ -155,6 +165,11 @@ public class FPVDroneRTCWebCamActivity extends Activity {
             mBoundService = ((FPVStreamingService.LocalBinder) service).getService();
             mServiceBound = true;
             mBoundService.attachRenderer(mSurfaceViewRenderer);
+            // Apply a source choice that was made in the picker before the service bound.
+            if (mPendingSource >= 0) {
+                mBoundService.setRequestedSource(mPendingSource);
+                mPendingSource = -1;
+            }
         }
 
         @Override
@@ -445,16 +460,31 @@ public class FPVDroneRTCWebCamActivity extends Activity {
 
 
         btnCameraSwitch = findViewById(R.id.fpvactivity_btn_CameraSwitch);
-        btnCameraSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (andruavUnit_selected.UnitID.equals(AndruavSettings.andruavWe7daBase.UnitID)) {
-                    if ((mBoundService != null) && (mBoundService.getPeerConnectionManager() != null)) {
-                        mBoundService.getPeerConnectionManager().switchCamera();
+        // In screen-streaming mode (preference ON), a simple click requests screen capture
+        // (no long-press needed) and the button is tinted blue to signal its changed function.
+        // In legacy camera mode (preference OFF), the click swaps front/back camera as before.
+        if (Preference.isScreenStreamingEnabled(null)) {
+            btnCameraSwitch.getBackground().setColorFilter(0xFF2196F3, android.graphics.PorterDuff.Mode.SRC_ATOP);
+            btnCameraSwitch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (andruavUnit_selected.UnitID.equals(AndruavSettings.andruavWe7daBase.UnitID)) {
+                        requestScreenCapture();
                     }
                 }
-            }
-        });
+            });
+        } else {
+            btnCameraSwitch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (andruavUnit_selected.UnitID.equals(AndruavSettings.andruavWe7daBase.UnitID)) {
+                        if ((mBoundService != null) && (mBoundService.getPeerConnectionManager() != null)) {
+                            mBoundService.getPeerConnectionManager().switchCamera();
+                        }
+                    }
+                }
+            });
+        }
 
         btnStopStream = findViewById(R.id.fpvactivity_btn_StopStream);
         btnStopStream.setOnClickListener(new View.OnClickListener() {
@@ -476,6 +506,41 @@ public class FPVDroneRTCWebCamActivity extends Activity {
         attitudeWidget.setAndruavUnit(andruavUnit_selected);
 
 
+    }
+
+
+    /**
+     * If a MediaProjection permission was already pre-granted (via
+     * {@link ScreenCapturePermissionActivity}), starts screen-capture streaming immediately with
+     * no dialog. Otherwise launches {@link ScreenCapturePermissionActivity} to obtain the
+     * permission — the result is stored in {@link App#sScreenCaptureIntent} and a subsequent
+     * long-press (or a remote stream request) will use it directly.
+     * <p>
+     * The permission request is delegated to a separate transparent activity because this
+     * activity is locked to landscape and the system permission dialog forces a portrait rotation
+     * that destroys the WebRTC EGL surfaces.
+     */
+    private void requestScreenCapture() {
+        if (App.hasScreenCaptureIntent()) {
+            // Already pre-granted — switch to screen capture now, no dialog.
+            //
+            // Deliberately NOT posting _7adath_StopAndroidCamera here: FPVStreamingService now
+            // swaps the capturer in place on the existing PeerConnectionManager
+            // (PeerConnectionManager.switchCaptureSource()) instead of tearing the whole pipeline
+            // down. Stopping first would close every already-negotiated peer connection and send
+            // connected browsers a hangup they have no way to auto-recover from (the web client
+            // only ever (re)joins a stream from an explicit user click) - the in-place swap keeps
+            // any already-joined viewer watching with no re-signaling at all.
+            App.startFPVStreamingServiceScreenIfGranted();
+            if (!mServiceBound) {
+                bindService(new Intent(this, FPVStreamingService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
+            }
+        } else {
+            // No pre-grant yet — launch the transparent permission activity. It stores the result
+            // in App.sScreenCaptureIntent and finishes. The user long-presses again (or a remote
+            // request arrives) to actually start streaming.
+            startActivity(new Intent(this, ScreenCapturePermissionActivity.class));
+        }
     }
 
 
@@ -610,6 +675,87 @@ public class FPVDroneRTCWebCamActivity extends Activity {
         App.startSensorService();
 
     }
+
+    /**
+     * Shows the video-source picker dialog (Back Camera / Front Camera / Screen) and starts
+     * streaming with the selected source. For Screen, if no MediaProjection permission has been
+     * pre-granted, launches {@link ScreenCapturePermissionActivity} instead — the permission
+     * result triggers the service start via {@link App#startFPVStreamingServiceScreenIfGranted()}.
+     */
+    private void showSourcePicker() {
+        final String[] items = {"Back Camera", "Front Camera", "Screen"};
+        new AlertDialog.Builder(this)
+                .setTitle("Select Video Source")
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                startWithSource(PeerConnectionManager.SOURCE_BACK);
+                                break;
+                            case 1:
+                                startWithSource(PeerConnectionManager.SOURCE_FRONT);
+                                break;
+                            case 2:
+                                startWithSource(PeerConnectionManager.SOURCE_SCREEN);
+                                break;
+                        }
+                    }
+                })
+                .setCancelable(false)
+                .show();
+    }
+
+    /**
+     * Starts the FPV streaming service with the given source. For camera sources, this is a
+     * plain {@link App#startFPVStreamingService()} after setting the requested source on the
+     * service. For screen, it uses the pre-granted MediaProjection intent if available, or
+     * launches the permission activity to obtain one.
+     */
+    private void startWithSource(final int source) {
+        // Now that the user has chosen a source, force landscape — this was deferred from onCreate
+        // so the picker dialog could show in portrait without being destroyed by the rotation.
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        // Now bind the service and register EventBus — this was deferred from onResume to avoid
+        // the service's "not running" status event from finishing the activity while the picker
+        // was still on screen.
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+
+        if (source == PeerConnectionManager.SOURCE_SCREEN) {
+            if (App.hasScreenCaptureIntent()) {
+                App.startFPVStreamingServiceScreenIfGranted();
+                if (!mServiceBound) {
+                    bindService(new Intent(this, FPVStreamingService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
+                }
+            } else {
+                // Launch the permission activity; it stores the result and starts the service.
+                // The service will bind when the permission activity returns and onResume fires.
+                startActivity(new Intent(this, ScreenCapturePermissionActivity.class));
+            }
+        } else {
+            // Camera source: start the service, then set the requested source so initRTC() picks
+            // the right facing. The service may not be bound yet, so we set it via a start intent
+            // extra isn't needed — the service reads mRequestedSource which we set after binding.
+            App.startFPVStreamingService();
+            if (!mServiceBound) {
+                bindService(new Intent(this, FPVStreamingService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
+            }
+            // Set the source after the service binds via onServiceConnected — but if it's already
+            // bound (e.g. re-entry), set it now.
+            if (mBoundService != null) {
+                mBoundService.setRequestedSource(source);
+            } else {
+                // Store for onServiceConnected to apply.
+                mPendingSource = source;
+            }
+        }
+    }
+
+    /** If non-negative, the source picked in the dialog that hasn't been applied yet (service not bound). */
+    private int mPendingSource = -1;
 
     @Override
     protected void onPause() {

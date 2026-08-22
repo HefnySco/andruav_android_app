@@ -81,6 +81,7 @@ import ap.andruavmiddlelibrary.com.serenegiant.encoder.MediaVideoEncoder;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_ProtocolChanged;
 import ap.andruavmiddlelibrary.preference.Preference;
 import ap.andruavmiddlelibrary.preference.PreferenceValidator;
+import ap.andruavmiddlelibrary.webrtc.classes.PeerConnectionManager;
 import ap.andruavmiddlelibrary.factory.DeviceFeatures;
 
 import ap.andruavmiddlelibrary.factory.tts.SoundManager;
@@ -141,6 +142,14 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     public static SoundManager soundManager;
     public static Intent iSensorService;
     public static Intent iFPVStreamingService;
+    /**
+     * Pre-granted MediaProjection result-Intent for screen-capture streaming. Obtained in advance
+     * (before flight) via {@link ScreenCapturePermissionActivity} so that a mid-flight remote
+     * stream request can start screen capture without showing a permission dialog. Held in memory
+     * only — single-use (consumed by {@link #startFPVStreamingServiceScreen}) and lost on process
+     * death, so it must be re-granted after an app restart.
+     */
+    public static Intent sScreenCaptureIntent;
     /***
      * unit-ID of the telemetry drone that this CGS connected with.
      */
@@ -232,6 +241,27 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         // reach FPVStreamingService (Context-only, independent of any Activity) even while the app
         // is fully backgrounded - this is the one place guaranteed to still be listening then.
         if (AndruavSettings.andruavWe7daBase.getIsCGS()) return;
+
+        // If a MediaProjection permission was pre-granted (before flight, via the long-press on
+        // the camera-swap button), start screen-capture streaming instead of camera. This lets a
+        // mid-flight remote stream request use screen capture with no permission dialog. Skip the
+        // camera-hardware/permission gate below entirely - it doesn't apply to screen capture.
+        if (hasScreenCaptureIntent()) {
+            if (activeActivity != null) {
+                // App is in the foreground - safe to start the mediaProjection foreground service
+                // directly on Android 14+.
+                startFPVStreamingServiceScreenIfGranted();
+            } else {
+                // Backgrounded: bring the app to the foreground first (see bringAppToForegroundForFPV()
+                // below), same as the camera path. pendingFPVStart causes the resumed Activity to
+                // re-post this event, which re-enters this method with activeActivity != null and
+                // actually starts the stream above.
+                pendingFPVStart = true;
+                bringAppToForegroundForFPV();
+            }
+            return;
+        }
+
         if (!DeviceFeatures.hasCamera || !CheckAppPermissions.checkPermission(Manifest.permission.CAMERA)) {
             return;
         }
@@ -244,35 +274,44 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
             // App is backgrounded. Android 14+ (API 34) forbids starting a camera/microphone
             // foreground service from the background (SecurityException -> crash). We must bring
             // the app to the foreground first, then start the service from the resumed Activity.
-            //
-            // This device may be mounted on a drone with no human to tap a notification, so the
-            // primary path is a direct activity launch (no user interaction). This is allowed
-            // because SensorService (a location-type FGS, which IS background-eligible) is already
-            // running while the drone is connected, and a running FGS exempts the app from the
-            // background-activity-start restriction. The full-screen notification is only a
-            // fallback if the direct launch is blocked (e.g. no FGS running).
             pendingFPVStart = true;
+            bringAppToForegroundForFPV();
+        }
+    }
 
-            boolean launched = false;
-            try {
-                Intent launchIntent = context.getPackageManager()
-                        .getLaunchIntentForPackage(context.getPackageName());
-                if (launchIntent != null) {
-                    launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                            | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    context.startActivity(launchIntent);
-                    launched = true;
-                }
-            } catch (Exception e) {
-                // Background-activity-start restriction may still block us if no FGS is running.
-                AndruavEngine.log().logException("fpv_bg_launch", e);
+    /**
+     * Brings the app to the foreground so a pending FPV start (camera or screen-capture, gated by
+     * {@link #pendingFPVStart}) can proceed from a resumed Activity - Android 14+ forbids starting
+     * a camera/microphone/mediaProjection foreground service directly from the background.
+     * <p>
+     * This device may be mounted on a drone with no human to tap a notification, so the primary
+     * path is a direct activity launch (no user interaction). This is allowed because
+     * SensorService (a location-type FGS, which IS background-eligible) is already running while
+     * the drone is connected, and a running FGS exempts the app from the background-activity-start
+     * restriction. The full-screen notification is only a fallback if the direct launch is
+     * blocked (e.g. no FGS running).
+     */
+    private static void bringAppToForegroundForFPV()
+    {
+        boolean launched = false;
+        try {
+            Intent launchIntent = context.getPackageManager()
+                    .getLaunchIntentForPackage(context.getPackageName());
+            if (launchIntent != null) {
+                launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                context.startActivity(launchIntent);
+                launched = true;
             }
+        } catch (Exception e) {
+            // Background-activity-start restriction may still block us if no FGS is running.
+            AndruavEngine.log().logException("fpv_bg_launch", e);
+        }
 
-            if (!launched && notification != null) {
-                // Fallback: full-screen notification. Auto-launches if the screen is off; shows a
-                // heads-up banner (needs a tap) if the screen is on.
-                notification.displayFullScreenNotificationForFPV();
-            }
+        if (!launched && notification != null) {
+            // Fallback: full-screen notification. Auto-launches if the screen is off; shows a
+            // heads-up banner (needs a tap) if the screen is on.
+            notification.displayFullScreenNotificationForFPV();
         }
     }
 
@@ -548,6 +587,77 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
             iFPVStreamingService = new Intent(App.getAppContext(), FPVStreamingService.class);
             ContextCompat.startForegroundService(App.getAppContext(), iFPVStreamingService);
         }
+    }
+
+    /**
+     * Starts (or, if {@link FPVStreamingService} is already running - with camera, idling, or a
+     * prior screen-capture session - re-delivers a fresh {@code onStartCommand()} to) the FPV
+     * streaming service carrying this MediaProjection consent as an extra. The caller must have
+     * already obtained {@code mediaProjectionIntent} from a successful
+     * {@code MediaProjectionManager.createScreenCaptureIntent()} activity flow (resultCode ==
+     * RESULT_OK).
+     * <p>
+     * Deliberately always redelivers - unlike {@link #startFPVStreamingService()}, which is a
+     * once-only "start it if it isn't up yet" for the camera path - because
+     * {@link FPVStreamingService#onStartCommand} uses an already-running
+     * {@link ap.andruavmiddlelibrary.webrtc.classes.PeerConnectionManager}'s
+     * {@code switchCaptureSource()} to swap capturers in place with no hangup, rather than
+     * stopping and restarting the whole service; that swap can only happen if this delivers a new
+     * start command. {@code Service.onStartCommand()} is safe to call repeatedly on an
+     * already-started service - Android does not create a second instance.
+     */
+    public static void startFPVStreamingServiceScreen(final Intent mediaProjectionIntent)
+    {
+        if (iFPVStreamingService == null) {
+            iFPVStreamingService = new Intent(App.getAppContext(), FPVStreamingService.class);
+        }
+        iFPVStreamingService.putExtra(FPVStreamingService.EXTRA_SCREEN_CAPTURE_INTENT, mediaProjectionIntent);
+        ContextCompat.startForegroundService(App.getAppContext(), iFPVStreamingService);
+        // On API 34+, Android throws SecurityException if the same MediaProjection consent Intent
+        // is ever handed to getMediaProjection()/createVirtualDisplay() a second time - it is
+        // single-use, not "valid until revoked". Consume the pre-granted copy the moment it is
+        // actually handed off to a starting service, so a later attempt correctly sees no grant
+        // and falls through to requesting a fresh one (see ScreenCapturePermissionActivity)
+        // instead of silently failing every time after the first. Only clear it if this call is
+        // the one consuming the stored copy - not some other one-off intent a future caller might
+        // pass directly.
+        if (sScreenCaptureIntent == mediaProjectionIntent) {
+            sScreenCaptureIntent = null;
+        }
+    }
+
+    /**
+     * True if a MediaProjection permission has been pre-granted (via
+     * {@link ScreenCapturePermissionActivity}) and is available for screen-capture streaming
+     * without showing a dialog. The intent is single-use and in-memory only - it is consumed
+     * (cleared) as soon as it is handed to a starting {@link FPVStreamingService}, whether or not
+     * that service is currently free to start (see {@link #startFPVStreamingServiceScreen}).
+     */
+    public static boolean hasScreenCaptureIntent()
+    {
+        return sScreenCaptureIntent != null;
+    }
+
+    /**
+     * Starts screen-capture streaming using the pre-granted MediaProjection intent, if one is
+     * available. Returns true if started, false if no pre-granted intent exists (caller should
+     * fall back to camera or prompt the user to grant first).
+     */
+    public static boolean startFPVStreamingServiceScreenIfGranted()
+    {
+        if (sScreenCaptureIntent == null) return false;
+        startFPVStreamingServiceScreen(sScreenCaptureIntent);
+        return true;
+    }
+
+    /**
+     * Updates the CAMERA_ACTIVE flag on the built-in camera module's entries so the web/GCS camera
+     * dialog highlights the currently-streaming source. In legacy single-entry mode (screen
+     * streaming preference OFF) this is a no-op — the one entry is always active.
+     */
+    public static void updateCameraModuleLabel(final boolean isScreenCapture)
+    {
+        // Single-entry mode: nothing to update. The one camera entry is always active.
     }
 
     public static void stopFPVStreamingService()

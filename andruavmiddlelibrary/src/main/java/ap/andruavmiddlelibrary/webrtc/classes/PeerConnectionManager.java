@@ -1,9 +1,14 @@
 package ap.andruavmiddlelibrary.webrtc.classes;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.media.projection.MediaProjection;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Surface;
+import android.view.View;
 
 import java.util.List;
 
@@ -23,6 +28,7 @@ import org.webrtc.GlRectDrawer;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.RendererCommon;
+import org.webrtc.ScreenCapturerAndroid;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoCapturer;
@@ -52,6 +58,96 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     private PeerConnectionFactory pcFactory;
     private PnRTC_3ameel pnRTC3ameel;
     private VideoCapturer capturer;
+    /**
+     * When non-null, {@link #init} builds a {@link ScreenCapturerAndroid} (device-screen capture
+     * via {@link MediaProjection}) instead of a camera capturer. Must be the result-Intent of a
+     * successful {@code MediaProjectionManager.createScreenCaptureIntent()} activity flow - a
+     * Service cannot request it itself, so the caller (an Activity) obtains it and passes it in
+     * before starting capture. Single-use: a revoked projection requires re-requesting.
+     */
+    private Intent screenCaptureIntent;
+    private boolean mIsScreenCapture = false;
+
+    // --- Video source selection (screen-streaming feature) ---
+    //
+    // When Preference.isScreenStreamingEnabled is ON, the camera list advertised to the web/GCS
+    // contains three separately-selectable entries whose CAMERA_UNIQUE_NAME values are built from
+    // the unit's PartyID plus one of these suffixes. The web's existing camera dialog treats each
+    // entry as an independently-dialable source and sends CameraSwitch + joinme with that ID as
+    // the channel; the PnPeer created on this side stores the same channel in mChannel, so SDP/ICE
+    // responses round-trip on the correct channel without any web-side change.
+    //
+    // When the preference is OFF, a single entry with CAMERA_UNIQUE_NAME = PartyID is used (the
+    // original pre-feature behaviour) and none of the suffix logic below is exercised.
+
+    /** Suffix appended to PartyID to form the back-camera entry's CAMERA_UNIQUE_NAME. */
+    public static final String SOURCE_SUFFIX_BACK   = "_back";
+    /** Suffix appended to PartyID to form the front-camera entry's CAMERA_UNIQUE_NAME. */
+    public static final String SOURCE_SUFFIX_FRONT  = "_front";
+    /** Suffix appended to PartyID to form the screen-share entry's CAMERA_UNIQUE_NAME. */
+    public static final String SOURCE_SUFFIX_SCREEN = "_screen";
+
+    public static final int SOURCE_BACK   = 0;
+    public static final int SOURCE_FRONT  = 1;
+    public static final int SOURCE_SCREEN = 2;
+
+    /** Builds the CAMERA_UNIQUE_NAME for a given source type from the unit's PartyID. */
+    public static String sourceIdFor(final String partyId, final int source) {
+        switch (source) {
+            case SOURCE_FRONT:  return partyId + SOURCE_SUFFIX_FRONT;
+            case SOURCE_SCREEN: return partyId + SOURCE_SUFFIX_SCREEN;
+            default:            return partyId + SOURCE_SUFFIX_BACK;
+        }
+    }
+
+    /**
+     * Parses a CAMERA_UNIQUE_NAME (as sent by the web in CameraSwitch / joinme) back to a
+     * {@link #SOURCE_*} constant. Returns {@link #SOURCE_BACK} for the bare PartyID (the
+     * single-entry legacy mode) so callers don't need to special-case the preference-off path.
+     */
+    public static int sourceFromId(final String partyId, final String sourceId) {
+        if (sourceId == null) return SOURCE_BACK;
+        if (sourceId.equals(partyId)) return SOURCE_BACK; // legacy single-entry mode
+        if (sourceId.endsWith(SOURCE_SUFFIX_FRONT))  return SOURCE_FRONT;
+        if (sourceId.endsWith(SOURCE_SUFFIX_SCREEN)) return SOURCE_SCREEN;
+        return SOURCE_BACK;
+    }
+    /**
+     * Notified by the system when the user revokes an active MediaProjection. Frames simply stop
+     * flowing afterwards; real teardown is driven by the normal stop path, so this just logs.
+     */
+    private final MediaProjection.Callback mediaProjectionCallback = new MediaProjection.Callback() {
+        @Override
+        public void onStop() {
+            Log.w("rtc", "MediaProjection stopped/revoked - screen capture will no longer produce frames");
+            stopScreenKeepalive();
+        }
+    };
+
+    // --- Screen capture keepalive (minimum FPS) ---
+    // MediaProjection's VirtualDisplay only produces a frame when the screen compositor composites
+    // a new buffer — which doesn't happen if the on-screen content is completely static. On a
+    // quiet FPV screen the encoder starves, the web client sees 0 fps and times out. To guarantee
+    // a minimum frame rate we periodically invalidate a tiny invisible View added to the current
+    // Activity's content overlay, which dirty-rects the compositor and forces a new buffer to be
+    // composited and handed to the VirtualDisplay, so ScreenCapturerAndroid emits a frame even
+    // when nothing else on screen changed. Uses the Activity's window (no SYSTEM_ALERT_WINDOW
+    // permission needed), so it only works while an Activity is in the foreground — which is the
+    // common case for screen streaming (the FPV Activity is open).
+    private View mKeepaliveView;
+    private final Handler mKeepaliveHandler = new Handler(Looper.getMainLooper());
+    private final Runnable mKeepaliveTick = new Runnable() {
+        @Override
+        public void run() {
+            if (mKeepaliveView == null) return;
+            // Toggle visibility to force a composite pass. INVISIBLE <-> VISIBLE both produce
+            // a dirty rect on the compositor, which makes MediaProjection emit a frame.
+            mKeepaliveView.setVisibility(
+                    mKeepaliveView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+            mKeepaliveHandler.postDelayed(this, KEEPALIVE_INTERVAL_MS);
+        }
+    };
+    private static final long KEEPALIVE_INTERVAL_MS = 1000L / 5; // 5 fps minimum
     private int mCaptureWidth = 1280;
     private int mCaptureHeight = 720;
     private int mCaptureFps = 15;
@@ -131,6 +227,209 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
         return mSurfaceTX;
     }
 
+    /**
+     * Selects screen capture (MediaProjection) for the next {@link #init}. Pass the result-Intent
+     * of a successful {@code createScreenCaptureIntent()} activity flow (resultCode ==
+     * {@link Activity#RESULT_OK}); null restores the default camera source. Must be called before
+     * {@link #init}.
+     */
+    public void setScreenCaptureIntent(final Intent intent) {
+        screenCaptureIntent = intent;
+    }
+
+    /** True once capture has been started in screen-capture mode. */
+    public boolean isScreenCapture() {
+        return mIsScreenCapture;
+    }
+
+    /**
+     * The source {@link #init} should start when it runs next. Set via
+     * {@link #setInitialSource(int)} before the service calls {@code init}. {@code SOURCE_BACK}
+     * is the default (and the only value used in legacy single-entry mode).
+     */
+    private int mInitialSource = SOURCE_BACK;
+
+    /**
+     * Selects which video source {@link #init} will start. Must be called before {@code init}.
+     * For {@link #SOURCE_SCREEN}, {@link #setScreenCaptureIntent(Intent)} must also have been
+     * called with a valid MediaProjection consent intent.
+     */
+    public void setInitialSource(final int source) {
+        mInitialSource = source;
+    }
+
+    /** Returns the source {@link #init} was asked to start (or did start) with. */
+    public int getInitialSource() {
+        return mInitialSource;
+    }
+
+    /**
+     * Switches the active capturer to a specific named source in place — same in-place swap
+     * semantics as {@link #switchCaptureSource(Context, Intent)}: stops/disposes the old capturer
+     * and starts the new one against the SAME video source/track/stream/peer connections, so
+     * already-joined browser viewers keep receiving frames with no hangup or re-signaling.
+     * <p>
+     * For {@link #SOURCE_SCREEN}, a valid MediaProjection consent intent must be available (either
+     * passed in here or previously set via {@link #setScreenCaptureIntent}). If none is available,
+     * the switch returns {@code false} — the caller (typically the service) should prompt the user
+     * to grant permission first.
+     *
+     * @param context           Android context (needed to create a fresh camera capturer)
+     * @param partyId           the unit's PartyID (used to parse the source ID suffix)
+     * @param sourceId          the full CAMERA_UNIQUE_NAME (PartyID + suffix) from CameraSwitch
+     * @param screenIntent      non-null MediaProjection consent for SOURCE_SCREEN; null for camera
+     * @return true if the new capturer started successfully.
+     */
+    public boolean switchToSource(final Context context, final String partyId, final String sourceId, final Intent screenIntent) {
+        final int source = sourceFromId(partyId, sourceId);
+        if (source == SOURCE_SCREEN) {
+            final Intent intent = (screenIntent != null) ? screenIntent : this.screenCaptureIntent;
+            if (intent == null) return false;
+            return switchCaptureSource(context, intent);
+        }
+        // Camera source: set the camera number preference to the right facing, then switch.
+        // camNum 0 = back, camNum 1 = front (matches CameraEnumerator device-name ordering on
+        // the vast majority of devices — see createVideoCapturer()).
+        final int targetCamNum = (source == SOURCE_FRONT) ? 1 : 0;
+        if (mIsScreenCapture) {
+            // Currently on screen capture — switch back to camera first, then select the facing.
+            switchCaptureSource(context, null);
+        }
+        Preference.setCameraNumber(null, targetCamNum);
+        if (capturer instanceof CameraVideoCapturer) {
+            final CameraEnumerator enumerator = createCameraEnumerator();
+            if (enumerator.getDeviceNames().length > 1) {
+                ((CameraVideoCapturer) capturer).switchCamera(null);
+            }
+        }
+        mIsScreenCapture = false;
+        return true;
+    }
+
+    /**
+     * Swaps the active capturer in place: stops/disposes the current one and starts a new one
+     * against the SAME {@link #localVideoSource}/{@link #localVideoTrack}/{@link #mediaStream} and
+     * (crucially) the SAME already-negotiated peer connections - exactly like the existing
+     * front/back {@link #switchCamera()} swaps physical cameras under one capturer, generalized to
+     * also cover camera&lt;-&gt;screen switches.
+     * <p>
+     * Unlike tearing capture down via {@link #stopStreaming()} and calling {@link #init} again,
+     * this never touches {@link PnRTC_3ameel}/{@link PnPeer} - no hangup is sent, so any
+     * already-joined browser viewer simply keeps receiving frames from the new source with no
+     * signaling round-trip and no need to rejoin. {@link #init} must have already been called
+     * successfully (there must be an existing {@link #localVideoSource} to attach the new capturer
+     * to) - use {@link #init} directly for the very first start instead.
+     *
+     * @param context Android context (needed to create a fresh camera capturer)
+     * @param newScreenCaptureIntent non-null to switch TO screen capture using this MediaProjection
+     *                               consent (single-use); null to switch back to the camera.
+     * @return true if the new capturer started successfully.
+     */
+    public boolean switchCaptureSource(final Context context, final Intent newScreenCaptureIntent) {
+        if (localVideoSource == null || mVideoCapturerSurfaceTextureHelper == null) {
+            // init() was never called (or already fully torn down) - nothing to swap onto.
+            return false;
+        }
+
+        try {
+            // Stop and fully release the old capturer before creating the new one - two capturers
+            // must never write to the same mVideoCapturerSurfaceTextureHelper concurrently.
+            if (capturer != null) {
+                try {
+                    capturer.stopCapture();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                capturer.dispose();
+                capturer = null;
+            }
+
+            screenCaptureIntent = newScreenCaptureIntent;
+            mIsScreenCapture = (screenCaptureIntent != null);
+
+            if (mIsScreenCapture) {
+                capturer = new ScreenCapturerAndroid(screenCaptureIntent, mediaProjectionCallback);
+                startScreenKeepalive(context);
+            } else {
+                stopScreenKeepalive();
+                org.webrtc.AndruavWebRTCGlobals.fixedDeviceOrientationDegrees = 90;
+                capturer = createVideoCapturer();
+            }
+
+            if (capturer == null) return false;
+
+            capturer.initialize(mVideoCapturerSurfaceTextureHelper, context, localVideoSource.getCapturerObserver());
+            capturer.startCapture(mCaptureWidth, mCaptureHeight, mCaptureFps);
+            return true;
+        } catch (Exception ex) {
+            AndruavEngine.log().logException("rtc-switch-source", ex);
+            return false;
+        }
+    }
+
+    /**
+     * Adds a 1x1 transparent View to the current Activity's content overlay and toggles its
+     * visibility at a fixed interval to force the screen compositor to produce new frames even
+     * when the on-screen content is static. This guarantees a minimum frame rate from
+     * {@link ScreenCapturerAndroid} / MediaProjection, which otherwise only emits a frame when
+     * the compositor composites a new buffer. Uses the Activity's window (no
+     * SYSTEM_ALERT_WINDOW permission needed), so it only works while an Activity is in the
+     * foreground — which is the common case for screen streaming (the FPV Activity is open).
+     */
+    private void startScreenKeepalive(final Context context) {
+        stopScreenKeepalive();
+        try {
+            // Walk up the Context chain to find the Activity (the Service's context is the
+            // Application, but the FPV Activity passes itself to switchCaptureSource via the
+            // Service, and init() is called with the Service context). Use the static reference
+            // in AndruavEngine as a fallback.
+            Activity activity = null;
+            if (context instanceof Activity) {
+                activity = (Activity) context;
+            } else {
+                // Try the App class's activeActivity field via reflection — avoids a hard
+                // dependency from middlelibrary to app.
+                try {
+                    final Class<?> appClass = Class.forName("ap.andruav_ap.App");
+                    final java.lang.reflect.Field f = appClass.getField("activeActivity");
+                    activity = (Activity) f.get(null);
+                } catch (Exception ignored) {}
+            }
+            if (activity == null) {
+                Log.w("rtc", "Screen keepalive: no active Activity, skipping");
+                return;
+            }
+            mKeepaliveView = new View(activity);
+            mKeepaliveView.setVisibility(View.INVISIBLE);
+            final android.widget.FrameLayout.LayoutParams lp =
+                    new android.widget.FrameLayout.LayoutParams(1, 1);
+            lp.setMargins(0, 0, 0, 0);
+            final Activity finalActivity = activity;
+            final View keepaliveView = mKeepaliveView;
+            finalActivity.runOnUiThread(() -> {
+                try {
+                    finalActivity.addContentView(keepaliveView, lp);
+                    mKeepaliveHandler.post(mKeepaliveTick);
+                    Log.d("rtc", "Screen keepalive started: " + KEEPALIVE_INTERVAL_MS + "ms interval");
+                } catch (Exception e) {
+                    AndruavEngine.log().logException("rtc-keepalive-add", e);
+                    mKeepaliveView = null;
+                }
+            });
+        } catch (Exception e) {
+            AndruavEngine.log().logException("rtc-keepalive", e);
+            mKeepaliveView = null;
+        }
+    }
+
+    private void stopScreenKeepalive() {
+        mKeepaliveHandler.removeCallbacks(mKeepaliveTick);
+        // The View was added via addContentView to the Activity's content. We can't remove it
+        // from there, but setting it to GONE and nulling our reference is enough — the Activity
+        // will clean it up on its own destruction. The timer (mKeepaliveTick) is stopped above.
+        mKeepaliveView = null;
+    }
+
 
     public DefaultVideoEncoderFactory getDefaultVideoEncoderFactory()
     {
@@ -186,32 +485,53 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
             CameraID = channelName;
 
             if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                // The capturing phone is rigidly mounted (e.g. on a drone) and always forced to
-                // landscape - it never physically rotates. Freeze the capture rotation to match,
-                // instead of letting WebRTC query the live WindowManager rotation, which flips to
-                // portrait while this Activity is minimized into Picture-in-Picture (its window
-                // briefly stops being the system's "foreground orientation owner"), visibly
-                // rotating both the local preview and the outgoing stream by 90 degrees.
-                org.webrtc.AndruavWebRTCGlobals.fixedDeviceOrientationDegrees = 90;
+                final boolean screenStreamingPref = Preference.isScreenStreamingEnabled(null);
+                if (screenStreamingPref && screenCaptureIntent == null) {
+                    // Screen-streaming preference is ON but no MediaProjection intent yet — idle
+                    // with no capturer until screen permission is granted via long-press and
+                    // switchCaptureSource() is called. The video source/track and peer connections
+                    // are still set up below so signaling works; only the capturer is deferred.
+                    mIsScreenCapture = false;
+                    capturer = null;
+                } else if (screenCaptureIntent != null) {
+                    // Screen capture: ScreenCapturerAndroid reports the display rotation itself, so
+                    // do NOT freeze fixedDeviceOrientationDegrees (that is camera-mount specific and
+                    // would double-rotate the screen stream). Rotation degree stays 0 from above.
+                    mIsScreenCapture = true;
+                    capturer = new ScreenCapturerAndroid(screenCaptureIntent, mediaProjectionCallback);
+                    startScreenKeepalive(context);
+                } else {
+                    // Camera source: select the right facing based on mInitialSource.
+                    // camNum 0 = back, camNum 1 = front (matches CameraEnumerator device-name
+                    // ordering on the vast majority of devices — see createVideoCapturer()).
+                    if (mInitialSource == SOURCE_FRONT) {
+                        Preference.setCameraNumber(null, 1);
+                    } else {
+                        Preference.setCameraNumber(null, 0);
+                    }
+                    // The capturing phone is rigidly mounted (e.g. on a drone) and always forced to
+                    // landscape - it never physically rotates. Freeze the capture rotation to match,
+                    // instead of letting WebRTC query the live WindowManager rotation, which flips to
+                    // portrait while this Activity is minimized into Picture-in-Picture (its window
+                    // briefly stops being the system's "foreground orientation owner"), visibly
+                    // rotating both the local preview and the outgoing stream by 90 degrees.
+                    org.webrtc.AndruavWebRTCGlobals.fixedDeviceOrientationDegrees = 90;
 
-                // Returns the number of cams & front/back face device name
-                capturer = createVideoCapturer();
-
-
-                if (capturer == null) {
-
-                    return false;
+                    // Returns the number of cams & front/back face device name
+                    capturer = createVideoCapturer();
                 }
 
-                capturer.initialize(mVideoCapturerSurfaceTextureHelper, context, this);
 
                 // First create a Video Source, then we can make a Video Track
+                localVideoSource = pcFactory.createVideoSource(mIsScreenCapture); // isScreencast
 
-                localVideoSource = pcFactory.createVideoSource(false); //capturer);
-
-                capturer.initialize(mVideoCapturerSurfaceTextureHelper, context, localVideoSource.getCapturerObserver());
-
-                capturer.startCapture(mCaptureWidth, mCaptureHeight, mCaptureFps);
+                if (capturer != null) {
+                    capturer.initialize(mVideoCapturerSurfaceTextureHelper, context, localVideoSource.getCapturerObserver());
+                    capturer.startCapture(mCaptureWidth, mCaptureHeight, mCaptureFps);
+                }
+                // If capturer is null (debug-idle mode), the video source/track are still created
+                // below so signaling works — switchCaptureSource() will create and start the
+                // screen capturer against this same source once permission is granted.
             }
 
             // We start out with an emptly MediaStream object, created with help from our PeerConnectionFactory
@@ -267,7 +587,17 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
         if (mSurfaceViewRenderer == renderer) return;
 
         mSurfaceViewRenderer = renderer;
-        mSurfaceViewRenderer.init(eglBaseTX.getEglBaseContext(), null, EglBase.CONFIG_PLAIN, new GlRectDrawer());
+        try {
+            mSurfaceViewRenderer.init(eglBaseTX.getEglBaseContext(), null, EglBase.CONFIG_PLAIN, new GlRectDrawer());
+        } catch (IllegalStateException e) {
+            // Defense in depth: the guard above only catches "same renderer, same
+            // PeerConnectionManager instance". A *different* PeerConnectionManager instance handed
+            // the same still-initialized View (e.g. a capture-source switch that stopped one
+            // instance and started a fresh one without the Activity/View being recreated) throws
+            // "Already initialized" here instead. Log rather than crash - the renderer already has
+            // a live render thread and can keep being used.
+            AndruavEngine.log().logException("rtc-renderer", e);
+        }
         mSurfaceViewRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
         mLocalPreviewSink = mSurfaceViewRenderer;
     }
@@ -355,6 +685,8 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
      */
     public void switchCamera () {
 
+        if (!(capturer instanceof CameraVideoCapturer)) return; // no-op for screen capture
+
         final int deviceCount = createCameraEnumerator().getDeviceNames().length;
         if (deviceCount <= 1) return;
 
@@ -366,26 +698,31 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
     public void setFlash (final int onOff)
     {
+        if (!(capturer instanceof CameraVideoCapturer)) return; // no-op for screen capture
         ((CameraVideoCapturer) capturer).setFlash(onOff);
     }
 
     public int getFlash ()
     {
+        if (!(capturer instanceof CameraVideoCapturer)) return org.webrtc.AndruavWebRTCGlobals.FlashOff;
         return ((CameraVideoCapturer) capturer).getFlash();
     }
 
     public void setZoom (final float zoom)
     {
+        if (!(capturer instanceof CameraVideoCapturer)) return; // no-op for screen capture
         ((CameraVideoCapturer) capturer).setZoom(zoom);
     }
 
     public float getZoom ()
     {
+        if (!(capturer instanceof CameraVideoCapturer)) return 1f;
         return ((CameraVideoCapturer) capturer).getZoom();
     }
 
     public boolean isZoomSupported ()
     {
+        if (!(capturer instanceof CameraVideoCapturer)) return false;
         return ((CameraVideoCapturer) capturer).isZoomSupported();
     }
 
@@ -411,6 +748,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
     public void onDestroy ()
     {
+        stopScreenKeepalive();
         killHandler();
 
         if (localVideoSource!=null) {
@@ -432,6 +770,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     public void stopStreaming() {
         if (pnRTC3ameel == null) return ;
 
+        stopScreenKeepalive();
         try {
             disconnectToDrone(null,null);
 
@@ -558,7 +897,13 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
             e.printStackTrace();
         }
 
-        new Handler().post(() -> {
+        // stopLocalVideoSource() can run on any thread - e.g. a remote RemoteCommand_STREAMVIDEO
+        // Act:false lands on the raw WebSocket read thread (see
+        // AndruavWSClientBase.onTextMessage() -> ... -> stopStreaming()), which has no Looper.
+        // `new Handler()` (no-arg) requires Looper.prepare() on the calling thread and throws
+        // RuntimeException otherwise - an uncaught exception here on a non-main thread crashes the
+        // whole process. Post to the main Looper explicitly instead.
+        new Handler(Looper.getMainLooper()).post(() -> {
             if (localVideoSource != null && videoSourceStopped) {
                 localVideoSource.dispose();
                 videoSourceStopped = true;

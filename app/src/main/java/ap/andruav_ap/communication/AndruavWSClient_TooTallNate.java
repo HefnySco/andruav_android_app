@@ -964,11 +964,11 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                                 } else {
                                     // this is WRONG not after UAVOS update
                                     AndruavSettings.mVideoRequests.remove(andruavUnit.PartyID);
-                                    // Only stop once no consumer still wants video - one viewer
-                                    // disconnecting shouldn't kill the stream for others watching.
-                                    if (AndruavSettings.mVideoRequests.isEmpty()) {
-                                        EventBus.getDefault().post(new _7adath_StopAndroidCamera());
-                                    }
+                                    // Do NOT auto-stop on viewer disconnect. Stopping the service
+                                    // kills the PeerConnectionManager but the FPV Activity keeps the
+                                    // service alive (BIND_AUTO_CREATE), leaving a shell that can't
+                                    // restream when the web reconnects. Keep capture alive — the
+                                    // user stops streaming via the FPV exit button.
                                 }
 
 
