@@ -156,8 +156,8 @@ public class IMUShasha extends BaseAndruavShasha {
             //Show progress Dialog here
             mprogressDialog = new ProgressDialog(IMUShasha.this);
             mprogressDialog.setMax(100);
-            mprogressDialog.setMessage("Initialization....");
-            mprogressDialog.setTitle("Checking Sensors");
+            mprogressDialog.setMessage(getString(R.string.progress_initialization));
+            mprogressDialog.setTitle(getString(R.string.progress_checking_sensors));
             mprogressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mprogressDialog.show();
         }

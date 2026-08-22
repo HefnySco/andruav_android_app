@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="main_activity_header_title">ANDRUAV_AP</string>
+    <string name="main_activity_tagline">Estación de control en tierra</string>
+
+    <!-- Home screen redesign -->
+    <string name="home_server_title">Servidor de Misión</string>
+    <string name="home_server_status_connected">CONECTADO</string>
+    <string name="home_server_status_disconnected">DESCONECTADO</string>
+    <string name="home_btn_connect">CONECTAR</string>
+    <string name="home_btn_disconnect">DESCONECTAR</string>
+    <string name="home_btn_signin">INICIAR SESIÓN</string>
+
+    <string name="home_telemetry_title">TELEMETRÍA DE VUELO</string>
+    <string name="home_telemetry_linked">VINCULADO</string>
+    <string name="home_telemetry_not_linked">NO VINCULADO</string>
+    <string name="home_telemetry_helper">Vincule el controlador de vuelo mediante el módulo FCB a continuación para ver el GPS, la batería y la señal.</string>
+    <string name="home_telemetry_subtitle_format">%1$s · vía %2$s</string>
+    <string name="home_stat_gps">FIX GPS</string>
+    <string name="home_stat_battery">BATERÍA</string>
+    <string name="home_stat_signal">SEÑAL</string>
+    <string name="home_sats_format">%1$d SATS</string>
+    <string name="home_battery_format">%1$d%%</string>
+    <string name="home_signal_format">%1$d dBm</string>
+    <string name="home_value_placeholder">–</string>
+
+    <string name="home_modules_title">MÓDULOS</string>
+    <string name="home_tile_imu">IMU</string>
+    <string name="home_tile_fpv">FPV</string>
+    <string name="home_tile_com">Com</string>
+    <string name="home_tile_fcb">FCB</string>
+    <string name="home_tile_state_ready">LISTO</string>
+    <string name="home_tile_state_live">EN VIVO</string>
+    <string name="home_tile_state_offline">SIN CONEXIÓN</string>
+    <string name="home_tile_state_linked">VINCULADO</string>
+    <string name="home_tile_state_tap_to_link">TOQUE PARA VINCULAR</string>
+
+    <string name="home_menu_settings">Ajustes</string>
+    <string name="home_menu_export_logs">Exportar Registros de Errores</string>
+    <string name="home_menu_language">Idioma</string>
+    <string name="home_menu_clear_logs">Eliminar Registros de Errores</string>
+
+    <string name="home_fcb_sheet_title">CENTRO DE TELEMETRÍA · CONEXIÓN FCB</string>
+    <string name="home_fcb_bluetooth">Bluetooth</string>
+    <string name="home_fcb_usb">USB</string>
+    <string name="home_fcb_wifi">Wi-Fi / TCP-IP</string>
+    <string name="home_fcb_udp">Difusión UDP</string>
+    <string name="home_fcb_bt_on">Activado</string>
+    <string name="home_fcb_bt_off">Desactivado</string>
+    <string name="home_fcb_bt_scan">Escanear</string>
+    <string name="home_fcb_bt_scanning">Escaneando…</string>
+    <string name="home_fcb_bt_no_devices">Aún no hay dispositivos emparejados ni detectados</string>
+    <string name="home_fcb_baud_rate_label">Velocidad de baudios</string>
+    <string name="home_fcb_usb_supported">El modo host USB es compatible con este dispositivo.</string>
+    <string name="home_fcb_usb_unsupported">Este dispositivo no admite el modo host USB.</string>
+    <string name="home_fcb_hub_ip_label">IP del Hub</string>
+    <string name="home_fcb_local_ip_label">IP Local</string>
+    <string name="home_fcb_port_label">Puerto</string>
+    <string name="home_fcb_udp_port_label">Puerto</string>
+    <string name="home_fcb_udp_helper">Escucha la telemetría de difusión en la red local.</string>
+
+    <!-- i18n: extracted hardcoded strings -->
+    <string name="toast_ping_time">Tiempo de ping %1$s ms</string>
+    <string name="toast_msg_duration">duración del mensaje: %1$sms</string>
+    <string name="toast_logs_exported_to">Registros de errores exportados a %1$s</string>
+    <string name="toast_no_logs_to_export">No hay registros de errores para exportar</string>
+    <string name="toast_logger_unavailable">%1$s: registrador no disponible</string>
+    <string name="toast_logs_deleted">Registros de errores eliminados</string>
+    <string name="toast_logs_delete_failed">Error al eliminar los registros de errores</string>
+    <string name="toast_usb_attached">USB Conectado</string>
+    <string name="toast_usb_detached">USB Desconectado</string>
+    <string name="toast_auto_connect_fcb">Intentando conectar automáticamente al FCB</string>
+    <string name="toast_ignore_connection">IGNORAR Por %1$s</string>
+    <string name="dialog_delete_all_logs">¿Eliminar todos los registros de errores?</string>
+    <string name="dialog_select_video_source">Seleccionar Fuente de Vídeo</string>
+    <string name="video_source_back_camera">Cámara Trasera</string>
+    <string name="video_source_front_camera">Cámara Frontal</string>
+    <string name="video_source_screen">Pantalla</string>
+    <string name="progress_initialization">Inicialización…</string>
+    <string name="progress_checking_sensors">Comprobando Sensores</string>
+    <string name="label_me">Yo</string>
+    <string name="label_no_data">Sin Datos</string>
+    <string name="label_unknown">Desconocido</string>
+    <string name="panic_3dr_disconnected">Servicio 3DR Desconectado</string>
+    <string name="panic_3dr_connected">Servicio 3DR Conectado</string>
+    <string name="panic_3dr_connection_closed">Conexión del Servicio 3DR cerrada.</string>
+    <string name="panic_3dr_connect_failed">Error al conectar con el Servicio 3DR.</string>
+    <string name="panic_drone_disconnected">Dron Desconectado</string>
+    <string name="panic_bluetooth_lost">Conexión Bluetooth perdida</string>
+
+    <!-- MAVLink command result descriptions -->
+    <string name="mav_result_succeeded">conseguido</string>
+    <string name="mav_result_temporarily_rejected">El comando es válido, pero no se puede ejecutar en este momento. Se utiliza para indicar un problema que se solucionará simplemente esperando (p. ej. una máquina de estados está ocupada, no se puede armar porque no se ha obtenido el fix GPS, etc.). Reintentarlo más tarde debería funcionar.</string>
+    <string name="mav_result_denied">El comando no es válido (es compatible pero tiene parámetros no válidos). Reintentar el mismo comando y parámetros no funcionará.</string>
+    <string name="mav_result_unsupported">El comando no es compatible (desconocido).</string>
+    <string name="mav_result_failed">El comando es válido, pero su ejecución ha fallado. Se utiliza para indicar cualquier problema no temporal o inesperado, es decir, cualquier problema que deba solucionarse antes de que el comando pueda tener éxito o reintentarse. Por ejemplo, intentar escribir un archivo sin memoria disponible, intentar armar cuando los sensores no están calibrados, etc.</string>
+    <string name="mav_result_in_progress">El comando es válido y se está ejecutando. Esto irá seguido de más actualizaciones de progreso, es decir, el componente puede enviar más mensajes COMMAND_ACK con el resultado MAV_RESULT_IN_PROGRESS (a una tasa decidida por la implementación), y debe terminar enviando un mensaje COMMAND_ACK con el resultado final de la operación. El campo COMMAND_ACK.progress se puede usar para indicar el progreso de la operación. No es necesario que el remitente reintente el comando, pero si lo hace durante la ejecución, el componente devolverá MAV_RESULT_IN_PROGRESS con un progreso actualizado.</string>
+    <string name="mav_result_command_long_only">El comando solo se acepta cuando se envía como un COMMAND_LONG.</string>
+    <string name="mav_result_command_int_only">El comando solo se acepta cuando se envía como un COMMAND_INT.</string>
+    <string name="mav_result_unknown">Desconocido</string>
+
+    <!-- Language picker -->
+    <string name="dialog_select_language">Seleccionar Idioma</string>
+    <string name="lang_system_default">Predeterminado del Sistema</string>
+    <string name="lang_english">English</string>
+    <string name="lang_arabic">العربية</string>
+    <string name="lang_spanish">Español</string>
+    <string name="lang_russian">Русский</string>
+
+</resources>

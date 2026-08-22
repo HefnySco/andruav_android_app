@@ -39,6 +39,7 @@
     <string name="home_menu_settings">Settings</string>
     <string name="home_menu_export_logs">Export Error Logs</string>
     <string name="home_menu_clear_logs">Delete Error Logs</string>
+    <string name="home_menu_language">Language</string>
 
     <string name="home_fcb_sheet_title">TELEMETRY HUB · FCB CONNECTION</string>
     <string name="home_fcb_bluetooth">Bluetooth</string>
@@ -58,5 +59,53 @@
     <string name="home_fcb_port_label">Port</string>
     <string name="home_fcb_udp_port_label">Port</string>
     <string name="home_fcb_udp_helper">Listens for broadcast telemetry on the local network.</string>
+
+    <!-- i18n: extracted hardcoded strings -->
+    <string name="toast_ping_time">Ping time %1$s ms</string>
+    <string name="toast_msg_duration">msg duration: %1$sms</string>
+    <string name="toast_logs_exported_to">Error logs exported to %1$s</string>
+    <string name="toast_no_logs_to_export">No error logs to export</string>
+    <string name="toast_logger_unavailable">%1$s: logger unavailable</string>
+    <string name="toast_logs_deleted">Error logs deleted</string>
+    <string name="toast_logs_delete_failed">Failed to delete error logs</string>
+    <string name="toast_usb_attached">USB Attached</string>
+    <string name="toast_usb_detached">USB Detached</string>
+    <string name="toast_auto_connect_fcb">Trying to Auto Connect to FCB</string>
+    <string name="toast_ignore_connection">IGNORE For %1$s</string>
+    <string name="dialog_delete_all_logs">Delete all error logs?</string>
+    <string name="dialog_select_video_source">Select Video Source</string>
+    <string name="video_source_back_camera">Back Camera</string>
+    <string name="video_source_front_camera">Front Camera</string>
+    <string name="video_source_screen">Screen</string>
+    <string name="progress_initialization">Initialization…</string>
+    <string name="progress_checking_sensors">Checking Sensors</string>
+    <string name="label_me">Me</string>
+    <string name="label_no_data">No Data</string>
+    <string name="label_unknown">Unknown</string>
+    <string name="panic_3dr_disconnected">3DR Service Disconnected</string>
+    <string name="panic_3dr_connected">3DR Service Connected</string>
+    <string name="panic_3dr_connection_closed">3DR Service Connection closed.</string>
+    <string name="panic_3dr_connect_failed">Failed to connect to 3DR Service.</string>
+    <string name="panic_drone_disconnected">Drone Disconnected</string>
+    <string name="panic_bluetooth_lost">Bluetooth connection lost</string>
+
+    <!-- MAVLink command result descriptions -->
+    <string name="mav_result_succeeded">succeeded</string>
+    <string name="mav_result_temporarily_rejected">Command is valid, but cannot be executed at this time. This is used to indicate a problem that should be fixed just by waiting (e.g. a state machine is busy, can\'t arm because have not got GPS lock, etc.). Retrying later should work.</string>
+    <string name="mav_result_denied">Command is invalid (is supported but has invalid parameters). Retrying same command and parameters will not work.</string>
+    <string name="mav_result_unsupported">Command is not supported (unknown).</string>
+    <string name="mav_result_failed">Command is valid, but execution has failed. This is used to indicate any non-temporary or unexpected problem, i.e. any problem that must be fixed before the command can succeed/be retried. For example, attempting to write a file when out of memory, attempting to arm when sensors are not calibrated, etc.</string>
+    <string name="mav_result_in_progress">Command is valid and is being executed. This will be followed by further progress updates, i.e. the component may send further COMMAND_ACK messages with result MAV_RESULT_IN_PROGRESS (at a rate decided by the implementation), and must terminate by sending a COMMAND_ACK message with final result of the operation. The COMMAND_ACK.progress field can be used to indicate the progress of the operation. There is no need for the sender to retry the command, but if done during execution, the component will return MAV_RESULT_IN_PROGRESS with an updated progress.</string>
+    <string name="mav_result_command_long_only">Command is only accepted when sent as a COMMAND_LONG.</string>
+    <string name="mav_result_command_int_only">Command is only accepted when sent as a COMMAND_INT.</string>
+    <string name="mav_result_unknown">Unknown</string>
+
+    <!-- Language picker -->
+    <string name="dialog_select_language">Select Language</string>
+    <string name="lang_system_default">System Default</string>
+    <string name="lang_english">English</string>
+    <string name="lang_arabic">العربية</string>
+    <string name="lang_spanish">Español</string>
+    <string name="lang_russian">Русский</string>
 
 </resources>

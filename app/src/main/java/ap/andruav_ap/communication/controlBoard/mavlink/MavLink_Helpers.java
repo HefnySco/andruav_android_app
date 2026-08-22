@@ -2,9 +2,12 @@ package ap.andruav_ap.communication.controlBoard.mavlink;
 
 import com.MAVLink.enums.MAV_RESULT;
 import com.MAVLink.enums.MAV_TYPE;
+import com.andruav.AndruavEngine;
 import com.andruav.controlBoard.shared.common.FlightMode;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
+
+import ap.andruav_ap.R;
 
 /**
  * Created by mhefny on 8/29/16.
@@ -729,38 +732,38 @@ public class MavLink_Helpers {
         String err;
         switch (result) {
             case MAV_RESULT.MAV_RESULT_ACCEPTED:
-                err = "succeeded";
+                err = AndruavEngine.AppContext.getString(R.string.mav_result_succeeded);
                 break;
 
             case MAV_RESULT.MAV_RESULT_TEMPORARILY_REJECTED:
-                err = "Command is valid, but cannot be executed at this time. This is used to indicate a problem that should be fixed just by waiting (e.g. a state machine is busy, can't arm because have not got GPS lock, etc.). Retrying later should work.";
+                err = AndruavEngine.AppContext.getString(R.string.mav_result_temporarily_rejected);
                 break;
 
             case MAV_RESULT.MAV_RESULT_DENIED:
-                err = "Command is invalid (is supported but has invalid parameters). Retrying same command and parameters will not work.";
+                err = AndruavEngine.AppContext.getString(R.string.mav_result_denied);
                 break;
 
             case MAV_RESULT.MAV_RESULT_UNSUPPORTED:
-                err = "Command is not supported (unknown).";
+                err = AndruavEngine.AppContext.getString(R.string.mav_result_unsupported);
                 break;
 
             case MAV_RESULT.MAV_RESULT_FAILED:
-                err = "Command is valid, but execution has failed. This is used to indicate any non-temporary or unexpected problem, i.e. any problem that must be fixed before the command can succeed/be retried. For example, attempting to write a file when out of memory, attempting to arm when sensors are not calibrated, etc.";
+                err = AndruavEngine.AppContext.getString(R.string.mav_result_failed);
                 break;
 
             case MAV_RESULT.MAV_RESULT_IN_PROGRESS:
-                err = "Command is valid and is being executed. This will be followed by further progress updates, i.e. the component may send further COMMAND_ACK messages with result MAV_RESULT_IN_PROGRESS (at a rate decided by the implementation), and must terminate by sending a COMMAND_ACK message with final result of the operation. The COMMAND_ACK.progress field can be used to indicate the progress of the operation. There is no need for the sender to retry the command, but if done during execution, the component will return MAV_RESULT_IN_PROGRESS with an updated progress.";
+                err = AndruavEngine.AppContext.getString(R.string.mav_result_in_progress);
                 break;
 
             case MAV_RESULT.MAV_RESULT_COMMAND_LONG_ONLY:
-                err = "Command is only accepted when sent as a COMMAND_LONG.";
+                err = AndruavEngine.AppContext.getString(R.string.mav_result_command_long_only);
                 break;
 
             case MAV_RESULT.MAV_RESULT_COMMAND_INT_ONLY:
-                err = "Command is only accepted when sent as a COMMAND_INT.";
+                err = AndruavEngine.AppContext.getString(R.string.mav_result_command_int_only);
                 break;
             default:
-                err = "Unknown";
+                err = AndruavEngine.AppContext.getString(R.string.mav_result_unknown);
                 break;
         }
 

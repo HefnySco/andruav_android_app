@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="andruav_no_fcb">FCB недоступен.</string>
+    <string name="andruav_noti_disconnect"> Отключено ! </string>
+    <string name="andruav_noti_connect"> Подключено </string>
+    <string name="andruav_noti_reconnect"> Переподключено </string>
+
+
+    <!-- Notification errors -->
+    <string name="andruav_error_camertakeimage">"Невозможно сделать или сохранить изображения.</string>
+    <string name="andruav_error_cameraopen">Невозможно ЗАПУСТИТЬ камеру.</string>
+    <string name="andruav_error_nocamera">Камера не найдена на этом устройстве.</string>
+    <string name="andruav_error_usberror">USB-телеметрия дрона отключена</string>
+    <string name="andruav_error_dronekitconnection">Телеметрия дрона отключена</string>
+    <string name="andruav_error_lowbattery">Низкий заряд батареи</string>
+    <string name="andruav_error_dronekitconnection_res">Телеметрия дрона восстановлена</string>
+    <string name="andruav_error_bluetootherror">Bluetooth-телеметрия дрона отключена</string>
+    <string name="andruav_error_telemetryprotocol_undef">Невозможно определить протокол телеметрии.</string>
+    <string name="udp_proxy_en">UDP-телеметрия включена</string>
+    <string name="udp_proxy_dis">UDP-телеметрия отключена</string>
+    <string name="andruav_error_autopilot_cannot_do">Команда не поддерживается</string>
+    <string name="andruav_error_autopilot_cannot_do_arm">Дрон не может выполнить ARM</string>
+    <string name="andruav_error_autopilot_cannot_do_disarm">Дрон не может выполнить DISARM</string>
+    <string name="andruav_error_autopilot_cannot_do_triggercamera">Дрон не может сделать снимок</string>
+    <string name="andruav_error_autopilot_cannot_do_gimbal">Дрон не может управлять gimbal</string>
+    <string name="andruav_error_autopilot_cannot_do_mission">Дрон не может выполнить действия миссии</string>
+    <string name="andruav_error_autopilot_cannot_do_mission_write">Дрон не может записать миссию</string>
+    <string name="andruav_error_autopilot_cannot_do_land">Дрон не может выполнить посадку</string>
+    <string name="andruav_error_autopilot_cannot_do_surface">Дрон не может выполнить всплытие</string>
+    <string name="andruav_error_autopilot_cannot_do_yaw">Дрон не может изменить yaw</string>
+    <string name="andruav_error_autopilot_cannot_do_servo">Команда сервопривода не удалась.</string>
+    <string name="andruav_error_autopilot_cannot_do_followme">Дрон не может выполнять «следуй за мной»</string>
+    <string name="andruav_error_autopilot_cannot_do_takeoff">Дрон не может выполнить взлёт</string>
+    <string name="andruav_error_autopilot_cannot_do_loiter">Дрон не может выполнить Loiter</string>
+    <string name="andruav_error_autopilot_cannot_do_rtl">Дрон не может выполнить RTL</string>
+    <string name="andruav_error_autopilot_cannot_do_smart_rtl">Дрон не может выполнить Smart RTL</string>
+    <string name="andruav_error_autopilot_cannot_do_guided">Дрон не может перейти в режим Guided</string>
+    <string name="andruav_error_autopilot_cannot_do_manual">Дрон не может перейти в режим Manual</string>
+    <string name="andruav_error_autopilot_cannot_do_acro">Дрон не может перейти в режим Acro</string>
+    <string name="andruav_error_autopilot_cannot_do_circle">Режим Circle не поддерживается</string>
+
+    <string name="andruav_error_autopilot_cannot_do_pos_hold">Дрон не может выполнить удержание позиции</string>
+    <string name="andruav_error_autopilot_cannot_do_alt_hold">Дрон не может выполнить ALT_HOLD</string>
+    <string name="andruav_error_autopilot_cannot_do_auto">Дрон не может выполнить Auto</string>
+    <string name="andruav_error_autopilot_cannot_do_fbwa">Дрон не может выполнить Fly By Wire</string>
+    <string name="andruav_error_autopilot_cannot_do_cruise">Дрон не может выполнить Cruise</string>
+    <string name="andruav_error_autopilot_cannot_do_brake">Дрон не может выполнить Brake</string>
+    <string name="andruav_error_autopilot_cannot_do_hold">Дрон не может выполнить Hold</string>
+
+
+
+    <string name="andruav_error_geofence_safe">Геозабор в норме</string>
+    <string name="andruav_error_geofence_unsafe">Нарушение геозабора</string>
+
+    <string name="andruav_error_permission_denied">В разрешении отказано: функция %1$s отключена.</string>
+
+    <string name="gen_rc_releazed">RC освобождён. Вы можете использовать TX для управления</string>
+    <string name="gen_rc_freezed">RC заморожен. Управление TX недоступно.</string>
+    <string name="gen_rc_centered">RC отцентрован. Управление недоступно.</string>
+    <string name="gen_rc_joystick">RC управляется джойстиком GCS</string>
+
+
+    <string name="andruav_module_added">Модуль Andruav добавлен</string>
+
+    <!-- i18n: PanicFacade notification levels -->
+    <string name="err_level_error">Ошибка</string>
+    <string name="err_level_warning">Предупреждение</string>
+    <string name="err_level_message">Сообщение</string>
+
+    <!-- i18n: GPS mode change notifications -->
+    <string name="gps_mode_auto">Режим GPS — Auto</string>
+    <string name="gps_mode_mobile">Режим GPS — только мобильный</string>
+    <string name="gps_mode_fcb">Режим GPS — только FCB</string>
+
+</resources>

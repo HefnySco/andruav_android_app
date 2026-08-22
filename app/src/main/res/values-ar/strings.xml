@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="main_activity_header_title">ANDRUAV_AP</string>
+    <string name="main_activity_tagline">محطة تحكم أرضية</string>
+
+    <!-- Home screen redesign -->
+    <string name="home_server_title">خادم المهام</string>
+    <string name="home_server_status_connected">متصل</string>
+    <string name="home_server_status_disconnected">غير متصل</string>
+    <string name="home_btn_connect">اتصال</string>
+    <string name="home_btn_disconnect">قطع الاتصال</string>
+    <string name="home_btn_signin">تسجيل الدخول</string>
+
+    <string name="home_telemetry_title">قياسات الطيران</string>
+    <string name="home_telemetry_linked">مرتبط</string>
+    <string name="home_telemetry_not_linked">غير مرتبط</string>
+    <string name="home_telemetry_helper">اربط وحدة التحكم بالطيران عبر وحدة FCB أدناه لعرض GPS والبطارية والإشارة.</string>
+    <string name="home_telemetry_subtitle_format">%1$s · عبر %2$s</string>
+    <string name="home_stat_gps">إصلاح GPS</string>
+    <string name="home_stat_battery">البطارية</string>
+    <string name="home_stat_signal">الإشارة</string>
+    <string name="home_sats_format">%1$d أقمار</string>
+    <string name="home_battery_format">%1$d%%</string>
+    <string name="home_signal_format">%1$d dBm</string>
+    <string name="home_value_placeholder">–</string>
+
+    <string name="home_modules_title">الوحدات</string>
+    <string name="home_tile_imu">IMU</string>
+    <string name="home_tile_fpv">FPV</string>
+    <string name="home_tile_com">اتصال</string>
+    <string name="home_tile_fcb">FCB</string>
+    <string name="home_tile_state_ready">جاهز</string>
+    <string name="home_tile_state_live">مباشر</string>
+    <string name="home_tile_state_offline">غير متصل</string>
+    <string name="home_tile_state_linked">مرتبط</string>
+    <string name="home_tile_state_tap_to_link">انقر للربط</string>
+
+    <string name="home_menu_settings">الإعدادات</string>
+    <string name="home_menu_export_logs">تصدير سجلات الأخطاء</string>
+    <string name="home_menu_language">اللغة</string>
+    <string name="home_menu_clear_logs">حذف سجلات الأخطاء</string>
+
+    <string name="home_fcb_sheet_title">مركز القياسات · اتصال FCB</string>
+    <string name="home_fcb_bluetooth">بلوتوث</string>
+    <string name="home_fcb_usb">USB</string>
+    <string name="home_fcb_wifi">Wi-Fi / TCP-IP</string>
+    <string name="home_fcb_udp">بث UDP</string>
+    <string name="home_fcb_bt_on">تشغيل</string>
+    <string name="home_fcb_bt_off">إيقاف</string>
+    <string name="home_fcb_bt_scan">بحث</string>
+    <string name="home_fcb_bt_scanning">جاري البحث…</string>
+    <string name="home_fcb_bt_no_devices">لا توجد أجهزة مقترنة أو مكتشفة بعد</string>
+    <string name="home_fcb_baud_rate_label">معدل البود</string>
+    <string name="home_fcb_usb_supported">وضع مضيف USB مدعوم على هذا الجهاز.</string>
+    <string name="home_fcb_usb_unsupported">هذا الجهاز لا يدعم وضع مضيف USB.</string>
+    <string name="home_fcb_hub_ip_label">IP المركز</string>
+    <string name="home_fcb_local_ip_label">IP المحلي</string>
+    <string name="home_fcb_port_label">المنفذ</string>
+    <string name="home_fcb_udp_port_label">المنفذ</string>
+    <string name="home_fcb_udp_helper">يستقبل قياسات الطيران المُبثة على الشبكة المحلية.</string>
+
+    <!-- i18n: extracted hardcoded strings -->
+    <string name="toast_ping_time">زمن الاستجابة %1$s مللي ثانية</string>
+    <string name="toast_msg_duration">مدة الرسالة: %1$s مللي ثانية</string>
+    <string name="toast_logs_exported_to">تم تصدير سجلات الأخطاء إلى %1$s</string>
+    <string name="toast_no_logs_to_export">لا توجد سجلات أخطاء للتصدير</string>
+    <string name="toast_logger_unavailable">%1$s: المسجل غير متاح</string>
+    <string name="toast_logs_deleted">تم حذف سجلات الأخطاء</string>
+    <string name="toast_logs_delete_failed">فشل حذف سجلات الأخطاء</string>
+    <string name="toast_usb_attached">تم توصيل USB</string>
+    <string name="toast_usb_detached">تم فصل USB</string>
+    <string name="toast_auto_connect_fcb">محاولة الاتصال التلقائي بـ FCB</string>
+    <string name="toast_ignore_connection">تجاهل لمدة %1$s</string>
+    <string name="dialog_delete_all_logs">حذف جميع سجلات الأخطاء؟</string>
+    <string name="dialog_select_video_source">اختر مصدر الفيديو</string>
+    <string name="video_source_back_camera">الكاميرا الخلفية</string>
+    <string name="video_source_front_camera">الكاميرا الأمامية</string>
+    <string name="video_source_screen">الشاشة</string>
+    <string name="progress_initialization">جاري التهيئة…</string>
+    <string name="progress_checking_sensors">فحص المستشعرات</string>
+    <string name="label_me">أنا</string>
+    <string name="label_no_data">لا توجد بيانات</string>
+    <string name="label_unknown">غير معروف</string>
+    <string name="panic_3dr_disconnected">تم قطع اتصال خدمة 3DR</string>
+    <string name="panic_3dr_connected">تم اتصال خدمة 3DR</string>
+    <string name="panic_3dr_connection_closed">تم إغلاق اتصال خدمة 3DR.</string>
+    <string name="panic_3dr_connect_failed">فشل الاتصال بخدمة 3DR.</string>
+    <string name="panic_drone_disconnected">تم قطع اتصال الطائرة</string>
+    <string name="panic_bluetooth_lost">فقد اتصال البلوتوث</string>
+
+    <!-- MAVLink command result descriptions -->
+    <string name="mav_result_succeeded">نجح</string>
+    <string name="mav_result_temporarily_rejected">الأمر صالح، لكن لا يمكن تنفيذه في هذا الوقت. يُستخدم هذا للإشارة إلى مشكلة يجب حلها بالانتظار فقط (مثلاً آلة الحالة مشغولة، لا يمكن التسليح لعدم الحصول على قفل GPS، إلخ). إعادة المحاولة لاحقاً يجب أن تنجح.</string>
+    <string name="mav_result_denied">الأمر غير صالح (مدعوم لكن له معاملات غير صالحة). إعادة محاولة نفس الأمر والمعاملات لن تنجح.</string>
+    <string name="mav_result_unsupported">الأمر غير مدعوم (غير معروف).</string>
+    <string name="mav_result_failed">الأمر صالح، لكن فشل التنفيذ. يُستخدم هذا للإشارة إلى أي مشكلة غير مؤقتة أو غير متوقعة، أي أي مشكلة يجب حلها قبل أن ينجح الأمر أو يمكن إعادة محاولته. على سبيل المثال، محاولة كتابة ملف عند نفاد الذاكرة، محاولة التسليح عندما المستشعرات غير معايرة، إلخ.</string>
+    <string name="mav_result_in_progress">الأمر صالح ويتم تنفيذه. سيتبعه المزيد من تحديثات التقدم، أي قد يرسل المكون المزيد من رسائل COMMAND_ACK بنتيجة MAV_RESULT_IN_PROGRESS (بمعدل يحدده التنفيذ)، ويجب أن ينتهي بإرسال رسالة COMMAND_ACK بالنتيجة النهائية للعملية. يمكن استخدام حقل COMMAND_ACK.progress للإشارة إلى تقدم العملية. لا حاجة للمرسل لإعادة محاولة الأمر، لكن إذا تم ذلك أثناء التنفيذ، سيعيد المكون MAV_RESULT_IN_PROGRESS مع تقدم محدّث.</string>
+    <string name="mav_result_command_long_only">يُقبل الأمر فقط عند إرساله كـ COMMAND_LONG.</string>
+    <string name="mav_result_command_int_only">يُقبل الأمر فقط عند إرساله كـ COMMAND_INT.</string>
+    <string name="mav_result_unknown">غير معروف</string>
+
+    <!-- Language picker -->
+    <string name="dialog_select_language">اختر اللغة</string>
+    <string name="lang_system_default">الافتراضي للنظام</string>
+    <string name="lang_english">English</string>
+    <string name="lang_arabic">العربية</string>
+    <string name="lang_spanish">Español</string>
+    <string name="lang_russian">Русский</string>
+
+</resources>

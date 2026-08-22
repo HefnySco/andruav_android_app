@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import ap.andruav_ap.App;
+import ap.andruav_ap.R;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 import ap.andruavmiddlelibrary.preference.Preference;
 
@@ -26,10 +27,10 @@ public class USB_Receiver  extends BroadcastReceiver {
                 //startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 //App.getAppContext().startActivity(startIntent);
                 TelemetryModeer.connectToPreferredConnection(App.getAppContext(),false);
-                Toast.makeText(App.getAppContext(), "USB Attached",Toast.LENGTH_LONG).show();
+                Toast.makeText(App.getAppContext(), App.getAppContext().getString(R.string.toast_usb_attached), Toast.LENGTH_LONG).show();
             }
             if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-                Toast.makeText(App.getAppContext(),"Usb Detached",Toast.LENGTH_LONG).show();
+                Toast.makeText(App.getAppContext(), App.getAppContext().getString(R.string.toast_usb_detached), Toast.LENGTH_LONG).show();
 
             }
 

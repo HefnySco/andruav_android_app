@@ -565,7 +565,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
         AndruavSettings.andruavWe7daBase.setTelemetry_protocol(TelemetryProtocol.TelemetryProtocol_No_Telemetry);
 
-        PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_3DR, "Drone Disconnected", null);
+        PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_3DR, App.getAppContext().getString(R.string.panic_drone_disconnected), null);
 
 
         TelemetryModeer.setConnected(TelemetryModeer.CURRENTCONNECTION_NON);
@@ -945,13 +945,13 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
     public void onTowerDisconnected() {
         if (disCOnnectOnPurpose)
         {
-            PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_3DR, "3DR Service Connection closed.", null);
+            PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_3DR, App.getAppContext().getString(R.string.panic_3dr_connection_closed), null);
             Toast.makeText(App.getAppContext(),
-                    "3DR Service Connection closed.", Toast.LENGTH_LONG).show();
+                    App.getAppContext().getString(R.string.panic_3dr_connection_closed), Toast.LENGTH_LONG).show();
         }
         else
         {
-            PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_3DR, "Failed to connect to 3DR Service.", null);
+            PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_3DR, App.getAppContext().getString(R.string.panic_3dr_connect_failed), null);
         }
 
 

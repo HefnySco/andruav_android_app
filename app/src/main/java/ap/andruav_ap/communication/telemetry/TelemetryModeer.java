@@ -13,6 +13,7 @@ import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 import ap.andruav_ap.guiEvent.GUIEvent_UpdateConnection;
 import ap.andruav_ap.activities.fcb.drone.FCB_AndruavShashaL2;
 import ap.andruav_ap.App;
+import ap.andruav_ap.R;
 import ap.andruav_ap.communication.telemetry.DroneKit.DroneKitServer;
 import ap.andruavmiddlelibrary.preference.Preference;
 
@@ -50,7 +51,7 @@ public class TelemetryModeer {
                 {
 
                     case CURRENTCONNECTION_3DR:
-                        PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_3DR, "3DR Service Disconnected ", null);
+                        PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_3DR, App.getAppContext().getString(R.string.panic_3dr_disconnected), null);
 
                         break;
 
@@ -59,7 +60,7 @@ public class TelemetryModeer {
                 break;
 
             case CURRENTCONNECTION_3DR:
-                PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_NORMAL, AndruavMessage_Error.ERROR_3DR, "3DR Service Connected", null);
+                PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_NORMAL, AndruavMessage_Error.ERROR_3DR, App.getAppContext().getString(R.string.panic_3dr_connected), null);
 
                 break;
 
@@ -91,13 +92,13 @@ public class TelemetryModeer {
                 && (TelemetryModeer.getConnectionInfo() == TelemetryModeer.CURRENTCONNECTION_NON)  // No current FCB connection
                 )
         {
-            Toast.makeText(App.context, "Trying to Auto Connect to FCB", Toast.LENGTH_SHORT).show();
+            Toast.makeText(App.context, App.getAppContext().getString(R.string.toast_auto_connect_fcb), Toast.LENGTH_SHORT).show();
             calledOnce = true;
             TelemetryModeer.connectToPreferredConnection(App.context,true);
         }
         else
         {
-            String str = "IGNORE For " + TelemetryModeer.getConnectionInfo();
+            String str = App.getAppContext().getString(R.string.toast_ignore_connection, TelemetryModeer.getConnectionInfo());
             Toast.makeText(App.context, str, Toast.LENGTH_LONG).show();
         }
     }

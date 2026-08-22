@@ -123,7 +123,7 @@ public class Adapter_BluetoothList extends BaseAdapter {
 
         if(data.size()<=0)
         {
-            holder.txtBTName.setText("No Data");
+            holder.txtBTName.setText(vi.getContext().getString(R.string.label_no_data));
 
         }
         else

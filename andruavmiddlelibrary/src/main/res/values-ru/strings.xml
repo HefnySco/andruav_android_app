@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Andruav_AP</string>
+
+    <string name="action_scan">Сканировать</string>
+
+
+    <!-- COLORS -->
+
+    <string name="str_TXT_BLUE">#75A4D3</string>
+    <string name="str_TXT_BLUE_DARKER">#75A4D3</string>
+    <string name="str_TXT_BLUE_DARKEST">#3671AB</string>
+    <string name="str_TXT_VIOLET">#7584D3</string>
+    <string name="str_TXT_GREEN">#75D375</string>
+    <!-- used brown as the key-->
+    <string name="str_TXT_GREEN_DARKER">#36AB36</string>
+    <string name="str_TXT_GREE_DARKESTN">#1D5E1D</string>
+    <string name="str_TXT_MAGENTA">#D375D3</string>
+    <string name="str_TXT_BROWN">#D3A475</string>
+    <string name="str_TXT_ERROR">#F75050</string>
+    <string name="str_TXT_WARNING">#D3D375</string>
+    <string name="str_TXT_GREY_DARK">#3E3E3E</string>
+    <string name="str_TXT_GREY">#AEAEAE</string>
+    <string name="str_TXT_GREYLIGHT">#DEDEDE</string>
+    <string name="str_TXT_WHITE">#FFFFFF</string>
+    <string name="str_TX_HANDLER">#f79090</string>
+    <string name="str_GOOGLEPLUS_RED">#dd4b39</string>
+
+    <string name="str_TXT_GREEN_HUD_LAND">#36AB36</string>
+    <string name="str_TXT_GREEN_HUD_SKY">#3671AB</string>
+
+
+    <!-- END OF COLORS -->
+
+    <string name="title_activity_my">RCStuff FPV</string>
+    <string name="hello_world">Запущено</string>
+    <string name="facebook_app_id">Запущено</string>
+    <string name="empty_content" translatable="false">--</string>
+    <string name="empty_void" translatable="false"> </string>
+    <!-- Preference & Factory Default Values -->
+    <string name="pref_description">модуль andruav</string>
+    <string name="pref_groupname">1</string>
+    <string name="pref_username">Andruav1</string>
+    <string name="pref_auth_URL">Cloud.Ardupilot.org</string>
+    <string name="pref_ws_URL">Andruav.com</string>
+    <string name="pref_gr_fcb">FCB и телеметрия</string>
+    <string name="pref_gr_recovery">Безопасность и восстановление</string>
+    <string name="pref_gr_recovery_fm_chk">Режим полёта при сбое</string>
+    <string name="pref_gr_recovery_fm_chk_summary">В случае потери интернет-соединения активировать RTL или Loiter через 60 секунд.</string>
+    <string name="pref_gr_recovery_flash_chk">Мигающий экран</string>
+    <string name="pref_gr_recovery_flash_chk_summary">менять цвет экрана на красный и синий для визуального поиска дрона.</string>
+    <string name="pref_gr_recovery_siren_chk">Сирена потери</string>
+    <string name="pref_gr_recovery_siren_chk_summary">воспроизводить сирену на высокой громкости для поиска потерянного дрона.</string>
+    <string name="pref_gr_sms_chk">Информация по SMS</string>
+    <string name="pref_gr_sms_chk_summary">Отправлять информацию по SMS в экстренных случаях.</string>
+    <string name="pref_gr_sms_rx_chk">Команды по SMS</string>
+    <string name="pref_gr_sms_rx_chk_summary">Разрешить выполнение команд, полученных по SMS.</string>
+    <string name="pref_gr_recovery_chk_rc_block">Включить блокировку RC</string>
+    <string name="pref_gr_recovery_chk_rc_block_summary">аппарат принимает блокирующую команду для отключения управления от всех GCS.</string>
+    <string name="pref_gr_recovery_edt_rcCh_blk_trigger">Канал TX блокировки RC</string>
+    <string name="pref_gr_recovery_edt_rcCh_blk_trigger_summary">Номер канала, активирующего блокировку GCS. Выберите значение от 1 до 18.</string>
+    <string name="pref_gr_recovery_edt_blk_battery_min">Мин. заряд батареи %</string>
+    <string name="pref_gr_recovery_edt_blk_battery_min_summary">Минимальный процент заряда бортовой или мобильной батареи для активации режима сбоя.</string>
+    <string name="pref_gr_recovery_edt_blk_trigger_min">Мин. PWM канала блокировки RC</string>
+    <string name="pref_gr_recovery_edt_blk_trigger_min_summary">Минимальный сигнал PWM для активации блокировки. Типичное значение — 1800, выше которого режим блокировки будет активен.</string>
+    <string name="pref_gr_sms_recovery_txt">SMS на номер:</string>
+    <string name="pref_feedback_support">Отзыв и поддержка</string>
+    <string name="pref_gr_help_web">Посетить www.cloud.ardupilot.org</string>
+    <string name="pref_gr_help_weburl">http://www.cloud.ardupilot.org</string>
+    <string name="pref_gr_general_settings">Основные настройки</string>
+    <string name="pref_gr_advanced_settings">Дополнительные настройки</string>
+    <string name="pref_gr_fpv_settings">Настройки FPV</string>
+    <string name="pref_gr_fpv_stunserver">STUN-сервер</string>
+    <string name="pref_gr_fpv_stunserver_summary">напр. stun:192.168.1.42:3478</string>
+    <string name="pref_gr_fpv_videoframerate">Частота кадров видео</string>
+    <string name="pref_gr_fpv_videoframerate_summary">(Режим дрона) частота кадров видео в минуту, по умолчанию 200</string>
+    <string name="pref_gr_fpv_videocameraselect">Передняя/задняя камера</string>
+    <string name="pref_gr_fpv_videocameraselect_summary">Выберите камеру для трансляции.</string>
+    <string name="pref_gr_fpv_videocamerarotation">Угол поворота видеокамеры</string>
+    <string name="pref_gr_fpv_videocamerarotation_summary">Поворот отображаемого видео на экране FPV.</string>
+    <string name="pref_gr_fpv_screenorientation">Ориентация экрана FPV</string>
+    <string name="pref_gr_fpv_screenorientation_summary">Экран FPV может быть портретным или ландшафтным.</string>
+    <string name="pref_gr_fpv_videoimagesize">Размер видеоизображения</string>
+    <string name="pref_gr_fpv_videoimagesize_summary">Примечание: сначала попробуйте низкое. Высокое может замедлить частоту видео.</string>
+    <string name="pref_gr_fpv_switch_cam_rc_enable">Включить переключение камеры RC</string>
+    <string name="pref_gr_fpv_switch_cam_rc_enable_summary">Включить переключение камеры с помощью канала RC</string>
+    <string name="pref_gr_fpv_switch_cam_rc_ch_num">Канал камеры RC.</string>
+    <string name="pref_gr_fpv_switch_cam_rc_ch_num_summary">Использовать канал RC для переключения между камерами.</string>
+    <string name="pref_gr_fpv_switch_cam_rc_ch_num_min">Мин. PWM камеры RC</string>
+    <string name="pref_gr_fpv_switch_cam_rc_ch_num_min_summary">Минимальный сигнал PWM для переключения на следующую камеру. Типичное значение — 1800.</string>
+    <string name="pref_gr_fpv_videocam_sendback">Отправлять и сохранять изображения</string>
+    <string name="pref_gr_fpv_videocam_sendback_summary">Отправлять изображения в GCS в реальном времени. Изображения всегда сохраняются в память телефона.</string>
+    <string name="pref_gr_fpv_streamres_back">Разрешение задней камеры</string>
+    <string name="pref_gr_fpv_streamres_back_summary">Разрешение трансляции при активной задней камере. Также используется для статичных изображений, захватываемых из живого потока.</string>
+    <string name="pref_gr_fpv_streamres_front">Разрешение передней камеры</string>
+    <string name="pref_gr_fpv_streamres_front_summary">Разрешение трансляции при активной передней камере. Также используется для статичных изображений, захватываемых из живого потока.</string>
+    <string name="pref_gr_fpv_screen_streaming">Разрешить трансляцию экрана</string>
+    <string name="pref_gr_fpv_screen_streaming_summary">Показывать выбор источника (задняя/передняя/экран) при открытии экрана FPV и объявлять три отдельных источника видео для web/GCS. При выключении работает как раньше: одна камера, автозапуск.</string>
+    <string name="pref_gr_fpv_imagecapturesize">Размер снимка</string>
+    <string name="pref_gr_fpv_imagecapturesize_summary">Примечание: должен быть больше или равен размеру видеоизображения.</string>
+    <string name="pref_gr_fpv_useInternalCamera">Использовать камеру для GCS</string>
+    <string name="pref_gr_fpv_useInternalCamera_summary">Разрешить GCS захватывать изображения и отслеживать их в KML-файле. Это однорежимное использование.</string>
+    <string name="pref_gr_fpv_useExternalCamera">Использовать внешний видеостример</string>
+    <string name="pref_gr_fpv_useExternalCamera_summary">Позволяет дрону отправлять видеопоток из другого приложения.</string>
+    <string name="pref_gr_fpv_useExternalRTCCamera">Включить расширенную трансляцию видео</string>
+    <string name="pref_gr_fpv_useExternalRTCCamera_summary">Значительно более плавное качество видео в локальной сети и через интернет.</string>
+    <string name="pref_gr_fpv_videocamemirrored">Зеркальное видеоизображение</string>
+    <string name="pref_gr_fpv_videocamemirrored_summary">Зеркальное отображение видео, захваченного дроном</string>
+    <string name="pref_gr_fpv_useUDPCamera">Использовать прямую связь по LAN</string>
+    <string name="pref_gr_fpv_useUDPCamera_summary">Ускорение видео и снижение интернет-трафика за счёт прямой отправки кадров видео в GCS в одной локальной сети</string>
+    <string name="pref_gr_adv_enableGroupName">Включить несколько групп</string>
+    <string name="pref_gr_adv_enableGroupName_summary">Разные группы не видят друг друга даже при одинаковом коде доступа</string>
+    <string name="pref_gr_fcb_enableSmartTelemetry">Умная телеметрия</string>
+    <string name="pref_gr_fcb_autostart">Автозапуск приложения</string>
+    <string name="pref_gr_fcb_autostart_summary">Запускать Andruav автоматически при перезапуске мобильного устройства. ТОЛЬКО РЕЖИМ ДРОНА</string>
+    <string name="pref_gr_fcb_autofcbconnect">Автоподключение FCB</string>
+    <string name="pref_gr_fcb_autofcbconnect_summary">Автоматически подключаться к плате FCB после запуска Andruav.</string>
+    <string name="pref_gr_fcb_ignore_mobsensors">Игнорировать мобильные датчики</string>
+    <string name="pref_gr_fcb_ignore_mobsensors_summary">Никогда не использовать IMU или GPS мобильного устройства, даже если FCB отключён.</string>
+    <string name="pref_gr_fcb_gps_injection">Инъекция GPS</string>
+    <string name="pref_gr_fcb_gps_injection_summary">Внедрять мобильный GPS в FCB.</string>
+    <string name="pref_gr_unitmetric">Единицы измерения</string>
+    <string name="pref_gr_unitmetric_summary">Использовать метрическую или имперскую систему</string>
+
+    <integer name="pref_auth_Port">19408</integer>
+    <integer name="pref_ws_Port">9210</integer>
+    <integer name="pref_hub_Port">5760</integer>
+    <!-- ACTIONS -->
+    <string name="action_waypoint_waypoints_received">Миссия получена</string>
+    <string name="action_waypoint_reached_charging">Достигнута точка </string>
+    <string name="action_waypoint_reached_going">движение к точке </string>
+    <string name="action_bat_charging">Зарядка</string>
+    <string name="action_select">Выбрать</string>
+    <string name="action_active">Активно</string>
+    <string name="action_go">Пуск</string>
+    <string name="action_none">Нет</string>
+    <string name="action_apply">применить</string>
+    <string name="action_share">поделиться</string>
+    <string name="action_map">карта</string>
+    <string name="action_mapedit">редактировать</string>
+    <string name="action_back">назад</string>
+    <string name="action_clear">очистить</string>
+    <string name="action_sos_sms">SMS</string>
+    <string name="action_sos_whistle">Свисток</string>
+    <string name="action_sos_flash">Вспышка</string>
+    <string name="action_fcbctrl_alt">выс. м</string>
+    <string name="action_fcbctrl_diameter">рад. м</string>
+    <string name="action_fcbctrl_arm">ARM</string>
+    <string name="action_fcbctrl_climb">Набор высоты</string>
+    <string name="action_fcbctrl_land">Посадка</string>
+    <string name="action_fcbctrl_track">Слежение</string>
+    <string name="action_fcbctrl_cruise">Круиз</string>
+    <string name="action_fcbctrl_fbwa">FBWA</string>
+    <string name="action_fcbctrl_manual">Ручной</string>
+    <string name="action_fcbctrl_auto">Авто</string>
+    <string name="action_fcbctrl_guided">Управляемый</string>
+    <string name="action_fcbctrl_loiter">Зависание</string>
+    <string name="action_fcbctrl_brake">Тормоз</string>
+    <string name="action_fcbctrl_hold">Удержание</string>
+    <string name="action_fcbctrl_rtl">RTL</string>
+    <string name="action_fcbctrl_smart_rtl">S-RTL</string>
+    <string name="action_fcbctrl_yaw">YAW</string>
+    <string name="action_fcbctrl_speed">НС</string>
+    <string name="action_cam_img_interval">Интервал съёмки</string>
+    <string name="action_cam_img_total">Всего снимков</string>
+    <string name="action_cam_swap">сменить</string>
+    <string name="action_screen_share">экран</string>
+    <string name="action_cam_shoot">снимок</string>
+    <string name="action_imu_zero">обнулить</string>
+    <string name="action_video_shoot">видео</string>
+    <string name="action_cam_rotate">поворот</string>
+    <string name="action_cam_localrec">лок. запись</string>
+    <string name="action_engaged">Задействовано</string>
+    <string name="action_disengaged">Отключено</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_settings_drone">Настройки как дрон</string>
+    <string name="action_reset">Сброс</string>
+    <string name="action_refresh">Обновить</string>
+    <string name="action_connect">Подключить</string>
+    <string name="action_dualband">Двойное подключение</string>
+    <string name="action_load">Загрузить</string>
+    <string name="action_done">Готово</string>
+    <string name="action_res_tel">Восстановление телеметрии</string>
+    <string name="action_saved">Сохранено</string>
+    <string name="action_save">Сохранить</string>
+    <string name="action_login">Вход</string>
+    <string name="action_signout">выйти</string>
+    <string name="action_regenerate">Перегенерировать</string>
+    <string name="action_calibrate">Калибровка</string>
+    <string name="action_zeroTilt">Нулевой наклон</string>
+    <string name="action_init">Инициализация…</string>
+    <string name="action_register">Регистрация</string>
+    <string name="action_savebeforeexit">Сохранить изменения?</string>
+    <string name="action_sysrestart">Система будет перезапущена.</string>
+    <string name="action_exit">Выход</string>
+    <string name="action_drone_added">Дрон добавлен</string>
+    <string name="action_record_video_start_local">Начать запись входящего видео</string>
+    <string name="action_record_video_stop_local">Остановить запись входящего видео</string>
+    <string name="action_gcs_added">Наземная станция добавлена</string>
+    <string name="action_find">Найти</string>
+    <string name="action_list">Список</string>
+    <string name="action_usb_permission">Необходимо одобрить разрешение USB и повторить</string>
+    <string name="action_fcb_mode">CTRL</string>
+    <string name="action_sos">SOS</string>
+    <string name="action_track">слежение</string>
+    <string name="action_video_mirror">зеркало</string>
+    <string name="action_video_err">Ошибка видео</string>
+    <string name="action_video_on">Видео включено</string>
+    <string name="action_video_off">Видео выключено</string>
+    <string name="action_video_con">Подключение к видео</string>
+    <string name="action_video_rx">Приём видео</string>
+    <string name="actionremote_settings">Настройки RC</string>
+    <string name="actionremote_engage">Задействовать пульт</string>
+    <!-- Email -->
+    <string name="email_title">"Отправьте ваш вопрос через"</string>
+    <string name="email_subject">Вопрос по Andruav</string>
+    <string name="email_subject2">Объяснение разрешений Andruav</string>
+    <string name="email_to">rcmobilestuff@gmail.com</string>
+    <string name="email_body">Описание:</string>
+    <string name="email_body2">Пожалуйста, объясните, зачем вам нужны эти конкретные [  ,   ,   ,    ] разрешения?</string>
+
+    <!-- Words & SENTENCES -->
+    <string name="gen_altitude">Высота</string>
+    <string name="gen_delay">Задержка</string>
+    <string name="gen_noagain">Больше не показывать</string>
+    <string name="gen_about">О приложении</string>
+    <string name="gen_CGS">CGS </string>
+
+
+    <string name="gen_GPS_auto">Авто GPS</string>
+    <string name="gen_GPS_mobile">Только мобильный</string>
+    <string name="gen_GPS_fcb">Только GPS FCB</string>
+    <string name="gen_GPS_auto_short">A-GPS</string>
+    <string name="gen_GPS_mobile_short">M-GPS</string>
+    <string name="gen_GPS_fcb_short">F-GPS</string>
+
+    <string name="gen_GPS_auto_desc">Выбирать доступный источник GPS с более высоким приоритетом для FCB.</string>
+    <string name="gen_GPS_mobile_desc">Используется только мобильный GPS; если на мобильном нет GPS, данных GPS не будет.</string>
+    <string name="gen_GPS_fcb_desc">Используются только данные GPS от FCB, если только нет платы FCB.</string>
+
+
+    <string name="gen_step1">Шаг 1: </string>
+    <string name="gen_step2">Шаг 2: </string>
+    <string name="gen_step3">Шаг 3: </string>
+    <string name="gen_step4">Шаг 4: </string>
+    <string name="gen_on">Вкл</string>
+    <string name="gen_off">Выкл</string>
+    <string name="gen_map">Карта</string>
+    <string name="gen_security">Безопасность</string>
+    <string name="gen_flightcontrolboard">FCB</string>
+    <string name="gen_statistics">Данные</string>
+    <string name="gen_must_exit">Для применения изменений необходимо перезапустить сейчас.</string>
+    <string name="gen_exit">Хотите выйти?</string>
+    <string name="gen_regenerate">Вы получите новый код доступа только по электронной почте, а текущий станет недействительным. Вам нужно скопировать и вставить новый код доступа во все другие устройства Andruav.</string>
+    <string name="gen_front">Спереди</string>
+    <string name="gen_left">Слева</string>
+    <string name="gen_down">Вниз</string>
+    <string name="gen_right">Справа</string>
+    <string name="gen_help">Попросить помощь</string>
+    <string name="gen_ws_registered">Имя зарегистрировано.</string>
+    <string name="gen_accesscodevalid">Код доступа проверен</string>
+    <string name="gen_error">Ошибка</string>
+    <string name="gen_warrning">Предупреждение</string>
+    <string name="gen_connection">Подключение</string>
+    <string name="gen_connected">Подключено</string>
+    <string name="gen_connectionlost">Соединение потеряно!</string>
+    <string name="gen_connectiondisconnected">Отключено</string>
+    <string name="gen_stop">Стоп</string>
+    <string name="gen_do_not_show_again">Больше не показывать.</string>
+    <string name="gen_retrying">Повторная попытка подключения</string>
+    <string name="gen_commserver">Связь</string>
+    <string name="gen_speak_droneactivated">Режим дрона активирован</string>
+    <string name="gen_speak_connecting">Подключение к серверу</string>
+    <string name="gen_FactoryReset">Сброс к заводским настройкам</string>
+    <string name="gen_hostfound">Хост найден</string>
+    <string name="gen_bluetooth_enabled">Bluetooth включён</string>
+    <string name="gen_bluetooth_disabled">Bluetooth отключён</string>
+    <string name="gen_udp_disabled">UDP отключён</string>
+    <string name="gen_bluetooth_connected">Bluetooth подключён</string>
+    <string name="gen_bluetooth_searching">Bluetooth подключён</string>
+    <string name="gen_bluetooth_disconnected">Поиск устройств</string>
+    <string name="gen_usb_connected">USB подключён</string>
+    <string name="gen_conn_disconnected">Отключено от платы</string>
+    <string name="gen_usb_disconnected">USB отключён</string>
+    <string name="gen_bluetooth_connecting">Подключение</string>
+    <string name="gen_bluetooth_disconnecting">Отключение</string>
+    <string name="gen_serialsocket_started">Сокет телеметрии запущен.</string>
+    <string name="gen_serialsocket_stopped">Сокет телеметрии остановлен.</string>
+    <string name="gen_serialsocket_no_wifi">Требуется доступ к Wi-Fi. Включите точку доступа, если используете 3G/4G-соединение.</string>
+    <string name="gen_serialsocket_client_connected">Сокет клиента подключён</string>
+    <string name="gen_serialsocket_client_disconnected">Сокет клиента отключён</string>
+    <string name="err_per_bad_mode">Разрешение кода доступа не допускает этот режим.</string>
+    <string name="err_old_app_version">Невозможно запустить старую версию Andruav. Пожалуйста, обновитесь.</string>
+    <string name="err_invalid_portnum">Недопустимый номер порта.</string>
+    <string name="err_config_drone">Невозможно использовать режим дрона andruav. Нет GPS или компаса</string>
+    <string name="err_security">Отсутствуют разрешения. Пожалуйста, предоставьте разрешения.</string>
+    <string name="gen_battery_optimization">Ограничения фоновых процессов</string>
+    <string name="err_battery_optimization">Andruav может быть закрыт системой во время работы в фоновом режиме, что остановит телеметрию и видео во время полёта. Разрешить работу в фоновом режиме без ограничений?</string>
+    <string name="err_no_wifi">Нет подключения Wi-Fi</string>
+    <string name="err_invalid_unitname">Недопустимое имя модуля</string>
+    <string name="err_nullValue">Пустое значение</string>
+    <string name="err_accountNotFound">Аккаунт не найден</string>
+    <string name="err_hostnotfound">Не удалось подключиться к серверу.\nПроверьте вашу регистрацию.</string>
+    <string name="err_ws_replicatedid">Выберите другое имя или группу, либо используйте опцию «Принудительное имя».</string>
+    <string name="err_ws_cmd_ping">Ошибка пинга!</string>
+    <string name="err_ws_encrypted_16">Длина ключа шифрования должна быть 16 символов</string>
+    <string name="err_server_unreachable">Нет доступа к серверу аутентификации Andruav.com</string>
+    <string name="err_no_internet">Нет доступа в интернет!</string>
+    <string name="err_no_internet_dji">Для активации библиотеки DJI требуется доступ в интернет.</string>
+    <string name="err_loginfailed">Ошибка входа</string>
+    <string name="err_no_bluetooth">Ваше устройство не поддерживает Bluetooth</string>
+    <string name="err_bluetooth_cannotconnect">Bluetooth не может подключиться к выбранному устройству</string>
+    <string name="err_serialsocket_no_remote_telemetry">Телеметрия дрона не выбрана</string>
+    <string name="err_webrtc_drone_compatibility">Вы включили расширенную трансляцию видео. Пожалуйста, подождите подключения к камере. В случае проблем используйте настройки для выбора обычной трансляции видео.</string>
+    <string name="err_webrtc_drone_notenabled">На дроне включена [расширенная трансляция видео], но эта опция отключена на данном GCS. \nВам нужно включить её для приёма видео с этого дрона.</string>
+    <string name="err_protocol_doesnt_suppport_telemetry">Для включения телеметрии дрону необходимо использовать нативное подключение</string>
+    <string name="err_remote_min_max">Максимум должен быть выше минимума</string>
+    <string name="err_remote_max_toohigh">Максимум не должен превышать 2000</string>
+    <string name="err_remote_min_toolow">Минимум не должен быть ниже 800</string>
+    <string name="err_remote_min_max_range">Диапазон минимума и максимума слишком мал</string>
+    <string name="err_remote_range_adjusted">Диапазон минимума и максимума был скорректирован для вас — проверьте значения, выделенные КРАСНЫМ, и сохраните снова.</string>
+    <string name="err_feature_multitouch">Мультитач не поддерживается</string>
+    <string name="err_ipcam_notinstalled">IP Webcam не установлен</string>
+    <string name="err_novideo_signal">НЕТ видео</string>
+    <string name="err_novideo_record_badversion">Невозможно записать видео — версия Android старее Jelly Bean</string>
+    <string name="err_3dr_mobileversion">Для подключения к службе 3DR требуется Android 4.0 или выше</string>
+    <string name="err_dji_mobileversion">Для подключения DJI требуется Android 4.2 или выше</string>
+    <string name="err_rtc_nostunserver">Не определён STUN-сервер для трансляции видео.</string>
+    <string name="conf_factoryReset">Вы уверены, что хотите сбросить все настройки?</string>
+    <string name="conf_Refresh">Вы уверены, что хотите восстановить значения по умолчанию?</string>
+    <string name="conf_engage_remote">Включение экранный пульт остановит ваш TX. Продолжить?</string>
+    <string name="separator">разделитель</string>
+    <!-- Menu Items [non actions] -->
+    <string name="mi_main_drone">Дрон</string>
+
+    <!-- Titles & Labels -->
+    <string name="imu_calibration">ВАЖНО\nПоложите мобильное устройство на ровную горизонтальную поверхность и нажмите OK.</string>
+    <string name="imu_tilt">Положите мобильное устройство в конечное положение в аппарате, затем нажмите «Наклон».</string>
+    <string name="websocket_Title">Подключение</string>
+    <string name="websocket_IP">IP сервера</string>
+    <string name="websocket_Port">Порт</string>
+    <string name="websocket_UserName">ID модуля</string>
+    <string name="websocket_GroupName">№ группы</string>
+    <string name="websocket_Description">Описание</string>
+    <string name="websocket_Encryptiom">Ключ шифрования</string>
+    <string name="websocket_CipherKey">Ключ шифра</string>
+    <string name="smartdlg_Title">Умная телеметрия</string>
+    <string name="smartdlg_Optimization">Уровень оптимизации</string>
+    <string name="camdlg_Title">Настройки камеры</string>
+    <string name="gpsdlg_Title">Источник GPS</string>
+    <string name="modedlg_Title">Режимы полёта</string>
+    <string name="mdlgsos_Title">SOS дрона</string>
+    <string name="droneflytopointdlg_Title">Полёт и слежение</string>
+
+
+    <string name="websocket_Ping">Пинг</string>
+    <string name="login_Title">Вход</string>
+    <string name="login_register_Title">Регистрация аккаунта</string>
+    <string name="login_email">Эл. почта</string>
+    <string name="login_login">Присоединиться</string>
+    <string name="hyper_subscribe">https://cloud.ardupilot.org:8001/accounts.html</string>
+    <string name="login_access_code">Код доступа</string>
+    <string name="login_first_section">Создать аккаунт</string>
+    <string name="login_action_accontexist">Аккаунт уже зарегистрирован.\r\nИспользуйте код доступа напрямую.\r\nНажмите OK, чтобы отправить код доступа на вашу электронную почту.</string>
+    <string name="login_second_section">Уже есть код доступа</string>
+    <string name="login_third_section">Сгенерировать новый код доступа</string>
+    <string name="login_action_chkemail">Проверьте почтовый ящик на наличие кода доступа.</string>
+    <string name="login_action_registered">Регистрация успешна</string>
+    <string name="login_action_joined">Подключение выполнено успешно</string>
+    <string name="login_action_badaccesscode">неверный код доступа</string>
+    <string name="login_action_unreachable">не удалось связаться с интернет-сервером</string>
+    <string name="main_action_hide">скрыть</string>
+    <string name="fcb_Title">HUB телеметрии</string>
+    <string name="fcb_Title_ServerSection">IP-сервер GCS</string>
+    <string name="fcb_Title_BlueToothSection">Настройки Bluetooth — USB</string>
+    <string name="fcb_IP">IP HUB</string>
+    <string name="fcb_Port">Порт</string>
+    <string name="fcb_usb">USB</string>
+
+    <!-- ACTIVITIES FCB Drone-->
+    <string name="fcbdrone_bt">Bluetooth</string>
+    <string name="fcbdrone_usb">USB</string>
+    <string name="fcbdrone_tcp">TCP</string>
+    <string name="fcbdrone_udp">UDP</string>
+    <string name="fcbdrone_3dr">Dronekit</string>
+    <string name="fcbdrone_dji">DJI</string>
+    <string name="fcbdrone_usbbaudrate">Скорость</string>
+
+    <!-- ACTIVITIES TITLE -->
+    <string name="title_activity_main">Andruav-AP</string>
+    <string name="title_activity_camera">Камера</string>
+    <string name="title_activity_fpv">Активность FPV</string>
+    <string name="title_activity_hubcommunication">Сервер связи</string>
+    <string name="title_activity_maps">Карта</string>
+    <string name="title_activity_imu">Активность IMU</string>
+    <string name="title_activity_login">Активность входа</string>
+    <string name="title_activity_data">Активность данных</string>
+    <string name="title_activity_fcb">Активность FCB</string>
+    <string name="title_activity_usb">Активность USB</string>
+    <string name="title_activity_remotecontrol">Пульт управления</string>
+
+    <!-- Especially for Andruav Message Error-->
+    <string name="andruav_error_connection_notsupported">Этот тип подключения не поддерживается.</string>
+    <string name="title_activity_remote_control">Пульт управления</string>
+    <string name="title_activity_remote_control_setting">Настройки RC</string>
+    <string name="title_activity_remote_control_setting_activity_tab">
+        Настройки RC
+    </string>
+
+    <!-- Telemetry Protocol Message -->
+    <string name="andruav_error_telemetryprotocol_multiwii">Обнаружена телеметрия Multiwii.</string>
+    <string name="andruav_error_telemetryprotocol_mavlink">Обнаружена телеметрия MAVLink.</string>
+
+
+    <string name="title_activity_remote_control_setting_activity_tab_section1">Настройки каналов</string>
+    <string name="title_activity_remote_control_setting_activity_tab_section2">Настройки слежения</string>
+    <string name="title_activity_remote_control_setting_activity_tab_section3">Тест</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Привет, пустой фрагмент</string>
+    <string name="gen_lang_arabic">عربى</string>
+    <string name="gen_lang_english">English</string>
+
+    <!-- SOS Activity -->
+    <string name="title_activity_data_activity_flash">DataActivityFragment</string>
+
+    <!-- Main Activity -->
+    <string name="main_activity_btn_FPV">FPV</string>
+    <string name="main_activity_btn_IMU">IMU</string>
+    <string name="main_activity_btn_COM">СВЯЗЬ</string>
+    <string name="main_activity_btn_MAP">КАРТА</string>
+    <string name="main_activity_btn_FCB">FCB</string>
+    <string name="main_activity_btn_DATA">Данные</string>
+    <!-- fix string hardcode start -->
+    <string name="main_activity_hint_access">код доступа</string>
+    <string name="main_activity_hint_telem">Телем:</string>
+    <!-- fix string hardcode end -->
+
+    <!--Remote Tracking -->
+    <string name="remote_tracking_fragement_X_Section">Горизонтальный PID</string>
+    <string name="remote_tracking_fragement_X_P">X - P</string>
+    <string name="remote_tracking_fragement_X_P_hint">значения от 0 - 100</string>
+    <string name="remote_tracking_fragement_X_I">X - I</string>
+    <string name="remote_tracking_fragement_X_I_hint">значения от 0 - 50</string>
+    <string name="remote_tracking_fragement_X_D">X - D</string>
+    <string name="remote_tracking_fragement_X_D_hint">значения от 0 - 10</string>
+
+    <string name="remote_tracking_fragement_Y_Section">Вертикальный PID</string>
+    <string name="remote_tracking_fragement_Y_P">Y - P</string>
+    <string name="remote_tracking_fragement_Y_P_hint">значения от 0 - 100</string>
+    <string name="remote_tracking_fragement_Y_I">Y - I</string>
+    <string name="remote_tracking_fragement_Y_I_hint">значения от 0 - 50</string>
+    <string name="remote_tracking_fragement_Y_D">Y - D</string>
+    <string name="remote_tracking_fragement_Y_D_hint">значения от 0 - 10</string>
+
+    <!--HUB Activity -->
+    <string name="hub_activity_usernameHint">название вашего аппарата или GCS</string>
+    <string name="hub_activity_groupnameHint">Общее имя для аппаратов и GCS</string>
+    <string name="hub_activity_briefHint">Подсказка</string>
+    <string name="hub_activity_server_title">AndruavServer</string>
+    <string name="hub_activity_server_hint">На устройстве Wi-Fi Android должно быть установлено и запущено приложение AndruavServer.</string>
+    <string name="hub_activity_vehicleType">Тип</string>
+
+    <string name="map_activity_buttonslider">FPV</string>
+    <string name="title_activity_social">SocialActivity</string>
+
+    <!--FirstLoginActivity-->
+    <string name="firstlogin_activity_btn_DRONE">Дрон</string>
+    <string name="title_activity_main_launcher">MainLauncherActivity</string>
+    <string name="title_activity_fcb__drone">Подключение FCB</string>
+
+    <!--MAPActivity-->
+    <string name="map_exit_withoutsave">Хотите выйти из редактора карты?</string>
+
+
+
+    <!-- Mission Fragments-->
+    <string name="mission_waypoint_title">Путевая точка</string>
+
+
+    <!--FCB Acvitiy -->
+    <string name="fcbdroneactivity_edtLocalIP">Wi-Fi IP этого устройства</string>
+    <string name="fcbdroneactivity_edtUDPPort">UDP-порт дрона</string>
+
+
+
+</resources>

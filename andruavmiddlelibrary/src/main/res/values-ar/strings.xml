@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Andruav_AP</string>
+
+    <string name="action_scan">بحث</string>
+
+
+    <!-- COLORS -->
+
+    <string name="str_TXT_BLUE">#75A4D3</string>
+    <string name="str_TXT_BLUE_DARKER">#75A4D3</string>
+    <string name="str_TXT_BLUE_DARKEST">#3671AB</string>
+    <string name="str_TXT_VIOLET">#7584D3</string>
+    <string name="str_TXT_GREEN">#75D375</string>
+    <!-- used brown as the key-->
+    <string name="str_TXT_GREEN_DARKER">#36AB36</string>
+    <string name="str_TXT_GREE_DARKESTN">#1D5E1D</string>
+    <string name="str_TXT_MAGENTA">#D375D3</string>
+    <string name="str_TXT_BROWN">#D3A475</string>
+    <string name="str_TXT_ERROR">#F75050</string>
+    <string name="str_TXT_WARNING">#D3D375</string>
+    <string name="str_TXT_GREY_DARK">#3E3E3E</string>
+    <string name="str_TXT_GREY">#AEAEAE</string>
+    <string name="str_TXT_GREYLIGHT">#DEDEDE</string>
+    <string name="str_TXT_WHITE">#FFFFFF</string>
+    <string name="str_TX_HANDLER">#f79090</string>
+    <string name="str_GOOGLEPLUS_RED">#dd4b39</string>
+
+    <string name="str_TXT_GREEN_HUD_LAND">#36AB36</string>
+    <string name="str_TXT_GREEN_HUD_SKY">#3671AB</string>
+
+
+    <!-- END OF COLORS -->
+
+    <string name="title_activity_my">RCStuff FPV</string>
+    <string name="hello_world">بدأ</string>
+    <string name="facebook_app_id">بدأ</string>
+    <string name="empty_content" translatable="false">--</string>
+    <string name="empty_void" translatable="false"> </string>
+    <!-- Preference & Factory Default Values -->
+    <string name="pref_description">وحدة Andruav</string>
+    <string name="pref_groupname">1</string>
+    <string name="pref_username">Andruav1</string>
+    <string name="pref_auth_URL">Cloud.Ardupilot.org</string>
+    <string name="pref_ws_URL">Andruav.com</string>
+    <string name="pref_gr_fcb">FCB والقياسات</string>
+    <string name="pref_gr_recovery">الأمان والاستعادة</string>
+    <string name="pref_gr_recovery_fm_chk">وضع الطيران للأمان</string>
+    <string name="pref_gr_recovery_fm_chk_summary">في حالة فقد اتصال الإنترنت، فعّل العودة للمنزل (RTL) أو التحويم (Loiter) بعد 60 ثانية.</string>
+    <string name="pref_gr_recovery_flash_chk">وميض الشاشة</string>
+    <string name="pref_gr_recovery_flash_chk_summary">تغيير لون الشاشة بين الأحمر والأزرق لتحديد موقع الطائرة بصرياً.</string>
+    <string name="pref_gr_recovery_siren_chk">صفير الفقد</string>
+    <string name="pref_gr_recovery_siren_chk_summary">تشغيل صفير بصوت عالٍ لتحديد موقع الطائرة عند الفقد.</string>
+    <string name="pref_gr_sms_chk">معلومات SMS</string>
+    <string name="pref_gr_sms_chk_summary">إرسال المعلومات عبر SMS في حالات الطوارئ.</string>
+    <string name="pref_gr_sms_rx_chk">أوامر SMS</string>
+    <string name="pref_gr_sms_rx_chk_summary">تفعيل تنفيذ الأوامر المستلمة عبر SMS.</string>
+    <string name="pref_gr_recovery_chk_rc_block">تفعيل حظر جهاز التحكم اللاسلكي</string>
+    <string name="pref_gr_recovery_chk_rc_block_summary">تقبل المركبة أمر الحظر لكتم جميع التحكم من محطات GCS.</string>
+    <string name="pref_gr_recovery_edt_rcCh_blk_trigger">قناة حظر جهاز الإرسال</string>
+    <string name="pref_gr_recovery_edt_rcCh_blk_trigger_summary">رقم القناة التي تُفعّل حظر GCS. اختر قيمة من 1 إلى 18.</string>
+    <string name="pref_gr_recovery_edt_blk_battery_min">الحد الأدنى للبطارية %</string>
+    <string name="pref_gr_recovery_edt_blk_battery_min_summary">الحد الأدنى لنسبة بطارية اللوحة أو الجوال لتفعيل الأمان.</string>
+    <string name="pref_gr_recovery_edt_blk_trigger_min">الحد الأدنى لـ PWM لقناة الحظر</string>
+    <string name="pref_gr_recovery_edt_blk_trigger_min_summary">الحد الأدنى لإشارة PWM لتفعيل الحظر. القيمة النموذجية هي 1800، فوقها يكون وضع الحظر نشطاً.</string>
+    <string name="pref_gr_sms_recovery_txt">SMS إلى رقم الجوال:</string>
+    <string name="pref_feedback_support">الملاحظات والدعم</string>
+    <string name="pref_gr_help_web">زيارة www.cloud.ardupilot.org</string>
+    <string name="pref_gr_help_weburl">http://www.cloud.ardupilot.org</string>
+    <string name="pref_gr_general_settings">إعدادات عامة</string>
+    <string name="pref_gr_advanced_settings">إعدادات متقدمة</string>
+    <string name="pref_gr_fpv_settings">إعدادات FPV</string>
+    <string name="pref_gr_fpv_stunserver">خادم STUN</string>
+    <string name="pref_gr_fpv_stunserver_summary">مثال: stun:192.168.1.42:3478</string>
+    <string name="pref_gr_fpv_videoframerate">معدل إطارات الفيديو</string>
+    <string name="pref_gr_fpv_videoframerate_summary">(وضع الطائرة) معدل إطارات الفيديو لكل دقيقة، الافتراضي 200</string>
+    <string name="pref_gr_fpv_videocameraselect">الكاميرا الأمامية/الخلفية</string>
+    <string name="pref_gr_fpv_videocameraselect_summary">اختر الكاميرا التي سيتم البث منها.</string>
+    <string name="pref_gr_fpv_videocamerarotation">زاوية دوران كاميرا الفيديو</string>
+    <string name="pref_gr_fpv_videocamerarotation_summary">تدوير الفيديو المعروض في شاشة FPV.</string>
+    <string name="pref_gr_fpv_screenorientation">اتجاه شاشة FPV</string>
+    <string name="pref_gr_fpv_screenorientation_summary">يمكن أن تكون شاشة FPV عمودية أو أفقية.</string>
+    <string name="pref_gr_fpv_videoimagesize">حجم صورة الفيديو</string>
+    <string name="pref_gr_fpv_videoimagesize_summary">ملاحظة: جرّب قيمة منخفضة أولاً. القيم الأعلى قد تُبطئ معدل الفيديو</string>
+    <string name="pref_gr_fpv_switch_cam_rc_enable">تفعيل مفتاح الكاميرا عبر جهاز التحكم</string>
+    <string name="pref_gr_fpv_switch_cam_rc_enable_summary">تفعيل تبديل الكاميرا باستخدام قناة جهاز التحكم اللاسلكي</string>
+    <string name="pref_gr_fpv_switch_cam_rc_ch_num">قناة الكاميرا عبر جهاز التحكم.</string>
+    <string name="pref_gr_fpv_switch_cam_rc_ch_num_summary">استخدم قناة جهاز التحكم للتبديل بين الكاميرات.</string>
+    <string name="pref_gr_fpv_switch_cam_rc_ch_num_min">الحد الأدنى لـ PWM للكاميرا</string>
+    <string name="pref_gr_fpv_switch_cam_rc_ch_num_min_summary">الحد الأدنى لإشارة PWM لتفعيل الكاميرا التالية. القيمة النموذجية هي 1800.</string>
+    <string name="pref_gr_fpv_videocam_sendback">إرسال وحفظ الصورة</string>
+    <string name="pref_gr_fpv_videocam_sendback_summary">إرسال الصور إلى GCS في الوقت الفعلي. يتم حفظ الصور دائماً في تخزين الهاتف.</string>
+    <string name="pref_gr_fpv_streamres_back">دقة الكاميرا الخلفية</string>
+    <string name="pref_gr_fpv_streamres_back_summary">دقة البث المستخدمة عندما تكون الكاميرا الخلفية نشطة. تُستخدم أيضاً للصور الثابتة، التي يتم التقاطها من البث المباشر.</string>
+    <string name="pref_gr_fpv_streamres_front">دقة الكاميرا الأمامية</string>
+    <string name="pref_gr_fpv_streamres_front_summary">دقة البث المستخدمة عندما تكون الكاميرا الأمامية نشطة. تُستخدم أيضاً للصور الثابتة، التي يتم التقاطها من البث المباشر.</string>
+    <string name="pref_gr_fpv_screen_streaming">السماح ببث الشاشة</string>
+    <string name="pref_gr_fpv_screen_streaming_summary">عرض منتقي المصدر (خلفي/أمامي/شاشة) عند فتح شاشة FPV والإعلان عن ثلاثة مصادر فيديو قابلة للاختيار بشكل منفصل للوي/GCS. عند الإيقاف، يعمل كما كان سابقاً: كاميرا واحدة، بدء تلقائي.</string>
+    <string name="pref_gr_fpv_imagecapturesize">حجم الصورة الملتقطة</string>
+    <string name="pref_gr_fpv_imagecapturesize_summary">ملاحظة: يجب أن تكون أعلى من أو تساوي حجم صورة الفيديو.</string>
+    <string name="pref_gr_fpv_useInternalCamera">استخدام الكاميرا لـ GCS</string>
+    <string name="pref_gr_fpv_useInternalCamera_summary">السماح لـ GCS بالتقاط الصور وتتبعها في ملف KML. هذا للاستخدام في الوضع الفردي.</string>
+    <string name="pref_gr_fpv_useExternalCamera">استخدام بث فيديو خارجي</string>
+    <string name="pref_gr_fpv_useExternalCamera_summary">السماح للطائرة بإرسال بث الفيديو من تطبيق آخر.</string>
+    <string name="pref_gr_fpv_useExternalRTCCamera">تفعيل بث الفيديو بلس</string>
+    <string name="pref_gr_fpv_useExternalRTCCamera_summary">جودة فيديو أكثر سلاسة على الشبكة المحلية وعبر الإنترنت.</string>
+    <string name="pref_gr_fpv_videocamemirrored">عكس صورة الفيديو</string>
+    <string name="pref_gr_fpv_videocamemirrored_summary">عكس صورة الفيديو الملتقطة بواسطة الطائرة</string>
+    <string name="pref_gr_fpv_useUDPCamera">استخدام اتصال LAN مباشر</string>
+    <string name="pref_gr_fpv_useUDPCamera_summary">تسريع الفيديو وتقليل حركة الإنترنت بإرسال إطارات الفيديو مباشرة إلى GCS على نفس الشبكة المحلية</string>
+    <string name="pref_gr_adv_enableGroupName">تفعيل مجموعات متعددة</string>
+    <string name="pref_gr_adv_enableGroupName_summary">المجموعات المختلفة لا يمكنها رؤية بعضها حتى مع نفس رمز الوصول</string>
+    <string name="pref_gr_fcb_enableSmartTelemetry">القياسات الذكية</string>
+    <string name="pref_gr_fcb_autostart">بدء التطبيق تلقائياً</string>
+    <string name="pref_gr_fcb_autostart_summary">بدء Andruav تلقائياً عند إعادة تشغيل الجوال. وضع الطائرة فقط</string>
+    <string name="pref_gr_fcb_autofcbconnect">اتصال تلقائي بـ FCB</string>
+    <string name="pref_gr_fcb_autofcbconnect_summary">الاتصال تلقائياً بلوحة FCB بمجرد بدء Andruav.</string>
+    <string name="pref_gr_fcb_ignore_mobsensors">تجاهل مستشعرات الجوال</string>
+    <string name="pref_gr_fcb_ignore_mobsensors_summary">عدم استخدام IMU أو GPS من الجوال حتى لو كان FCB غير متصل.</string>
+    <string name="pref_gr_fcb_gps_injection">حقن GPS</string>
+    <string name="pref_gr_fcb_gps_injection_summary">حقن GPS الجوال في FCB.</string>
+    <string name="pref_gr_unitmetric">الوحدات</string>
+    <string name="pref_gr_unitmetric_summary">استخدام النظام المتري أو الإمبراطوري</string>
+
+    <integer name="pref_auth_Port">19408</integer>
+    <integer name="pref_ws_Port">9210</integer>
+    <integer name="pref_hub_Port">5760</integer>
+    <!-- ACTIONS -->
+    <string name="action_waypoint_waypoints_received">تم استلام المهمة</string>
+    <string name="action_waypoint_reached_charging">تم الوصول إلى نقطة الطريق </string>
+    <string name="action_waypoint_reached_going">التوجه إلى نقطة الطريق </string>
+    <string name="action_bat_charging">جاري الشحن</string>
+    <string name="action_select">اختيار</string>
+    <string name="action_active">نشط</string>
+    <string name="action_go">انطلاق</string>
+    <string name="action_none">لا شيء</string>
+    <string name="action_apply">تطبيق</string>
+    <string name="action_share">مشاركة</string>
+    <string name="action_map">خريطة</string>
+    <string name="action_mapedit">تحرير</string>
+    <string name="action_back">رجوع</string>
+    <string name="action_clear">مسح</string>
+    <string name="action_sos_sms">SMS</string>
+    <string name="action_sos_whistle">صفير</string>
+    <string name="action_sos_flash">وميض</string>
+    <string name="action_fcbctrl_alt">الارتفاع. م</string>
+    <string name="action_fcbctrl_diameter">النطاق. م</string>
+    <string name="action_fcbctrl_arm">ARM</string>
+    <string name="action_fcbctrl_climb">تسلق</string>
+    <string name="action_fcbctrl_land">هبوط</string>
+    <string name="action_fcbctrl_track">تتبع</string>
+    <string name="action_fcbctrl_cruise">سياحي</string>
+    <string name="action_fcbctrl_fbwa">FBWA</string>
+    <string name="action_fcbctrl_manual">يدوي</string>
+    <string name="action_fcbctrl_auto">تلقائي</string>
+    <string name="action_fcbctrl_guided">موجّه</string>
+    <string name="action_fcbctrl_loiter">تحويم</string>
+    <string name="action_fcbctrl_brake">كبح</string>
+    <string name="action_fcbctrl_hold">تثبيت</string>
+    <string name="action_fcbctrl_rtl">RTL</string>
+    <string name="action_fcbctrl_smart_rtl">S-RTL</string>
+    <string name="action_fcbctrl_yaw">YAW</string>
+    <string name="action_fcbctrl_speed">GS</string>
+    <string name="action_cam_img_interval">فواصل التصوير</string>
+    <string name="action_cam_img_total">إجمالي الصور</string>
+    <string name="action_cam_swap">تبديل</string>
+    <string name="action_screen_share">شاشة</string>
+    <string name="action_cam_shoot">التقاط</string>
+    <string name="action_imu_zero">تصفير</string>
+    <string name="action_video_shoot">فيديو</string>
+    <string name="action_cam_rotate">تدوير</string>
+    <string name="action_cam_localrec">تسجيل محلي</string>
+    <string name="action_engaged">مُفعّل</string>
+    <string name="action_disengaged">غير مُفعّل</string>
+    <string name="action_settings">الإعدادات</string>
+    <string name="action_settings_drone">إعدادات كطائرة</string>
+    <string name="action_reset">إعادة تعيين</string>
+    <string name="action_refresh">تحديث</string>
+    <string name="action_connect">اتصال</string>
+    <string name="action_dualband">اتصال مزدوج</string>
+    <string name="action_load">تحميل</string>
+    <string name="action_done">تم</string>
+    <string name="action_res_tel">استعادة القياسات</string>
+    <string name="action_saved">تم الحفظ</string>
+    <string name="action_save">حفظ</string>
+    <string name="action_login">تسجيل الدخول</string>
+    <string name="action_signout">تسجيل الخروج</string>
+    <string name="action_regenerate">إعادة التوليد</string>
+    <string name="action_calibrate">معايرة</string>
+    <string name="action_zeroTilt">تصفير الميل</string>
+    <string name="action_init">جاري التهيئة…</string>
+    <string name="action_register">تسجيل</string>
+    <string name="action_savebeforeexit">هل تريد حفظ التغييرات؟</string>
+    <string name="action_sysrestart">سيتم إعادة تشغيل النظام.</string>
+    <string name="action_exit">خروج</string>
+    <string name="action_drone_added">تمت إضافة الطائرة</string>
+    <string name="action_record_video_start_local">بدء تسجيل الفيديو الوارد</string>
+    <string name="action_record_video_stop_local">إيقاف تسجيل الفيديو الوارد</string>
+    <string name="action_gcs_added">تمت إضافة المحطة الأرضية</string>
+    <string name="action_find">بحث</string>
+    <string name="action_list">قائمة</string>
+    <string name="action_usb_permission">تحتاج إلى الموافقة على إذن USB وإعادة المحاولة</string>
+    <string name="action_fcb_mode">CTRL</string>
+    <string name="action_sos">SOS</string>
+    <string name="action_track">تتبع</string>
+    <string name="action_video_mirror">عكس</string>
+    <string name="action_video_err">خطأ في الفيديو</string>
+    <string name="action_video_on">تشغيل الفيديو</string>
+    <string name="action_video_off">إيقاف الفيديو</string>
+    <string name="action_video_con">جاري الاتصال بالفيديو</string>
+    <string name="action_video_rx">جاري استقبال الفيديو</string>
+    <string name="actionremote_settings">إعدادات جهاز التحكم اللاسلكي</string>
+    <string name="actionremote_engage">تفعيل جهاز التحكم عن بعد</string>
+    <!-- Email -->
+    <string name="email_title">"أرسل سؤالك عبر"</string>
+    <string name="email_subject">سؤال Andruav</string>
+    <string name="email_subject2">شرح أذونات Andruav</string>
+    <string name="email_to">rcmobilestuff@gmail.com</string>
+    <string name="email_body">الوصف:</string>
+    <string name="email_body2">يرجى توضيح لماذا تحتاج هذه الأذونات تحديداً [  ,   ,   ,    ]؟</string>
+
+    <!-- Words & SENTENCES -->
+    <string name="gen_altitude">الارتفاع</string>
+    <string name="gen_delay">تأخير</string>
+    <string name="gen_noagain">عدم إظهار هذا مرة أخرى</string>
+    <string name="gen_about">حول</string>
+    <string name="gen_CGS">CGS </string>
+
+
+    <string name="gen_GPS_auto">GPS تلقائي</string>
+    <string name="gen_GPS_mobile">الجوال فقط</string>
+    <string name="gen_GPS_fcb">GPS عبر FCB فقط</string>
+    <string name="gen_GPS_auto_short">A-GPS</string>
+    <string name="gen_GPS_mobile_short">M-GPS</string>
+    <string name="gen_GPS_fcb_short">F-GPS</string>
+
+    <string name="gen_GPS_auto_desc">اختيار مصدر GPS المتاح بأولوية أعلى لـ FCB.</string>
+    <string name="gen_GPS_mobile_desc">يُستخدم GPS الجوال فقط، إذا لم يكن هناك GPS على الجوال فلن تكون هناك بيانات GPS.</string>
+    <string name="gen_GPS_fcb_desc">يُستخدم بيانات GPS من FCB فقط ما لم تكن لوحة FCB غير موجودة.</string>
+
+
+    <string name="gen_step1">الخطوة 1: </string>
+    <string name="gen_step2">الخطوة 2: </string>
+    <string name="gen_step3">الخطوة 3: </string>
+    <string name="gen_step4">الخطوة 4: </string>
+    <string name="gen_on">تشغيل</string>
+    <string name="gen_off">إيقاف</string>
+    <string name="gen_map">خريطة</string>
+    <string name="gen_security">الأمان</string>
+    <string name="gen_flightcontrolboard">FCB</string>
+    <string name="gen_statistics">البيانات</string>
+    <string name="gen_must_exit">يجب إعادة التشغيل الآن ليصبح ساري المفعول.</string>
+    <string name="gen_exit">هل تريد الخروج؟</string>
+    <string name="gen_regenerate">ستحصل على رمز وصول جديد عبر البريد الإلكتروني فقط، وسيكون الحالي غير صالح. تحتاج إلى نسخ ولصق رمز الوصول الجديد في جميع أجهزة Andruav الأخرى.</string>
+    <string name="gen_front">أمامي</string>
+    <string name="gen_left">يسار</string>
+    <string name="gen_down">أسفل</string>
+    <string name="gen_right">يمين</string>
+    <string name="gen_help">طلب المساعدة</string>
+    <string name="gen_ws_registered">تم تسجيل الاسم.</string>
+    <string name="gen_accesscodevalid">تم التحقق من رمز الوصول</string>
+    <string name="gen_error">خطأ</string>
+    <string name="gen_warrning">تحذير</string>
+    <string name="gen_connection">اتصال</string>
+    <string name="gen_connected">متصل</string>
+    <string name="gen_connectionlost">فقد الاتصال!</string>
+    <string name="gen_connectiondisconnected">غير متصل</string>
+    <string name="gen_stop">إيقاف</string>
+    <string name="gen_do_not_show_again">عدم الإظهار مرة أخرى.</string>
+    <string name="gen_retrying">إعادة محاولة الاتصال</string>
+    <string name="gen_commserver">اتصال</string>
+    <string name="gen_speak_droneactivated">تم تفعيل وضع الطائرة</string>
+    <string name="gen_speak_connecting">جاري الاتصال بالخادم</string>
+    <string name="gen_FactoryReset">إعادة الضبط للمصنع</string>
+    <string name="gen_hostfound">تم العثور على المضيف</string>
+    <string name="gen_bluetooth_enabled">تم تفعيل البلوتوث</string>
+    <string name="gen_bluetooth_disabled">تم تعطيل البلوتوث</string>
+    <string name="gen_udp_disabled">تم تعطيل UDP</string>
+    <string name="gen_bluetooth_connected">تم اتصال البلوتوث</string>
+    <string name="gen_bluetooth_searching">تم اتصال البلوتوث</string>
+    <string name="gen_bluetooth_disconnected">البحث عن الأجهزة</string>
+    <string name="gen_usb_connected">تم اتصال USB</string>
+    <string name="gen_conn_disconnected">تم قطع الاتصال باللوحة</string>
+    <string name="gen_usb_disconnected">تم فصل USB</string>
+    <string name="gen_bluetooth_connecting">جاري الاتصال</string>
+    <string name="gen_bluetooth_disconnecting">جاري قطع الاتصال</string>
+    <string name="gen_serialsocket_started">تم بدء مقبس القياسات.</string>
+    <string name="gen_serialsocket_stopped">تم إيقاف مقبس القياسات.</string>
+    <string name="gen_serialsocket_no_wifi">تحتاج إلى وصول Wi-Fi. فعّل التقييد في حالة استخدام اتصال 3G/4G.</string>
+    <string name="gen_serialsocket_client_connected">تم اتصال مقبس العميل</string>
+    <string name="gen_serialsocket_client_disconnected">تم قطع اتصال مقبس العميل</string>
+    <string name="err_per_bad_mode">إذن رمز الوصول لا يسمح بهذا الوضع.</string>
+    <string name="err_old_app_version">لا يمكن تشغيل إصدار قديم من Andruav. يرجى التحديث.</string>
+    <string name="err_invalid_portnum">رقم منفذ غير صالح.</string>
+    <string name="err_config_drone">لا يمكن أن يكون Andruav في وضع الطائرة. لا يوجد GPS أو بوصلة</string>
+    <string name="err_security">أذونات مفقودة. يرجى منح الأذونات.</string>
+    <string name="gen_battery_optimization">قيود الخلفية</string>
+    <string name="err_battery_optimization">قد يتم إغلاق Andruav بواسطة النظام أثناء التشغيل في الخلفية، مما يوقف القياسات والفيديو أثناء الطيران. السماح له بالعمل دون قيود في الخلفية؟</string>
+    <string name="err_no_wifi">لا يوجد اتصال Wi-Fi</string>
+    <string name="err_invalid_unitname">اسم وحدة غير صالح</string>
+    <string name="err_nullValue">قيمة فارغة</string>
+    <string name="err_accountNotFound">الحساب غير موجود</string>
+    <string name="err_hostnotfound">تعذر الاتصال بالخادم.\nتحقق من تسجيلك.</string>
+    <string name="err_ws_replicatedid">اختر اسماً أو مجموعة أخرى، أو يمكنك استخدام خيار "فرض الاسم".</string>
+    <string name="err_ws_cmd_ping">خطأ في الاستجابة!</string>
+    <string name="err_ws_encrypted_16">طول مفتاح التشفير يجب أن يكون 16 حرفاً</string>
+    <string name="err_server_unreachable">تعذر الوصول إلى خادم مصادقة Andruav.com</string>
+    <string name="err_no_internet">لا يوجد وصول إلى الإنترنت!</string>
+    <string name="err_no_internet_dji">تحتاج إلى وصول إلى الإنترنت لتفعيل مكتبة DJI.</string>
+    <string name="err_loginfailed">فشل تسجيل الدخول</string>
+    <string name="err_no_bluetooth">جهازك لا يدعم البلوتوث</string>
+    <string name="err_bluetooth_cannotconnect">تعذر اتصال البلوتوث بالجهاز المحدد</string>
+    <string name="err_serialsocket_no_remote_telemetry">لم يتم تحديد قياسات الطائرة</string>
+    <string name="err_webrtc_drone_compatibility">لقد فعّلت بث الفيديو بلس. يرجى الانتظار للاتصال بالكاميرا. في حالة وجود مشاكل يرجى استخدام الإعدادات لاختيار بث الفيديو العادي.</string>
+    <string name="err_webrtc_drone_notenabled">الطائرة لديها [بث الفيديو برو] مُفعّل. لكن هذا الخيار معطل على هذه المحطة.\nتحتاج إلى تفعيله لاستقبال الفيديو من تلك الطائرة.</string>
+    <string name="err_protocol_doesnt_suppport_telemetry">تحتاج الطائرة إلى استخدام اتصال أصلي لتفعيل القياسات</string>
+    <string name="err_remote_min_max">الحد الأقصى يجب أن يكون أعلى من الحد الأدنى</string>
+    <string name="err_remote_max_toohigh">الحد الأقصى يجب ألا يتجاوز 2000</string>
+    <string name="err_remote_min_toolow">الحد الأدنى يجب ألا يقل عن 800</string>
+    <string name="err_remote_min_max_range">نطاق الحد الأدنى والأقصى صغير جداً</string>
+    <string name="err_remote_range_adjusted">تمت إعادة ضبط نطاق الحد الأدنى والأقصى لك، تحقق منها باللون الأحمر واحفظ مرة أخرى.</string>
+    <string name="err_feature_multitouch">اللمس المتعدد غير مدعوم</string>
+    <string name="err_ipcam_notinstalled">كاميرا IP غير مثبتة</string>
+    <string name="err_novideo_signal">لا يوجد فيديو</string>
+    <string name="err_novideo_record_badversion">لا يمكن تسجيل الفيديو، إصدار جهاز Android أقدم من Jelly Beans</string>
+    <string name="err_3dr_mobileversion">يتطلب اتصال خدمة 3DR نظام Android 4.0 أو أحدث</string>
+    <string name="err_dji_mobileversion">يتطلب اتصال DJI نظام Android 4.2 أو أحدث</string>
+    <string name="err_rtc_nostunserver">لم يتم تحديد خادم STUN لبث الفيديو.</string>
+    <string name="conf_factoryReset">هل أنت متأكد أنك تريد إعادة تعيين جميع الإعدادات؟</string>
+    <string name="conf_Refresh">هل أنت متأكد أنك تريد استعادة الإعدادات الافتراضية؟</string>
+    <string name="conf_engage_remote">تفعيل جهاز التحكم على الشاشة سيوقف جهاز الإرسال الخاص بك. هل تريد المتابعة؟</string>
+    <string name="separator">فاصل</string>
+    <!-- Menu Items [non actions] -->
+    <string name="mi_main_drone">طائرة</string>
+
+    <!-- Titles & Labels -->
+    <string name="imu_calibration">هام\nضع الجوال على سطح أفقي مسطح واضغط موافق.</string>
+    <string name="imu_tilt">ضع الجوال في الوضعية النهائية في الطائرة ثم اضغط تصفير الميل.</string>
+    <string name="websocket_Title">الاتصال</string>
+    <string name="websocket_IP">IP الخادم</string>
+    <string name="websocket_Port">المنفذ</string>
+    <string name="websocket_UserName">معرف الوحدة</string>
+    <string name="websocket_GroupName">رقم المجموعة</string>
+    <string name="websocket_Description">الوصف</string>
+    <string name="websocket_Encryptiom">مفتاح التشفير</string>
+    <string name="websocket_CipherKey">مفتاح الشيفرة</string>
+    <string name="smartdlg_Title">القياسات الذكية</string>
+    <string name="smartdlg_Optimization">مستوى التحسين</string>
+    <string name="camdlg_Title">إعدادات الكاميرا</string>
+    <string name="gpsdlg_Title">مصدر GPS</string>
+    <string name="modedlg_Title">أوضاع الطيران</string>
+    <string name="mdlgsos_Title">طوارئ الطائرة</string>
+    <string name="droneflytopointdlg_Title">الطيران والمتابعة</string>
+
+
+    <string name="websocket_Ping">استجابة</string>
+    <string name="login_Title">تسجيل الدخول</string>
+    <string name="login_register_Title">تسجيل حساب</string>
+    <string name="login_email">البريد الإلكتروني</string>
+    <string name="login_login">انضمام</string>
+    <string name="hyper_subscribe">https://cloud.ardupilot.org:8001/accounts.html</string>
+    <string name="login_access_code">رمز الوصول</string>
+    <string name="login_first_section">إنشاء حساب</string>
+    <string name="login_action_accontexist">الحساب مسجل بالفعل.\r\nاستخدم رمز الوصول مباشرة.\r\nاضغط موافق لإرسال رمز الوصول إلى بريدك الإلكتروني.</string>
+    <string name="login_second_section">لديك رمز وصول بالفعل</string>
+    <string name="login_third_section">توليد رمز وصول جديد</string>
+    <string name="login_action_chkemail">تحقق من صندوق البريد الخاص بك للحصول على رمز الوصول.</string>
+    <string name="login_action_registered">تم التسجيل بنجاح</string>
+    <string name="login_action_joined">تم الانضمام بنجاح</string>
+    <string name="login_action_badaccesscode">رمز وصول غير صحيح</string>
+    <string name="login_action_unreachable">تعذر الوصول إلى خادم الإنترنت</string>
+    <string name="main_action_hide">إخفاء</string>
+    <string name="fcb_Title">مركز القياسات</string>
+    <string name="fcb_Title_ServerSection">خادم IP لمحطة GCS</string>
+    <string name="fcb_Title_BlueToothSection">إعدادات البلوتوث - USB</string>
+    <string name="fcb_IP">IP المركز</string>
+    <string name="fcb_Port">المنفذ</string>
+    <string name="fcb_usb">USB</string>
+
+    <!-- ACTIVITIES FCB Drone-->
+    <string name="fcbdrone_bt">بلوتوث</string>
+    <string name="fcbdrone_usb">USB</string>
+    <string name="fcbdrone_tcp">TCP</string>
+    <string name="fcbdrone_udp">UDP</string>
+    <string name="fcbdrone_3dr">Dronekit</string>
+    <string name="fcbdrone_dji">DJI</string>
+    <string name="fcbdrone_usbbaudrate">السرعة</string>
+
+    <!-- ACTIVITIES TITLE -->
+    <string name="title_activity_main">Andruav-AP</string>
+    <string name="title_activity_camera">الكاميرا</string>
+    <string name="title_activity_fpv">نشاط FPV</string>
+    <string name="title_activity_hubcommunication">خادم الاتصال</string>
+    <string name="title_activity_maps">الخريطة</string>
+    <string name="title_activity_imu">نشاط IMU</string>
+    <string name="title_activity_login">نشاط تسجيل الدخول</string>
+    <string name="title_activity_data">نشاط البيانات</string>
+    <string name="title_activity_fcb">نشاط FCB</string>
+    <string name="title_activity_usb">نشاط USB</string>
+    <string name="title_activity_remotecontrol">التحكم عن بعد</string>
+
+    <!-- Especially for Andruav Message Error-->
+    <string name="andruav_error_connection_notsupported">هذا النوع من الاتصال غير مدعوم.</string>
+    <string name="title_activity_remote_control">التحكم عن بعد</string>
+    <string name="title_activity_remote_control_setting">إعدادات جهاز التحكم اللاسلكي</string>
+    <string name="title_activity_remote_control_setting_activity_tab">
+        إعدادات جهاز التحكم اللاسلكي
+    </string>
+
+    <!-- Telemetry Protocol Message -->
+    <string name="andruav_error_telemetryprotocol_multiwii">تم اكتشاف قياسات Multiwii.</string>
+    <string name="andruav_error_telemetryprotocol_mavlink">تم اكتشاف قياسات MAVLink.</string>
+
+
+    <string name="title_activity_remote_control_setting_activity_tab_section1">إعدادات القنوات</string>
+    <string name="title_activity_remote_control_setting_activity_tab_section2">إعدادات التتبع</string>
+    <string name="title_activity_remote_control_setting_activity_tab_section3">اختبار</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">مرحباً أجزاء فارغة</string>
+    <string name="gen_lang_arabic">عربى</string>
+    <string name="gen_lang_english">English</string>
+
+    <!-- SOS Activity -->
+    <string name="title_activity_data_activity_flash">DataActivityFragment</string>
+
+    <!-- Main Activity -->
+    <string name="main_activity_btn_FPV">FPV</string>
+    <string name="main_activity_btn_IMU">IMU</string>
+    <string name="main_activity_btn_COM">COM</string>
+    <string name="main_activity_btn_MAP">MAP</string>
+    <string name="main_activity_btn_FCB">FCB</string>
+    <string name="main_activity_btn_DATA">البيانات</string>
+    <!-- fix string hardcode start -->
+    <string name="main_activity_hint_access">رمز الوصول</string>
+    <string name="main_activity_hint_telem">قياسات:</string>
+    <!-- fix string hardcode end -->
+
+    <!--Remote Tracking -->
+    <string name="remote_tracking_fragement_X_Section">PID الأفقي</string>
+    <string name="remote_tracking_fragement_X_P">X - P</string>
+    <string name="remote_tracking_fragement_X_P_hint">قيم من 0 - 100</string>
+    <string name="remote_tracking_fragement_X_I">X - I</string>
+    <string name="remote_tracking_fragement_X_I_hint">قيم من 0 - 50</string>
+    <string name="remote_tracking_fragement_X_D">X - D</string>
+    <string name="remote_tracking_fragement_X_D_hint">قيم من 0 - 10</string>
+
+    <string name="remote_tracking_fragement_Y_Section">PID الرأسي</string>
+    <string name="remote_tracking_fragement_Y_P">Y - P</string>
+    <string name="remote_tracking_fragement_Y_P_hint">قيم من 0 - 100</string>
+    <string name="remote_tracking_fragement_Y_I">Y - I</string>
+    <string name="remote_tracking_fragement_Y_I_hint">قيم من 0 - 50</string>
+    <string name="remote_tracking_fragement_Y_D">Y - D</string>
+    <string name="remote_tracking_fragement_Y_D_hint">قيم من 0 - 10</string>
+
+    <!--HUB Activity -->
+    <string name="hub_activity_usernameHint">اسم طائرتك أو محطتك الأرضية</string>
+    <string name="hub_activity_groupnameHint">اسم مشترك بين الطائرات ومحطات GCS</string>
+    <string name="hub_activity_briefHint">تلميح</string>
+    <string name="hub_activity_server_title">AndruavServer</string>
+    <string name="hub_activity_server_hint">يجب أن يكون لديك تطبيق AndruavServer مثبت ويعمل على جهاز Android متصل بـ Wi-Fi.</string>
+    <string name="hub_activity_vehicleType">النوع</string>
+
+    <string name="map_activity_buttonslider">FPV</string>
+    <string name="title_activity_social">SocialActivity</string>
+
+    <!--FirstLoginActivity-->
+    <string name="firstlogin_activity_btn_DRONE">طائرة</string>
+    <string name="title_activity_main_launcher">MainLauncherActivity</string>
+    <string name="title_activity_fcb__drone">اتصال FCB</string>
+
+    <!--MAPActivity-->
+    <string name="map_exit_withoutsave">هل تريد الخروج من محرر الخريطة؟</string>
+
+
+
+    <!-- Mission Fragments-->
+    <string name="mission_waypoint_title">نقطة طريق</string>
+
+
+    <!--FCB Acvitiy -->
+    <string name="fcbdroneactivity_edtLocalIP">IP Wi-Fi لهذا الجهاز</string>
+    <string name="fcbdroneactivity_edtUDPPort">منفذ UDP للطائرة</string>
+
+
+
+</resources>

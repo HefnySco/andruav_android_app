@@ -683,9 +683,9 @@ public class FPVDroneRTCWebCamActivity extends Activity {
      * result triggers the service start via {@link App#startFPVStreamingServiceScreenIfGranted()}.
      */
     private void showSourcePicker() {
-        final String[] items = {"Back Camera", "Front Camera", "Screen"};
+        final String[] items = {getString(R.string.video_source_back_camera), getString(R.string.video_source_front_camera), getString(R.string.video_source_screen)};
         new AlertDialog.Builder(this)
-                .setTitle("Select Video Source")
+                .setTitle(getString(R.string.dialog_select_video_source))
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

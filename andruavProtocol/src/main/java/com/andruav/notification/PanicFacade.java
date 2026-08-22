@@ -17,11 +17,21 @@ import com.andruav.AndruavFacade;
  */
 public class PanicFacade {
 
-    private static final String[] ErrorLevel = {"Error", "Error" , "Error" , "Error" , "Warning" , "Message", "Message"   } ;
+    private static String[] getErrorLevel () {
+        return new String[] {
+            AndruavEngine.AppContext.getString(R.string.err_level_error),
+            AndruavEngine.AppContext.getString(R.string.err_level_error),
+            AndruavEngine.AppContext.getString(R.string.err_level_error),
+            AndruavEngine.AppContext.getString(R.string.err_level_error),
+            AndruavEngine.AppContext.getString(R.string.err_level_warning),
+            AndruavEngine.AppContext.getString(R.string.err_level_message),
+            AndruavEngine.AppContext.getString(R.string.err_level_message)
+        };
+    }
     public static void cannotStartCamera ()
     {
         String error = AndruavEngine.getPreference().getContext().getString(R.string.andruav_error_cameraopen);
-        AndruavEngine.notification().displayNotification(INotification.NOTIFICATION_TYPE_ERROR, ErrorLevel[INotification.NOTIFICATION_TYPE_ERROR], error, true, INotification.INFO_TYPE_CAMERA, false);
+        AndruavEngine.notification().displayNotification(INotification.NOTIFICATION_TYPE_ERROR, getErrorLevel()[INotification.NOTIFICATION_TYPE_ERROR], error, true, INotification.INFO_TYPE_CAMERA, false);
         AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_CAMERA, INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_CAMERA, error, null);
         AndruavEngine.notification().Speak(error);
 
@@ -29,7 +39,7 @@ public class PanicFacade {
 
     public static void cannotStartCamera (final int notification_Type, final int errorNumber, final String description, final String target)
     {
-        AndruavEngine.notification().displayNotification(notification_Type, ErrorLevel[notification_Type], description, true, INotification.INFO_TYPE_CAMERA, false);
+        AndruavEngine.notification().displayNotification(notification_Type, getErrorLevel()[notification_Type], description, true, INotification.INFO_TYPE_CAMERA, false);
         AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_CAMERA, notification_Type, errorNumber, description, null);
         AndruavEngine.notification().Speak(description);
 
@@ -38,7 +48,7 @@ public class PanicFacade {
 
     public static void cannotDoAutopilotAction (final String error)
     {
-        AndruavEngine.notification().displayNotification(INotification.NOTIFICATION_TYPE_ERROR, ErrorLevel[INotification.NOTIFICATION_TYPE_ERROR], error, true, INotification.INFO_TYPE_Lo7etTa7akom, false);
+        AndruavEngine.notification().displayNotification(INotification.NOTIFICATION_TYPE_ERROR, getErrorLevel()[INotification.NOTIFICATION_TYPE_ERROR], error, true, INotification.INFO_TYPE_Lo7etTa7akom, false);
         AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_Lo7etTa7akom, INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_Lo7etTa7akom, error, null);
         AndruavEngine.notification().Speak(error);
 
@@ -48,14 +58,14 @@ public class PanicFacade {
 
     public static void andruavModuleAdded (final int notification_Type, final int errorNumber, final String description, final String target)
     {
-        AndruavEngine.notification().displayNotification(notification_Type, ErrorLevel[notification_Type], description, true, INotification.INFO_TYPE_CAMERA, false);
+        AndruavEngine.notification().displayNotification(notification_Type, getErrorLevel()[notification_Type], description, true, INotification.INFO_TYPE_CAMERA, false);
         AndruavEngine.notification().Speak(description);
 
     }
 
     public static void cannotDoAutopilotAction (final int notification_Type, final int errorNumber, final String description, final String target)
     {
-        AndruavEngine.notification().displayNotification(notification_Type, ErrorLevel[notification_Type], description, true, INotification.INFO_TYPE_CAMERA, false);
+        AndruavEngine.notification().displayNotification(notification_Type, getErrorLevel()[notification_Type], description, true, INotification.INFO_TYPE_CAMERA, false);
         AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_Lo7etTa7akom, notification_Type, errorNumber, description, null);
         AndruavEngine.notification().Speak(description);
 
@@ -67,7 +77,7 @@ public class PanicFacade {
     public static void telemetryPanic(final int notification_Type, final int errorNumber, final String description, final AndruavUnitBase target)
     {
 
-        AndruavEngine.notification().displayNotification(notification_Type, ErrorLevel[notification_Type], description, true, INotification.INFO_TYPE_TELEMETRY, false);
+        AndruavEngine.notification().displayNotification(notification_Type, getErrorLevel()[notification_Type], description, true, INotification.INFO_TYPE_TELEMETRY, false);
         AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_TELEMETRY, notification_Type, errorNumber, description, target);
         AndruavEngine.notification().Speak(description);
     }
@@ -95,25 +105,25 @@ public class PanicFacade {
 
     public static void gpsModeChanged (AndruavUnitBase andruavUnitBase)
     {
-        String mode ="GPS";
+        String mode = "GPS";
         final int gpsmode = andruavUnitBase.getGPSMode();
         int type = INotification.NOTIFICATION_TYPE_NORMAL;
         switch (gpsmode)
         {
             case AndruavUnitBase.GPS_MODE_AUTO:
-                mode = "GPS Mode is Auto";
+                mode = AndruavEngine.AppContext.getString(R.string.gps_mode_auto);
                 type = INotification.NOTIFICATION_TYPE_NORMAL;
                 break;
             case AndruavUnitBase.GPS_MODE_MOBILE:
-                mode = "GPS Mode is Mobile Only";
+                mode = AndruavEngine.AppContext.getString(R.string.gps_mode_mobile);
                 break;
             case AndruavUnitBase.GPS_MODE_FCB:
-                mode = "GPS Mode is FCB Only";
+                mode = AndruavEngine.AppContext.getString(R.string.gps_mode_fcb);
                 break;
 
         }
 
-        AndruavEngine.notification().displayNotification(INotification.NOTIFICATION_TYPE_WARNING, ErrorLevel[type], mode, true, INotification.INFO_TYPE_GPS, false);
+        AndruavEngine.notification().displayNotification(INotification.NOTIFICATION_TYPE_WARNING, getErrorLevel()[type], mode, true, INotification.INFO_TYPE_GPS, false);
         AndruavEngine.notification().Speak(mode);
 
     }
@@ -121,7 +131,7 @@ public class PanicFacade {
 
     public static void cannotDoFollowAction (final String error)
     {
-        AndruavEngine.notification().displayNotification(INotification.NOTIFICATION_TYPE_ERROR, ErrorLevel[INotification.NOTIFICATION_TYPE_ERROR], error, true, INotification.INFO_TYPE_NAVIGATIONLOGIC, false);
+        AndruavEngine.notification().displayNotification(INotification.NOTIFICATION_TYPE_ERROR, getErrorLevel()[INotification.NOTIFICATION_TYPE_ERROR], error, true, INotification.INFO_TYPE_NAVIGATIONLOGIC, false);
         AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_NAVIGATIONLOGIC, INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_NAVIGATION, error, null);
         AndruavEngine.notification().Speak(error);
 
@@ -129,7 +139,7 @@ public class PanicFacade {
 
     public static void confirmFollowAction (final String msg)
     {
-        AndruavEngine.notification().displayNotification(INotification.NOTIFICATION_TYPE_NORMAL, ErrorLevel[INotification.NOTIFICATION_TYPE_NORMAL], msg, true, INotification.INFO_TYPE_NAVIGATIONLOGIC, false);
+        AndruavEngine.notification().displayNotification(INotification.NOTIFICATION_TYPE_NORMAL, getErrorLevel()[INotification.NOTIFICATION_TYPE_NORMAL], msg, true, INotification.INFO_TYPE_NAVIGATIONLOGIC, false);
         AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_NAVIGATIONLOGIC, INotification.NOTIFICATION_TYPE_NORMAL, AndruavMessage_Error.ERROR_NAVIGATION, msg, null);
         AndruavEngine.notification().Speak(msg);
 

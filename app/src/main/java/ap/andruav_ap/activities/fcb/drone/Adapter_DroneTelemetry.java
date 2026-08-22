@@ -123,7 +123,7 @@ public class Adapter_DroneTelemetry extends BaseAdapter{
 
         if(data.size()<=0)
         {
-            holder.txtUnitName.setText("No Data");
+            holder.txtUnitName.setText(vi.getContext().getString(R.string.label_no_data));
 
         }
         else

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="andruav_no_fcb">No hay FCB disponible.</string>
+    <string name="andruav_noti_disconnect"> ¡Desconectado! </string>
+    <string name="andruav_noti_connect"> Conectado </string>
+    <string name="andruav_noti_reconnect"> Reconectado </string>
+
+
+    <!-- Notification errors -->
+    <string name="andruav_error_camertakeimage">"No se pueden tomar imágenes ni guardar la imagen.</string>
+    <string name="andruav_error_cameraopen">No se puede INICIAR la cámara.</string>
+    <string name="andruav_error_nocamera">No se encuentra la cámara en este dispositivo.</string>
+    <string name="andruav_error_usberror">La telemetría USB del dron se ha desconectado</string>
+    <string name="andruav_error_dronekitconnection">La telemetría del dron se ha desconectado</string>
+    <string name="andruav_error_lowbattery">Batería Baja</string>
+    <string name="andruav_error_dronekitconnection_res">La telemetría del dron se ha restablecido</string>
+    <string name="andruav_error_bluetootherror">La telemetría BLUETOOTH del dron se ha desconectado</string>
+    <string name="andruav_error_telemetryprotocol_undef">No se puede identificar el protocolo de telemetría.</string>
+    <string name="udp_proxy_en">Telemetría UDP Activada</string>
+    <string name="udp_proxy_dis">Telemetría UDP Desactivada</string>
+    <string name="andruav_error_autopilot_cannot_do">Comando No Compatible</string>
+    <string name="andruav_error_autopilot_cannot_do_arm">El dron no puede hacer ARM</string>
+    <string name="andruav_error_autopilot_cannot_do_disarm">El dron no puede hacer DISARM</string>
+    <string name="andruav_error_autopilot_cannot_do_triggercamera">El dron no puede disparar la cámara</string>
+    <string name="andruav_error_autopilot_cannot_do_gimbal">El dron no puede controlar el gimbal</string>
+    <string name="andruav_error_autopilot_cannot_do_mission">El dron no puede ejecutar acciones de misión</string>
+    <string name="andruav_error_autopilot_cannot_do_mission_write">El dron no puede escribir la misión</string>
+    <string name="andruav_error_autopilot_cannot_do_land">El dron no puede aterrizar</string>
+    <string name="andruav_error_autopilot_cannot_do_surface">El dron no puede hacer surface</string>
+    <string name="andruav_error_autopilot_cannot_do_yaw">El dron no puede cambiar el yaw</string>
+    <string name="andruav_error_autopilot_cannot_do_servo">Comando de servo fallido.</string>
+    <string name="andruav_error_autopilot_cannot_do_followme">El dron no puede hacer sígueme</string>
+    <string name="andruav_error_autopilot_cannot_do_takeoff">El dron no puede despegar</string>
+    <string name="andruav_error_autopilot_cannot_do_loiter">El dron no puede hacer Loiter</string>
+    <string name="andruav_error_autopilot_cannot_do_rtl">El dron no puede hacer RTL</string>
+    <string name="andruav_error_autopilot_cannot_do_smart_rtl">El dron no puede hacer Smart RTL</string>
+    <string name="andruav_error_autopilot_cannot_do_guided">El dron no puede hacer modo Guided</string>
+    <string name="andruav_error_autopilot_cannot_do_manual">El dron no puede hacer modo Manual</string>
+    <string name="andruav_error_autopilot_cannot_do_acro">El dron no puede hacer modo Acro</string>
+    <string name="andruav_error_autopilot_cannot_do_circle">Modo Circle no compatible</string>
+
+    <string name="andruav_error_autopilot_cannot_do_pos_hold">El dron no puede hacer Position Hold</string>
+    <string name="andruav_error_autopilot_cannot_do_alt_hold">El dron no puede hacer ALT_HOLD</string>
+    <string name="andruav_error_autopilot_cannot_do_auto">El dron no puede hacer auto</string>
+    <string name="andruav_error_autopilot_cannot_do_fbwa">El dron no puede hacer fly by wire</string>
+    <string name="andruav_error_autopilot_cannot_do_cruise">El dron no puede hacer cruise</string>
+    <string name="andruav_error_autopilot_cannot_do_brake">El dron no puede hacer brake</string>
+    <string name="andruav_error_autopilot_cannot_do_hold">El dron no puede hacer hold</string>
+
+
+
+    <string name="andruav_error_geofence_safe">Geocerca Segura</string>
+    <string name="andruav_error_geofence_unsafe">Violación de Geocerca</string>
+
+    <string name="andruav_error_permission_denied">Permiso denegado: función %1$s desactivada.</string>
+
+    <string name="gen_rc_releazed">RC Liberado. Puede usar TX para controlar</string>
+    <string name="gen_rc_freezed">RC Congelado. sin control de TX.</string>
+    <string name="gen_rc_centered">RC Centrado. sin control.</string>
+    <string name="gen_rc_joystick">RC bajo control por joystick de GCS</string>
+
+
+    <string name="andruav_module_added">Módulo Andruav Añadido</string>
+
+    <!-- i18n: PanicFacade notification levels -->
+    <string name="err_level_error">Error</string>
+    <string name="err_level_warning">Advertencia</string>
+    <string name="err_level_message">Mensaje</string>
+
+    <!-- i18n: GPS mode change notifications -->
+    <string name="gps_mode_auto">El modo GPS es Automático</string>
+    <string name="gps_mode_mobile">El modo GPS es Solo Móvil</string>
+    <string name="gps_mode_fcb">El modo GPS es Solo FCB</string>
+
+</resources>

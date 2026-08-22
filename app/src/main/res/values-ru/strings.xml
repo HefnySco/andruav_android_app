@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="main_activity_header_title">ANDRUAV_AP</string>
+    <string name="main_activity_tagline">Наземная станция управления</string>
+
+    <!-- Home screen redesign -->
+    <string name="home_server_title">Сервер миссий</string>
+    <string name="home_server_status_connected">ПОДКЛЮЧЕНО</string>
+    <string name="home_server_status_disconnected">ОТКЛЮЧЕНО</string>
+    <string name="home_btn_connect">ПОДКЛЮЧИТЬ</string>
+    <string name="home_btn_disconnect">ОТКЛЮЧИТЬ</string>
+    <string name="home_btn_signin">ВОЙТИ</string>
+
+    <string name="home_telemetry_title">ТЕЛЕМЕТРИЯ ПОЛЁТА</string>
+    <string name="home_telemetry_linked">ПОДКЛЮЧЕНО</string>
+    <string name="home_telemetry_not_linked">НЕ ПОДКЛЮЧЕНО</string>
+    <string name="home_telemetry_helper">Подключите полётный контроллер через модуль FCB ниже для просмотра GPS, заряда батареи и сигнала.</string>
+    <string name="home_telemetry_subtitle_format">%1$s · через %2$s</string>
+    <string name="home_stat_gps">GPS-ФИКСАЦИЯ</string>
+    <string name="home_stat_battery">БАТАРЕЯ</string>
+    <string name="home_stat_signal">СИГНАЛ</string>
+    <string name="home_sats_format">%1$d СПУТН.</string>
+    <string name="home_battery_format">%1$d%%</string>
+    <string name="home_signal_format">%1$d dBm</string>
+    <string name="home_value_placeholder">–</string>
+
+    <string name="home_modules_title">МОДУЛИ</string>
+    <string name="home_tile_imu">IMU</string>
+    <string name="home_tile_fpv">FPV</string>
+    <string name="home_tile_com">Связь</string>
+    <string name="home_tile_fcb">FCB</string>
+    <string name="home_tile_state_ready">ГОТОВ</string>
+    <string name="home_tile_state_live">АКТИВЕН</string>
+    <string name="home_tile_state_offline">ОФЛАЙН</string>
+    <string name="home_tile_state_linked">ПОДКЛЮЧЕНО</string>
+    <string name="home_tile_state_tap_to_link">НАЖМИТЕ ДЛЯ ПОДКЛЮЧЕНИЯ</string>
+
+    <string name="home_menu_settings">Настройки</string>
+    <string name="home_menu_export_logs">Экспорт журналов ошибок</string>
+    <string name="home_menu_language">Язык</string>
+    <string name="home_menu_clear_logs">Удалить журналы ошибок</string>
+
+    <string name="home_fcb_sheet_title">ХАБ ТЕЛЕМЕТРИИ · ПОДКЛЮЧЕНИЕ FCB</string>
+    <string name="home_fcb_bluetooth">Bluetooth</string>
+    <string name="home_fcb_usb">USB</string>
+    <string name="home_fcb_wifi">Wi-Fi / TCP-IP</string>
+    <string name="home_fcb_udp">UDP-вещание</string>
+    <string name="home_fcb_bt_on">Вкл</string>
+    <string name="home_fcb_bt_off">Выкл</string>
+    <string name="home_fcb_bt_scan">Поиск</string>
+    <string name="home_fcb_bt_scanning">Поиск…</string>
+    <string name="home_fcb_bt_no_devices">Сопряжённые или обнаруженные устройства пока отсутствуют</string>
+    <string name="home_fcb_baud_rate_label">Скорость передачи</string>
+    <string name="home_fcb_usb_supported">Режим USB-хоста поддерживается на этом устройстве.</string>
+    <string name="home_fcb_usb_unsupported">Это устройство не поддерживает режим USB-хоста.</string>
+    <string name="home_fcb_hub_ip_label">IP хаба</string>
+    <string name="home_fcb_local_ip_label">Локальный IP</string>
+    <string name="home_fcb_port_label">Порт</string>
+    <string name="home_fcb_udp_port_label">Порт</string>
+    <string name="home_fcb_udp_helper">Прослушивает широковещательную телеметрию в локальной сети.</string>
+
+    <!-- i18n: extracted hardcoded strings -->
+    <string name="toast_ping_time">Время пинга %1$s мс</string>
+    <string name="toast_msg_duration">длительность сообщения: %1$s мс</string>
+    <string name="toast_logs_exported_to">Журналы ошибок экспортированы в %1$s</string>
+    <string name="toast_no_logs_to_export">Нет журналов ошибок для экспорта</string>
+    <string name="toast_logger_unavailable">%1$s: журнал недоступен</string>
+    <string name="toast_logs_deleted">Журналы ошибок удалены</string>
+    <string name="toast_logs_delete_failed">Не удалось удалить журналы ошибок</string>
+    <string name="toast_usb_attached">USB подключён</string>
+    <string name="toast_usb_detached">USB отключён</string>
+    <string name="toast_auto_connect_fcb">Попытка автоматического подключения к FCB</string>
+    <string name="toast_ignore_connection">ИГНОРИРОВАТЬ %1$s</string>
+    <string name="dialog_delete_all_logs">Удалить все журналы ошибок?</string>
+    <string name="dialog_select_video_source">Выберите источник видео</string>
+    <string name="video_source_back_camera">Задняя камера</string>
+    <string name="video_source_front_camera">Фронтальная камера</string>
+    <string name="video_source_screen">Экран</string>
+    <string name="progress_initialization">Инициализация…</string>
+    <string name="progress_checking_sensors">Проверка датчиков</string>
+    <string name="label_me">Я</string>
+    <string name="label_no_data">Нет данных</string>
+    <string name="label_unknown">Неизвестно</string>
+    <string name="panic_3dr_disconnected">Служба 3DR отключена</string>
+    <string name="panic_3dr_connected">Служба 3DR подключена</string>
+    <string name="panic_3dr_connection_closed">Соединение со службой 3DR закрыто.</string>
+    <string name="panic_3dr_connect_failed">Не удалось подключиться к службе 3DR.</string>
+    <string name="panic_drone_disconnected">Дрон отключён</string>
+    <string name="panic_bluetooth_lost">Соединение Bluetooth потеряно</string>
+
+    <!-- MAVLink command result descriptions -->
+    <string name="mav_result_succeeded">успешно выполнено</string>
+    <string name="mav_result_temporarily_rejected">Команда действительна, но не может быть выполнена в данный момент. Используется для указания проблемы, которая будет устранена ожиданием (например, конечный автомат занят, невозможен ARM из-за отсутствия GPS-фиксации и т.д.). Повторная попытка позже должна сработать.</string>
+    <string name="mav_result_denied">Команда недействительна (поддерживается, но имеет неверные параметры). Повтор той же команды и параметров не сработает.</string>
+    <string name="mav_result_unsupported">Команда не поддерживается (неизвестна).</string>
+    <string name="mav_result_failed">Команда действительна, но выполнение завершилось неудачей. Используется для указания любой непостоянной или неожиданной проблемы, т.е. любой проблемы, которая должна быть устранена до успешного выполнения/повтора команды. Например, попытка записи файла при нехватке памяти, попытка ARM при неоткалиброванных датчиках и т.д.</string>
+    <string name="mav_result_in_progress">Команда действительна и выполняется. За этим последуют дальнейшие обновления прогресса, т.е. компонент может отправлять дополнительные сообщения COMMAND_ACK с результатом MAV_RESULT_IN_PROGRESS (с частотой, определяемой реализацией), и должен завершиться отправкой сообщения COMMAND_ACK с окончательным результатом операции. Поле COMMAND_ACK.progress может использоваться для индикации прогресса операции. Отправителю не нужно повторять команду, но если это сделано во время выполнения, компонент вернёт MAV_RESULT_IN_PROGRESS с обновлённым прогрессом.</string>
+    <string name="mav_result_command_long_only">Команда принимается только при отправке как COMMAND_LONG.</string>
+    <string name="mav_result_command_int_only">Команда принимается только при отправке как COMMAND_INT.</string>
+    <string name="mav_result_unknown">Неизвестно</string>
+
+    <!-- Language picker -->
+    <string name="dialog_select_language">Выбрать язык</string>
+    <string name="lang_system_default">По умолчанию системы</string>
+    <string name="lang_english">English</string>
+    <string name="lang_arabic">العربية</string>
+    <string name="lang_spanish">Español</string>
+    <string name="lang_russian">Русский</string>
+
+</resources>

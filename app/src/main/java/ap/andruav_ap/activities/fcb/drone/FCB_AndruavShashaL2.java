@@ -186,7 +186,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         }
         else
         {
-            txtMavSysID.setText("Unknown");
+            txtMavSysID.setText(getString(R.string.label_unknown));
         }
 
         final CharSequence[] baudRates = Constants.baudRateItems;

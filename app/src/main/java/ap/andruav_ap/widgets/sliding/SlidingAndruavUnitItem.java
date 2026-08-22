@@ -53,7 +53,7 @@ public class SlidingAndruavUnitItem extends ListUnitItemBase {
         boolean bRemoteGCS = false;
 
         if (bItIsMe) {
-            mMainButton.setText("Me");
+            mMainButton.setText(getContext().getString(R.string.label_me));
         } else {
             // put label in all cases
             mMainButton.setText(GUI.getButtonText(mAndruavUnit));

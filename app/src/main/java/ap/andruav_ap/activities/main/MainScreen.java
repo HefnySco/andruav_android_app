@@ -37,7 +37,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorRes;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
+import androidx.core.os.LocaleListCompat;
 
 import java.io.UnsupportedEncodingException;
 
@@ -505,8 +507,8 @@ public class MainScreen extends BaseAndruavShasha {
                             if (!eventWSComm.IsErr) {
 
 
-                                text += "<br><font color=#75A4D3>" + "msg duration: " + eventWSComm.timeStamp + "ms" + "</font'>";
-                                Toast.makeText(Me, "Ping time " + eventWSComm.timeStamp + "ms", Toast.LENGTH_LONG).show();
+                                text += "<br><font color=#75A4D3>" + getString(R.string.toast_msg_duration, eventWSComm.timeStamp) + "</font'>";
+                                Toast.makeText(Me, getString(R.string.toast_ping_time, eventWSComm.timeStamp), Toast.LENGTH_LONG).show();
                                 if (!onFinalConnectionSucceededCalled) onFinalConnectionSucceeded();
                                 /* always start it as u may want to track GCS in follow me forexample
                                 if (App.isCGS == false) {
@@ -978,6 +980,7 @@ public class MainScreen extends BaseAndruavShasha {
 
         bindMenuRow(content, R.id.home_menu_row_help, popup, this::doHelp, true);
         bindMenuRow(content, R.id.home_menu_row_settings, popup, this::doSettings_Drone, mSettingsEnabled);
+        bindMenuRow(content, R.id.home_menu_row_language, popup, this::doLanguage, true);
         bindMenuRow(content, R.id.home_menu_row_reset, popup, this::doFactoryReset, mMenuActionsEnabled);
         bindMenuRow(content, R.id.home_menu_row_export_logs, popup, this::doExportErrorLogs, true);
         bindMenuRow(content, R.id.home_menu_row_clear_logs, popup, this::doClearErrorLogs, true);
@@ -1284,16 +1287,16 @@ public class MainScreen extends BaseAndruavShasha {
     private void doExportErrorLogs() {
         final ExceptionDaoLogger logger = App.exceptionDaoLogger;
         if (logger == null) {
-            Toast.makeText(Me, getString(R.string.home_menu_export_logs) + ": logger unavailable", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Me, getString(R.string.toast_logger_unavailable, getString(R.string.home_menu_export_logs)), Toast.LENGTH_SHORT).show();
             return;
         }
         new Thread(() -> {
             final Uri uri = logger.exportExceptionLogAsCSV();
             runOnUiThread(() -> {
                 if (uri != null) {
-                    Toast.makeText(Me, "Error logs exported to " + uri, Toast.LENGTH_LONG).show();
+                    Toast.makeText(Me, getString(R.string.toast_logs_exported_to, uri), Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(Me, "No error logs to export", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Me, getString(R.string.toast_no_logs_to_export), Toast.LENGTH_SHORT).show();
                 }
             });
         }).start();
@@ -1302,17 +1305,17 @@ public class MainScreen extends BaseAndruavShasha {
     private void doClearErrorLogs() {
         final ExceptionDaoLogger logger = App.exceptionDaoLogger;
         if (logger == null) {
-            Toast.makeText(Me, getString(R.string.home_menu_clear_logs) + ": logger unavailable", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Me, getString(R.string.toast_logger_unavailable, getString(R.string.home_menu_clear_logs)), Toast.LENGTH_SHORT).show();
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(Me);
-        builder.setMessage("Delete all error logs?")
+        builder.setMessage(getString(R.string.dialog_delete_all_logs))
                 .setCancelable(false)
                 .setPositiveButton(android.R.string.yes, (dialog, id) -> {
                     new Thread(() -> {
                         final boolean ok = logger.clearExceptionLog();
                         runOnUiThread(() -> Toast.makeText(Me,
-                                ok ? "Error logs deleted" : "Failed to delete error logs",
+                                ok ? getString(R.string.toast_logs_deleted) : getString(R.string.toast_logs_delete_failed),
                                 Toast.LENGTH_SHORT).show());
                     }).start();
                 })
@@ -1322,6 +1325,43 @@ public class MainScreen extends BaseAndruavShasha {
 
     private void doSettings() {
        doSettings_Drone();
+    }
+
+    private void doLanguage() {
+        final String[] labels = {
+            getString(R.string.lang_system_default),
+            getString(R.string.lang_english),
+            getString(R.string.lang_arabic),
+            getString(R.string.lang_spanish),
+            getString(R.string.lang_russian)
+        };
+        final LocaleListCompat current = AppCompatDelegate.getApplicationLocales();
+        final int checked;
+        if (current.isEmpty()) {
+            checked = 0; // System Default
+        } else {
+            String tag = current.toLanguageTags();
+            if (tag.startsWith("ar")) checked = 2;
+            else if (tag.startsWith("es")) checked = 3;
+            else if (tag.startsWith("ru")) checked = 4;
+            else checked = 1; // English
+        }
+        new AlertDialog.Builder(Me)
+                .setTitle(getString(R.string.dialog_select_language))
+                .setSingleChoiceItems(labels, checked, (dialog, which) -> {
+                    LocaleListCompat locales;
+                    switch (which) {
+                        case 1:  locales = LocaleListCompat.forLanguageTags("en"); break;
+                        case 2:  locales = LocaleListCompat.forLanguageTags("ar"); break;
+                        case 3:  locales = LocaleListCompat.forLanguageTags("es"); break;
+                        case 4:  locales = LocaleListCompat.forLanguageTags("ru"); break;
+                        default: locales = LocaleListCompat.getEmptyLocaleList(); break; // System Default
+                    }
+                    AppCompatDelegate.setApplicationLocales(locales);
+                    dialog.dismiss();
+                })
+                .setNegativeButton(android.R.string.cancel, (dialog, id) -> dialog.cancel())
+                .show();
     }
 
 
@@ -1446,7 +1486,7 @@ public class MainScreen extends BaseAndruavShasha {
             String action = intent.getAction();
 
             if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
-                Toast.makeText(Me,"Usb Attached",Toast.LENGTH_LONG).show();
+                Toast.makeText(Me, getString(R.string.toast_usb_attached), Toast.LENGTH_LONG).show();
                 TelemetryModeer.connectToPreferredConnection(Me,false);
             }
         }
@@ -1457,7 +1497,7 @@ public class MainScreen extends BaseAndruavShasha {
             String action = intent.getAction();
 
             if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-                Toast.makeText(Me,"Usb Detached",Toast.LENGTH_LONG).show();
+                Toast.makeText(Me, getString(R.string.toast_usb_detached), Toast.LENGTH_LONG).show();
 
             }
         }

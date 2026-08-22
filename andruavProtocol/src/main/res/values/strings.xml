@@ -62,4 +62,14 @@
 
     <string name="andruav_module_added">Andruav Module Added</string>
 
+    <!-- i18n: PanicFacade notification levels -->
+    <string name="err_level_error">Error</string>
+    <string name="err_level_warning">Warning</string>
+    <string name="err_level_message">Message</string>
+
+    <!-- i18n: GPS mode change notifications -->
+    <string name="gps_mode_auto">GPS Mode is Auto</string>
+    <string name="gps_mode_mobile">GPS Mode is Mobile Only</string>
+    <string name="gps_mode_fcb">GPS Mode is FCB Only</string>
+
 </resources>

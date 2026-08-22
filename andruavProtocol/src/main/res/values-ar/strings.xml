@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="andruav_no_fcb">لا يتوفر FCB.</string>
+    <string name="andruav_noti_disconnect"> تم قطع الاتصال! </string>
+    <string name="andruav_noti_connect"> متصل </string>
+    <string name="andruav_noti_reconnect"> إعادة الاتصال </string>
+
+
+    <!-- Notification errors -->
+    <string name="andruav_error_camertakeimage">"لا يمكن التقاط الصور أو حفظ الصورة.</string>
+    <string name="andruav_error_cameraopen">تعذر تشغيل الكاميرا.</string>
+    <string name="andruav_error_nocamera">لا توجد كاميرا على هذا الجهاز.</string>
+    <string name="andruav_error_usberror">تم قطع اتصال قياسات الطيران عبر USB للطائرة</string>
+    <string name="andruav_error_dronekitconnection">تم قطع اتصال قياسات الطيران للطائرة</string>
+    <string name="andruav_error_lowbattery">بطارية منخفضة</string>
+    <string name="andruav_error_dronekitconnection_res">تم استعادة قياسات الطيران للطائرة</string>
+    <string name="andruav_error_bluetootherror">تم قطع اتصال قياسات الطيران عبر البلوتوث للطائرة</string>
+    <string name="andruav_error_telemetryprotocol_undef">تعذر تحديد بروتوكول القياسات.</string>
+    <string name="udp_proxy_en">تم تفعيل قياسات UDP</string>
+    <string name="udp_proxy_dis">تم تعطيل قياسات UDP</string>
+    <string name="andruav_error_autopilot_cannot_do">الأمر غير مدعوم</string>
+    <string name="andruav_error_autopilot_cannot_do_arm">لا يمكن للطائرة القيام بالتسليح (ARM)</string>
+    <string name="andruav_error_autopilot_cannot_do_disarm">لا يمكن للطائرة القيام بإلغاء التسليح (DISARM)</string>
+    <string name="andruav_error_autopilot_cannot_do_triggercamera">لا يمكن للطائرة التقاط الصور</string>
+    <string name="andruav_error_autopilot_cannot_do_gimbal">لا يمكن للطائرة التحكم بالجيمبال</string>
+    <string name="andruav_error_autopilot_cannot_do_mission">لا يمكن للطائرة تنفيذ مهام المهمة</string>
+    <string name="andruav_error_autopilot_cannot_do_mission_write">لا يمكن للطائرة كتابة المهمة</string>
+    <string name="andruav_error_autopilot_cannot_do_land">لا يمكن للطائرة الهبوط</string>
+    <string name="andruav_error_autopilot_cannot_do_surface">لا يمكن للطائرة الوصول للسطح</string>
+    <string name="andruav_error_autopilot_cannot_do_yaw">لا يمكن للطائرة تغيير الاتجاه (YAW)</string>
+    <string name="andruav_error_autopilot_cannot_do_servo">فشل أمر السيرفو.</string>
+    <string name="andruav_error_autopilot_cannot_do_followme">لا يمكن للطائرة تتبعي</string>
+    <string name="andruav_error_autopilot_cannot_do_takeoff">لا يمكن للطائرة الإقلاع</string>
+    <string name="andruav_error_autopilot_cannot_do_loiter">لا يمكن للطائرة التحويم (Loiter)</string>
+    <string name="andruav_error_autopilot_cannot_do_rtl">لا يمكن للطائرة العودة للمنزل (RTL)</string>
+    <string name="andruav_error_autopilot_cannot_do_smart_rtl">لا يمكن للطائرة العودة الذكية للمنزل (Smart RTL)</string>
+    <string name="andruav_error_autopilot_cannot_do_guided">لا يمكن للطائرة الوضع الموجّه (Guided)</string>
+    <string name="andruav_error_autopilot_cannot_do_manual">لا يمكن للطائرة الوضع اليدوي</string>
+    <string name="andruav_error_autopilot_cannot_do_acro">لا يمكن للطائرة الوضع الأكروباتي (Acro)</string>
+    <string name="andruav_error_autopilot_cannot_do_circle">الوضع الدائري غير مدعوم</string>
+
+    <string name="andruav_error_autopilot_cannot_do_pos_hold">لا يمكن للطائرة الثبات في الموضع (Position Hold)</string>
+    <string name="andruav_error_autopilot_cannot_do_alt_hold">لا يمكن للطائرة الثبات في الارتفاع (ALT_HOLD)</string>
+    <string name="andruav_error_autopilot_cannot_do_auto">لا يمكن للطائرة الوضع التلقائي</string>
+    <string name="andruav_error_autopilot_cannot_do_fbwa">لا يمكن للطائرة الطيران بالسلك (Fly by wire)</string>
+    <string name="andruav_error_autopilot_cannot_do_cruise">لا يمكن للطائرة الوضع السياحي (Cruise)</string>
+    <string name="andruav_error_autopilot_cannot_do_brake">لا يمكن للطائرة الكبح (Brake)</string>
+    <string name="andruav_error_autopilot_cannot_do_hold">لا يمكن للطائرة التثبيت (Hold)</string>
+
+
+
+    <string name="andruav_error_geofence_safe">السياج الجغرافي آمن</string>
+    <string name="andruav_error_geofence_unsafe">انتهاك السياج الجغرافي</string>
+
+    <string name="andruav_error_permission_denied">تم رفض الإذن: ميزة %1$s معطلة.</string>
+
+    <string name="gen_rc_releazed">تم تحرير جهاز التحكم اللاسلكي. يمكنك استخدام جهاز الإرسال للتحكم</string>
+    <string name="gen_rc_freezed">تم تجميد جهاز التحكم اللاسلكي. لا يوجد تحكم عبر جهاز الإرسال.</string>
+    <string name="gen_rc_centered">تم توسيط جهاز التحكم اللاسلكي. لا يوجد تحكم.</string>
+    <string name="gen_rc_joystick">جهاز التحكم اللاسلكي تحت تحكم عصا التحكم بمحطة GCS</string>
+
+
+    <string name="andruav_module_added">تمت إضافة وحدة Andruav</string>
+
+    <!-- i18n: PanicFacade notification levels -->
+    <string name="err_level_error">خطأ</string>
+    <string name="err_level_warning">تحذير</string>
+    <string name="err_level_message">رسالة</string>
+
+    <!-- i18n: GPS mode change notifications -->
+    <string name="gps_mode_auto">وضع GPS تلقائي</string>
+    <string name="gps_mode_mobile">وضع GPS عبر الجوال فقط</string>
+    <string name="gps_mode_fcb">وضع GPS عبر FCB فقط</string>
+
+</resources>

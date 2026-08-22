@@ -17,6 +17,8 @@ import com.andruav.AndruavFacade;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 import com.andruav.interfaces.INotification;
 
+import ap.andruav_ap.R;
+
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_REGISTERED;
 
 import java.io.BufferedInputStream;
@@ -300,7 +302,7 @@ public synchronized void Connect(String MAC) {
             {
                 if (exception_BT_disconnect_err>0) {
                     exception_BT_disconnect_err = exception_BT_disconnect_err -1;
-                    PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_BLUETOOTH, "Bluetooth connection lost", null);
+                    PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_BLUETOOTH, AndruavEngine.AppContext.getString(R.string.panic_bluetooth_lost), null);
 
                 }
 
