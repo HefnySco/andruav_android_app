@@ -104,6 +104,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /> <!-- keep foreground services (telemetry/FPV) alive in background -->
 
     <application
@@ -176,6 +177,11 @@
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true" />
         <activity
+            android:name="ap.andruav_ap.activities.fpv.drone.ScreenCapturePermissionActivity"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
             android:name="ap.andruav_ap.activities.HUBCommunication"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_hubcommunication"
@@ -232,7 +238,7 @@
             android:name="ap.andruav_ap.services.fpv.FPVStreamingService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="camera|microphone" />
+            android:foregroundServiceType="camera|microphone|mediaProjection" />
 
         <receiver
             android:name="ap.andruav_ap.broadcastReceiver.BOOT_Receiver"

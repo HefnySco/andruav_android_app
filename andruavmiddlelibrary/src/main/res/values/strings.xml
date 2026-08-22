@@ -94,6 +94,8 @@
     <string name="pref_gr_fpv_streamres_back_summary">Streaming resolution used when the back camera is active. Also used for still images, which are captured from the live stream.</string>
     <string name="pref_gr_fpv_streamres_front">Front Camera Resolution</string>
     <string name="pref_gr_fpv_streamres_front_summary">Streaming resolution used when the front camera is active. Also used for still images, which are captured from the live stream.</string>
+    <string name="pref_gr_fpv_screen_streaming">Allow Screen Streaming</string>
+    <string name="pref_gr_fpv_screen_streaming_summary">Show a source picker (Back/Front/Screen) when opening the FPV screen and advertise three separately-selectable video sources to the web/GCS. When off, behaves as before: single camera, auto-start.</string>
     <string name="pref_gr_fpv_imagecapturesize">Captured Image Size</string>
     <string name="pref_gr_fpv_imagecapturesize_summary">Note: Should be higher or equal to Video Image Size.</string>
     <string name="pref_gr_fpv_useInternalCamera">Use Camera for GCS</string>
@@ -162,6 +164,7 @@
     <string name="action_cam_img_interval">Shooting Intervals</string>
     <string name="action_cam_img_total">Total Images</string>
     <string name="action_cam_swap">swap</string>
+    <string name="action_screen_share">screen</string>
     <string name="action_cam_shoot">shoot</string>
     <string name="action_imu_zero">zero</string>
     <string name="action_video_shoot">video</string>

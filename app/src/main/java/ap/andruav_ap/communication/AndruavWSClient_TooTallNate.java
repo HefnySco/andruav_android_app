@@ -60,6 +60,7 @@ import java.io.UnsupportedEncodingException;
 import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 import ap.andruav_ap.Emergency;
+import ap.andruav_ap.services.fpv.FPVStreamingService;
 import com.andruav.event.fcb_event.Event_FCBData;
 import com.andruav.event.fcb_event.Event_SocketData;
 import ap.andruavmiddlelibrary.ILoginClientCallback;
@@ -966,7 +967,13 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                                     AndruavSettings.mVideoRequests.remove(andruavUnit.PartyID);
                                     // Only stop once no consumer still wants video - one viewer
                                     // disconnecting shouldn't kill the stream for others watching.
-                                    if (AndruavSettings.mVideoRequests.isEmpty()) {
+                                    // Skip the auto-stop when screen capture is active: a
+                                    // MediaProjection consent is single-use, so stopping the
+                                    // capturer revokes the projection and makes it impossible to
+                                    // restart without re-granting permission on the phone.
+                                    if (AndruavSettings.mVideoRequests.isEmpty()
+                                            && (App.iFPVStreamingService == null
+                                                || !FPVStreamingService.isScreenCaptureActive())) {
                                         EventBus.getDefault().post(new _7adath_StopAndroidCamera());
                                     }
                                 }
