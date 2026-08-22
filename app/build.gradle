@@ -20,8 +20,10 @@ android {
         applicationId 'ardupilot.andruav'
         minSdkVersion android_build_min_sdk_version
         targetSdkVersion android_build_target_sdk_version
-        versionName '11.6.0'
-        versionCode 1110600
+
+
+        versionName '13.0.0'
+        versionCode 1130000
         multiDexEnabled true
     }
 

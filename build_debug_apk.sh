@@ -1,16 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# build_release_apk.sh — Build the Andruav Android app as a signed release APK.
-# Signing credentials are read from a gitignored keystore.properties file at
-# the project root. If the file is absent the build falls back to the debug
-# keystore (see app/build.gradle signingConfigs), which is fine for local
-# testing but NOT for a production/SourceForge release.
+# build_debug_apk.sh — Build the Andruav Android app as a debug APK.
+# Debug builds are signed with the auto-generated debug keystore, so no
+# keystore.properties is required.
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$PROJECT_DIR"
 
-DEFAULT_OUT_DIR="$PROJECT_DIR/app/build/outputs/apk/release"
+DEFAULT_OUT_DIR="$PROJECT_DIR/app/build/outputs/apk/debug"
 CLEAN=1
 OUTPUT_DIR="$DEFAULT_OUT_DIR"
 
@@ -65,18 +63,6 @@ fi
 
 export ANDROID_HOME
 
-# Require keystore.properties for a signed release. The Gradle script falls
-# back to the debug keystore when it's missing, so we only warn here and let
-# the build proceed — but make it very visible.
-KEYSTORE_PROPS="$PROJECT_DIR/keystore.properties"
-if [[ ! -f "$KEYSTORE_PROPS" ]]; then
-  echo "Warning: keystore.properties not found at $KEYSTORE_PROPS" >&2
-  echo "         Release will be signed with the DEBUG keystore (not suitable for production)." >&2
-  echo "         Create keystore.properties with storeFile/storePassword/keyAlias/keyPassword." >&2
-else
-  echo "==> Using signing credentials from $KEYSTORE_PROPS"
-fi
-
 # Validate the SDK components this project expects.
 REQUIRED_PLATFORM="$ANDROID_HOME/platforms/android-34"
 REQUIRED_BUILD_TOOLS="$ANDROID_HOME/build-tools/34.0.0"
@@ -108,13 +94,13 @@ if [[ "$CLEAN" -eq 1 ]]; then
   ./gradlew clean --no-daemon
 fi
 
-echo "==> Building release APK..."
-./gradlew :app:assembleRelease --no-daemon
+echo "==> Building debug APK..."
+./gradlew :app:assembleDebug --no-daemon
 
 # Locate the built APK.
-APK_PATH=$(find "$PROJECT_DIR/app/build/outputs/apk/release" -maxdepth 1 -name '*.apk' -type f | sort -V | tail -n1)
+APK_PATH=$(find "$PROJECT_DIR/app/build/outputs/apk/debug" -maxdepth 1 -name '*.apk' -type f | sort -V | tail -n1)
 if [[ -z "$APK_PATH" ]]; then
-  echo "Error: no APK found in $PROJECT_DIR/app/build/outputs/apk/release" >&2
+  echo "Error: no APK found in $PROJECT_DIR/app/build/outputs/apk/debug" >&2
   exit 1
 fi
 
@@ -128,7 +114,7 @@ if [[ "$(readlink -f "$APK_PATH")" != "$(readlink -f "$FINAL_PATH")" ]]; then
 fi
 
 echo ""
-echo "==> Release APK built successfully:"
+echo "==> Debug APK built successfully:"
 echo "    $FINAL_PATH"
 ls -lh "$FINAL_PATH"
 
