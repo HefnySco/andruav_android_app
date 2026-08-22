@@ -460,30 +460,31 @@ public class FPVDroneRTCWebCamActivity extends Activity {
 
 
         btnCameraSwitch = findViewById(R.id.fpvactivity_btn_CameraSwitch);
-        btnCameraSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (andruavUnit_selected.UnitID.equals(AndruavSettings.andruavWe7daBase.UnitID)) {
-                    if ((mBoundService != null) && (mBoundService.getPeerConnectionManager() != null)) {
-                        mBoundService.getPeerConnectionManager().switchCamera();
+        // In screen-streaming mode (preference ON), a simple click requests screen capture
+        // (no long-press needed) and the button is tinted blue to signal its changed function.
+        // In legacy camera mode (preference OFF), the click swaps front/back camera as before.
+        if (Preference.isScreenStreamingEnabled(null)) {
+            btnCameraSwitch.getBackground().setColorFilter(0xFF2196F3, android.graphics.PorterDuff.Mode.SRC_ATOP);
+            btnCameraSwitch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (andruavUnit_selected.UnitID.equals(AndruavSettings.andruavWe7daBase.UnitID)) {
+                        requestScreenCapture();
                     }
                 }
-            }
-        });
-        // Long-press the camera-swap button to switch the capture source from camera to device
-        // screen (MediaProjection). A long-press is used so the existing tap-to-swap behavior is
-        // unchanged; screen capture needs an Activity-hosted permission dialog that camera swap
-        // does not, so it has its own entry path.
-        btnCameraSwitch.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                if (andruavUnit_selected.UnitID.equals(AndruavSettings.andruavWe7daBase.UnitID)) {
-                    requestScreenCapture();
-                    return true;
+            });
+        } else {
+            btnCameraSwitch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (andruavUnit_selected.UnitID.equals(AndruavSettings.andruavWe7daBase.UnitID)) {
+                        if ((mBoundService != null) && (mBoundService.getPeerConnectionManager() != null)) {
+                            mBoundService.getPeerConnectionManager().switchCamera();
+                        }
+                    }
                 }
-                return false;
-            }
-        });
+            });
+        }
 
         btnStopStream = findViewById(R.id.fpvactivity_btn_StopStream);
         btnStopStream.setOnClickListener(new View.OnClickListener() {
