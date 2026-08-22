@@ -33,7 +33,7 @@ import ap.andruavmiddlelibrary.webrtc.events.Event_WebRTC;
 public class PnPeer implements SdpObserver, PeerConnection.Observer {
     public static final String TAG = "PnPeer";
     public static final String STATUS_CONNECTING = "CONNECTING";
-    public static final String STATUS_CONNECTED = "CONNECTED"; // TODO: Where to change status to this?
+    public static final String STATUS_CONNECTED = "CONNECTED";
     public static final String STATUS_DISCONNECTED = "DISCONNECTED";
     public static final String TYPE_NONE = "NONE";
     public static final String TYPE_OFFER = "offer";
@@ -198,7 +198,7 @@ public class PnPeer implements SdpObserver, PeerConnection.Observer {
             if (this.status.equals(STATUS_DISCONNECTED)) return; // Already hung up on.
             if (iceConnectionState == PeerConnection.IceConnectionState.DISCONNECTED) {
                 setStatus(STATUS_DISCONNECTED);
-                pcClient.removePeer(id, mChannel); // TODO: Ponder. Also, might want to Pub a disconnect.
+                pcClient.removePeer(id, mChannel);
                 AndruavEngine.getEventBus().post(new Event_WebRTC(this.id, this.mChannel, Event_WebRTC.EVENT_CLOSED_CONNECTION));
             }
             else

@@ -80,7 +80,7 @@ import ap.andruavmiddlelibrary.factory.tts.TTS;
 import ap.andruavmiddlelibrary.factory.util.GMail;
 import ap.andruavmiddlelibrary.factory.tts.SoundManager;
 import ap.andruavmiddlelibrary.factory.util.DialogHelper;
-import ap.andruavmiddlelibrary.log.ExceptionHTTPLogger;
+import ap.andruavmiddlelibrary.log.ExceptionDaoLogger;
 
 import com.andruav.AndruavEngine;
 import com.andruav.andruavUnit.AndruavUnitBase;
@@ -1282,7 +1282,7 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
     private void doExportErrorLogs() {
-        final ExceptionHTTPLogger logger = App.exceptionHTTPLogger;
+        final ExceptionDaoLogger logger = App.exceptionDaoLogger;
         if (logger == null) {
             Toast.makeText(Me, getString(R.string.home_menu_export_logs) + ": logger unavailable", Toast.LENGTH_SHORT).show();
             return;
@@ -1300,7 +1300,7 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
     private void doClearErrorLogs() {
-        final ExceptionHTTPLogger logger = App.exceptionHTTPLogger;
+        final ExceptionDaoLogger logger = App.exceptionDaoLogger;
         if (logger == null) {
             Toast.makeText(Me, getString(R.string.home_menu_clear_logs) + ": logger unavailable", Toast.LENGTH_SHORT).show();
             return;

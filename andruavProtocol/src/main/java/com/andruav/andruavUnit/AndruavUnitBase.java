@@ -1426,7 +1426,6 @@ public class AndruavUnitBase {
             }
 
             // Inform other parties.
-            //TODO: can you filter this to GCS only ?
             AndruavFacade.sendID(Constants._gcs_);
 
         }

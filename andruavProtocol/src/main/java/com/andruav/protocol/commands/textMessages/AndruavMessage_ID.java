@@ -165,7 +165,6 @@ public class AndruavMessage_ID extends AndruavMessageBase {
         if (json_receive_data.has("z"))  FlyingLastStartTime = json_receive_data.getLong("z");
         if (json_receive_data.has("a"))  FlyingTotalDuration = json_receive_data.getLong("a");
         if (json_receive_data.has("p"))  Permissions = json_receive_data.getString("p");
-        //TODO: backword compatibility
         if (json_receive_data.has("TP")) {
             telemetry_protocol = json_receive_data.getInt("TP");
         }

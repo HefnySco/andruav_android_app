@@ -151,7 +151,6 @@ public abstract class AndruavWSClientBase {
 
 
     /***
-     * @// FIXME: 10/2/15 remove emnuerator and use constants
      * This enumerator is used to define status of the websocket connection.
      */
 
@@ -1934,7 +1933,6 @@ public abstract class AndruavWSClientBase {
         }
         catch (Exception e)
         {
-            // TODO: Send event here to say that you cannot sendMessageToModule.... maybe also you need to disconnect.
             AndruavEngine.log().logException(AndruavSettings.Account_SID, "exception_ws3", e);
 
         }
@@ -1977,7 +1975,6 @@ public abstract class AndruavWSClientBase {
         }
         catch (Exception e)
         {
-            // TODO: Send event here to say that you cannot sendMessageToModule.... maybe also you need to disconnect.
             AndruavEngine.log().logException(AndruavSettings.Account_SID, "exception_ws3", e);
         }
     }

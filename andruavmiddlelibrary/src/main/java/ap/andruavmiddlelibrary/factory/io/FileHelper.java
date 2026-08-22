@@ -51,7 +51,6 @@ public class FileHelper {
         FileOutputStream fileOutputStream = new FileOutputStream(targetFile);
 
         int     length;
-        //TODO: bug expected issue here for fixed size allocation.
         byte[] buffer = new byte[1024*32];
         while( (length = fileInputStream.read(buffer)) != -1){
             fileOutputStream.write(buffer,0,length);
@@ -89,7 +88,6 @@ public class FileHelper {
         Boolean externalStorageWriteable = false;
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
-            // TODO: handle if storage is not available
             if (Environment.MEDIA_MOUNTED.equals(state)) {
                 externalStorageWriteable = true;
             } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {

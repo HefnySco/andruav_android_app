@@ -35,7 +35,7 @@ import org.webrtc.MediaStream;
      */
     public void onPeerStatusChanged(PnPeer peer){}
 
-    /**TODO: Is this different than onPeerStatusChanged == DISCONNECTED?
+    /**
      * Called when a hangup occurs.
      * @param peer The peer who was hung up on, or who hung up on you
      */

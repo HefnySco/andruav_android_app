@@ -179,10 +179,7 @@ public java.util.Set<android.bluetooth.BluetoothDevice> getBondedDevices()
 
 public void GetRemoteDevice(String MAC) {
 
-    //TODO: Fix Toasts and strings here
-       ///////////// Toast.makeText(context, context.getString(R.string.Connecting), Toast.LENGTH_LONG).show();
-        // app.Speak("Connecting");
-
+       
         address = MAC;
 
         // When this returns, it will 'know' about the server,

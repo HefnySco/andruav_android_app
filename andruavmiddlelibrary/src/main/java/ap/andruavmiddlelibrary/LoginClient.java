@@ -195,7 +195,6 @@ public class LoginClient {
 
           @Override
             protected Void doInBackground(Void... params) {
-                // TODO Auto-generated method stub
                    OkHttpClient.Builder clientBuilder = mclientHTTP.newBuilder().readTimeout(100, TimeUnit.SECONDS);
                final EventLoginClient eventLoginClient = new EventLoginClient(cmd,urls[0].second,urls[1].second,LoginClient.LastError,LoginClient.LastMessage,Parameters);
 
@@ -323,7 +322,7 @@ public class LoginClient {
                     return null;
                 }
                 catch (Exception error) {
-                   // ExceptionHTTPLogger.logException(App.Account_SID, "exception", error);
+                   // ExceptionDaoLogger.logException(App.Account_SID, "exception", error);
                     if (iLoginClientCallback !=null) {
                         iLoginClientCallback.onError();
                     }

@@ -104,7 +104,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import ap.andruavmiddlelibrary.log.ExceptionHTTPLogger;
+import ap.andruavmiddlelibrary.log.ExceptionDaoLogger;
 import ap.andruavmiddlelibrary.log.ExceptionHandler;
 import ap.sensors.SensorService;
 import ap.andruav_ap.services.fpv.FPVStreamingService;
@@ -166,7 +166,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     /*public static USBFCB usbConn;
     public static FTDIFCB ftdiusbConn;*/
     public static String versionName;
-    public static ExceptionHTTPLogger exceptionHTTPLogger;
+    public static ExceptionDaoLogger exceptionDaoLogger;
     public static Notification notification;
 
     public static TelemetryProtocolParser telemetryProtocolParser;
@@ -920,8 +920,8 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         notification.init(App.context);
         AndruavEngine.setNotificationHandler(notification);
 
-        exceptionHTTPLogger = new ExceptionHTTPLogger();
-        AndruavEngine.setLogHandler(exceptionHTTPLogger);
+        exceptionDaoLogger = new ExceptionDaoLogger();
+        AndruavEngine.setLogHandler(exceptionDaoLogger);
         UDPProxy udpProxy = new UDPProxy();
         try {
             udpProxy.init();
@@ -948,7 +948,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
 
         defineAndruavUnit(false);
-        //exceptionHTTPLogger.Logentris(AndruavSettings.AccessCode,"INFO","Started");
+        //exceptionDaoLogger.Logentris(AndruavSettings.AccessCode,"INFO","Started");
 
 
 

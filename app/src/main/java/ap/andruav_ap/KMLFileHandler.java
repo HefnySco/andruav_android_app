@@ -125,8 +125,6 @@ public class KMLFileHandler {
 
         if (event_fpv_image.ImageFile==null) return ;
 
-        //TODO: HERE WE Ignore saving remote images
-        // dont save remote images in ur KML file .. you might need that in future
        // if (event_fpv_image.isLocalImage==false) return ;
         if (!event_fpv_image.isLocalImage) return ;
 

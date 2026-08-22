@@ -34,13 +34,6 @@ public class SMS {
                 return;
             }
             if (ActivityCompat.checkSelfPermission(AndruavEngine.AppContext, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
                 AndruavEngine.log().log2("SMS", "sms_skip", "sendSMS skipped: SEND_SMS permission denied (to=" + phoneNo + ")");
                 if (AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED)) {
                     AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_TELEMETRY, INotification.NOTIFICATION_TYPE_ERROR,

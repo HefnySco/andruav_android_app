@@ -162,7 +162,7 @@ public class PeerConnectionClientBase {
 
 
 
-    /**TODO: Add a max user threshold.
+    /**
      * Connect with another user by their ID.
      * @param userId The user to establish a WebRTC connection with
      * @return boolean value of success

@@ -36,7 +36,7 @@ import java.util.Locale;
  * locally in the greenDAO database. Use {@link #exportExceptionLogAsCSV()} to dump the exception
  * log to a CSV file under Download/AndruavLogs, and {@link #clearExceptionLog()} to wipe it.
  */
-public class ExceptionHTTPLogger implements ILog {
+public class ExceptionDaoLogger implements ILog {
 
 
     protected  final static String LINE_SEPARATOR = "\r\n";
@@ -68,7 +68,7 @@ public class ExceptionHTTPLogger implements ILog {
                 logDao.insert(new LogRow(null, userName, tag, text));
             } catch (Exception e) {
                 if (FeatureSwitch.DEBUG_MODE) {
-                    Log.e("ExceptionHTTPLogger", "insert failed", e);
+                    Log.e("ExceptionDaoLogger", "insert failed", e);
                 }
             }
         }
@@ -231,7 +231,7 @@ public class ExceptionHTTPLogger implements ILog {
         catch (Exception e)
         {
             if (FeatureSwitch.DEBUG_MODE) {
-                Log.e("ExceptionHTTPLogger", "log failed", e);
+                Log.e("ExceptionDaoLogger", "log failed", e);
             }
         }
     }
@@ -275,7 +275,7 @@ public class ExceptionHTTPLogger implements ILog {
             rows = logDao.queryBuilder().list();
         } catch (Exception e) {
             if (FeatureSwitch.DEBUG_MODE) {
-                Log.e("ExceptionHTTPLogger", "exportExceptionLogAsCSV query failed", e);
+                Log.e("ExceptionDaoLogger", "exportExceptionLogAsCSV query failed", e);
             }
             return null;
         }
@@ -358,7 +358,7 @@ public class ExceptionHTTPLogger implements ILog {
             return true;
         } catch (Exception e) {
             if (FeatureSwitch.DEBUG_MODE) {
-                Log.e("ExceptionHTTPLogger", "clearExceptionLog failed", e);
+                Log.e("ExceptionDaoLogger", "clearExceptionLog failed", e);
             }
             return false;
         }
