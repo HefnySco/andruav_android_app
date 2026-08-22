@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.Surface;
+import android.view.View;
 
 import java.util.List;
 
@@ -127,8 +128,34 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
         @Override
         public void onStop() {
             Log.w("rtc", "MediaProjection stopped/revoked - screen capture will no longer produce frames");
+            stopScreenKeepalive();
         }
     };
+
+    // --- Screen capture keepalive (minimum FPS) ---
+    // MediaProjection's VirtualDisplay only produces a frame when the screen compositor composites
+    // a new buffer — which doesn't happen if the on-screen content is completely static. On a
+    // quiet FPV screen the encoder starves, the web client sees 0 fps and times out. To guarantee
+    // a minimum frame rate we periodically invalidate a tiny invisible View added to the current
+    // Activity's content overlay, which dirty-rects the compositor and forces a new buffer to be
+    // composited and handed to the VirtualDisplay, so ScreenCapturerAndroid emits a frame even
+    // when nothing else on screen changed. Uses the Activity's window (no SYSTEM_ALERT_WINDOW
+    // permission needed), so it only works while an Activity is in the foreground — which is the
+    // common case for screen streaming (the FPV Activity is open).
+    private View mKeepaliveView;
+    private final Handler mKeepaliveHandler = new Handler(Looper.getMainLooper());
+    private final Runnable mKeepaliveTick = new Runnable() {
+        @Override
+        public void run() {
+            if (mKeepaliveView == null) return;
+            // Toggle visibility to force a composite pass. INVISIBLE <-> VISIBLE both produce
+            // a dirty rect on the compositor, which makes MediaProjection emit a frame.
+            mKeepaliveView.setVisibility(
+                    mKeepaliveView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+            mKeepaliveHandler.postDelayed(this, KEEPALIVE_INTERVAL_MS);
+        }
+    };
+    private static final long KEEPALIVE_INTERVAL_MS = 1000L / 5; // 5 fps minimum
     private int mCaptureWidth = 1280;
     private int mCaptureHeight = 720;
     private int mCaptureFps = 15;
@@ -330,7 +357,9 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
             if (mIsScreenCapture) {
                 capturer = new ScreenCapturerAndroid(screenCaptureIntent, mediaProjectionCallback);
+                startScreenKeepalive(context);
             } else {
+                stopScreenKeepalive();
                 org.webrtc.AndruavWebRTCGlobals.fixedDeviceOrientationDegrees = 90;
                 capturer = createVideoCapturer();
             }
@@ -344,6 +373,69 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
             AndruavEngine.log().logException("rtc-switch-source", ex);
             return false;
         }
+    }
+
+    /**
+     * Adds a 1x1 transparent View to the current Activity's content overlay and toggles its
+     * visibility at a fixed interval to force the screen compositor to produce new frames even
+     * when the on-screen content is static. This guarantees a minimum frame rate from
+     * {@link ScreenCapturerAndroid} / MediaProjection, which otherwise only emits a frame when
+     * the compositor composites a new buffer. Uses the Activity's window (no
+     * SYSTEM_ALERT_WINDOW permission needed), so it only works while an Activity is in the
+     * foreground — which is the common case for screen streaming (the FPV Activity is open).
+     */
+    private void startScreenKeepalive(final Context context) {
+        stopScreenKeepalive();
+        try {
+            // Walk up the Context chain to find the Activity (the Service's context is the
+            // Application, but the FPV Activity passes itself to switchCaptureSource via the
+            // Service, and init() is called with the Service context). Use the static reference
+            // in AndruavEngine as a fallback.
+            Activity activity = null;
+            if (context instanceof Activity) {
+                activity = (Activity) context;
+            } else {
+                // Try the App class's activeActivity field via reflection — avoids a hard
+                // dependency from middlelibrary to app.
+                try {
+                    final Class<?> appClass = Class.forName("ap.andruav_ap.App");
+                    final java.lang.reflect.Field f = appClass.getField("activeActivity");
+                    activity = (Activity) f.get(null);
+                } catch (Exception ignored) {}
+            }
+            if (activity == null) {
+                Log.w("rtc", "Screen keepalive: no active Activity, skipping");
+                return;
+            }
+            mKeepaliveView = new View(activity);
+            mKeepaliveView.setVisibility(View.INVISIBLE);
+            final android.widget.FrameLayout.LayoutParams lp =
+                    new android.widget.FrameLayout.LayoutParams(1, 1);
+            lp.setMargins(0, 0, 0, 0);
+            final Activity finalActivity = activity;
+            final View keepaliveView = mKeepaliveView;
+            finalActivity.runOnUiThread(() -> {
+                try {
+                    finalActivity.addContentView(keepaliveView, lp);
+                    mKeepaliveHandler.post(mKeepaliveTick);
+                    Log.d("rtc", "Screen keepalive started: " + KEEPALIVE_INTERVAL_MS + "ms interval");
+                } catch (Exception e) {
+                    AndruavEngine.log().logException("rtc-keepalive-add", e);
+                    mKeepaliveView = null;
+                }
+            });
+        } catch (Exception e) {
+            AndruavEngine.log().logException("rtc-keepalive", e);
+            mKeepaliveView = null;
+        }
+    }
+
+    private void stopScreenKeepalive() {
+        mKeepaliveHandler.removeCallbacks(mKeepaliveTick);
+        // The View was added via addContentView to the Activity's content. We can't remove it
+        // from there, but setting it to GONE and nulling our reference is enough — the Activity
+        // will clean it up on its own destruction. The timer (mKeepaliveTick) is stopped above.
+        mKeepaliveView = null;
     }
 
 
@@ -414,6 +506,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
                     // would double-rotate the screen stream). Rotation degree stays 0 from above.
                     mIsScreenCapture = true;
                     capturer = new ScreenCapturerAndroid(screenCaptureIntent, mediaProjectionCallback);
+                    startScreenKeepalive(context);
                 } else {
                     // Camera source: select the right facing based on mInitialSource.
                     // camNum 0 = back, camNum 1 = front (matches CameraEnumerator device-name
@@ -662,6 +755,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
     public void onDestroy ()
     {
+        stopScreenKeepalive();
         killHandler();
 
         if (localVideoSource!=null) {
@@ -683,6 +777,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     public void stopStreaming() {
         if (pnRTC3ameel == null) return ;
 
+        stopScreenKeepalive();
         try {
             disconnectToDrone(null,null);
 
