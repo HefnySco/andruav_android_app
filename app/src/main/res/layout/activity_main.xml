@@ -387,6 +387,16 @@
                                 android:letterSpacing="0.07" />
                         </LinearLayout>
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/home_txt_telemetry_udp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:fontFamily="monospace"
+                        android:textColor="@color/home_green_icon"
+                        android:textSize="11sp"
+                        tools:text="telemetry: [0.0.0.0:14550]  MP-UDPC connection" />
                 </LinearLayout>
 
                 <TextView

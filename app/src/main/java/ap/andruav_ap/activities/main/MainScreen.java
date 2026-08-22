@@ -131,6 +131,7 @@ public class MainScreen extends BaseAndruavShasha {
     private TextView mTxtBattery;
     private TextView mTxtSignal;
     private TextView mTxtTelemetryHelper;
+    private TextView mTxtTelemetryUdp;
 
     // module grid tiles: container (tap target), icon (runtime-tinted), state caption
     private View mTileImu;
@@ -584,6 +585,7 @@ public class MainScreen extends BaseAndruavShasha {
         mTxtBattery = findViewById(R.id.home_txt_battery);
         mTxtSignal = findViewById(R.id.home_txt_signal);
         mTxtTelemetryHelper = findViewById(R.id.home_txt_telemetry_helper);
+        mTxtTelemetryUdp = findViewById(R.id.home_txt_telemetry_udp);
 
         mTileImu = findViewById(R.id.home_tile_imu);
         mTileFpv = findViewById(R.id.home_tile_fpv);
@@ -912,6 +914,13 @@ public class MainScreen extends BaseAndruavShasha {
         mTxtGps.setText(getString(R.string.home_sats_format, unit.getActiveIMU().SATC));
         mTxtBattery.setText(getString(R.string.home_battery_format, (int) unit.LastEvent_Battery.FCB_BatteryRemaining));
         mTxtSignal.setText(getString(R.string.home_signal_format, unit.getSignalLevel()));
+
+        if (unit.isUdpProxyEnabled()) {
+            mTxtTelemetryUdp.setText(getString(R.string.home_telemetry_udp_format,
+                    unit.getUdp_socket_ip_3rdparty(), unit.getUdp_socket_port_3rdparty()));
+        } else {
+            mTxtTelemetryUdp.setText(R.string.home_telemetry_udp_unavailable);
+        }
     }
 
     private String linkTypeLabel(int fcbTargetComm) {

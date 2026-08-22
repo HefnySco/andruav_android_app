@@ -17,6 +17,8 @@
     <string name="home_telemetry_not_linked">НЕ ПОДКЛЮЧЕНО</string>
     <string name="home_telemetry_helper">Подключите полётный контроллер через модуль FCB ниже для просмотра GPS, заряда батареи и сигнала.</string>
     <string name="home_telemetry_subtitle_format">%1$s · через %2$s</string>
+    <string name="home_telemetry_udp_format">телеметрия: [%1$s:%2$d]  соединение MP-UDPC</string>
+    <string name="home_telemetry_udp_unavailable">телеметрия: недоступно</string>
     <string name="home_stat_gps">GPS-ФИКСАЦИЯ</string>
     <string name="home_stat_battery">БАТАРЕЯ</string>
     <string name="home_stat_signal">СИГНАЛ</string>

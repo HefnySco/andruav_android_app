@@ -17,6 +17,8 @@
     <string name="home_telemetry_not_linked">NOT LINKED</string>
     <string name="home_telemetry_helper">Link the flight controller via the FCB module below to view GPS, battery and signal.</string>
     <string name="home_telemetry_subtitle_format">%1$s · via %2$s</string>
+    <string name="home_telemetry_udp_format">telemetry: [%1$s:%2$d]  MP-UDPC connection</string>
+    <string name="home_telemetry_udp_unavailable">telemetry: not available</string>
     <string name="home_stat_gps">GPS FIX</string>
     <string name="home_stat_battery">BATTERY</string>
     <string name="home_stat_signal">SIGNAL</string>

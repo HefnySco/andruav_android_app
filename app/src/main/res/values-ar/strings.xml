@@ -17,6 +17,8 @@
     <string name="home_telemetry_not_linked">غير مرتبط</string>
     <string name="home_telemetry_helper">اربط وحدة التحكم بالطيران عبر وحدة FCB أدناه لعرض GPS والبطارية والإشارة.</string>
     <string name="home_telemetry_subtitle_format">%1$s · عبر %2$s</string>
+    <string name="home_telemetry_udp_format">تليمتري: [%1$s:%2$d]  اتصال MP-UDPC</string>
+    <string name="home_telemetry_udp_unavailable">تليمتري: غير متاح</string>
     <string name="home_stat_gps">إصلاح GPS</string>
     <string name="home_stat_battery">البطارية</string>
     <string name="home_stat_signal">الإشارة</string>

@@ -17,6 +17,8 @@
     <string name="home_telemetry_not_linked">NO VINCULADO</string>
     <string name="home_telemetry_helper">Vincule el controlador de vuelo mediante el módulo FCB a continuación para ver el GPS, la batería y la señal.</string>
     <string name="home_telemetry_subtitle_format">%1$s · vía %2$s</string>
+    <string name="home_telemetry_udp_format">telemetría: [%1$s:%2$d]  conexión MP-UDPC</string>
+    <string name="home_telemetry_udp_unavailable">telemetría: no disponible</string>
     <string name="home_stat_gps">FIX GPS</string>
     <string name="home_stat_battery">BATERÍA</string>
     <string name="home_stat_signal">SEÑAL</string>
