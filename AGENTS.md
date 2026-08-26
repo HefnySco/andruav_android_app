@@ -59,3 +59,24 @@ Output APKs land in `app/build/outputs/apk/<variant>/`.
 - `app/build.gradle` signs release builds with `signingConfigs.debug` — fine for
   dev/testing, not for Play Store production release.
 - `compileOptions` targets Java 11 bytecode while the toolchain JDK is 17.
+
+## Relationship to DroneEngage (sibling repo)
+
+This APK is the **Android counterpart of the Linux DroneEngage modules**
+`de_comm` + `de_mavlink` + `de_camera`, packaged as a single app. The Linux
+side lives in a sibling git repo at `../drone_engage/` and has a shared
+`AGENTS.md` there covering the cross-module architecture:
+
+- `../drone_engage/AGENTS.md` — workspace-wide guide: repo layout, the
+  `de_common` UDP message-bus pattern (`CModule` / `CFacade_Base` /
+  `CAndruavMessageParserBase` / `cUDPClient`), the virtual-video-device
+  pipeline (`v4l2loopback` chaining), and the
+  `de_<module>.config.module.json` / `de_<module>.local` config conventions.
+
+Because AGENTS.md discovery walks *up* the filesystem from the file being
+edited and does not cross the sibling-repo boundary, that shared file is
+**not auto-discovered** from here — consult it manually when you need the
+Linux module architecture, message protocol, or config schema. The Android
+app mirrors the same Andruav message types and routing concepts, so the
+`de_common` notes there apply when porting/aligning behavior between the
+Android and Linux implementations.
