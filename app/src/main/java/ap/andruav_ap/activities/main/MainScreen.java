@@ -1385,7 +1385,9 @@ public class MainScreen extends BaseAndruavShasha {
     protected void onDestroy() {
         super.onDestroy();
 
-        App.shutDown();
+        if (isFinishing()) {
+            App.shutDown();
+        }
     }
 
     @Override
