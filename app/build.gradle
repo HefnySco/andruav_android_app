@@ -18,7 +18,7 @@ android {
 
     defaultConfig {
         applicationId 'ardupilot.andruav'
-        minSdkVersion android_build_min_sdk_version
+        minSdkVersion android_build_min_sdk_versiongitp
         targetSdkVersion android_build_target_sdk_version
 
 
