@@ -21,6 +21,7 @@ import androidx.core.app.NotificationCompat;
 
 import ap.andruav_ap.R;
 
+import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.controlBoard.ControlBoardBase;
@@ -195,6 +196,16 @@ public class SensorService extends Service {
             // so a START_STICKY restart after a permission revocation doesn't crash; fall back to
             // the untyped overload (uses manifest-declared type) when location permission is held
             // but the check raced, or when no type permission is held at all.
+            //
+            // NOTE: the untyped overload is NOT a safe fallback when location permission is
+            // genuinely missing - on Android 14+ it still enforces the manifest-declared
+            // foregroundServiceType="location" and throws the same SecurityException. So the
+            // catch block's fallback is itself wrapped: if both calls are rejected (the common
+            // case when the user denied location permission and then connects online), give up
+            // on promoting to foreground rather than letting the exception propagate uncaught
+            // and kill the process. The service keeps running as a regular (non-foreground)
+            // service, which is fine while the app is in the foreground; GPS/IMU collection that
+            // needs location permission is independently gated elsewhere.
             int type = 0;
             if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED
                     || checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
@@ -207,7 +218,16 @@ public class SensorService extends Service {
                     startForeground(FOREGROUND_ID, notification);
                 }
             } catch (SecurityException e) {
-                startForeground(FOREGROUND_ID, notification);
+                AndruavEngine.log().logException("sensor_fgs", e);
+                try {
+                    startForeground(FOREGROUND_ID, notification);
+                } catch (SecurityException e2) {
+                    // Both the typed and untyped calls were rejected (e.g. location permission
+                    // denied + manifest foregroundServiceType="location" enforced on Android 14+).
+                    // Give up on this start rather than crash; the service continues as a regular
+                    // service and onStartCommand proceeds to init sensors/battery normally.
+                    AndruavEngine.log().logException("sensor_fgs_fallback", e2);
+                }
             }
         } else {
             startForeground(FOREGROUND_ID, notification);
