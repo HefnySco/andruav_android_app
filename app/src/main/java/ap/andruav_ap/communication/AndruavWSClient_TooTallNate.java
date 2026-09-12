@@ -416,16 +416,11 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                 @Override
                 public void onError() {
                     if (merrorRecovery == Boolean.TRUE) {
-                        if (mhandler == null) return ; // should fix fatal issue.
-                        mhandler.postDelayed(new Runnable() {
+                        // postReconnect() applies the growing back-off delay and drops the
+                        // retry if we are shutting down or already registered again.
+                        postReconnect(new Runnable() {
                             @Override
                             public void run() {
-                                if (getSocketState() == SOCKETSTATE_REGISTERED)
-                                {
-                                    return ; // just an old retry
-                                }
-                                if (mkillMe) return;
-
                                 final Emergency emergency = (Emergency) AndruavEngine.getEmergency();
                                 if (emergency != null) {
                                     emergency.triggerEmergencyFlightModeFaileSafe(false);
@@ -436,7 +431,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
                                 reconnect();
                             }
-                        }, 4000);
+                        });
                     }
                 }
 
@@ -457,12 +452,9 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
                         Me.connect(websocketURL);
                     } else {
                         if (merrorRecovery == Boolean.TRUE) {
-                            mhandler.postDelayed(new Runnable() {
+                            postReconnect(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (mkillMe) return;
-
-
                                     //BUG: if multiservers and server is down retries will focus on one server.... you should query the auth server.
                                     final Emergency emergency = (Emergency) AndruavEngine.getEmergency();
                                     if (emergency != null) {
@@ -473,7 +465,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
 
                                     reconnect();
                                 }
-                            }, 4000);
+                            });
                         }
                     }
                 }

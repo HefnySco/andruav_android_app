@@ -8,7 +8,9 @@ import android.util.Log;
 
 import com.andruav.AndruavEngine;
 
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by M.Hefny on 16-Sep-14.
@@ -40,6 +42,30 @@ public class TTS implements TextToSpeech.OnInitListener {
     private boolean initialized = false;
     private String text;
     public  boolean muteTTS = false;
+
+    /***
+     * Repeated-message throttling: minimum gap before the same text is spoken again,
+     * the ceiling that gap grows to, and the idle time after which a text is forgotten.
+     */
+    private static final long REPEAT_MIN_TIME     = 10000;
+    private static final long REPEAT_MAX_TIME     = 120000;
+    private static final long REPEAT_FORGET_TIME  = 60000;
+    private static final int  REPEAT_MAX_TRACKED  = 16;
+
+    private static final class RepeatState {
+        long lastSpokenTime;
+        long lastRequestTime;
+        long interval = REPEAT_MIN_TIME;
+    }
+
+    /*** LRU of the last {@link #REPEAT_MAX_TRACKED} spoken messages. */
+    private final LinkedHashMap<String, RepeatState> mRepeatStates =
+            new LinkedHashMap<String, RepeatState>(REPEAT_MAX_TRACKED, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(final Map.Entry<String, RepeatState> eldest) {
+                    return size() > REPEAT_MAX_TRACKED;
+                }
+            };
 
     private void CreateTTS() {
         Log.d(AndruavEngine.getPreference().TAG(), "CreateTTS");
@@ -111,10 +137,41 @@ public class TTS implements TextToSpeech.OnInitListener {
         }
     }
 
-    public void Speak(final String text) {
+    /***
+     * Speaks a message, throttling repetitions of the SAME text.
+     * <br>A message that keeps arriving - e.g. "Connection Lost!" while the socket is
+     * retrying - is spoken once, then repeated after {@link #REPEAT_MIN_TIME}, and the
+     * gap doubles on every repetition up to {@link #REPEAT_MAX_TIME}, so a persistent
+     * failure is announced at a decreasing rate instead of on every single event.
+     * <br>Use {@link #SpeakNow(String)} for messages that must never be dropped.
+     * @return true if the message was actually handed to the TTS engine.
+     */
+    public boolean Speak(final String text) {
+
+        if (muteTTS) return false;
+        if (text == null) return false;
+        if (!shouldSpeak(text)) return false;
+
+        if (!SpeakNow(text))
+        {
+            // Engine not ready yet: do not let this attempt consume a repetition slot.
+            forgetSpoken(text);
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /***
+     * Speaks a message immediately, bypassing the repeated-message throttling.
+     * @return true if the message was actually handed to the TTS engine.
+     */
+    public boolean SpeakNow(final String text) {
 
         try {
-            if (muteTTS) return;
+            if (muteTTS) return false;
+            if (text == null) return false;
 
             Log.d(AndruavEngine.getPreference().TAG(), "Speak:" + text);
             if (TTSinit) {
@@ -124,6 +181,7 @@ public class TTS implements TextToSpeech.OnInitListener {
                 } else {
                     ttsUnder20(text);
                 }
+                return true;
             }
         }
         catch (Exception ex)
@@ -131,7 +189,50 @@ public class TTS implements TextToSpeech.OnInitListener {
             AndruavEngine.log().logException("TTS", ex);
         }
 
+        return false;
     }
+
+
+    /***
+     * Progressive back-off for repeated identical messages.
+     * <br>A text that has not been requested for {@link #REPEAT_FORGET_TIME} is
+     * forgotten, so once the condition clears the next occurrence is spoken at once.
+     */
+    private synchronized boolean shouldSpeak (final String text)
+    {
+        final long now = System.currentTimeMillis();
+
+        RepeatState state = mRepeatStates.get(text);
+
+        if ((state == null) || ((now - state.lastRequestTime) > REPEAT_FORGET_TIME))
+        {
+            // First time, or the message stopped repeating long enough to start over.
+            state = new RepeatState();
+            state.lastRequestTime = now;
+            state.lastSpokenTime  = now;
+            mRepeatStates.put(text, state);
+            return true;
+        }
+
+        state.lastRequestTime = now;
+
+        if ((now - state.lastSpokenTime) < state.interval)
+        {
+            return false;
+        }
+
+        state.lastSpokenTime = now;
+        state.interval = Math.min(state.interval * 2, REPEAT_MAX_TIME);
+
+        return true;
+    }
+
+
+    private synchronized void forgetSpoken (final String text)
+    {
+        mRepeatStates.remove(text);
+    }
+
 
 
     @SuppressWarnings("deprecation")

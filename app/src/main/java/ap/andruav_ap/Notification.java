@@ -264,14 +264,22 @@ public  class Notification implements INotification{
         {
             return ;
         }
-        last_speek_time = now;
-        SpeakNow(message);
+        // TTS.Speak() adds the per-message back-off on top of this global rate limit,
+        // so a message that keeps repeating is not announced on every single event.
+        // A throttled message does not consume the rate limit, otherwise it would keep
+        // muting the other messages too.
+        if (TTS.getInstance().Speak(message))
+        {
+            last_speek_time = now;
+        }
     }
 
 
     @Override
     public void SpeakNow(final String message) {
-        TTS.getInstance().Speak(message);
+        // Bypasses the repeated-message back-off: used for messages that must be heard
+        // (e.g. a TTS command sent by a remote unit).
+        TTS.getInstance().SpeakNow(message);
     }
 
     /***

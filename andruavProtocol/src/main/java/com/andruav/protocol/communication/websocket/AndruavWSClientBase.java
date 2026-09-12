@@ -148,6 +148,23 @@ public abstract class AndruavWSClientBase {
     private static  long monSendID=0;
     private static  long monPing=0;
 
+    /***
+     * Reconnection back-off.
+     * <br>Retrying a dead server every second is pointless traffic and it makes the UI
+     * (and the TTS) shout on every failure, so the delay starts at
+     * {@link #RECONNECT_DELAY_MIN} and doubles on every failed attempt up to
+     * {@link #RECONNECT_DELAY_MAX}.  It is reset once the unit is registered again.
+     */
+    protected final static long RECONNECT_DELAY_MIN     = 3000;
+    protected final static long RECONNECT_DELAY_MAX     = 60000;
+    /*** up to this much is added at random to a retry delay to de-synchronize units. */
+    protected final static long RECONNECT_DELAY_JITTER  = 1000;
+
+    private long mReconnectDelay = RECONNECT_DELAY_MIN;
+
+    /*** true while a retry is already queued, so parallel retry chains are not started. */
+    private boolean mReconnectScheduled = false;
+
 
 
     /***
@@ -266,6 +283,9 @@ public abstract class AndruavWSClientBase {
         synchronized (mSocketStateSync) {
 
             setSocketAction (SOCKETACTION_DISCONNECTING);
+            // removeCallbacksAndMessages() above killed any queued retry.
+            mReconnectScheduled = false;
+            mReconnectDelay = RECONNECT_DELAY_MIN;
 
         }
 
@@ -330,6 +350,9 @@ public abstract class AndruavWSClientBase {
         switch (value)
         {
             case SOCKETSTATE_REGISTERED:
+
+                // Connection is healthy again: next failure retries fast and speaks at once.
+                resetReconnectDelay();
 
                 // Only now can system commands (e.g. UDP proxy start/stop) actually be sent -
                 // sendSystemCommandToCommServer() silently drops them until this state is reached,
@@ -618,15 +641,76 @@ public abstract class AndruavWSClientBase {
 
     protected void doErrorRecovery ()
     {
-        if ((mhandler!=null) &&(merrorRecovery)) {
-            mhandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (mkillMe) return ;
-                    merrorRecovery = true;
-                    Me.reconnect();
+        if (!merrorRecovery) return ;
+
+        postReconnect(new Runnable() {
+            @Override
+            public void run() {
+                merrorRecovery = true;
+                Me.reconnect();
+            }
+        });
+    }
+
+
+    /***
+     * Queues a retry after the current back-off delay.
+     * <br>Only one retry can be pending at a time: a failing connection reports both
+     * onError and onClose, and each of them asks for a recovery, which used to start
+     * two racing retry chains.
+     * @return false if the retry could not be queued (shutting down, or one is pending).
+     */
+    protected boolean postReconnect (final Runnable task)
+    {
+        if (mhandler == null) return false; // should fix fatal issue.
+        if (mkillMe) return false;
+
+        synchronized (mSocketStateSync) {
+            if (mReconnectScheduled) return false;
+            mReconnectScheduled = true;
+        }
+
+        final long delay = nextReconnectDelay();
+        Log.d("ac", "reconnect scheduled in " + delay + " ms");
+
+        return mhandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (mSocketStateSync) {
+                    mReconnectScheduled = false;
                 }
-            }, 1000);
+                if (mkillMe) return ;
+                if (getSocketState() == SOCKETSTATE_REGISTERED) return ; // just an old retry
+                task.run();
+            }
+        }, delay);
+    }
+
+
+    /***
+     * @return the delay to wait before the next attempt, and doubles it for the one after.
+     */
+    protected long nextReconnectDelay ()
+    {
+        final long delay;
+
+        synchronized (mSocketStateSync) {
+            delay = mReconnectDelay;
+            mReconnectDelay = Math.min(mReconnectDelay * 2, RECONNECT_DELAY_MAX);
+        }
+
+        return delay + (long) (Math.random() * RECONNECT_DELAY_JITTER);
+    }
+
+
+    /***
+     * Back to fast retries: called when the unit registers again, when the user
+     * disconnects, and when the user asks for a new connection.
+     */
+    public void resetReconnectDelay ()
+    {
+        synchronized (mSocketStateSync) {
+            mReconnectDelay = RECONNECT_DELAY_MIN;
         }
     }
 

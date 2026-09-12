@@ -364,12 +364,10 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                         }
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onDisconnect) {
                         App.gui_ConnectionIconID = R.drawable.connect_w_32x32;
-                        App.soundManager.playSound(SoundManager.SND_ERR);
-                        TTS.getInstance().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_connectionlost));
+                        speakConnectionLost();
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onError) {
                         App.gui_ConnectionIconID = R.drawable.connected_error_32x32;
-                        App.soundManager.playSound(SoundManager.SND_ERR);
-                        TTS.getInstance().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_connectionlost));
+                        speakConnectionLost();
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onMessage) {
                         // MenuItem mi = mMenu.findItem(R.id.action_main_wsconnect);
                         // mi.setIcon(R.drawable.connected_color_32x32);
@@ -398,6 +396,22 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                 }
                 }
         };
+    }
+
+
+    /***
+     * Announces a lost connection.
+     * <br>A failing connection reports both onError and onClose, and it keeps reporting
+     * them on every retry, so this goes through the throttled TTS.Speak(): the tone is
+     * played only when the message is actually spoken, otherwise a long outage would
+     * beep and talk on every single attempt.
+     */
+    private void speakConnectionLost ()
+    {
+        if (TTS.getInstance().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_connectionlost)))
+        {
+            App.soundManager.playSound(SoundManager.SND_ERR);
+        }
     }
 
 
@@ -805,6 +819,9 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
 
         }
+        // The user asked for a connection: do not make them wait for the back-off
+        // delay that a previous outage may have grown.
+        AndruavEngine.getAndruavWS().resetReconnectDelay();
         AndruavEngine.getAndruavWS().connect(websocketURL);
         TTS.getInstance().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_speak_connecting));
 
