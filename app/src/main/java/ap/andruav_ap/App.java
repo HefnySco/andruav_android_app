@@ -470,6 +470,18 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
          * which crashed the app outright on a modern device. A failure here is just a
          * missing UI stat, not worth taking the app down for, so any exception falls back
          * to 0 instead of propagating.
+         *
+         * <br>Observed symptom: the GCS-side signal readout intermittently showed
+         * "0 dBm NA [Unknown]" alongside a valid operator/data-state (e.g. logged as
+         * "dbm:0 netType:0 op:stc country:sa dataState:1" - see {@code AndruavMessage_CommSignalsStatus}
+         * for the r/s/op/c/ds field mapping). Root cause: {@code netType:0} is
+         * {@code TelephonyManager.NETWORK_TYPE_UNKNOWN} - the radio briefly reports no RAT
+         * during a handover/transition, at which point {@code getCellSignalStrengths()} is
+         * empty and the GSM/CDMA/EVDO accessors below are all unavailable too, so this used
+         * to fall straight through to the 0 sentinel even though the modem still had a
+         * coarse reading. The {@code getLevel()} fallback below (RAT-agnostic, always
+         * populated) fixes that transient case; a real "no signal" still returns 0 via
+         * level 0 (SIGNAL_STRENGTH_NONE_OR_UNKNOWN).
          */
         private int extractDbm(SignalStrength sStrength) {
             try {
@@ -486,6 +498,21 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                 }
                 if (sStrength.getCdmaDbm() > 0) return sStrength.getCdmaDbm();
                 if (sStrength.getEvdoDbm() > 0) return sStrength.getEvdoDbm();
+
+                // Every RAT-specific reading above can legitimately be unavailable for a
+                // moment (e.g. getNetworkType() reporting UNKNOWN during a brief radio
+                // transition) even though the modem already has a coarse level. getLevel()
+                // is RAT-agnostic and always populated, so use it as a last resort instead
+                // of collapsing straight to the "no signal" sentinel below.
+                final int level = sStrength.getLevel();
+                if (level > 0) {
+                    switch (level) {
+                        case 4: return -85;  // SIGNAL_STRENGTH_GREAT
+                        case 3: return -95;  // SIGNAL_STRENGTH_GOOD
+                        case 2: return -103; // SIGNAL_STRENGTH_MODERATE
+                        default: return -111; // SIGNAL_STRENGTH_POOR
+                    }
+                }
             } catch (Exception e) {
                 AndruavEngine.log().logException("signal_strength", e);
             }
