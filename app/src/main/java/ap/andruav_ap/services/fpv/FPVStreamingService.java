@@ -619,13 +619,11 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
 
     @Override
     public void onFrame(final byte[] frame, final int offset, final int size) {
-        if ((mcameraRecorder != null) && (mcameraRecorder.isRecording())) {
-            // condition is replicated to avoid post runnable without need, and then void calling null object when stop recording.
-            mHandle.post(() -> {
-                if (mRecordVideo) {
-                    mcameraRecorder.encodeFeed(ByteBuffer.wrap(frame, offset, size));
-                }
-            });
+        // Called on VideoByteRenderer's own render HandlerThread, not the UI thread - encode here
+        // directly instead of hopping to mHandle (main looper), which only added UI-thread
+        // contention during recording for no benefit.
+        if (mRecordVideo && (mcameraRecorder != null) && (mcameraRecorder.isRecording())) {
+            mcameraRecorder.encodeFeed(ByteBuffer.wrap(frame, offset, size));
         }
     }
 
@@ -641,7 +639,6 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
                         lastTimeFrame = now;
                         mVideoFileRenderer.onFrame(videoFrame);
                     }
-                    mVideoFileRenderer.onFrame(videoFrame);
                 }
             } else {
                 if (mVideoByteRenderer != null) {
