@@ -64,6 +64,7 @@ import org.webrtc.SurfaceViewRenderer;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -94,6 +95,11 @@ public class FPVModuleRTCWebCamActivity extends Activity {
     private static final String ACTION_PIP_STOP = "ap.andruav_ap.fpv.ACTION_STOP_STREAM_PIP";
 
     private final Object stateLock = new Object();
+
+    // Runs the still-image JPEG/EXIF/save work triggered by fl.onFrame() below, off the WebRTC
+    // renderer thread that callback runs on - that thread also drives the live FPV preview, so
+    // blocking it with compress/rotate/file-I/O caused visible jank while taking a photo.
+    private final ExecutorService mImageProcessingExecutor = Executors.newSingleThreadExecutor();
 
     private FPVModuleRTCWebCamActivity Me;
     private static Handler mHandle;
@@ -705,6 +711,7 @@ public class FPVModuleRTCWebCamActivity extends Activity {
             // which calls finish() directly with no other hook to intercept it.
             EventBus.getDefault().post(new _7adath_StopAndroidCamera());
         }
+        mImageProcessingExecutor.shutdown();
         super.onDestroy();
 
     }
@@ -758,6 +765,11 @@ public class FPVModuleRTCWebCamActivity extends Activity {
 
         @Override
         public void onFrame(Bitmap bitmap) {
+            final boolean takeImageNow;
+            final AndruavUnitBase sendBackTo;
+            final boolean saveImageLocally;
+            final int imageCountForDescription;
+
             synchronized (stateLock) {
                 if (mTakeImageCount > 0) {
                     final long now = System.currentTimeMillis();
@@ -791,78 +803,87 @@ public class FPVModuleRTCWebCamActivity extends Activity {
                     mTakeImage = false;
                 }
 
-                if (mTakeImage) {
-                    try {
-                        final String imageDescription = "Image No#" + mTakeImageCount;
-
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                        byte[] pout = stream.toByteArray();
-                        stream.flush();
-
-
-                        AndruavFacade.sendImage(pout, AndruavSettings.andruavWe7daBase.getAvailableLocation(), mSendBackTo);
-                        if (mSaveImageLocally) {
-                            final Bitmap bitmap2 = Image_Helper.createBMPfromJPG(pout);
-                            Bitmap rotatedBmp = Image_Helper.rotateImage(bitmap2, bitmap2.getWidth(), bitmap2.getHeight(), Preference.getFPVActivityRotation(null));
-
-                            File savedImageFile;
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                // Scoped storage: save under MediaStore Downloads instead of a File so
-                                // the image survives uninstall and is browsable in a File Manager.
-                                final String imgName = FileHelper.buildTimestampedJpgName(null);
-                                final Uri savedImageUri = FileHelper.savePicToMediaStore(rotatedBmp, imgName, App.KMLFile.getImageRelativePath());
-                                if (savedImageUri == null) {
-                                    bitmap.recycle();
-                                    rotatedBmp.recycle();
-                                    return;
-                                }
-                                try (ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(savedImageUri, "rw")) {
-                                    if (pfd != null) {
-                                        Image_Helper.AddGPStoJpg(pfd.getFileDescriptor(), AndruavSettings.andruavWe7daBase.getAvailableLocation());
-                                    }
-                                } catch (IOException ex) {
-                                    AndruavEngine.log().logException("exception_img", ex);
-                                }
-                                // MediaStore items have no real filesystem path - this File only ever
-                                // needs to yield its name (KMLFileHandler.addImages() uses getName()).
-                                savedImageFile = new File(imgName);
-                            } else {
-                                savedImageFile = FileHelper.savePic(rotatedBmp, null, App.KMLFile.getImageFolder());
-                                if (savedImageFile == null) {
-                                    // sendMessageToModule error messages to GCS Please
-                                    bitmap.recycle();
-                                    rotatedBmp.recycle();
-                                    return;
-                                }
-
-                                Image_Helper.AddGPStoJpg(savedImageFile.getAbsolutePath(), AndruavSettings.andruavWe7daBase.getAvailableLocation());
-                            }
-
-
-                            Event_FPV_Image event_fpv_image = new Event_FPV_Image();
-                            event_fpv_image.isLocalImage = true;
-                            event_fpv_image.isVideo = false;
-                            event_fpv_image.ImageFile = savedImageFile;
-                            event_fpv_image.ImageLocation = AndruavSettings.andruavWe7daBase.getAvailableLocation();
-                            event_fpv_image.Description = "Image No#" + mTakeImageCount;
-                            EventBus.getDefault().post(event_fpv_image);
-
-                            bitmap.recycle();
-                            rotatedBmp.recycle();
-
-                        }
-                    } catch (Exception ex) {
-                        AndruavEngine.log().logException(AndruavSettings.AccessCode, "exception_fpv2", ex);
-                        PanicFacade.cannotStartCamera(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_CAMERA, App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_camertakeimage), null);
-                        skip = false;
-                    }
-
-                    skip = false;
-                }
+                // Snapshot everything the (now off-thread) heavy work below reads - these fields
+                // keep mutating for the next callback as soon as this synchronized block exits.
+                takeImageNow = mTakeImage;
+                sendBackTo = mSendBackTo;
+                saveImageLocally = mSaveImageLocally;
+                imageCountForDescription = mTakeImageCount;
 
                 mSurfaceViewRenderer.clearImage();
             }
+
+            if (!takeImageNow) {
+                return;
+            }
+
+            // JPEG compress/rotate/EXIF/MediaStore-save is heavyweight - do it off this callback's
+            // thread (WebRTC's renderer thread, which also drives the live preview) so taking a
+            // still image doesn't stall FPV video.
+            mImageProcessingExecutor.execute(() -> {
+                try {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] pout = stream.toByteArray();
+                    stream.flush();
+
+
+                    AndruavFacade.sendImage(pout, AndruavSettings.andruavWe7daBase.getAvailableLocation(), sendBackTo);
+                    if (saveImageLocally) {
+                        final Bitmap bitmap2 = Image_Helper.createBMPfromJPG(pout);
+                        Bitmap rotatedBmp = Image_Helper.rotateImage(bitmap2, bitmap2.getWidth(), bitmap2.getHeight(), Preference.getFPVActivityRotation(null));
+
+                        File savedImageFile;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            // Scoped storage: save under MediaStore Downloads instead of a File so
+                            // the image survives uninstall and is browsable in a File Manager.
+                            final String imgName = FileHelper.buildTimestampedJpgName(null);
+                            final Uri savedImageUri = FileHelper.savePicToMediaStore(rotatedBmp, imgName, App.KMLFile.getImageRelativePath());
+                            if (savedImageUri == null) {
+                                bitmap.recycle();
+                                rotatedBmp.recycle();
+                                return;
+                            }
+                            try (ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(savedImageUri, "rw")) {
+                                if (pfd != null) {
+                                    Image_Helper.AddGPStoJpg(pfd.getFileDescriptor(), AndruavSettings.andruavWe7daBase.getAvailableLocation());
+                                }
+                            } catch (IOException ex) {
+                                AndruavEngine.log().logException("exception_img", ex);
+                            }
+                            // MediaStore items have no real filesystem path - this File only ever
+                            // needs to yield its name (KMLFileHandler.addImages() uses getName()).
+                            savedImageFile = new File(imgName);
+                        } else {
+                            savedImageFile = FileHelper.savePic(rotatedBmp, null, App.KMLFile.getImageFolder());
+                            if (savedImageFile == null) {
+                                // sendMessageToModule error messages to GCS Please
+                                bitmap.recycle();
+                                rotatedBmp.recycle();
+                                return;
+                            }
+
+                            Image_Helper.AddGPStoJpg(savedImageFile.getAbsolutePath(), AndruavSettings.andruavWe7daBase.getAvailableLocation());
+                        }
+
+
+                        Event_FPV_Image event_fpv_image = new Event_FPV_Image();
+                        event_fpv_image.isLocalImage = true;
+                        event_fpv_image.isVideo = false;
+                        event_fpv_image.ImageFile = savedImageFile;
+                        event_fpv_image.ImageLocation = AndruavSettings.andruavWe7daBase.getAvailableLocation();
+                        event_fpv_image.Description = "Image No#" + imageCountForDescription;
+                        EventBus.getDefault().post(event_fpv_image);
+
+                        bitmap.recycle();
+                        rotatedBmp.recycle();
+
+                    }
+                } catch (Exception ex) {
+                    AndruavEngine.log().logException(AndruavSettings.AccessCode, "exception_fpv2", ex);
+                    PanicFacade.cannotStartCamera(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_CAMERA, App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_camertakeimage), null);
+                }
+            });
         }
 
     };
