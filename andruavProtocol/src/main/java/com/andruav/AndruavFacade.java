@@ -23,6 +23,7 @@ import com.andruav.protocol.commands.textMessages.AndruavMessage_GeoFenceAttachS
 import com.andruav.protocol.commands.textMessages.AndruavMessage_HomeLocation;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_ID;
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_RemoteExecute;
+import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_RemoteExecuteResult;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_Signaling;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_DistinationLocation;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_WayPoints;
@@ -521,6 +522,26 @@ public class AndruavFacade extends AndruavFacadeBase{
         andruavMessage_error.infoType = infoType;
         andruavMessage_error.notification_Type = notification_Type;
         sendMessage(andruavMessage_error,target, Boolean.FALSE);
+    }
+
+
+    /***
+     * Send a {@link AndruavMessage_RemoteExecuteResult} reply back to the party
+     * that issued a {@link AndruavMessage_RemoteExecute} command.
+     * @param remoteCommandId echoed command id (the "C" of the original command)
+     * @param resultCode one of {@link AndruavMessage_RemoteExecuteResult} RESULT_*
+     * @param description optional human-readable detail, may be null
+     * @param target party id of the requester
+     */
+    public static void sendRemoteExecuteResult (final int remoteCommandId, final int resultCode, final String description, final String target)
+    {
+        if (target == null) return ;
+
+        final AndruavMessage_RemoteExecuteResult andruavMessage_remoteExecuteResult = new AndruavMessage_RemoteExecuteResult();
+        andruavMessage_remoteExecuteResult.RemoteCommandID = remoteCommandId;
+        andruavMessage_remoteExecuteResult.resultCode = resultCode;
+        andruavMessage_remoteExecuteResult.Description = description;
+        sendMessage(andruavMessage_remoteExecuteResult,target, Boolean.FALSE);
     }
 
 

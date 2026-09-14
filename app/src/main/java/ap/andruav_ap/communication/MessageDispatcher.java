@@ -31,6 +31,7 @@ import com.andruav.protocol.commands.textMessages.Configuration.AndruavMessage_C
 import com.andruav.protocol.commands.textMessages.Configuration.AndruavMessage_Config_UnitID;
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_Ctrl_Camera;
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_RemoteExecute;
+import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_RemoteExecuteResult;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -672,6 +673,8 @@ public class MessageDispatcher {
                         case AndruavMessage_RemoteExecute.RemoteCommand_SENDSMS:
                             if ((andruavUnit != null) && (!andruavUnit.canControl())) {
                                 AndruavEngine.log().log2(andruav_2MR.partyID, "sms_skip", "SENDSMS skipped: unit not controllable");
+                                AndruavFacade.sendRemoteExecuteResult(AndruavMessage_RemoteExecute.RemoteCommand_SENDSMS,
+                                        AndruavMessage_RemoteExecuteResult.RESULT_REJECTED, "unit not controllable", andruav_2MR.partyID);
                                 break;
                             }
 
@@ -679,9 +682,13 @@ public class MessageDispatcher {
                             andruav_2MR.processed = true;
                             final Emergency emergency = (Emergency) AndruavEngine.getEmergency();
                             if (emergency != null) {
-                                emergency.sendSMS(true);
+                                final int smsResult = emergency.sendSMS(true);
+                                AndruavFacade.sendRemoteExecuteResult(AndruavMessage_RemoteExecute.RemoteCommand_SENDSMS,
+                                        smsResult, null, andruav_2MR.partyID);
                             } else {
                                 AndruavEngine.log().log2(andruav_2MR.partyID, "sms_skip", "SENDSMS skipped: Emergency module is null");
+                                AndruavFacade.sendRemoteExecuteResult(AndruavMessage_RemoteExecute.RemoteCommand_SENDSMS,
+                                        AndruavMessage_RemoteExecuteResult.RESULT_NOT_READY, "Emergency module unavailable", andruav_2MR.partyID);
                             }
 
 
@@ -690,6 +697,8 @@ public class MessageDispatcher {
                         case AndruavMessage_RemoteExecute.RemoteCommand_SMSwGPS: {
                             if ((andruavUnit != null) && (!andruavUnit.canControl())) {
                                 AndruavEngine.log().log2(andruav_2MR.partyID, "sms_skip", "SMSwGPS skipped: unit not controllable");
+                                AndruavFacade.sendRemoteExecuteResult(AndruavMessage_RemoteExecute.RemoteCommand_SMSwGPS,
+                                        AndruavMessage_RemoteExecuteResult.RESULT_REJECTED, "unit not controllable", andruav_2MR.partyID);
                                 break;
                             }
 
@@ -698,18 +707,21 @@ public class MessageDispatcher {
                             if (emergencySMSwGPS != null) {
                                 // Optional variable "n" selects a custom receiver phone number.
                                 // When omitted, falls back to the unit's configured recovery number.
-                                if (andruavResala_remoteExecute.Variables.containsKey("n")) {
-                                    final String receiverNum = andruavResala_remoteExecute.Variables.get("n");
-                                    if (receiverNum != null && !receiverNum.isEmpty()) {
-                                        AndruavEngine.log().log2(andruav_2MR.partyID, "sms_cmd", "SMSwGPS: sending to " + receiverNum);
-                                        emergencySMSwGPS.sendSMSLocation(receiverNum, true);
-                                        break;
-                                    }
+                                final int smsResult;
+                                final String receiverNum = andruavResala_remoteExecute.Variables.get("n");
+                                if (receiverNum != null && !receiverNum.isEmpty()) {
+                                    AndruavEngine.log().log2(andruav_2MR.partyID, "sms_cmd", "SMSwGPS: sending to " + receiverNum);
+                                    smsResult = emergencySMSwGPS.sendSMSLocation(receiverNum, true);
+                                } else {
+                                    AndruavEngine.log().log2(andruav_2MR.partyID, "sms_cmd", "SMSwGPS: no 'n' variable, falling back to recovery number");
+                                    smsResult = emergencySMSwGPS.sendSMS(true);
                                 }
-                                AndruavEngine.log().log2(andruav_2MR.partyID, "sms_cmd", "SMSwGPS: no 'n' variable, falling back to recovery number");
-                                emergencySMSwGPS.sendSMS(true);
+                                AndruavFacade.sendRemoteExecuteResult(AndruavMessage_RemoteExecute.RemoteCommand_SMSwGPS,
+                                        smsResult, null, andruav_2MR.partyID);
                             } else {
                                 AndruavEngine.log().log2(andruav_2MR.partyID, "sms_skip", "SMSwGPS skipped: Emergency module is null");
+                                AndruavFacade.sendRemoteExecuteResult(AndruavMessage_RemoteExecute.RemoteCommand_SMSwGPS,
+                                        AndruavMessage_RemoteExecuteResult.RESULT_NOT_READY, "Emergency module unavailable", andruav_2MR.partyID);
                             }
                         }
                         break;

@@ -149,8 +149,14 @@ public abstract class EmergencyBase {
     public  abstract boolean getIsFlashing ();
     protected  abstract void playSiren (final boolean active,final boolean ignorePermission);
     protected  abstract void doFlash (final boolean enable,final boolean ignorePermission);
-    public  abstract void sendSMS (final boolean ignoreTiming);
+    /***
+     * @return one of {@link com.andruav.protocol.commands.textMessages.Control.AndruavMessage_RemoteExecuteResult} RESULT_* codes.
+     */
+    public  abstract int sendSMS (final boolean ignoreTiming);
 
-    public  abstract void sendSMSLocation (final String receiver_num, final boolean b_forced);
+    /***
+     * @return one of {@link com.andruav.protocol.commands.textMessages.Control.AndruavMessage_RemoteExecuteResult} RESULT_* codes.
+     */
+    public  abstract int sendSMSLocation (final String receiver_num, final boolean b_forced);
 
 }

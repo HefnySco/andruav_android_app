@@ -13,6 +13,7 @@ import com.andruav.interfaces.INotification;
 import com.andruav.controlBoard.IControlBoard_Callback;
 import com.andruav.notification.PanicFacade;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
+import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_RemoteExecuteResult;
 
 import ap.andruav_ap.guiEvent.GUIEvent_EnableFlashing;
 import com.andruav.FeatureSwitch;
@@ -240,20 +241,20 @@ public class Emergency extends EmergencyBase {
      * Handles sending SMS to destination for recovery
      * it keeps track of available locations and sendMessageToModule SMS whenever reading is available or better accuracy.
      */
-    public  void sendSMS (final boolean ignoreTiming)
+    public  int sendSMS (final boolean ignoreTiming)
     {
         try {
 
             if (!ignoreTiming && (AndruavEngine.getAndruavWSStatus() == AndruavWSClientBase.SOCKETSTATE_REGISTERED))
             {
                 AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMS skipped: WS registered");
-                return;
+                return AndruavMessage_RemoteExecuteResult.RESULT_REJECTED;
             }
 
             if (!ignoreTiming && !Preference.isSMSTXEnabled(null))
             {
                 AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMS skipped: SMS TX disabled");
-                return ; // ModuleFeatures is disabled by user.
+                return AndruavMessage_RemoteExecuteResult.RESULT_REJECTED; // ModuleFeatures is disabled by user.
             }
 
             if (!ignoreTiming)
@@ -263,7 +264,7 @@ public class Emergency extends EmergencyBase {
                 {
                     mlatestSMSTime = now;
                     AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMS skipped: first-call timing gate");
-                    return ;
+                    return AndruavMessage_RemoteExecuteResult.RESULT_REJECTED;
                 }
                 if ((now - mlatestSMSTime) >=mSMSSeparationPeriod)
                 {
@@ -274,15 +275,16 @@ public class Emergency extends EmergencyBase {
                 else
                 {
                     AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMS skipped: too-soon timing gate (now-last=" + (now - mlatestSMSTime) + "ms < " + mSMSSeparationPeriod + "ms)");
-                    return ;
+                    return AndruavMessage_RemoteExecuteResult.RESULT_REJECTED;
                 }
 
             }
             String sms_target = Preference.getRecoveryPhoneNo(null);
             if (sms_target.isEmpty()) {
                 AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMS skipped: recovery phone number is empty");
+                return AndruavMessage_RemoteExecuteResult.RESULT_NO_RECIPIENT;
             } else {
-                sendSMSLocation(sms_target, ignoreTiming);
+                return sendSMSLocation(sms_target, ignoreTiming);
             }
 
 
@@ -290,17 +292,18 @@ public class Emergency extends EmergencyBase {
         catch (Exception e)
         {
             AndruavEngine.log().logException(AndruavSettings.andruavWe7daBase.UnitID,"exception",e);
+            return AndruavMessage_RemoteExecuteResult.RESULT_ERROR;
         }
     }
 
 
-    public  void sendSMSLocation (final String receiver_num, final boolean b_forced) {
+    public  int sendSMSLocation (final String receiver_num, final boolean b_forced) {
         try
         {
             if (!b_forced && !Preference.isSMSTXEnabled(null))
             {
                 AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMSLocation skipped: SMS TX disabled (to=" + receiver_num + ")");
-                return ; // ModuleFeatures is disabled by user.
+                return AndruavMessage_RemoteExecuteResult.RESULT_REJECTED; // ModuleFeatures is disabled by user.
             }
 
             Location loc = AndruavDroneFacade.getLastKnownLocation();
@@ -314,7 +317,7 @@ public class Emergency extends EmergencyBase {
                     }
                 });
                 AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMSLocation skipped: no location (to=" + receiver_num + ")");
-                return;
+                return AndruavMessage_RemoteExecuteResult.RESULT_NO_LOCATION;
             }
 
             String msg = "lat:" + loc.getLatitude() + ",lng:" + loc.getLongitude()
@@ -333,7 +336,7 @@ public class Emergency extends EmergencyBase {
                 });
 
 
-                    SMS.sendSMS(receiver_num, msg);
+                    return SMS.sendSMS(receiver_num, msg);
             }
             else
             {
@@ -345,12 +348,13 @@ public class Emergency extends EmergencyBase {
                     }
                 });
                 AndruavEngine.log().log2(AndruavSettings.andruavWe7daBase.UnitID, "sms_skip", "sendSMSLocation skipped: no SMS capabilities (to=" + receiver_num + ")");
-
+                return AndruavMessage_RemoteExecuteResult.RESULT_NO_CAPABILITY;
             }
         }
             catch (Exception e)
         {
             AndruavEngine.log().logException(AndruavSettings.andruavWe7daBase.UnitID,"exception",e);
+            return AndruavMessage_RemoteExecuteResult.RESULT_ERROR;
         }
     }
 
