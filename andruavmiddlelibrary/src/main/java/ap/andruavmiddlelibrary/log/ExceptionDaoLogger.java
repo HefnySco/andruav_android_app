@@ -41,6 +41,15 @@ public class ExceptionDaoLogger implements ILog {
 
     protected  final static String LINE_SEPARATOR = "\r\n";
 
+    // Single reused background thread for DB inserts instead of spawning a new Thread per
+    // log() call - an error storm used to mean a thread per exception.
+    private static final java.util.concurrent.ExecutorService sLogExecutor =
+            java.util.concurrent.Executors.newSingleThreadExecutor(r -> {
+                final Thread t = new Thread(r, "ExceptionDaoLogger");
+                t.setDaemon(true);
+                return t;
+            });
+
 
     private static class InsertRunnable implements Runnable {
         private final String userName;
@@ -224,9 +233,7 @@ public class ExceptionDaoLogger implements ILog {
     public void log(final String userName, final String tag, final String text)
     {
         try {
-            Thread t = new Thread(new InsertRunnable(userName, tag, text));
-            t.setDaemon(true);
-            t.start();
+            sLogExecutor.execute(new InsertRunnable(userName, tag, text));
         }
         catch (Exception e)
         {
