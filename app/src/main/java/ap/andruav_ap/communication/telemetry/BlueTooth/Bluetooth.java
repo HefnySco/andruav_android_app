@@ -417,6 +417,22 @@ public byte Read() {
         return a;
         }
 
+    /***
+     * Blocking read: waits for the next chunk of bytes to arrive instead of the caller polling
+     * {@link #available()} on a tight sleep loop. Returns the number of bytes read into buffer
+     * (may be less than buffer.length), or -1 on stream error/close.
+     */
+    public int readBlocking(final byte[] buffer) {
+        try {
+            synchronized (sync_inStream) {
+                if (inStream == null) return -1;
+                return inStream.read(buffer);
+            }
+        } catch (IOException ex) {
+            return -1;
+        }
+    }
+
 public byte[] ReadFrame(int framesize) {
         byte[] a = new byte[framesize];
         try {

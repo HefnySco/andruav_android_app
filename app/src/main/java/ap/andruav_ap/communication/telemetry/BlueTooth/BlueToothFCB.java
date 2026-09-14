@@ -116,6 +116,10 @@ public class BlueToothFCB  implements IEvent_SocketData {
     {
 
         mKillMe = true;
+        // The reader thread now blocks in a read() call rather than polling on a sleep tick, so
+        // closing the socket here is what unblocks it (read() throws/returns -1) - without this,
+        // join() below could hang until the next byte happens to arrive.
+        Bluetooth.CloseSocket();
         if (threadBT != null) {
             try {
 
@@ -152,33 +156,37 @@ public class BlueToothFCB  implements IEvent_SocketData {
                     //AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_TELEMETRY, INotification.NOTIFICATION_TYPE_NORMAL, AndruavResala_Error.ERROR_BLUETOOTH, serr, null);
                     //TTS.getInstance().Speak(App.getAppContext().getString(R.string.gen_bluetooth_connected));
                     PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_NORMAL, AndruavMessage_Error.ERROR_BLUETOOTH, App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_bluetooth_connected), null);
+                    // Reusable receive buffer for readBlocking() - each posted event gets its own
+                    // right-sized copy below, so reuse here is safe across iterations.
+                    final byte[] readBuffer = new byte[1024];
                     while (!mKillMe) {
-                        Thread.sleep(1, 0);
-                        int i = Bluetooth.available();
+                        // Blocks until data arrives (or the socket is closed by
+                        // StopPersistentConnection()) instead of busy-polling available() on a
+                        // 1ms sleep tick.
+                        int i = Bluetooth.readBlocking(readBuffer);
+                        if (mKillMe)
+                            return; // if due to roundrobin the next line is executed it will give exception
                         if (i > 0) {
-                            byte[] b = Bluetooth.ReadFrame(i);
-                            mevent_FCBData.Data = b;
+                            mevent_FCBData.Data = java.util.Arrays.copyOf(readBuffer, i);
                             mevent_FCBData.DataLength = i;
                             mevent_FCBData.IsLocal = Event_SocketData.SOURCE_LOCAL;
-                            if (mKillMe)
-                                return; // if due to roundrobin the next line is executed it will give exception
                             EventBus.getDefault().post(mevent_FCBData);
 
                         }
                         else
                         {
-                            if (i==-1)
-                            {
-                                if (log > 0) { // log once
-                                    //serr =App.getAppContext().getString(R.string.andruav_error_bluetootherror);
-                                    //App.notification.displayNotification(INotification.NOTIFICATION_TYPE_ERROR, "Error", serr, true, 3, false);
-                                    //AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_TELEMETRY, INotification.NOTIFICATION_TYPE_ERROR, AndruavResala_Error.ERROR_BLUETOOTH, serr, null);
-                                    //TTS.getInstance().Speak(serr);
-                                    PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_BLUETOOTH, App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_bluetootherror), null);
+                            // Stream closed or errored - with a blocking read there is no polling
+                            // interval to retry on, so keep looping here would just spin.
+                            if (log > 0) { // log once
+                                //serr =App.getAppContext().getString(R.string.andruav_error_bluetootherror);
+                                //App.notification.displayNotification(INotification.NOTIFICATION_TYPE_ERROR, "Error", serr, true, 3, false);
+                                //AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_TELEMETRY, INotification.NOTIFICATION_TYPE_ERROR, AndruavResala_Error.ERROR_BLUETOOTH, serr, null);
+                                //TTS.getInstance().Speak(serr);
+                                PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_BLUETOOTH, App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_bluetootherror), null);
 
-                                    log -=1;
-                                }
+                                log -=1;
                             }
+                            break;
                         }
                     }
 
