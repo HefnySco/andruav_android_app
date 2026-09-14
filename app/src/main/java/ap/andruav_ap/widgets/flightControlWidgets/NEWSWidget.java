@@ -44,8 +44,7 @@ public class NEWSWidget extends View {
 
     final Paint plane = new Paint();
 
-
-
+    private static final String[] COMPASS = {"N", "E", "S", "W"};
 
     @Subscribe
     public void onEvent (final Event_GPS_Ready event_GPS)
@@ -167,7 +166,6 @@ public class NEWSWidget extends View {
             double centerDegrees = yaw;
             double numDegreesToShow = 50;
             double degreesPerPixel = (double) width / numDegreesToShow;
-            String[] compass = {"N", "E", "S", "W"};
 
             double mod = yaw % 5;
             for (double angle = (centerDegrees - mod) - numDegreesToShow / 2.0;
@@ -192,7 +190,7 @@ public class NEWSWidget extends View {
 
                 if (workAngle % 90 == 0) {
                     int index = (int) (workAngle / 90);
-                    canvas.drawText(compass[index], distanceToCenter, height / 2, NEWS);
+                    canvas.drawText(COMPASS[index], distanceToCenter, height / 2, NEWS);
 
                 } else
                     canvas.drawText((int) (workAngle) + "", distanceToCenter, height / 2, whiteCenter);
