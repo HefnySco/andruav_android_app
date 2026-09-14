@@ -12,8 +12,11 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import org.greenrobot.eventbus.EventBus;
+
 import ap.andruav_ap.App;
 import ap.andruav_ap.R;
+import ap.andruav_ap.guiEvent.GUIEvent_MissionServerChanged;
 import ap.andruavmiddlelibrary.factory.util.DialogHelper;
 import ap.andruavmiddlelibrary.preference.Preference;
 
@@ -143,6 +146,8 @@ public class HubConnectionSheet extends BottomSheetDialogFragment {
         AndruavSettings.andruavWe7daBase.setVehicleType(Preference.getVehicleType(null));
 
         AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.action_saved));
+
+        EventBus.getDefault().post(new GUIEvent_MissionServerChanged());
 
         return true;
     }

@@ -68,6 +68,7 @@ import com.andruav.event.fpv7adath._7adath_FPVStreamingStatusChanged;
 import com.andruav.event.networkEvent.EventLoginClient;
 import com.andruav.event.networkEvent.EventSocketState;
 
+import ap.andruav_ap.guiEvent.GUIEvent_MissionServerChanged;
 import ap.andruav_ap.guiEvent.GUIEvent_UpdateConnection;
 import ap.andruav_ap.helpers.GUI;
 import ap.andruav_ap.helpers.RemoteControl;
@@ -225,6 +226,14 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
     @Subscribe
+    public void onEvent(GUIEvent_MissionServerChanged guiEvent_missionServerChanged) {
+
+        Message msg = new Message();
+        msg.obj = guiEvent_missionServerChanged;
+        mhandle.sendMessageDelayed(msg, 0);
+    }
+
+    @Subscribe
     public void onEvent(final _7adath_FPVStreamingStatusChanged a7adath_fpvStreamingStatusChanged) {
 
         Message msg = new Message();
@@ -336,6 +345,11 @@ public class MainScreen extends BaseAndruavShasha {
                     // FCB connect/disconnect (e.g. FcbConnectionSheet's Disconnect button)
                     // posts this - refresh the FCB/IMU/FPV tiles and Flight Telemetry card.
                     updateFCBButton();
+                }
+                else if (msg.obj instanceof GUIEvent_MissionServerChanged)
+                {
+                    // HubConnectionSheet posts this after Save - refresh the Mission Server card.
+                    updateServerCard();
                 }
                 else if (msg.obj instanceof _7adath_FPVStreamingStatusChanged)
                 {
@@ -575,7 +589,6 @@ public class MainScreen extends BaseAndruavShasha {
         mBtnServerSignIn.setOnClickListener(v -> doSignOut());
         mBtnServerConnect.setOnClickListener(v -> onServerConnectToggle());
         mBtnServerDisconnect.setOnClickListener(v -> onServerConnectToggle());
-        mTxtServerSubtitle.setText(Preference.getAuthServerURL(null));
 
         mTxtTelemetryStatus = findViewById(R.id.home_txt_telemetry_status);
         mGroupTelemetryLinked = findViewById(R.id.home_group_telemetry_linked);
@@ -933,6 +946,8 @@ public class MainScreen extends BaseAndruavShasha {
 
     private void updateServerCard() {
         final boolean connected = AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED);
+
+        mTxtServerSubtitle.setText(Preference.getAuthServerURL(null));
 
         mCardServer.setBackgroundResource(connected ? R.drawable.bg_home_card : R.drawable.bg_home_card_warning);
         setViewColor(mDotServer, connected ? R.color.home_green_icon : R.color.home_red_dot);
