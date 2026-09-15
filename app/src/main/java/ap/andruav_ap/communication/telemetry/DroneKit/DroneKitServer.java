@@ -188,13 +188,17 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
     /***
      * Injects GPS data from Mobile GPS. (EXPERIMENTAL)
+     * Float.NaN for alt, vn/ve, hdop, vdop or any accuracy means the phone did not report that
+     * value - it is sent with its GPS_INPUT ignore flag set, never as 0.
      * @param timeStampe
      * @param timeWeekMS
      * @param timeWeek
      * @param fixType
      * @param lat
      * @param lng
-     * @param alt
+     * @param alt metres above mean sea level
+     * @param vn north velocity in m/s - vn and ve are sent or ignored together
+     * @param ve east velocity in m/s
      * @param satellites_visible
      * @param hdop
      * @param vdop
@@ -210,6 +214,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
      */
     public void do_InjectGPS (final long timeStampe, final long timeWeekMS, final int timeWeek
                               , final short fixType, final int lat, final int lng, final float alt
+                              , final float vn, final float ve
                               , final int satellites_visible, final float hdop, final float vdop
                               , final float speedAccuracy, final float horizontalAccuracy, final float verticalAccuracy, final int gpsNum
                               , final int yawCentideg)
@@ -237,23 +242,56 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
         msg.lat = lat;
         msg.lon = lng;
-        msg.alt = alt;
         msg.fix_type = fixType;
 
         msg.gps_id = (short) gpsNum;
-        // Every field below is populated except the velocity triplet, so only those stay ignored.
-        msg.ignore_flags = 0xFF & ~(GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_ALT | GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_HDOP | GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_VDOP
-                    | GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_SPEED_ACCURACY | GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_HORIZONTAL_ACCURACY | GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_VERTICAL_ACCURACY);
         msg.satellites_visible = (short) satellites_visible;
         msg.time_usec = timeStampe;
         msg.time_week = timeWeek;
         msg.time_week_ms = timeWeekMS;
-        msg.hdop = hdop;
-        msg.vdop = vdop;
-        msg.speed_accuracy = speedAccuracy;
-        msg.vert_accuracy = verticalAccuracy;
-        msg.horiz_accuracy = horizontalAccuracy;
         msg.yaw = yawCentideg;
+
+        // A Float.NaN argument is a value the phone never reported. Flag it ignored rather than
+        // sending 0: a 0 accuracy passes EKF3's GPS checks as a perfect measurement. Vertical
+        // velocity is always ignored - Android reports none.
+        int ignoreFlags = GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_VEL_VERT;
+        if (Float.isNaN(alt)) {
+            ignoreFlags |= GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_ALT;
+        } else {
+            msg.alt = alt;
+        }
+        if (Float.isNaN(vn) || Float.isNaN(ve)) {
+            ignoreFlags |= GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_VEL_HORIZ;
+        } else {
+            msg.vn = vn;
+            msg.ve = ve;
+        }
+        if (Float.isNaN(hdop)) {
+            ignoreFlags |= GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_HDOP;
+        } else {
+            msg.hdop = hdop;
+        }
+        if (Float.isNaN(vdop)) {
+            ignoreFlags |= GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_VDOP;
+        } else {
+            msg.vdop = vdop;
+        }
+        if (Float.isNaN(speedAccuracy)) {
+            ignoreFlags |= GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_SPEED_ACCURACY;
+        } else {
+            msg.speed_accuracy = speedAccuracy;
+        }
+        if (Float.isNaN(horizontalAccuracy)) {
+            ignoreFlags |= GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_HORIZONTAL_ACCURACY;
+        } else {
+            msg.horiz_accuracy = horizontalAccuracy;
+        }
+        if (Float.isNaN(verticalAccuracy)) {
+            ignoreFlags |= GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_VERTICAL_ACCURACY;
+        } else {
+            msg.vert_accuracy = verticalAccuracy;
+        }
+        msg.ignore_flags = ignoreFlags;
 
         ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(msg));
     }

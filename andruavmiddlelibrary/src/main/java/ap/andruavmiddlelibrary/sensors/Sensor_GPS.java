@@ -32,6 +32,7 @@ import org.greenrobot.eventbus.EventBus;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_GPS_NMEA;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_IMU_CMD;
 import ap.andruavmiddlelibrary.factory.DeviceFeatures;
+import ap.andruavmiddlelibrary.preference.Preference;
 
 
 /**
@@ -175,6 +176,28 @@ public  class Sensor_GPS   extends GenericLocationSensor implements LocationList
      */
     public static float GeoidSeparation = 0.0f;
 
+    /**
+     * Satellites the receiver actually used in its latest fix (GnssStatus.usedInFix), as opposed
+     * to {@link #intSatCount}, which counts every satellite in view. Only FC GPS injection reads
+     * it - EKF3's minimum-satellites check is meant for the used-in-fix figure.
+     */
+    public static int SatUsedInFixCount = 0;
+
+    /**
+     * Latest GPS_PROVIDER fix exactly as delivered, kept only while FC GPS injection is enabled -
+     * see {@link #onLocationChanged(Location)}.
+     */
+    private static volatile Location mLastGnssFix = null;
+
+    /**
+     * @return the latest raw GNSS fix for FC GPS injection, or null when injection is disabled or
+     * no GPS_PROVIDER fix has arrived yet.
+     */
+    public static Location getLastGnssFix ()
+    {
+        return mLastGnssFix;
+    }
+
     private double lastcalculatedspeed = 0.0f;
 
     public Sensor_GPS (LocationManager locationManager)
@@ -212,6 +235,18 @@ public  class Sensor_GPS   extends GenericLocationSensor implements LocationList
      */
     @Override
     public void onLocationChanged(Location loc) {
+
+        // FC GPS injection feeds the autopilot's EKF, which needs a GNSS-only stream: copy every
+        // GPS_PROVIDER fix before getBestLocation() below can swap in a network/Wi-Fi fix and
+        // before speed/altitude get rewritten for the app's own use. With injection off nothing
+        // here changes - the app keeps its mixed-provider location logic as before.
+        if (Preference.isGPSInjecttionEnabled(null)) {
+            if ((loc != null) && LocationManager.GPS_PROVIDER.equals(loc.getProvider())) {
+                mLastGnssFix = new Location(loc);
+            }
+        } else {
+            mLastGnssFix = null;
+        }
 
         //if (loc.getProvider().equals(LocationManager.GPS_PROVIDER) ==false) return;
 
@@ -491,6 +526,15 @@ public  class Sensor_GPS   extends GenericLocationSensor implements LocationList
         @Override
         public void onSatelliteStatusChanged(GnssStatus status)
         {
+            if (status != null) {
+                // Counted ahead of the misFirstFix gate below: onFirstFix() does not fire when
+                // the GNSS engine already had a fix, and without a fix no satellite is used anyway.
+                int usedInFix = 0;
+                for (int i = 0, count = status.getSatelliteCount(); i < count; ++i) {
+                    if (status.usedInFix(i)) ++usedInFix;
+                }
+                SatUsedInFixCount = usedInFix;
+            }
             //Log.d("Sensor_GPS",   " has been onSatelliteStatusChanged");
             if (status == null || !misFirstFix)
             {

@@ -16,6 +16,7 @@ import ap.andruavmiddlelibrary.sensors.Sensor_GPS;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.os.SystemClock;
 
 import androidx.collection.SimpleArrayMap;
 
@@ -24,7 +25,6 @@ import com.MAVLink.enums.MAV_SYS_STATUS_SENSOR;
 import com.andruav.controlBoard.shared.missions.MissionCameraTrigger;
 import com.andruav.controlBoard.shared.missions.MissionCameraControl;
 import com.andruav.event.Event_Remote_ChannelsCMD;
-import com.andruav.event.droneReport_Event.Event_GPS_Ready;
 import com.andruav.event.fpv7adath.Event_FPV_CMD;
 import com.andruav.sensors.AndruavIMU;
 import com.MAVLink.MAVLinkPacket;
@@ -84,7 +84,6 @@ import com.o3dr.services.android.lib.mavlink.MavlinkMessageWrapper;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
 import com.o3dr.services.android.lib.util.MathUtils;
 
-import org.json.JSONException;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -252,64 +251,120 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
     }
 
-    @Subscribe(priority = 1)
-    public void onEvent (final Event_GPS_Ready a7adath_gps_ready) throws JSONException {
+    /**
+     * GPS_INPUT send period. AP_GPS::is_healthy() needs the average gap between GPS messages under
+     * 215 ms and fails after two consecutive gaps over 245 ms, but phone GNSS delivers about one
+     * fix per second - so the latest fix is re-sent on this timer rather than once per
+     * onLocationChanged(). 100 ms leaves a wide margin for executor and link jitter.
+     */
+    private static final long GPS_INJECT_PERIOD_MS = 100;
 
-        try {
+    /**
+     * Injection stops once the newest GNSS fix is older than this, so a phone that lost its fix
+     * shows up on the FC as a lost GPS rather than as a position frozen in place.
+     */
+    private static final long GPS_INJECT_MAX_FIX_AGE_MS = 2000;
 
-            if ((mGPS1_Type != GPS_TYPE_MAV) && ((mGPS2_Type != GPS_TYPE_MAV)))
-            {
-                return ;
+    /**
+     * ScheduledExecutorService used to periodically run {@link #GPSInjectorRunnable}.
+     */
+    private ScheduledExecutorService gpsInjector;
+
+    private final Runnable GPSInjectorRunnable = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                injectLatestGnssFix();
             }
-
-            final AndruavIMU andruavIMU_Mobile = AndruavSettings.andruavWe7daBase.getMobileGPS();
-            final Location mobileLocation = andruavIMU_Mobile.getCurrentLocation();
-
-            // GPS time = UTC + leap seconds, counted from the GPS epoch (1980-01-06T00:00:00Z),
-            // split into whole weeks + milliseconds into the week. Both are derived from the fix's
-            // own timestamp so time_usec/time_week/time_week_ms all describe the same instant.
-            final long GPS_EPOCH_UNIX_MILLIS = 315964800000L;
-            final long GPS_LEAPSECONDS_MILLIS = 18000L;
-            final long AP_MSEC_PER_WEEK = 7L * 86400L * 1000L;
-
-            final long fixTimeMillis = mobileLocation.getTime();
-            final long gpsTimeMillis = fixTimeMillis - GPS_EPOCH_UNIX_MILLIS + GPS_LEAPSECONDS_MILLIS;
-            final int time_week = (int) (gpsTimeMillis / AP_MSEC_PER_WEEK);
-            final long time_week_ms = gpsTimeMillis % AP_MSEC_PER_WEEK;
-
-            short fixStatus = (short)andruavIMU_Mobile.GPS3DFix;
-            if (andruavIMU_Mobile.GPSFixQuality>3)
+            catch (final Exception e)
             {
-                fixStatus = (short)andruavIMU_Mobile.GPSFixQuality;
-
-                // fixStatus = 0-1: no fix, 2: 2D fix, 3: 3D fix. 4: 3D with DGPS. 5: 3D with RTK
-                // SO for values less than 4 then use true 3DFix status... otherwise check 4 & 5 values in QUalityFix
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                if (Preference.isGPSInjecttionEnabled(null)) {
-                    // 0 = "not available" per GPS_INPUT.yaw's own wire semantics (AP_GPS_MAV only
-                    // honors it when non-zero) - so leaving this at 0 when the heading preference
-                    // is off, or the phone has no magnetometer, changes nothing else about the fix.
-                    int yawCentideg = 0;
-                    if (Preference.isGPSHeadingInjectionEnabled(null) && Boolean.TRUE.equals(andruavIMU_Mobile.iM)) {
-                        yawCentideg = getYawCentidegrees(andruavIMU_Mobile.Y, mobileLocation);
-                    }
-
-                    this.do_InjectGPS(fixTimeMillis * 1000,
-                            time_week_ms, time_week, fixStatus,
-                            (int) (mobileLocation.getLatitude() * 1.0e7), (int) (mobileLocation.getLongitude() * 1.0e7),
-                            (float) getAltitudeAboveSeaLevel(mobileLocation), andruavIMU_Mobile.SATC,
-                            andruavIMU_Mobile.Hdop, andruavIMU_Mobile.Vdop,
-                            mobileLocation.getSpeedAccuracyMetersPerSecond(), mobileLocation.getAccuracy(), mobileLocation.getVerticalAccuracyMeters(), mGPS_MAV_NUM,
-                            yawCentideg);
-                }
+                // must not escape: a scheduled executor silently cancels all later runs after one
+                e.printStackTrace();
             }
         }
-        catch (final Exception ex)
+    };
+
+    private void injectLatestGnssFix ()
+    {
+        if (!isFCConfiguredForGPSInjection()) return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
+        if (!Preference.isGPSInjecttionEnabled(null)) return;
+        if (App.droneKitServer == null) return;
+
+        // GPS_PROVIDER-only fix that Sensor_GPS keeps while injection is enabled - never the
+        // network/Wi-Fi-mixed location the rest of the app uses, whose jumps and coarse accuracy
+        // fail EKF3's GPS checks.
+        final Location fix = Sensor_GPS.getLastGnssFix();
+        if (fix == null) return;
+
+        final long fixAgeMillis = (SystemClock.elapsedRealtimeNanos() - fix.getElapsedRealtimeNanos()) / 1000000L;
+        if (fixAgeMillis > GPS_INJECT_MAX_FIX_AGE_MS) return;
+
+        final AndruavIMU andruavIMU_Mobile = AndruavSettings.andruavWe7daBase.getMobileGPS();
+
+        // GPS time = UTC + leap seconds, counted from the GPS epoch (1980-01-06T00:00:00Z),
+        // split into whole weeks + milliseconds into the week. Each re-send of a fix is stamped
+        // with the fix time plus its age, so time_usec/time_week/time_week_ms keep advancing with
+        // the packets instead of repeating (ArduPilot runs them through its jitter correction).
+        final long GPS_EPOCH_UNIX_MILLIS = 315964800000L;
+        final long GPS_LEAPSECONDS_MILLIS = 18000L;
+        final long AP_MSEC_PER_WEEK = 7L * 86400L * 1000L;
+
+        final long sampleTimeMillis = fix.getTime() + Math.max(0L, fixAgeMillis);
+        final long gpsTimeMillis = sampleTimeMillis - GPS_EPOCH_UNIX_MILLIS + GPS_LEAPSECONDS_MILLIS;
+        final int time_week = (int) (gpsTimeMillis / AP_MSEC_PER_WEEK);
+        final long time_week_ms = gpsTimeMillis % AP_MSEC_PER_WEEK;
+
+        short fixStatus = (short)andruavIMU_Mobile.GPS3DFix;
+        if (andruavIMU_Mobile.GPSFixQuality>3)
         {
-            ex.printStackTrace();
+            fixStatus = (short)andruavIMU_Mobile.GPSFixQuality;
+
+            // fixStatus = 0-1: no fix, 2: 2D fix, 3: 3D fix. 4: 3D with DGPS. 5: 3D with RTK
+            // SO for values less than 4 then use true 3DFix status... otherwise check 4 & 5 values in QUalityFix
         }
+
+        // Float.NaN = the phone did not report this value; DroneKitServer.do_InjectGPS() flags it
+        // ignored instead of sending a 0 the EKF would take as a perfect measurement.
+        final float alt = fix.hasAltitude() ? (float) getAltitudeAboveSeaLevel(fix) : Float.NaN;
+        final float hdop = (andruavIMU_Mobile.Hdop > 0.0f) ? andruavIMU_Mobile.Hdop : Float.NaN;
+        final float vdop = (andruavIMU_Mobile.Vdop > 0.0f) ? andruavIMU_Mobile.Vdop : Float.NaN;
+        final float horizontalAccuracy = fix.hasAccuracy() ? fix.getAccuracy() : Float.NaN;
+        final float verticalAccuracy = fix.hasVerticalAccuracy() ? fix.getVerticalAccuracyMeters() : Float.NaN;
+        final float speedAccuracy = fix.hasSpeedAccuracy() ? fix.getSpeedAccuracyMetersPerSecond() : Float.NaN;
+
+        // North/east velocity from the provider's own speed and bearing. AP_GPS_MAV keeps the last
+        // velocity it was given whenever a packet ignores it, so a stationary fix with no bearing
+        // (common on phones) still sends an explicit zero - otherwise the velocity from the last
+        // time the vehicle moved would stay latched on the FC.
+        float vn = Float.NaN;
+        float ve = Float.NaN;
+        if (fix.hasSpeed()) {
+            if (fix.hasBearing()) {
+                final double bearingRad = Math.toRadians(fix.getBearing());
+                vn = (float) (fix.getSpeed() * Math.cos(bearingRad));
+                ve = (float) (fix.getSpeed() * Math.sin(bearingRad));
+            } else if (fix.getSpeed() == 0.0f) {
+                vn = 0.0f;
+                ve = 0.0f;
+            }
+        }
+
+        // 0 = "not available" per GPS_INPUT.yaw's own wire semantics (AP_GPS_MAV only
+        // honors it when non-zero) - so leaving this at 0 when the heading preference
+        // is off, or the phone has no magnetometer, changes nothing else about the fix.
+        int yawCentideg = 0;
+        if (Preference.isGPSHeadingInjectionEnabled(null) && Boolean.TRUE.equals(andruavIMU_Mobile.iM)) {
+            yawCentideg = getYawCentidegrees(andruavIMU_Mobile.Y, fix);
+        }
+
+        this.do_InjectGPS(sampleTimeMillis * 1000,
+                time_week_ms, time_week, fixStatus,
+                (int) (fix.getLatitude() * 1.0e7), (int) (fix.getLongitude() * 1.0e7), alt,
+                vn, ve,
+                Sensor_GPS.SatUsedInFixCount, hdop, vdop,
+                speedAccuracy, horizontalAccuracy, verticalAccuracy, mGPS_MAV_NUM,
+                yawCentideg);
     }
 
     /***
@@ -553,6 +608,12 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
                 rcRepeater.scheduleWithFixedDelay(ReapeterCommunicatorRunnable, 0, 300, TimeUnit.MILLISECONDS);
             }
 
+            if (gpsInjector == null || gpsInjector.isShutdown()) {
+                gpsInjector = Executors.newSingleThreadScheduledExecutor();
+                // fixed rate, not fixed delay: AP_GPS judges health on the average message gap
+                gpsInjector.scheduleAtFixedRate(GPSInjectorRunnable, 0, GPS_INJECT_PERIOD_MS, TimeUnit.MILLISECONDS);
+            }
+
         }
         else
         {
@@ -561,6 +622,11 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
             if (rcRepeater != null ) {
                 rcRepeater.shutdownNow();
                 rcRepeater = null;
+            }
+
+            if (gpsInjector != null) {
+                gpsInjector.shutdownNow();
+                gpsInjector = null;
             }
 
         }
@@ -1514,7 +1580,7 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     /***
      * Whether the FC is actually configured to accept GPS_INPUT injection - only meaningful once
      * {@link #hasReceivedGPSTypeParams()} is true. Mirrors the same check
-     * {@link #onEvent(Event_GPS_Ready)} uses to decide whether to call do_InjectGPS() at all, so
+     * {@link #injectLatestGnssFix()} uses to decide whether to call do_InjectGPS() at all, so
      * the UI can warn the user before they flip the preference expecting it to do something.
      */
     public boolean isFCConfiguredForGPSInjection ()
@@ -2086,12 +2152,13 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
     public void do_InjectGPS (final long timeStampe, final long timeWeekMS, final int timeWeek
             , final short fixType, final int lat, final int lng, final float alt
+            , final float vn, final float ve
             , final int satellites_visible, final float hdop, final float vdop
             , final float speedAccuracy, final float horizontalAccuracy, final float verticalAccuracy, final int gpsNum
             , final int yawCentideg)
     {
         App.droneKitServer.do_InjectGPS(timeStampe,timeWeekMS, timeWeek
-                , fixType, lat,lng, alt, satellites_visible, hdop, vdop
+                , fixType, lat,lng, alt, vn, ve, satellites_visible, hdop, vdop
                 , speedAccuracy, horizontalAccuracy, verticalAccuracy, gpsNum, yawCentideg);
     }
 

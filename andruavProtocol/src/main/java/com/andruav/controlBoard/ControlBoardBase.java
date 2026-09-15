@@ -1018,6 +1018,7 @@ public class ControlBoardBase {
 
     public void do_InjectGPS (final long timeStampe, final long timeWeekMS, final int timeWeek
             , final short fixType, final int lat, final int lng, final float alt
+            , final float vn, final float ve
             , final int satellites_visible, final float hdop, final float vdop
             , final float speedAccuracy, final float horizontalAccuracy, final float verticalAccuracy, final int gpsNum
             , final int yawCentideg)
