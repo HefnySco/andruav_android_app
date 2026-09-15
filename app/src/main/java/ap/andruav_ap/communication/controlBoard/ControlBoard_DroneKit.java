@@ -11,6 +11,8 @@ import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.S
 
 import android.location.Location;
 import android.os.Build;
+
+import ap.andruavmiddlelibrary.sensors.Sensor_GPS;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -94,7 +96,6 @@ import ap.andruav_ap.App;
 import ap.andruav_ap.communication.controlBoard.mavlink.DroneMavlinkHandler;
 import ap.andruav_ap.helpers.RemoteControl;
 import ap.andruav_ap.communication.controlBoard.mavlink.MavLink_Helpers;
-import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_GPS_NMEA;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_RemoteServo;
 import ap.andruavmiddlelibrary.factory.math.Angles;
 import ap.andruavmiddlelibrary.preference.Preference;
@@ -156,7 +157,8 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
     private int rcCamera;
 
     /***
-     * mGPS_MAV_NUM 0:send to first GPS,1:send to 2nd GPS,127:send to all
+     * mGPS_MAV_NUM 0:send to first GPS,1:send to 2nd GPS - the GPS_INPUT gps_id must match the
+     * receiving instance index exactly, there is no "send to all" value for it.
      * mGPS_MAV_NUM is only valid if mGPS1_Type or mGPS2_Type = GPS_TYPE_MAV
      */
     private int mGPS_MAV_NUM = 999;
@@ -262,16 +264,18 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
             final AndruavIMU andruavIMU_Mobile = AndruavSettings.andruavWe7daBase.getMobileGPS();
             final Location mobileLocation = andruavIMU_Mobile.getCurrentLocation();
-            final long GPS_LEAPSECONDS_MILLIS = 18000;
-            final long AP_SEC_PER_WEEK   = (7 * 86400);
-            final long AP_MSEC_PER_SEC  = 1000;
 
-            final long epoch = 86400*(10*365 + (1980-1969)/4 + 1 + 6 - 2) - (GPS_LEAPSECONDS_MILLIS / 1000);
-            final long t_ms = mobileLocation.getTime() / 1000;
-            final int epoch_seconds = (int)(t_ms  - epoch);
-            final int time_week = 1721; //(int) (epoch_seconds / AP_SEC_PER_WEEK);
-            // round time to nearest 200ms AndruavResala_RemoteControl2
-            long time_week_ms =  System.currentTimeMillis() + 3*60*60*1000 + 37000; //(int)((epoch_seconds % AP_SEC_PER_WEEK) * AP_MSEC_PER_SEC + ((int)(t_ms/200) * 200));
+            // GPS time = UTC + leap seconds, counted from the GPS epoch (1980-01-06T00:00:00Z),
+            // split into whole weeks + milliseconds into the week. Both are derived from the fix's
+            // own timestamp so time_usec/time_week/time_week_ms all describe the same instant.
+            final long GPS_EPOCH_UNIX_MILLIS = 315964800000L;
+            final long GPS_LEAPSECONDS_MILLIS = 18000L;
+            final long AP_MSEC_PER_WEEK = 7L * 86400L * 1000L;
+
+            final long fixTimeMillis = mobileLocation.getTime();
+            final long gpsTimeMillis = fixTimeMillis - GPS_EPOCH_UNIX_MILLIS + GPS_LEAPSECONDS_MILLIS;
+            final int time_week = (int) (gpsTimeMillis / AP_MSEC_PER_WEEK);
+            final long time_week_ms = gpsTimeMillis % AP_MSEC_PER_WEEK;
 
             short fixStatus = (short)andruavIMU_Mobile.GPS3DFix;
             if (andruavIMU_Mobile.GPSFixQuality>3)
@@ -284,12 +288,21 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 if (Preference.isGPSInjecttionEnabled(null)) {
-                    this.do_InjectGPS(System.currentTimeMillis() * 1000,
+                    // 0 = "not available" per GPS_INPUT.yaw's own wire semantics (AP_GPS_MAV only
+                    // honors it when non-zero) - so leaving this at 0 when the heading preference
+                    // is off, or the phone has no magnetometer, changes nothing else about the fix.
+                    int yawCentideg = 0;
+                    if (Preference.isGPSHeadingInjectionEnabled(null) && Boolean.TRUE.equals(andruavIMU_Mobile.iM)) {
+                        yawCentideg = getYawCentidegrees(andruavIMU_Mobile.Y, mobileLocation);
+                    }
+
+                    this.do_InjectGPS(fixTimeMillis * 1000,
                             time_week_ms, time_week, fixStatus,
                             (int) (mobileLocation.getLatitude() * 1.0e7), (int) (mobileLocation.getLongitude() * 1.0e7),
-                            (int) mobileLocation.getAltitude(), andruavIMU_Mobile.SATC,
+                            (float) getAltitudeAboveSeaLevel(mobileLocation), andruavIMU_Mobile.SATC,
                             andruavIMU_Mobile.Hdop, andruavIMU_Mobile.Vdop,
-                            mobileLocation.getSpeedAccuracyMetersPerSecond(), mobileLocation.getAccuracy(), mobileLocation.getVerticalAccuracyMeters(), mGPS_MAV_NUM);
+                            mobileLocation.getSpeedAccuracyMetersPerSecond(), mobileLocation.getAccuracy(), mobileLocation.getVerticalAccuracyMeters(), mGPS_MAV_NUM,
+                            yawCentideg);
                 }
             }
         }
@@ -299,21 +312,51 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
         }
     }
 
-    @Subscribe(priority = 1)
-    public void onEvent (final Event_GPS_NMEA event_gps_nmea) throws JSONException {
-
-        if ((mGPS1_Type != GPS_TYPE_NMEA) && ((mGPS2_Type != GPS_TYPE_NMEA)))
-        {
-            return ;
+    /***
+     * ArduPilot reads GPS_INPUT.alt as height above mean sea level (AP_GPS_MAV stores it straight
+     * into Location.alt), but Android's Location.getAltitude() reports height above the WGS84
+     * ellipsoid. The two differ by the local geoid separation, which reaches tens of metres in
+     * parts of the world. Prefer the platform's own MSL value where it exists (API 34+), otherwise
+     * subtract the separation the GGA sentence carries - that term is 0 until a GGA has been
+     * parsed, which just leaves the raw ellipsoidal height as before.
+     */
+    private static double getAltitudeAboveSeaLevel (final Location location)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && location.hasMslAltitude()) {
+            return location.getMslAltitudeMeters();
         }
 
+        return location.getAltitude() - Sensor_GPS.GeoidSeparation;
+    }
+
+    /***
+     * Converts the phone's magnetic compass heading (radians, standard clockwise-from-north -
+     * see {@link ap.andruavmiddlelibrary.sensors.CompassCalculation}) into GPS_INPUT.yaw's wire
+     * format: centidegrees clockwise from *true* north, 0 reserved to mean "not available" and
+     * 36000 used for true north itself (MAVLink common.xml's own documented convention for this
+     * field - see AP_GPS_MAV::handle_msg()'s "have_yaw = packet.yaw != 0").
+     *
+     * CompassCalculation hardcodes its declination to 0, so azimuthCompass is magnetic, not true,
+     * heading - left uncorrected that's a constant bias equal to the local magnetic declination
+     * (tens of degrees in some regions). GeomagneticField supplies that correction from the same
+     * WMM data Android's own compass UI uses, computed from the fix we're injecting anyway.
+     */
+    private static int getYawCentidegrees (final double magneticHeadingRadians, final Location location)
+    {
+        double trueHeadingDeg = Math.toDegrees(magneticHeadingRadians);
         try {
-            this.do_InjectGPS_NMEA(event_gps_nmea.nmea);
+            final android.hardware.GeomagneticField field = new android.hardware.GeomagneticField(
+                    (float) location.getLatitude(), (float) location.getLongitude(),
+                    (float) location.getAltitude(), location.getTime());
+            trueHeadingDeg += field.getDeclination();
+        } catch (final Exception ex) {
+            // Bad lat/lng/alt for the model - fall back to magnetic heading uncorrected rather
+            // than sending no heading at all.
         }
-        catch (final Exception ex)
-        {
 
-        }
+        trueHeadingDeg = ((trueHeadingDeg % 360.0) + 360.0) % 360.0; // wrap into [0, 360)
+        final int centideg = (int) Math.round(trueHeadingDeg * 100.0);
+        return (centideg <= 0) ? 36000 : centideg; // 0 means "not available" on the wire, not north
     }
 
     @Subscribe(priority = 1)
@@ -1362,24 +1405,36 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
             mRCMAP_YAW = (int) parametersByName.get("RCMAP_YAW").param_value;
         }
 
-        if ( parametersByName.get("GPS_TYPE") != null) {
+        // ArduPilot 4.6 renamed GPS_TYPE/GPS_TYPE2 to GPS1_TYPE/GPS2_TYPE. Accept either name so
+        // this keeps working against both pre-4.6 and 4.6+ firmware.
+        if ( parametersByName.get("GPS1_TYPE") != null) {
+            mGPS1_Type = (int) parametersByName.get("GPS1_TYPE").param_value;
+        } else if ( parametersByName.get("GPS_TYPE") != null) {
             mGPS1_Type = (int) parametersByName.get("GPS_TYPE").param_value;
-            if (mGPS1_Type == GPS_TYPE_MAV)
-            {
-                mGPS_MAV_NUM = 0; // send to MAV1
-            }
         }
 
-        if ( parametersByName.get("GPS_TYPE2") != null) {
+        if ( parametersByName.get("GPS2_TYPE") != null) {
+            mGPS2_Type = (int) parametersByName.get("GPS2_TYPE").param_value;
+        } else if ( parametersByName.get("GPS_TYPE2") != null) {
             mGPS2_Type = (int) parametersByName.get("GPS_TYPE2").param_value;
-            if (mGPS_MAV_NUM == 0)
-            {
-                mGPS_MAV_NUM = 127;
-            }
-            else
-            {
-                mGPS_MAV_NUM = 2;
-            }
+        }
+
+        // Which FC GPS instance to address, decided only by which slots are actually set to
+        // GPS_TYPE 14 (MAV). GPS_TYPE2 defaults to 0 (None) on nearly every board, so keying off
+        // "the parameter exists" instead of its value used to retarget a GPS1-only setup at
+        // instance 127, and addressed a GPS2-only setup as instance 2 (which is a third receiver).
+        //
+        // gps_id must equal the receiving instance index exactly: AP_GPS_MAV::handle_msg() starts
+        // with "if (state.instance != packet.gps_id) return;" and has no broadcast case. The
+        // 127 = "send to all" convention belongs to ArduPilot's GPS_INJECT_TO parameter, which
+        // routes RTCM through GPS_INJECT_DATA - it does not apply to GPS_INPUT, so a 127 here is
+        // simply matched by no instance and dropped.
+        final boolean gps1IsMav = (mGPS1_Type == GPS_TYPE_MAV);
+        final boolean gps2IsMav = (mGPS2_Type == GPS_TYPE_MAV);
+        if (gps1IsMav) {
+            mGPS_MAV_NUM = 0;   // first GPS (also when both slots are MAV - one phone, one feed)
+        } else if (gps2IsMav) {
+            mGPS_MAV_NUM = 1;   // second GPS
         }
 
         if ( parametersByName.get("MNT_TYPE") != null) {
@@ -1433,6 +1488,38 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
          }
 
         mParameteredRefreshedCompleted = true;
+    }
+
+    /***
+     * Whether a full parameter refresh has completed for this connection, i.e. whether
+     * {@link #getGPS1_Type()}/{@link #getGPS2_Type()} reflect the FC's real configuration rather
+     * than the GPS_TYPE_NONE the fields start at. Lets a caller (Settings UI) distinguish "not
+     * configured for MAV GPS" from "we don't know yet".
+     */
+    public boolean hasReceivedGPSTypeParams ()
+    {
+        return mParameteredRefreshedCompleted;
+    }
+
+    public int getGPS1_Type ()
+    {
+        return mGPS1_Type;
+    }
+
+    public int getGPS2_Type ()
+    {
+        return mGPS2_Type;
+    }
+
+    /***
+     * Whether the FC is actually configured to accept GPS_INPUT injection - only meaningful once
+     * {@link #hasReceivedGPSTypeParams()} is true. Mirrors the same check
+     * {@link #onEvent(Event_GPS_Ready)} uses to decide whether to call do_InjectGPS() at all, so
+     * the UI can warn the user before they flip the preference expecting it to do something.
+     */
+    public boolean isFCConfiguredForGPSInjection ()
+    {
+        return (mGPS1_Type == GPS_TYPE_MAV) || (mGPS2_Type == GPS_TYPE_MAV);
     }
 
 
@@ -1998,19 +2085,16 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
 
     public void do_InjectGPS (final long timeStampe, final long timeWeekMS, final int timeWeek
-            , final short fixType, final int lat, final int lng, final int alt
+            , final short fixType, final int lat, final int lng, final float alt
             , final int satellites_visible, final float hdop, final float vdop
-            , final float speedAccuracy, final float horizontalAccuracy, final float verticalAccuracy, final int gpsNum)
+            , final float speedAccuracy, final float horizontalAccuracy, final float verticalAccuracy, final int gpsNum
+            , final int yawCentideg)
     {
         App.droneKitServer.do_InjectGPS(timeStampe,timeWeekMS, timeWeek
                 , fixType, lat,lng, alt, satellites_visible, hdop, vdop
-                , speedAccuracy, horizontalAccuracy, verticalAccuracy, gpsNum);
+                , speedAccuracy, horizontalAccuracy, verticalAccuracy, gpsNum, yawCentideg);
     }
 
-    public void do_InjectGPS_NMEA (final String nmea)
-    {
-        App.droneKitServer.do_InjectGPS_NMEA(nmea);
-    }
 
 
 

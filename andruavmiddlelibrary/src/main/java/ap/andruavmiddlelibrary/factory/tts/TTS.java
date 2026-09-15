@@ -12,6 +12,8 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import ap.andruavmiddlelibrary.preference.Preference;
+
 /**
  * Created by M.Hefny on 16-Sep-14.
  */
@@ -42,6 +44,9 @@ public class TTS implements TextToSpeech.OnInitListener {
     private boolean initialized = false;
     private String text;
     public  boolean muteTTS = false;
+    // Persistent, user-controlled mute (home screen speaker toggle) - distinct from muteTTS,
+    // which is only ever flipped transiently around programmatic UI updates.
+    private boolean mSoundEnabled = true;
 
     /***
      * Repeated-message throttling: minimum gap before the same text is spoken again,
@@ -90,8 +95,19 @@ public class TTS implements TextToSpeech.OnInitListener {
 
     private TTS(Context context) {
         this.context = context;
+        mSoundEnabled = (context instanceof android.content.ContextWrapper)
+                ? Preference.isSoundEnabled((android.content.ContextWrapper) context)
+                : Preference.isSoundEnabled(null);
         CreateTTS();
         Log.d(AndruavEngine.getPreference().TAG(), "text to speach init TTSinit " + TTSinit);
+    }
+
+    public boolean isSoundEnabled() {
+        return mSoundEnabled;
+    }
+
+    public void setSoundEnabled(final boolean enabled) {
+        mSoundEnabled = enabled;
     }
 
     @Override
@@ -148,7 +164,7 @@ public class TTS implements TextToSpeech.OnInitListener {
      */
     public boolean Speak(final String text) {
 
-        if (muteTTS) return false;
+        if (muteTTS || !mSoundEnabled) return false;
         if (text == null) return false;
         if (!shouldSpeak(text)) return false;
 
@@ -170,7 +186,7 @@ public class TTS implements TextToSpeech.OnInitListener {
     public boolean SpeakNow(final String text) {
 
         try {
-            if (muteTTS) return false;
+            if (muteTTS || !mSoundEnabled) return false;
             if (text == null) return false;
 
             Log.d(AndruavEngine.getPreference().TAG(), "Speak:" + text);

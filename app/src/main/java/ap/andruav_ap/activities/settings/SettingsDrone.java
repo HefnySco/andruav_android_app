@@ -10,9 +10,12 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.andruav.AndruavSettings;
 import com.andruav.Constants;
+import com.andruav.controlBoard.ControlBoardBase;
 
 import ap.andruav_ap.R;
+import ap.andruav_ap.communication.controlBoard.ControlBoard_DroneKit;
 
 /**
  * Created by mhefny on 2/27/17.
@@ -51,6 +54,10 @@ public class SettingsDrone extends AppCompatActivity {
         private CheckBoxPreference chkGPSInjection;
         private CheckBoxPreference chkIgnoreMobileSensors;
 
+        // The static XML summary ("Inject mobile GPS into FCB.") - kept so the live FC-state line
+        // added in refreshGPSInjectionStatus() prepends to it instead of replacing it outright.
+        private CharSequence baseGPSInjectionSummary;
+
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.pref_drone_root, rootKey);
@@ -63,6 +70,7 @@ public class SettingsDrone extends AppCompatActivity {
             txtBatteryMinPercentage = findPreference("WiDVQ");
             chkGPSInjection = findPreference("gps_inject");
             chkIgnoreMobileSensors = findPreference("mePMWRUHZFwA");
+            baseGPSInjectionSummary = chkGPSInjection.getSummary();
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 chkGPSInjection.setEnabled(false);
@@ -185,6 +193,48 @@ public class SettingsDrone extends AppCompatActivity {
                     }
                 }
             });
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            refreshGPSInjectionStatus();
+        }
+
+        /***
+         * Appends the flight controller's actual GPS_TYPE state to the GPS-injection preference's
+         * summary, so enabling the checkbox is never a blind toggle: a user should not be able to
+         * turn this on, see nothing happen once connected, and have no way to tell why.
+         * Re-evaluated in onResume() - the common flow is connect first, then open Settings, and
+         * a fragment already on screen when the connection completes will show the next time it
+         * regains focus (e.g. the user backs out of a connect dialog).
+         */
+        private void refreshGPSInjectionStatus() {
+            if (chkGPSInjection == null) return;
+
+            final ControlBoardBase fcBoard = AndruavSettings.andruavWe7daBase.FCBoard;
+            if (!(fcBoard instanceof ControlBoard_DroneKit)) {
+                chkGPSInjection.setSummary(getString(
+                        ap.andruavmiddlelibrary.R.string.pref_gr_fcb_gps_injection_status_not_connected, baseGPSInjectionSummary));
+                return;
+            }
+
+            final ControlBoard_DroneKit droneKitBoard = (ControlBoard_DroneKit) fcBoard;
+            if (!droneKitBoard.hasReceivedGPSTypeParams()) {
+                chkGPSInjection.setSummary(getString(
+                        ap.andruavmiddlelibrary.R.string.pref_gr_fcb_gps_injection_status_checking, baseGPSInjectionSummary));
+                return;
+            }
+
+            if (droneKitBoard.isFCConfiguredForGPSInjection()) {
+                final int mavSlot = (droneKitBoard.getGPS1_Type() == ControlBoard_DroneKit.GPS_TYPE_MAV) ? 1 : 2;
+                chkGPSInjection.setSummary(getString(
+                        ap.andruavmiddlelibrary.R.string.pref_gr_fcb_gps_injection_status_ready, baseGPSInjectionSummary, mavSlot));
+            } else {
+                chkGPSInjection.setSummary(getString(
+                        ap.andruavmiddlelibrary.R.string.pref_gr_fcb_gps_injection_status_not_ready, baseGPSInjectionSummary,
+                        droneKitBoard.getGPS1_Type(), droneKitBoard.getGPS2_Type()));
+            }
         }
     }
 }

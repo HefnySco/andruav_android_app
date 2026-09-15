@@ -43,6 +43,15 @@
         </LinearLayout>
 
         <ImageButton
+            android:id="@+id/home_btn_sound"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:padding="10dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_home_sound_on"
+            android:contentDescription="@null" />
+
+        <ImageButton
             android:id="@+id/home_btn_menu"
             android:layout_width="44dp"
             android:layout_height="44dp"

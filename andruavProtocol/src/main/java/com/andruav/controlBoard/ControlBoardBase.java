@@ -1016,15 +1016,11 @@ public class ControlBoardBase {
 
     }
 
-    public void do_InjectGPS_NMEA (final String nmea)
-    {
-
-    }
-
     public void do_InjectGPS (final long timeStampe, final long timeWeekMS, final int timeWeek
-            , final short fixType, final int lat, final int lng, final int alt
+            , final short fixType, final int lat, final int lng, final float alt
             , final int satellites_visible, final float hdop, final float vdop
-            , final float speedAccuracy, final float horizontalAccuracy, final float verticalAccuracy, final int gpsNum)
+            , final float speedAccuracy, final float horizontalAccuracy, final float verticalAccuracy, final int gpsNum
+            , final int yawCentideg)
     {
 
     }

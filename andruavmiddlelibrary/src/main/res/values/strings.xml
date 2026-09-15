@@ -119,6 +119,12 @@
     <string name="pref_gr_fcb_ignore_mobsensors_summary">Never use IMU or GPS from Mobile even if FCB is offline.</string>
     <string name="pref_gr_fcb_gps_injection">GPS Injection</string>
     <string name="pref_gr_fcb_gps_injection_summary">Inject mobile GPS into FCB.</string>
+    <string name="pref_gr_fcb_gps_injection_status_not_connected">%1$s\n\nConnect to a flight controller to check whether it is set to receive it.</string>
+    <string name="pref_gr_fcb_gps_injection_status_checking">%1$s\n\nChecking the flight controller\'s GPS_TYPE…</string>
+    <string name="pref_gr_fcb_gps_injection_status_ready">%1$s\n\n✓ Flight controller GPS%2$d_TYPE is set to MAVLink (14) - it will accept injected GPS.</string>
+    <string name="pref_gr_fcb_gps_injection_status_not_ready">%1$s\n\n⚠ Flight controller is not set to receive it: GPS_TYPE=%2$d, GPS_TYPE2=%3$d. Set GPS_TYPE (or GPS1_TYPE) to 14 (MAV) on the flight controller first, or injection will be silently ignored.</string>
+    <string name="pref_gr_fcb_gps_injection_heading">Inject Heading</string>
+    <string name="pref_gr_fcb_gps_injection_heading_summary">Also send phone compass heading as vehicle yaw. Only enable if the phone is rigidly fixed to the airframe with a known, fixed orientation — a loose or handheld phone will feed the flight controller a false heading and corrupt its EKF.</string>
     <string name="pref_gr_unitmetric">Units</string>
     <string name="pref_gr_unitmetric_summary">Use Metric or Imperial System</string>
 

@@ -8,6 +8,8 @@ import com.andruav.AndruavSettings;
 
 import java.util.HashMap;
 
+import ap.andruavmiddlelibrary.preference.Preference;
+
 /**
  * Created by M.Hefny on 07-Oct-14.
  */
@@ -24,13 +26,32 @@ public class SoundManager {
     private final AudioManager mAudioManager;
     private final Context mContext;
     private int mSirenIndex =-1;
+    private boolean mEnabled;
 
     public SoundManager(Context theContext) {
         mContext = theContext;
         mSoundPool =  new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
         mSoundPoolMap = new HashMap<Integer, Integer>();
         mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        // Preference.isSoundEnabled(null) would read Android's *default* prefs file, while the
+        // home-screen toggle writes via an Activity context into the app's named "RCMOBILE_FPV"
+        // prefs file - passing a null context here would silently desync the two, always
+        // defaulting back to enabled on every restart.
+        mEnabled = (mContext instanceof android.content.ContextWrapper)
+                ? Preference.isSoundEnabled((android.content.ContextWrapper) mContext)
+                : Preference.isSoundEnabled(null);
 
+    }
+
+    public boolean isEnabled() {
+        return mEnabled;
+    }
+
+    public void setEnabled(final boolean enabled) {
+        mEnabled = enabled;
+        if (!mEnabled) {
+            stopSiren();
+        }
     }
 
     public void addSound(final int Index, final int SoundID) {
@@ -38,6 +59,8 @@ public class SoundManager {
     }
 
     public void playSound(final int index) {
+
+        if (!mEnabled) return;
 
         int streamVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         mSoundPool.play(mSoundPoolMap.get(index), streamVolume, streamVolume, 1, 0, 1f);
@@ -50,6 +73,8 @@ public class SoundManager {
      * @return index of playing sound. this is used to STOP it. this is NOT the input {@param index}.
      */
     public int playLoopedSound(final int index, final float volume) {
+        if (!mEnabled) return -1;
+
         mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,(int) (volume * mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)), 0);
 
         return  mSoundPool.play(mSoundPoolMap.get(index), volume, volume, 1, -1, 1f);
@@ -74,6 +99,9 @@ public class SoundManager {
         {
             return;
         }
+
+        if (!mEnabled) return;
+
         mSirenIndex = playLoopedSound(SoundManager.SND_EMERGENCY, SoundManager.HIGHEST_VOLUME);
 
         AndruavSettings.andruavWe7daBase.setIsWhisling(true);

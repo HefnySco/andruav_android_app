@@ -54,9 +54,23 @@ public  class Sensor_GPS   extends GenericLocationSensor implements LocationList
 
                 String[] nmeaCmd = StringSplit.fastSplit(nmea, ',');
 
-                if (nmeaCmd[0].equals("$GPGSA")) {
+                // Match on the sentence type only, not the talker ID: a multi-constellation
+                // receiver (every modern phone) emits $GNGSA/$GNGGA rather than $GPGSA/$GPGGA, and
+                // matching "$GP" exactly left mFixLevel/mFixQuality/Hdop/Vdop permanently 0 - which
+                // in turn made MAVLink GPS injection report fix_type 0 (NO_GPS) to the FC.
+                final String nmeaSentence = nmeaCmd[0];
+
+                if (nmeaSentence.endsWith("GSA")) {
                     if ((nmeaCmd.length > 2) && (nmeaCmd[2].length() != 0)) {
-                        mFixLevel = Integer.parseInt(nmeaCmd[2]);
+                        // A multi-constellation receiver sends one GSA per constellation, and a
+                        // constellation contributing nothing to the fix reports mode 1 (no fix), so
+                        // keep the best mode of the current epoch instead of letting the last
+                        // sentence win. mGsaEpochBestFix resets when the next epoch's GGA arrives.
+                        final int fixMode = Integer.parseInt(nmeaCmd[2]);
+                        if (fixMode > mGsaEpochBestFix) {
+                            mGsaEpochBestFix = fixMode;
+                        }
+                        mFixLevel = mGsaEpochBestFix;
                     }
                     if ((nmeaCmd.length > 15)  && (nmeaCmd[15].length() != 0) ) {
                         Pdop = Float.parseFloat(nmeaCmd[15]);
@@ -69,13 +83,16 @@ public  class Sensor_GPS   extends GenericLocationSensor implements LocationList
                             Vdop = Float.parseFloat(nmeaCmd[17].split("\\*")[0]);
                         }
                     }
-                } else if (nmeaCmd[0].equals("$GPGGA")) {
-                    if ((nmeaCmd.length >= 6) && (nmeaCmd[6].length() != 0)) {
+                } else if (nmeaSentence.endsWith("GGA")) {
+                    // GGA opens each epoch, so this is where the per-epoch GSA accumulator resets.
+                    mGsaEpochBestFix = 0;
+                    if ((nmeaCmd.length > 6) && (nmeaCmd[6].length() != 0)) {
                         mFixQuality = Integer.parseInt(nmeaCmd[6]);
                     }
-                    if ((nmeaCmd.length >= 11) && (nmeaCmd[9].length() != 0) && (nmeaCmd[11].length() != 0)) {
+                    if ((nmeaCmd.length > 11) && (nmeaCmd[9].length() != 0) && (nmeaCmd[11].length() != 0)) {
                         //Altitude here is $GPGGA.Altitude + $GPGGA.Height of geoid above WGS84 ellipsoid
-                        altitude = Float.parseFloat(nmeaCmd[9]) + Float.parseFloat(nmeaCmd[11]);
+                        GeoidSeparation = Float.parseFloat(nmeaCmd[11]);
+                        altitude = Float.parseFloat(nmeaCmd[9]) + GeoidSeparation;
                         altitude = updateAltitude(altitude); // reference to ground
 
                     }
@@ -116,6 +133,10 @@ public  class Sensor_GPS   extends GenericLocationSensor implements LocationList
      * 3 = 3Dfix
      */
     public int mFixLevel;
+    /**
+     * Best GSA fix mode seen in the epoch currently being parsed - see the GSA branch above.
+     */
+    private int mGsaEpochBestFix;
     /*
     https://www.trimble.com/OEM_ReceiverHelp/V4.44/en/NMEA-0183messages_GGA.html
     GPS Quality indicator:
@@ -146,6 +167,13 @@ public  class Sensor_GPS   extends GenericLocationSensor implements LocationList
     public static float Pdop;
     public static float Vdop;
     public static float Hdop;
+    /**
+     * Height of the geoid (mean sea level) above the WGS84 ellipsoid at the current position, as
+     * reported by GGA field 11. Subtract it from an ellipsoidal height - which is what
+     * {@link android.location.Location#getAltitude()} returns - to get altitude above MSL.
+     * Stays 0 until a GGA sentence has been seen, which simply means no correction is applied.
+     */
+    public static float GeoidSeparation = 0.0f;
 
     private double lastcalculatedspeed = 0.0f;
 
@@ -275,6 +303,7 @@ public  class Sensor_GPS   extends GenericLocationSensor implements LocationList
      //Log.d(App.TAG, provider +  " has been disabled");
         misFirstFix = false;
         mFixLevel=0;
+        mGsaEpochBestFix=0;
     }
 
 

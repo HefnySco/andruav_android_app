@@ -41,6 +41,13 @@
             android:summary="@string/pref_gr_fcb_gps_injection_summary"
             android:defaultValue="true" />
 
+        <CheckBoxPreference
+            android:title="@string/pref_gr_fcb_gps_injection_heading"
+            android:key="gps_inject_heading"
+            android:summary="@string/pref_gr_fcb_gps_injection_heading_summary"
+            android:dependency="gps_inject"
+            android:defaultValue="false" />
+
     </PreferenceCategory>
 
 

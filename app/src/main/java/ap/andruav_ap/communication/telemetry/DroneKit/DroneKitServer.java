@@ -32,7 +32,6 @@ import com.MAVLink.ardupilotmega.msg_mount_configure;
 import com.MAVLink.ardupilotmega.msg_mount_control;
 import com.MAVLink.common.msg_command_ack;
 import com.MAVLink.common.msg_command_long;
-import com.MAVLink.common.msg_gps_inject_data;
 import com.MAVLink.common.msg_gps_input;
 import com.MAVLink.common.msg_mission_set_current;
 import com.MAVLink.common.msg_param_value;
@@ -202,17 +201,39 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
      * @param speedAccuracy
      * @param horizontalAccuracy
      * @param verticalAccuracy
-     * @param gpsNum: 0:send to first GPS,1:send to 2nd GPS,127:send to all
+     * @param gpsNum: 0:send to first GPS,1:send to 2nd GPS. Must equal the receiving GPS instance
+     *                index exactly - AP_GPS_MAV drops any GPS_INPUT whose gps_id is not its own
+     *                instance, and has no broadcast value.
+     * @param yawCentideg vehicle heading in centidegrees clockwise from true north, or 0 for "not
+     *                     available" (AP_GPS_MAV only applies it when non-zero; 36000, not 0, is
+     *                     used for true north itself - see the field's own doc in common.xml).
      */
     public void do_InjectGPS (final long timeStampe, final long timeWeekMS, final int timeWeek
-                              , final short fixType, final int lat, final int lng, final int alt
+                              , final short fixType, final int lat, final int lng, final float alt
                               , final int satellites_visible, final float hdop, final float vdop
-                              , final float speedAccuracy, final float horizontalAccuracy, final float verticalAccuracy, final int gpsNum)
+                              , final float speedAccuracy, final float horizontalAccuracy, final float verticalAccuracy, final int gpsNum
+                              , final int yawCentideg)
     {
         msg_gps_input msg = new msg_gps_input();
 
-        msg.sysid       = (short) getSysID();
-        msg.compid      = (short) getCompID ();
+        // yaw is a MAVLink2-only extension field on GPS_INPUT (marked <extensions/> in
+        // common.xml) - pack() only writes it when isMavlink2 is set, which this message never
+        // was (Java boolean default false), so msg.yaw below would otherwise be silently dropped
+        // on the wire no matter what it's set to. Harmless to set unconditionally: the FC we're
+        // talking to already speaks MAVLink2, and every other field here packs identically either
+        // way, it's purely an extra 2 payload bytes (or none at all, when yaw is 0 and the v2
+        // trailing-zero-trim applies).
+        msg.isMavlink2 = true;
+
+        // GPS_INPUT carries no target_system/target_component, so these are the *sender's* identity,
+        // not the destination. Stamping them with getSysID()/getCompID() - which are the FC's own
+        // identity, learned from its incoming telemetry - made ArduPilot discard every injected
+        // packet in MAVLink_routing::check_and_forward(), whose first test drops any message whose
+        // sysid+compid equal the vehicle's own as a serial-loopback artifact. It never reached
+        // AP_GPS at all. Send as a ground station instead (the 255/190 identity MAVLinkClient
+        // itself uses for outbound messages).
+        msg.sysid       = 255;
+        msg.compid      = 190;
 
         msg.lat = lat;
         msg.lon = lng;
@@ -220,42 +241,22 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         msg.fix_type = fixType;
 
         msg.gps_id = (short) gpsNum;
+        // Every field below is populated except the velocity triplet, so only those stay ignored.
         msg.ignore_flags = 0xFF & ~(GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_ALT | GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_HDOP | GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_VDOP
-                    | GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_SPEED_ACCURACY | GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_HORIZONTAL_ACCURACY | GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_HORIZONTAL_ACCURACY);
+                    | GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_SPEED_ACCURACY | GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_HORIZONTAL_ACCURACY | GPS_INPUT_IGNORE_FLAGS.GPS_INPUT_IGNORE_FLAG_VERTICAL_ACCURACY);
         msg.satellites_visible = (short) satellites_visible;
         msg.time_usec = timeStampe;
         msg.time_week = timeWeek;
-        msg.time_week_ms = 0;
+        msg.time_week_ms = timeWeekMS;
         msg.hdop = hdop;
         msg.vdop = vdop;
         msg.speed_accuracy = speedAccuracy;
         msg.vert_accuracy = verticalAccuracy;
         msg.horiz_accuracy = horizontalAccuracy;
-        
+        msg.yaw = yawCentideg;
+
         ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(msg));
     }
-
-    /**
-     * Injects NMEA GPS from module GPS (EXPERIMENTAL)
-     * @param nmea
-     */
-    public void do_InjectGPS_NMEA (final String nmea)
-    {
-
-        msg_gps_inject_data msg =  new msg_gps_inject_data();
-
-        msg.target_system       = (short) getSysID();
-        msg.target_component    = (short) getCompID ();
-
-        byte[] b= nmea.getBytes();
-        for ( int i=0; i < b.length; i+=1 )
-        {
-            msg.data[i] = b[i]; // + (b[i+1] * 256));
-        }
-        msg.len = (short) (b.length);
-        //m_msg_gps_inject_data = msg;
-        ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(msg));
-   }
 
     /***
      *

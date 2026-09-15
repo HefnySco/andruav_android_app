@@ -115,6 +115,7 @@ public class MainScreen extends BaseAndruavShasha {
     private final boolean pauseToExit = false;
 
     private ImageButton mBtnMenu;
+    private ImageButton mBtnSound;
 
     private View mCardServer;
     private View mDotServer;
@@ -579,6 +580,10 @@ public class MainScreen extends BaseAndruavShasha {
         mBtnMenu = findViewById(R.id.home_btn_menu);
         mBtnMenu.setOnClickListener(this::showOverflowMenu);
 
+        mBtnSound = findViewById(R.id.home_btn_sound);
+        mBtnSound.setOnClickListener(v -> onToggleSound());
+        updateSoundIcon();
+
         mCardServer = findViewById(R.id.home_card_server);
         mDotServer = findViewById(R.id.home_dot_server);
         mTxtServerStatus = findViewById(R.id.home_txt_server_status);
@@ -992,6 +997,18 @@ public class MainScreen extends BaseAndruavShasha {
             doLogout();
             EventBus.getDefault().post(new EventSocketState(EventSocketState.ENUM_SOCKETSTATE.onDisconnect, "manual closing"));
         }
+    }
+
+    private void onToggleSound() {
+        final boolean enabled = !App.soundManager.isEnabled();
+        App.soundManager.setEnabled(enabled);
+        TTS.getInstance().setSoundEnabled(enabled);
+        Preference.isSoundEnabled(this, enabled);
+        updateSoundIcon();
+    }
+
+    private void updateSoundIcon() {
+        mBtnSound.setImageResource(App.soundManager.isEnabled() ? R.drawable.ic_home_sound_on : R.drawable.ic_home_sound_off);
     }
 
     private void showOverflowMenu(View anchor) {

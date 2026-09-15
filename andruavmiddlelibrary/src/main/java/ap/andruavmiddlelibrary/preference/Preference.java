@@ -360,12 +360,27 @@ public class Preference {
 
 
     public static boolean isGPSInjecttionEnabled(final android.content.ContextWrapper contextWrapper) {
-        if (FeatureSwitch.Disable_Drone_ExternalCam) return false;
         return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "gps_inject", true);
     }
 
     public static void isGPSInjecttionEnabled(final android.content.ContextWrapper contextWrapper, boolean bEnabled) {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "gps_inject", bEnabled);
+    }
+
+    /***
+     * Whether to also inject the phone's compass heading as GPS_INPUT.yaw (vehicle heading,
+     * moving-baseline style - see AP_GPS_MAV::handle_msg()'s have_yaw check). Defaults to false:
+     * unlike position, a wrong reading here isn't just "no better than nothing" - the phone must
+     * be rigidly mounted to the airframe with a known, fixed orientation, or this feeds the FC's
+     * EKF a false heading. Meaningless without {@link #isGPSInjecttionEnabled}, which is why the
+     * Settings checkbox for this is set to depend on it.
+     */
+    public static boolean isGPSHeadingInjectionEnabled(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "gps_inject_heading", false);
+    }
+
+    public static void isGPSHeadingInjectionEnabled(final android.content.ContextWrapper contextWrapper, boolean bEnabled) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "gps_inject_heading", bEnabled);
     }
 
     // a Drone property
@@ -736,6 +751,20 @@ public class Preference {
 
     public static void isEmergencySirenEnabled(final android.content.ContextWrapper contextWrapper, final boolean enableSiren) {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "f7LyU1wAGk", enableSiren);
+    }
+
+    /***
+     * Global app sound toggle (home screen speaker button). Gates {@link ap.andruavmiddlelibrary.factory.tts.SoundManager}.
+     *
+     * @param contextWrapper
+     * @return
+     */
+    public static boolean isSoundEnabled(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "home_sound_enabled", true);
+    }
+
+    public static void isSoundEnabled(final android.content.ContextWrapper contextWrapper, final boolean enabled) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "home_sound_enabled", enabled);
     }
 
 
