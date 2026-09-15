@@ -186,7 +186,7 @@ public class TTS implements TextToSpeech.OnInitListener {
     public boolean SpeakNow(final String text) {
 
         try {
-            if (muteTTS || !mSoundEnabled) return false;
+            if (muteTTS) return false;
             if (text == null) return false;
 
             Log.d(AndruavEngine.getPreference().TAG(), "Speak:" + text);
