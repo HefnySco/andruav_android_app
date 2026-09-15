@@ -17,3 +17,6 @@ chronological, commit-referenced summary, see [`../CHANGELOG.md`](../CHANGELOG.m
   shared drawables, and the established per-screen restyle pattern.
 - [Dependency Upgrades](Dependency-Upgrades.md) — full before/after version table with the
   reasoning behind each target version, plus what `enableJetifier` fixes and why.
+- [GPS Injection](GPS-Injection.md) — feeding the phone's GNSS fix to the flight controller as
+  `GPS_INPUT`: data path, 10 Hz timing, field mapping, the EKF3/arming checks it must pass, and
+  SITL testing.
