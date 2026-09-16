@@ -383,6 +383,74 @@ public class Preference {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "gps_inject_heading", bEnabled);
     }
 
+    /////////////////// NTRIP / RTK Preference
+
+    /***
+     * Whether to pull RTCM3 corrections from an NTRIP caster and forward them to the FC's GPS
+     * as GPS_RTCM_DATA. Defaults to false: unlike GPS injection this consumes credentials and
+     * cellular data, so it must be opt-in.
+     */
+    public static boolean isNtripEnabled(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "ntrip_enable", false);
+    }
+
+    public static void isNtripEnabled(final android.content.ContextWrapper contextWrapper, boolean bEnabled) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "ntrip_enable", bEnabled);
+    }
+
+    public static String getNtripHost(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "ntrip_host", "");
+    }
+
+    public static void setNtripHost(final android.content.ContextWrapper contextWrapper, final String host) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "ntrip_host", host);
+    }
+
+    public static String getNtripPort(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "ntrip_port", "2101");
+    }
+
+    public static void setNtripPort(final android.content.ContextWrapper contextWrapper, final String port) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "ntrip_port", port);
+    }
+
+    public static String getNtripMountPoint(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "ntrip_mount", "");
+    }
+
+    public static void setNtripMountPoint(final android.content.ContextWrapper contextWrapper, final String mountPoint) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "ntrip_mount", mountPoint);
+    }
+
+    public static String getNtripUser(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "ntrip_user", "");
+    }
+
+    public static void setNtripUser(final android.content.ContextWrapper contextWrapper, final String user) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "ntrip_user", user);
+    }
+
+    public static String getNtripPassword(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "ntrip_pass", "");
+    }
+
+    public static void setNtripPassword(final android.content.ContextWrapper contextWrapper, final String password) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "ntrip_pass", password);
+    }
+
+    /***
+     * Whether to upload the phone's latest GGA sentence to the caster every ~10 s. VRS /
+     * network-RTK casters need it to generate corrections for the rover's area; plain
+     * mountpoint casters ignore it, so this is safe to leave on.
+     */
+    public static boolean isNtripSendGga(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "ntrip_send_gga", true);
+    }
+
+    public static void isNtripSendGga(final android.content.ContextWrapper contextWrapper, boolean bEnabled) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "ntrip_send_gga", bEnabled);
+    }
+
     // a Drone property
 
     public static int getSmartMavlinkTelemetry(final android.content.ContextWrapper contextWrapper) {

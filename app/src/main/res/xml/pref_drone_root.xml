@@ -51,6 +51,58 @@
     </PreferenceCategory>
 
 
+    <!-- RTK / NTRIP -->
+    <PreferenceCategory android:title="@string/pref_gr_rtk">
+
+        <CheckBoxPreference
+            android:title="@string/pref_gr_rtk_ntrip_enable"
+            android:key="ntrip_enable"
+            android:summary="@string/pref_gr_rtk_ntrip_enable_summary"
+            android:defaultValue="false" />
+
+        <EditTextPreference
+            android:title="@string/pref_gr_rtk_ntrip_host"
+            android:key="ntrip_host"
+            android:summary="@string/pref_gr_rtk_ntrip_host_summary"
+            android:dependency="ntrip_enable" />
+
+        <EditTextPreference
+            android:title="@string/pref_gr_rtk_ntrip_port"
+            android:key="ntrip_port"
+            android:summary="@string/pref_gr_rtk_ntrip_port_summary"
+            android:dependency="ntrip_enable"
+            android:defaultValue="2101"
+            android:inputType="number" />
+
+        <EditTextPreference
+            android:title="@string/pref_gr_rtk_ntrip_mount"
+            android:key="ntrip_mount"
+            android:summary="@string/pref_gr_rtk_ntrip_mount_summary"
+            android:dependency="ntrip_enable" />
+
+        <EditTextPreference
+            android:title="@string/pref_gr_rtk_ntrip_user"
+            android:key="ntrip_user"
+            android:summary="@string/pref_gr_rtk_ntrip_user_summary"
+            android:dependency="ntrip_enable" />
+
+        <EditTextPreference
+            android:title="@string/pref_gr_rtk_ntrip_pass"
+            android:key="ntrip_pass"
+            android:summary="@string/pref_gr_rtk_ntrip_pass_summary"
+            android:dependency="ntrip_enable"
+            android:inputType="textPassword" />
+
+        <CheckBoxPreference
+            android:title="@string/pref_gr_rtk_ntrip_send_gga"
+            android:key="ntrip_send_gga"
+            android:summary="@string/pref_gr_rtk_ntrip_send_gga_summary"
+            android:dependency="ntrip_enable"
+            android:defaultValue="true" />
+
+    </PreferenceCategory>
+
+
     <!-- FPV & Settings -->
     <PreferenceCategory android:title="@string/pref_gr_fpv_settings">
 

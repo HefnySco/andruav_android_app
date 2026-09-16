@@ -33,6 +33,7 @@ import com.MAVLink.ardupilotmega.msg_mount_control;
 import com.MAVLink.common.msg_command_ack;
 import com.MAVLink.common.msg_command_long;
 import com.MAVLink.common.msg_gps_input;
+import com.MAVLink.common.msg_gps_rtcm_data;
 import com.MAVLink.common.msg_mission_set_current;
 import com.MAVLink.common.msg_param_value;
 import com.MAVLink.enums.GPS_INPUT_IGNORE_FLAGS;
@@ -84,6 +85,7 @@ import ap.andruav_ap.communication.controlBoard.mavlink.DroneKitMavlinkObserver;
 import ap.andruav_ap.communication.controlBoard.mavlink.MavLink_Helpers;
 import ap.andruav_ap.communication.controlBoard.mavlink.MissionPlanner_Helper;
 import ap.andruav_ap.communication.telemetry.IEvent_SocketData;
+import ap.andruav_ap.communication.telemetry.rtcm.RtcmInjector;
 import com.andruav.event.fcb_event.Event_SocketData;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_ProtocolChanged;
@@ -105,6 +107,12 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
     private final static int  HEARTBEAT_RESTORED = 2;
     private final static int  HEARTBEAT_TIMEOUT  = 3;
     private final static int  HEARTBEAT_NEVER    = 0;
+
+    /**
+     * NTRIP/RTCM correction pipeline. Started when the FC link comes up and the preference
+     * is on, stopped on disconnect, heartbeat timeout and app shutdown.
+     */
+    private final RtcmInjector rtcmInjector = new RtcmInjector();
 
     /***  INTERNAL COMMANDS  ***/
     private final int INTERNAL_CMD_NON              = 0;                // no internal commands required
@@ -297,6 +305,32 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
     }
 
     /***
+     * Forwards one chunk of RTCM3 correction data (from an NTRIP caster) to the FC's GPS.
+     * @param data RTCM bytes
+     * @param len  number of valid bytes in data, must be <= 180
+     */
+    public void do_InjectRTCM (final byte[] data, final int len)
+    {
+        if (data == null || len <= 0 || len > 180) return;
+
+        msg_gps_rtcm_data msg = new msg_gps_rtcm_data();
+
+        // GPS_RTCM_DATA has no target_system/target_component: this header IS the sender identity.
+        // It must NOT be the FC's own sysid/compid or MAVLink_routing::check_and_forward() discards
+        // the packet as a serial loopback before AP_GPS ever sees it. Send as a ground station.
+        msg.sysid  = 255;
+        msg.compid = 190;
+
+        msg.flags = 0;               // unfragmented: ArduPilot passes it straight to the GPS
+        msg.len   = (short) len;
+        for (int i = 0; i < len; i++) {
+            msg.data[i] = (short) (data[i] & 0xFF);
+        }
+
+        ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(msg));
+    }
+
+    /***
      *
      * @param stabilizePitch
      * @param stabilizeRoll
@@ -396,6 +430,8 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
     public void shutDown()
     {
+        rtcmInjector.stop();
+
         disCOnnectOnPurpose = true;
         App.iEvent_socketData = null;
         EventBus.getDefault().unregister(this);
@@ -550,6 +586,9 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
         if (AndruavSettings.andruavWe7daBase.FCBoard == null) return ;
 
+        // Corrections need an FC link to be of any use - start the NTRIP client only now.
+        if (Preference.isNtripEnabled(null)) rtcmInjector.start();
+
         TelemetryModeer.setConnected(TelemetryModeer.CURRENTCONNECTION_3DR);
         EventBus.getDefault().post(new Event_ProtocolChanged(true));
 
@@ -601,6 +640,8 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
     protected  void onDroneEvent_StateDisconnected (final Bundle extras)
     {
+
+        rtcmInjector.stop();
 
         AndruavSettings.andruavWe7daBase.setTelemetry_protocol(TelemetryProtocol.TelemetryProtocol_No_Telemetry);
 
@@ -799,6 +840,10 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             case AttributeEvent.HEARTBEAT_TIMEOUT: {
                 if (heartBeatStatus != HEARTBEAT_TIMEOUT) {
                     heartBeatStatus = HEARTBEAT_TIMEOUT;
+
+                    // The link can go dead without a clean STATE_DISCONNECTED - no point
+                    // pushing corrections into a void.
+                    rtcmInjector.stop();
 
                     PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_Lo7etTa7akom, App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_dronekitconnection), null);
                     AndruavSettings.andruavWe7daBase.setTelemetry_protocol(TelemetryProtocol.TelemetryProtocol_No_Telemetry);

@@ -125,6 +125,21 @@
     <string name="pref_gr_fcb_gps_injection_status_not_ready">%1$s\n\n⚠ Flight controller is not set to receive it: GPS_TYPE=%2$d, GPS_TYPE2=%3$d. Set GPS_TYPE (or GPS1_TYPE) to 14 (MAV) on the flight controller first, or injection will be silently ignored.</string>
     <string name="pref_gr_fcb_gps_injection_heading">Inject Heading</string>
     <string name="pref_gr_fcb_gps_injection_heading_summary">Also send phone compass heading as vehicle yaw. Only enable if the phone is rigidly fixed to the airframe with a known, fixed orientation — a loose or handheld phone will feed the flight controller a false heading and corrupt its EKF.</string>
+    <string name="pref_gr_rtk">RTK / NTRIP</string>
+    <string name="pref_gr_rtk_ntrip_enable">NTRIP Corrections</string>
+    <string name="pref_gr_rtk_ntrip_enable_summary">Pull RTCM3 corrections from an NTRIP caster and forward them to the flight controller\'s GPS for RTK. The drone needs its own RTK-capable receiver (e.g. u-blox F9P/M8P); uses mobile data.</string>
+    <string name="pref_gr_rtk_ntrip_host">Caster Host</string>
+    <string name="pref_gr_rtk_ntrip_host_summary">NTRIP caster address, e.g. caster.example.com</string>
+    <string name="pref_gr_rtk_ntrip_port">Caster Port</string>
+    <string name="pref_gr_rtk_ntrip_port_summary">NTRIP caster port (usually 2101)</string>
+    <string name="pref_gr_rtk_ntrip_mount">Mountpoint</string>
+    <string name="pref_gr_rtk_ntrip_mount_summary">NTRIP mountpoint name on the caster</string>
+    <string name="pref_gr_rtk_ntrip_user">Username</string>
+    <string name="pref_gr_rtk_ntrip_user_summary">NTRIP caster account username</string>
+    <string name="pref_gr_rtk_ntrip_pass">Password</string>
+    <string name="pref_gr_rtk_ntrip_pass_summary">NTRIP caster account password</string>
+    <string name="pref_gr_rtk_ntrip_send_gga">Send GGA to Caster</string>
+    <string name="pref_gr_rtk_ntrip_send_gga_summary">Upload the phone\'s position to the caster roughly every 10 s. Required by VRS / network-RTK casters; plain mountpoint casters ignore it.</string>
     <string name="pref_gr_unitmetric">Units</string>
     <string name="pref_gr_unitmetric_summary">Use Metric or Imperial System</string>
 

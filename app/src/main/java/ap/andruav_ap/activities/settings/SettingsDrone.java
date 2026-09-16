@@ -53,6 +53,8 @@ public class SettingsDrone extends AppCompatActivity {
         private EditTextPreference txtBatteryMinPercentage;
         private CheckBoxPreference chkGPSInjection;
         private CheckBoxPreference chkIgnoreMobileSensors;
+        private CheckBoxPreference chkNtripEnable;
+        private EditTextPreference txtNtripPort;
 
         // The static XML summary ("Inject mobile GPS into FCB.") - kept so the live FC-state line
         // added in refreshGPSInjectionStatus() prepends to it instead of replacing it outright.
@@ -70,6 +72,8 @@ public class SettingsDrone extends AppCompatActivity {
             txtBatteryMinPercentage = findPreference("WiDVQ");
             chkGPSInjection = findPreference("gps_inject");
             chkIgnoreMobileSensors = findPreference("mePMWRUHZFwA");
+            chkNtripEnable = findPreference("ntrip_enable");
+            txtNtripPort = findPreference("ntrip_port");
             baseGPSInjectionSummary = chkGPSInjection.getSummary();
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -98,6 +102,42 @@ public class SettingsDrone extends AppCompatActivity {
                         return false;
                     }
                     return true;
+                }
+            });
+
+            // NTRIP needs at least a host and mountpoint before it can do anything - refuse the
+            // toggle otherwise, exactly like the GPS-injection conflict guard above.
+            chkNtripEnable.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    if (Boolean.TRUE.equals(newValue)) {
+                        final String host = ap.andruavmiddlelibrary.preference.Preference.getNtripHost(null);
+                        final String mountPoint = ap.andruavmiddlelibrary.preference.Preference.getNtripMountPoint(null);
+                        if (host.isEmpty() || mountPoint.isEmpty()) {
+                            Toast.makeText(getContext(), "Set NTRIP caster host and mountpoint first.", Toast.LENGTH_LONG).show();
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            });
+
+            txtNtripPort.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    int val;
+                    try {
+                        val = Integer.parseInt(newValue.toString());
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(getContext(), "NTRIP port must be a number from 1 to 65535", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                    if ((val >= 1) && (val <= 65535)) {
+                        return true;
+                    } else {
+                        Toast.makeText(getContext(), "NTRIP port must be a number from 1 to 65535", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
                 }
             });
 

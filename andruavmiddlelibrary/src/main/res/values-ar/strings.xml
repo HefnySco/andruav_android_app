@@ -482,6 +482,20 @@
     <string name="fcbdroneactivity_edtLocalIP">IP Wi-Fi لهذا الجهاز</string>
     <string name="fcbdroneactivity_edtUDPPort">منفذ UDP للطائرة</string>
 
-
+    <string name="pref_gr_rtk">RTK / NTRIP</string>
+    <string name="pref_gr_rtk_ntrip_enable">NTRIP Corrections</string>
+    <string name="pref_gr_rtk_ntrip_enable_summary">Pull RTCM3 corrections from an NTRIP caster and forward them to the flight controller\'s GPS for RTK. The drone needs its own RTK-capable receiver (e.g. u-blox F9P/M8P); uses mobile data.</string>
+    <string name="pref_gr_rtk_ntrip_host">Caster Host</string>
+    <string name="pref_gr_rtk_ntrip_host_summary">NTRIP caster address, e.g. caster.example.com</string>
+    <string name="pref_gr_rtk_ntrip_port">Caster Port</string>
+    <string name="pref_gr_rtk_ntrip_port_summary">NTRIP caster port (usually 2101)</string>
+    <string name="pref_gr_rtk_ntrip_mount">Mountpoint</string>
+    <string name="pref_gr_rtk_ntrip_mount_summary">NTRIP mountpoint name on the caster</string>
+    <string name="pref_gr_rtk_ntrip_user">Username</string>
+    <string name="pref_gr_rtk_ntrip_user_summary">NTRIP caster account username</string>
+    <string name="pref_gr_rtk_ntrip_pass">Password</string>
+    <string name="pref_gr_rtk_ntrip_pass_summary">NTRIP caster account password</string>
+    <string name="pref_gr_rtk_ntrip_send_gga">Send GGA to Caster</string>
+    <string name="pref_gr_rtk_ntrip_send_gga_summary">Upload the phone\'s position to the caster roughly every 10 s. Required by VRS / network-RTK casters; plain mountpoint casters ignore it.</string>
 
 </resources>
