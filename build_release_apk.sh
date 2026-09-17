@@ -59,52 +59,107 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Resolve ANDROID_HOME from the environment or from local.properties.
-if [[ -z "${ANDROID_HOME:-}" ]]; then
+# ---------------------------------------------------------------------------
+# Resolve the Android SDK.
+# Priority: ANDROID_HOME env -> ANDROID_SDK_ROOT env -> sdk.dir in
+# local.properties -> common install locations -> adb found on PATH.
+# ---------------------------------------------------------------------------
+sdk_candidates() {
+  [[ -n "${ANDROID_HOME:-}" ]] && echo "$ANDROID_HOME"
+  [[ -n "${ANDROID_SDK_ROOT:-}" ]] && echo "$ANDROID_SDK_ROOT"
   if [[ -f "$PROJECT_DIR/local.properties" ]]; then
-    ANDROID_HOME="$(grep '^sdk.dir=' "$PROJECT_DIR/local.properties" | cut -d= -f2- || true)"
-    # Remove any trailing whitespace / CR.
-    ANDROID_HOME="$(printf '%s' "$ANDROID_HOME" | tr -d '\r')"
+    grep '^sdk.dir=' "$PROJECT_DIR/local.properties" | cut -d= -f2- | tr -d '\r'
   fi
-fi
+  for d in \
+    "$HOME/Android/Sdk" \
+    "$HOME/android-build/sdk" \
+    "$HOME/AndroidSDK" \
+    /usr/lib/android-sdk \
+    /opt/android-sdk \
+    /opt/android-sdk-linux; do
+    [[ -d "$d" ]] && echo "$d"
+  done
+  # adb on PATH lives in <sdk>/platform-tools — derive the SDK root from it.
+  if command -v adb >/dev/null 2>&1; then
+    dirname "$(dirname "$(readlink -f "$(command -v adb)")")"
+  fi
+}
 
-if [[ -z "${ANDROID_HOME:-}" || ! -d "$ANDROID_HOME" ]]; then
+ANDROID_HOME=""
+while IFS= read -r candidate; do
+  [[ -n "$candidate" && -d "$candidate/platforms" ]] || continue
+  ANDROID_HOME="$candidate"
+  break
+done < <(sdk_candidates | awk '!seen[$0]++')
+
+if [[ -z "$ANDROID_HOME" ]]; then
   cat <<EOF >&2
-Error: ANDROID_HOME is not set and no valid sdk.dir was found in local.properties.
-Please set ANDROID_HOME to your Android SDK directory, e.g.:
-  export ANDROID_HOME=/home/mhefny/TDisk/Android/SDK
+Error: could not locate the Android SDK.
+Set ANDROID_HOME, or sdk.dir in local.properties, to your SDK directory.
+Searched: \$ANDROID_HOME, \$ANDROID_SDK_ROOT, local.properties,
+  ~/Android/Sdk, ~/android-build/sdk, /usr/lib/android-sdk, /opt/android-sdk,
+  and the parent of adb on PATH.
 EOF
   exit 1
 fi
 
 export ANDROID_HOME
+echo "==> Using Android SDK at $ANDROID_HOME"
 
+# ---------------------------------------------------------------------------
 # Resolve JAVA_HOME to a JDK 17 (the Gradle toolchain requires 17 even though
-# compileOptions targets Java 11 bytecode). Prefer an existing JAVA_HOME if it
-# already points at JDK 17, otherwise auto-detect one under /usr/lib/jvm.
+# compileOptions targets Java 11 bytecode). Priority: JAVA_HOME env -> javac on
+# PATH -> common install locations -> update-alternatives.
+# ---------------------------------------------------------------------------
 java_major_of() {
-  "$1/bin/javac" -version 2>&1 | sed -E 's/.* ([0-9]+)(\.[0-9]+)*/\1/'
+  "$1/bin/javac" -version 2>&1 | sed -E 's/[^0-9]*([0-9]+).*/\1/'
 }
 
-if [[ -n "${JAVA_HOME:-}" && -x "${JAVA_HOME}/bin/javac" \
-      && "$(java_major_of "$JAVA_HOME")" == "17" ]]; then
-  : # JAVA_HOME already good
-else
-  DETECTED_JDK=""
-  for candidate in /usr/lib/jvm/java-17-openjdk-amd64 /usr/lib/jvm/*17*/; do
-    if [[ -x "$candidate/bin/javac" && "$(java_major_of "$candidate")" == "17" ]]; then
-      DETECTED_JDK="$candidate"
-      break
-    fi
-  done
-  if [[ -n "$DETECTED_JDK" ]]; then
-    export JAVA_HOME="$DETECTED_JDK"
-    export PATH="$JAVA_HOME/bin:$PATH"
-    echo "==> Using JDK 17 at $JAVA_HOME"
-  else
-    echo "Warning: no JDK 17 found under /usr/lib/jvm; using java on PATH." >&2
+jdk_candidates() {
+  [[ -n "${JAVA_HOME:-}" ]] && echo "$JAVA_HOME"
+  if command -v javac >/dev/null 2>&1; then
+    dirname "$(dirname "$(readlink -f "$(command -v javac)")")"
   fi
+  for d in \
+    /usr/lib/jvm/* \
+    "$HOME/android-build/"* \
+    "$HOME/.jdks/"* \
+    /opt/jdk* \
+    /opt/*jdk* \
+    /opt/android-studio/jbr \
+    "$HOME/android-studio/jbr" \
+    /snap/android-studio/current/jbr; do
+    [[ -d "$d" ]] && echo "$d"
+  done
+  # Debian/Ubuntu alternatives system.
+  update-alternatives --list javac 2>/dev/null | while IFS= read -r j; do
+    dirname "$(dirname "$j")"
+  done
+}
+
+DETECTED_JDK=""
+while IFS= read -r candidate; do
+  [[ -x "$candidate/bin/javac" ]] || continue
+  if [[ "$(java_major_of "$candidate")" == "17" ]]; then
+    DETECTED_JDK="$candidate"
+    break
+  fi
+done < <(jdk_candidates | awk '!seen[$0]++')
+
+if [[ -z "$DETECTED_JDK" ]]; then
+  cat <<EOF >&2
+Error: no JDK 17 installation found.
+Set JAVA_HOME to a JDK 17 directory, e.g.:
+  export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+Searched: \$JAVA_HOME, javac on PATH, /usr/lib/jvm, ~/android-build,
+  ~/.jdks, /opt, Android Studio jbr, and update-alternatives.
+EOF
+  exit 1
 fi
+
+export JAVA_HOME="$DETECTED_JDK"
+export PATH="$JAVA_HOME/bin:$PATH"
+echo "==> Using JDK 17 at $JAVA_HOME"
 
 # Require keystore.properties for a signed release. The Gradle script falls
 # back to the debug keystore when it's missing, so we only warn here and let
