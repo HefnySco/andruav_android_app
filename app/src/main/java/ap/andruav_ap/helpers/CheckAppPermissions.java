@@ -48,9 +48,18 @@ public abstract class CheckAppPermissions {
      */
     public static boolean isIgnoringBatteryOptimizations(final Activity activity)
     {
+        return isIgnoringBatteryOptimizations((Context) activity);
+    }
+
+    /***
+     * {@link Context} variant of {@link #isIgnoringBatteryOptimizations(Activity)} for callers
+     * that hold no Activity (services, notifications).
+     */
+    public static boolean isIgnoringBatteryOptimizations(final Context context)
+    {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true;
-        final PowerManager pm = (PowerManager) activity.getSystemService(Context.POWER_SERVICE);
-        return pm != null && pm.isIgnoringBatteryOptimizations(activity.getPackageName());
+        final PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        return pm != null && pm.isIgnoringBatteryOptimizations(context.getPackageName());
     }
 
     /***
@@ -60,9 +69,18 @@ public abstract class CheckAppPermissions {
      */
     public static void requestIgnoreBatteryOptimizations(final Activity activity, final int requestCode)
     {
-        final Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                Uri.parse("package:" + activity.getPackageName()));
-        activity.startActivityForResult(intent, requestCode);
+        activity.startActivityForResult(getIgnoreBatteryOptimizationsIntent(activity), requestCode);
+    }
+
+    /***
+     * A ready-to-launch {@link Settings#ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS} intent for
+     * this package. Callers firing it from a non-Activity context (e.g. a notification's
+     * PendingIntent) must add {@link Intent#FLAG_ACTIVITY_NEW_TASK} themselves.
+     */
+    public static Intent getIgnoreBatteryOptimizationsIntent(final Context context)
+    {
+        return new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                Uri.parse("package:" + context.getPackageName()));
     }
 
 

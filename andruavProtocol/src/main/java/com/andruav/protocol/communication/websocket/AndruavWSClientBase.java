@@ -314,6 +314,36 @@ public abstract class AndruavWSClientBase {
 
 
     /***
+     * Forces an immediate reconnect attempt. Thread-safe and idempotent.
+     * <br>Unlike the internal recovery path this RESETS the disconnect state instead of testing
+     * it: {@link #disconnect()} sets {@link #mkillMe} and nothing but {@link #connect(URI)}
+     * clears it, and a connect already in flight keeps {@link #mIgnoreConnect} true - so a
+     * plain {@code reconnect()} would be a silent no-op in both states. Used by the
+     * link-guardian service to drive the existing recovery chain deterministically on a
+     * network change, instead of waiting for a TCP timeout on a half-dead socket.
+     */
+    public void requestReconnectNow ()
+    {
+        if (mhandler == null) return ; // shutDown() already tore down the handler thread.
+
+        synchronized (mSocketStateSync) {
+            mkillMe = false;
+            mIgnoreConnect = false;
+            merrorRecovery = true;
+            mReconnectScheduled = false;
+            resetReconnectDelay();
+        }
+
+        mhandler.post(new Runnable() {
+            @Override
+            public void run() {
+                reconnect();
+            }
+        });
+    }
+
+
+    /***
      * completly close socket
      * called when shutting down application
      */

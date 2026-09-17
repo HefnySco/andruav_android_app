@@ -53,6 +53,8 @@ public  class Notification implements INotification{
     public static final String CHANNEL_ID = "andruav_notifications";
     /** High-importance channel used for the full-screen FPV-start notification (Android 14+). */
     public static final String CHANNEL_ID_FPV_URGENT = "andruav_fpv_urgent";
+    /** Silent low-importance channel for the AndruavLinkService ongoing link-status notification. */
+    public static final String CHANNEL_ID_LINK = "andruav_link";
     /** Notification / PendingIntent request code for the FPV full-screen intent. */
     public static final int FPV_URGENT_NOTIFICATION_ID = INotification.INFO_TYPE_CAMERA;
 
@@ -99,6 +101,13 @@ public  class Notification implements INotification{
                     "Andruav FPV Requests", NotificationManager.IMPORTANCE_HIGH);
             fpvChannel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
             mNotificationManager.createNotificationChannel(fpvChannel);
+
+            // Silent channel for the link-guardian foreground service - it is the single
+            // persistent source of link status ("Connecting...", "Link active", ...) so it must
+            // never beep or heads-up, only sit in the shade.
+            NotificationChannel linkChannel = new NotificationChannel(CHANNEL_ID_LINK,
+                    "Andruav Link", NotificationManager.IMPORTANCE_LOW);
+            mNotificationManager.createNotificationChannel(linkChannel);
         }
 
         EventBus.getDefault().register(this);

@@ -219,6 +219,9 @@ public abstract class AndruavWSClientBase_TooTallNate extends AndruavWSClientBas
 
             mWebSocketClient.setTcpNoDelay(true);
             mWebSocketClient.setReuseAddr(true); /// CHECK THIS
+            // Seconds in Java-WebSocket 1.5.7. Makes half-dead-socket detection explicit - a
+            // Wi-Fi<->LTE handoff fires onError within 45s instead of waiting for a TCP timeout.
+            mWebSocketClient.setConnectionLostTimeout(45);
 
 
             /////// SSL SECURE SERVICE LAYER
@@ -281,7 +284,7 @@ public abstract class AndruavWSClientBase_TooTallNate extends AndruavWSClientBas
     @Override
     public boolean isConnected()
     {
-        return mWebSocketClient.isOpen();
+        return mWebSocketClient != null && mWebSocketClient.isOpen();
     }
 
 

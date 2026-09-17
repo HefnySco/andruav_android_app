@@ -105,6 +105,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" /> <!-- AndruavLinkService link guardian -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /> <!-- keep foreground services (telemetry/FPV) alive in background -->
 
     <application
@@ -240,6 +241,19 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="camera|microphone|mediaProjection" />
+
+        <!-- specialUse: no 6h/24h cap (unlike dataSync) and no while-in-use permission gate.
+             stopWithTask=false: swiping the app from recents must not drop the server link. -->
+        <service
+            android:name="ap.andruav_ap.services.link.AndruavLinkService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse"
+            android:stopWithTask="false">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Maintains the persistent WebSocket command/telemetry link to the Andruav server so the vehicle stays reachable while the app is backgrounded during flight" />
+        </service>
 
         <receiver
             android:name="ap.andruav_ap.broadcastReceiver.BOOT_Receiver"

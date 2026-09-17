@@ -108,6 +108,7 @@ import ap.andruavmiddlelibrary.log.ExceptionDaoLogger;
 import ap.andruavmiddlelibrary.log.ExceptionHandler;
 import ap.sensors.SensorService;
 import ap.andruav_ap.services.fpv.FPVStreamingService;
+import ap.andruav_ap.services.link.AndruavLinkService;
 import ap.andruavmiddlelibrary.database.DaoManager;
 
 import static com.andruav.uavos.modules.UAVOSConstants.UAVOS_MODULE_TYPE_CAMERA;
@@ -142,6 +143,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     public static SoundManager soundManager;
     public static Intent iSensorService;
     public static Intent iFPVStreamingService;
+    public static Intent iLinkService;
     /**
      * Pre-granted MediaProjection result-Intent for screen-capture streaming. Obtained in advance
      * (before flight) via {@link ScreenCapturePermissionActivity} so that a mid-flight remote
@@ -342,10 +344,8 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                     //Socket Status
                     EventSocketState eventSocketState = (EventSocketState) msg.obj;
                     if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onConnect) {
-                        String connection = getString(ap.andruavmiddlelibrary.R.string.gen_connected);
-                        connection += " to Internet Server";
-                        App.notification.displayNotification(INotification.NOTIFICATION_TYPE_NORMAL, "Andruav", connection, true, INotification.INFO_TYPE_PROTOCOL, true);
-
+                        // The AndruavLinkService ongoing notification is now the single source of
+                        // link status - no transient "connected" notification on top of it.
                         App.gui_ConnectionIconID = R.drawable.connected_w_32x32;
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onRegistered) {
                         // Only once the server has confirmed registration can system commands
@@ -821,12 +821,57 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         AndruavEngine.setAndruavSMSClientParserBase(new AndruavSMSClientParser());
     }
 
+    /***
+     * Starts the link-guardian foreground service ({@link AndruavLinkService}) that keeps the
+     * Andruav server link alive while the app is backgrounded. Persists the desired-flag and
+     * is idempotent. A failed start (e.g. a background start without the battery-optimization
+     * exemption) is logged and swallowed - it must not abort the WS connect that follows it.
+     */
+    public static void startAndruavLinkService ()
+    {
+        Preference.setLinkServiceDesired(null,true);
+        if (iLinkService == null) {
+            iLinkService = new Intent(App.getAppContext(), AndruavLinkService.class);
+        }
+
+        try {
+            // Deliberately Exception, not just SecurityException: a background start without
+            // the battery-optimization exemption throws ForegroundServiceStartNotAllowedException
+            // (an IllegalStateException).
+            ContextCompat.startForegroundService(App.getAppContext(), iLinkService);
+        } catch (Exception e) {
+            AndruavEngine.log().logException("link_fgs_start", e);
+        }
+    }
+
+    /***
+     * Stops the link-guardian service and clears the persisted desired-flag. Called only from
+     * explicit user-intent disconnect paths (see stopAndruavWS call sites).
+     */
+    public static void stopAndruavLinkService ()
+    {
+        Preference.setLinkServiceDesired(null,false);
+        if (iLinkService != null)
+        {
+            App.getAppContext().stopService(iLinkService);
+            iLinkService = null;
+        }
+    }
+
+    public static boolean isLinkServiceRunning ()
+    {
+        return iLinkService != null;
+    }
+
     /**
      * Connect to server.
      * You need to handle registration and other issues.
      */
     public static void startAndruavWS ()
     {
+        // The guardian must be up before the socket connects so it is already watching when
+        // the link comes alive.
+        startAndruavLinkService();
 
         if ((AndruavSettings.andruavWe7daBase.getTelemetry_protocol()==TelemetryProtocol.TelemetryProtocol_No_Telemetry) && (AndruavSettings.andruavWe7daBase.getIsCGS()))
         {   // a GCS is always a telemetry
@@ -860,6 +905,9 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
      */
     public static void stopAndruavWS (boolean kill)
     {
+        // User-intent disconnect: the guardian goes down with the link. Ahead of the null
+        // return below so a not-yet-created WS client still clears the desired-flag.
+        stopAndruavLinkService();
 
         if (AndruavEngine.getAndruavWS()== null)
         {
@@ -1207,6 +1255,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
             EventBus.getDefault().post(new Event_ShutDown_Signalling(4));
 
             App.stopSensorService();
+            App.stopAndruavLinkService();
 
 
         } catch (Exception ex) {

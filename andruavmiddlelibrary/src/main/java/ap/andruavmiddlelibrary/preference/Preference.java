@@ -383,6 +383,20 @@ public class Preference {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "gps_inject_heading", bEnabled);
     }
 
+    /***
+     * Whether the user wants the Andruav server link (and its link-guardian foreground service,
+     * {@code ap.andruav_ap.services.link.AndruavLinkService}) to be up. Set on connect, cleared
+     * only on an explicit disconnect - NOT on process death or service teardown, so a later
+     * restart can tell a crashed link apart from one the user turned off.
+     */
+    public static boolean isLinkServiceDesired(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "link_service_desired", false);
+    }
+
+    public static void setLinkServiceDesired(final android.content.ContextWrapper contextWrapper, boolean bEnabled) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "link_service_desired", bEnabled);
+    }
+
     /////////////////// NTRIP / RTK Preference
 
     /***
