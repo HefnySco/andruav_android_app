@@ -933,6 +933,24 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     }
 
 
+    /***
+     * Recreates and reconnects the Andruav server link after a process restart - used when the
+     * link is still desired but its WebSocket client is gone (process death, BOOT). Drives the
+     * existing reconnect() -> ValidateAccount -> connect chain (with backoff) via
+     * requestReconnectNow(), which also revives a client left disconnected by an explicit
+     * disconnect() earlier.
+     */
+    public static void resumeLink ()
+    {
+        if (AndruavEngine.getAndruavWS() == null)
+        {
+            AndruavEngine.setAndruavWS(new AndruavWSClient_TooTallNate("wss://" + LoginClient.getWSURL(), null));
+        }
+
+        AndruavEngine.getAndruavWS().requestReconnectNow();
+    }
+
+
     /**
      * return TRUE if Andruav is connected.
      * That does not mean it is registered or anything. it is just the socket is connected to server.

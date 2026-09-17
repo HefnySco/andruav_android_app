@@ -20,6 +20,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import com.andruav.AndruavEngine;
+import com.andruav.AndruavFacade;
+import com.andruav.AndruavSettings;
+import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.event.networkEvent.EventSocketState;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
 import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
@@ -40,11 +43,16 @@ import ap.andruavmiddlelibrary.preference.Preference;
  * up": it holds an ongoing un-swipeable notification, a partial wake lock, and a network-change
  * watchdog, so the link survives the app being swiped from recents.
  * <p>
- * The service never owns the socket itself - it only guards whatever link
- * {@link App#startAndruavWS()} brought up, and never tears it down: a transient
- * {@link EventSocketState} disconnect during reconnect back-off updates the notification text
- * but keeps the guardian alive. Stopping happens only through the explicit user-intent paths
- * ({@link App#stopAndruavWS()} / shutdown signalling order 4).
+ * The service never owns the socket itself - it guards whatever link
+ * {@link App#startAndruavWS()} brought up, and recreates it after a process death: a
+ * START_STICKY restart (or a BOOT start while the link was left desired) is detected in
+ * {@link #onStartCommand}, {@link App#resumeLink()} re-logins and reconnects, and the first
+ * re-registration triggers a one-shot headless recovery (IDs + permanent tasks + signal
+ * monitor - link + IDs only, no FCB auto-connect and no SensorService start). The service
+ * still never tears the link down: a transient {@link EventSocketState} disconnect during
+ * reconnect back-off updates the notification text but keeps the guardian alive. Stopping
+ * happens only through the explicit user-intent paths ({@link App#stopAndruavWS()} /
+ * shutdown signalling order 4).
  * <p>
  * Battery-optimization exemption is load-bearing, not cosmetic: in deep Doze partial wake
  * locks are ignored and network is suspended - the allowlist is the only real fix. Being on the
@@ -85,6 +93,12 @@ public class AndruavLinkService extends Service {
     private boolean mBatteryWarningShown = false;
     private boolean mReleased = false;
 
+    /**
+     * True between detecting a process-death restart and the first successful re-registration:
+     * gates the one-shot headless post-registration recovery (see {@link #doHeadlessRecovery}).
+     */
+    private boolean mRecoveredProcess = false;
+
     /** Re-arms the bounded wake lock so a session longer than WAKE_LOCK_TIMEOUT_MS keeps it. */
     private final Runnable mWakeLockRearm = new Runnable() {
         @Override
@@ -115,6 +129,14 @@ public class AndruavLinkService extends Service {
                 break;
             default: // onMessage: no status change
                 break;
+        }
+
+        if ((event.SocketState == EventSocketState.ENUM_SOCKETSTATE.onRegistered) && mRecoveredProcess) {
+            // First re-registration after a process-death recovery: the Activities that
+            // normally do this on registration (MainScreen) do not exist in this headless
+            // process. Run once, then clear the flag.
+            mRecoveredProcess = false;
+            doHeadlessRecovery();
         }
     }
 
@@ -152,13 +174,35 @@ public class AndruavLinkService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        // A non-null-intent start while the link is not desired is a stray start - a normal
+        // start always sets the flag first (App.startAndruavLinkService()). Quit instead of
+        // holding a wake lock for a link nobody wants.
+        if ((intent != null) && (!Preference.isLinkServiceDesired(null))) {
+            // We were started via startForegroundService(): satisfy its contract with a
+            // startForeground() call before quitting, otherwise the system crashes with
+            // ForegroundServiceDidNotStartInTimeException.
+            promoteToForeground();
+            stopForeground(STOP_FOREGROUND_REMOVE);
+            stopSelf();
+            return START_NOT_STICKY;
+        }
+
         promoteToForeground();
         acquireWakeLock();
         registerNetworkWatchdog();
         checkBatteryExemption();
 
-        // The START_STICKY restart behaviour (re-login after process death) is phase 2; the
-        // return value is harmless now.
+        // Process-death recovery: a null intent means the system recreated us via START_STICKY
+        // after the process was killed; a start (e.g. from BOOT_Receiver) with no WS client in
+        // the process means the same thing from a fresh process. In both cases the link is
+        // wanted but gone - recreate it headless. Not checked on the normal connect path:
+        // startAndruavWS() runs on the main thread and has already installed the WS client by
+        // the time this onStartCommand is dispatched, so it never trips there.
+        if ((intent == null) || (AndruavEngine.getAndruavWS() == null)) {
+            mRecoveredProcess = true;
+            App.resumeLink();
+        }
+
         return START_STICKY;
     }
 
@@ -313,6 +357,38 @@ public class AndruavLinkService extends Service {
         // healthy.
         if (AndruavEngine.getAndruavWS() == null) return;
         AndruavEngine.getAndruavWS().requestReconnectNow();
+    }
+
+    /***
+     * One-shot headless post-registration recovery after a process restart: link + IDs only,
+     * mirroring what MainScreen does on registration when the Activities are alive.
+     * <br>Deliberately NOT done headless (per review):
+     * <ul>
+     * <li>{@code TelemetryModeer.connectToPreferredConnection()} - the USB/Bluetooth paths can
+     * need an Activity for permission dialogs, and a silent FCB reconnect can fire while the
+     * vehicle is on the ground being serviced. FCB reconnect stays a foreground, user-visible
+     * action.</li>
+     * <li>{@code App.startSensorService()} - a location-type FGS started from the background
+     * is rejected on API 34 in exactly the situation this code runs in; it would be a logged
+     * failure, not a recovery.</li>
+     * </ul>
+     */
+    private void doHeadlessRecovery ()
+    {
+        try {
+            AndruavFacade.broadcastID();                     // tell them I am online
+            AndruavFacade.requestID();                      // guys !! who are there ?
+            AndruavFacade.sendID((AndruavUnitBase) null);    // guys I am here
+
+            AndruavSettings.loadGenericPermanentTasks();
+            AndruavSettings.loadMyPermanentTasksByPartyID();
+
+            // Safe and needed: its only other caller is MainScreen, so after a headless restart
+            // nothing else would register the signal listener.
+            ((App) getApplication()).initSignalMonitor();
+        } catch (Exception e) {
+            AndruavEngine.log().logException("link_recovery", e);
+        }
     }
 
     /**
