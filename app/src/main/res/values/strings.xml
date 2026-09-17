@@ -114,4 +114,14 @@
     <string name="home_hub_cloud_toggle_label">Andruav Cloud Server</string>
     <string name="home_btn_save">SAVE</string>
 
+    <!-- AndruavLinkService: the ongoing link-guardian notification is the single persistent
+         source of server-link status, so its text is localizable like the transient
+         "connected" notification it replaced. -->
+    <string name="link_notification_title">Andruav Link</string>
+    <string name="link_status_connecting">Connecting\u2026</string>
+    <string name="link_status_active">Link active</string>
+    <string name="link_status_reconnecting">Link down \u2014 reconnecting\u2026</string>
+    <string name="link_battery_warning_title">Andruav</string>
+    <string name="link_battery_warning">Battery optimization may drop the server link in the background. Tap to exempt Andruav.</string>
+
 </resources>

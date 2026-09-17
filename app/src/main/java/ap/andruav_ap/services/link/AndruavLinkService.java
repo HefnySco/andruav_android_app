@@ -89,15 +89,19 @@ public class AndruavLinkService extends Service {
     private ConnectivityManager.NetworkCallback mNetworkCallback;
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     private long mLinkStartTime;
-    private String mStatusText;
-    private boolean mBatteryWarningShown = false;
-    private boolean mReleased = false;
+    /** Written on the WS handler thread (EventSocketState), read on the main thread. */
+    private volatile String mStatusText;
+    private volatile boolean mBatteryWarningShown = false;
+    private volatile boolean mReleased = false;
 
     /**
      * True between detecting a process-death restart and the first successful re-registration:
      * gates the one-shot headless post-registration recovery (see {@link #doHeadlessRecovery}).
+     * <br>volatile: set on the main thread in {@link #onStartCommand}, read and cleared on the
+     * WS handler thread by the {@link EventSocketState} subscriber (ThreadMode.POSTING). Without
+     * the barrier the recovery could silently never run after a kill.
      */
-    private boolean mRecoveredProcess = false;
+    private volatile boolean mRecoveredProcess = false;
 
     /** Re-arms the bounded wake lock so a session longer than WAKE_LOCK_TIMEOUT_MS keeps it. */
     private final Runnable mWakeLockRearm = new Runnable() {
@@ -121,11 +125,11 @@ public class AndruavLinkService extends Service {
         switch (event.SocketState) {
             case onConnect:
             case onRegistered:
-                updateNotificationText("Link active");
+                updateNotificationText(getString(R.string.link_status_active));
                 break;
             case onDisconnect:
             case onError:
-                updateNotificationText("Link down — reconnecting…");
+                updateNotificationText(getString(R.string.link_status_reconnecting));
                 break;
             default: // onMessage: no status change
                 break;
@@ -160,14 +164,19 @@ public class AndruavLinkService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        // App.iLinkService is already set by App.startAndruavLinkService() (the caller that
-        // started us) by the time onCreate() runs, so subscribers re-querying
-        // App.isLinkServiceRunning() now will see the correct "running" state.
+        // App.startAndruavLinkService() sets App.iLinkService before starting us - but a
+        // START_STICKY recreate (or a BOOT start) comes from the system, which never goes
+        // through it. Without this, App.iLinkService stays null while the guardian is alive and
+        // stopAndruavLinkService() would clear the desired-flag and then SKIP stopService(),
+        // stranding a foreground service holding a wake lock and an un-swipeable notification.
+        if (App.iLinkService == null) {
+            App.iLinkService = new Intent(this, AndruavLinkService.class);
+        }
         EventBus.getDefault().register(this);
 
         mLinkStartTime = System.currentTimeMillis();
-        mStatusText = AndruavEngine.isAndruavWSStatus(AndruavWSClientBase.SOCKETSTATE_REGISTERED)
-                ? "Link active" : "Connecting…";
+        mStatusText = getString(AndruavEngine.isAndruavWSStatus(AndruavWSClientBase.SOCKETSTATE_REGISTERED)
+                ? R.string.link_status_active : R.string.link_status_connecting);
 
         mHandler.postDelayed(mWakeLockRearm, WAKE_LOCK_REARM_INTERVAL_MS);
     }
@@ -257,7 +266,7 @@ public class AndruavLinkService extends Service {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(this, ap.andruav_ap.Notification.CHANNEL_ID_LINK)
-                .setContentTitle("Andruav Link")
+                .setContentTitle(getString(R.string.link_notification_title))
                 .setContentText(text)
                 .setSmallIcon(R.drawable.ic_logo2)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
@@ -407,8 +416,8 @@ public class AndruavLinkService extends Service {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(this, ap.andruav_ap.Notification.CHANNEL_ID)
-                .setContentTitle("Andruav")
-                .setContentText("Battery optimization may drop the server link in the background. Tap to exempt Andruav.")
+                .setContentTitle(getString(R.string.link_battery_warning_title))
+                .setContentText(getString(R.string.link_battery_warning))
                 .setSmallIcon(R.drawable.ic_logo2)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true)
@@ -432,7 +441,16 @@ public class AndruavLinkService extends Service {
         if (mReleased) return;
         mReleased = true;
 
-        // Clear the "is running" flag FIRST: if anything below throws, startAndruavLinkService()
+        // Unregister the event bus FIRST. A socket event arriving after stopForeground() would
+        // run updateNotificationText() -> notify(FOREGROUND_ID), re-posting a FLAG_NO_CLEAR
+        // notification that no service is left to cancel - the user could not even swipe it away.
+        try {
+            EventBus.getDefault().unregister(this);
+        } catch (Exception e) {
+            // never registered - nothing to do.
+        }
+
+        // Clear the "is running" flag early: if anything below throws, startAndruavLinkService()
         // must not be left seeing a stale non-null Intent.
         App.iLinkService = null;
 
@@ -441,10 +459,12 @@ public class AndruavLinkService extends Service {
         releaseWakeLock();
         stopForeground(STOP_FOREGROUND_REMOVE);
 
-        try {
-            EventBus.getDefault().unregister(this);
-        } catch (Exception e) {
-            // never registered - nothing to do.
+        // Belt-and-braces against a notify() that raced the unregister above, and clears the
+        // battery warning too - it is about keeping THIS link alive, so it must not outlive it.
+        final NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (nm != null) {
+            nm.cancel(FOREGROUND_ID);
+            nm.cancel(BATTERY_WARNING_ID);
         }
     }
 }
