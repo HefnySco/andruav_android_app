@@ -41,6 +41,7 @@
 
             <!-- Server IP -->
             <TextView
+                android:id="@+id/hub_sheet_lbl_server_ip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"

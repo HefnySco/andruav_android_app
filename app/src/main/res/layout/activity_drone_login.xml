@@ -110,6 +110,20 @@ tools:context=".activities.login.drone.MainDroneActiviy$DroneLoginShasha">
         android:drawableLeft="@drawable/login2_w_32x32"
         />
 
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="52dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/login_scan_qr"
+        android:id="@+id/droneloginactivity_btnScanQR"
+        android:textAllCaps="false"
+        android:textColor="@color/sel_main_btn_text"
+        android:gravity="center"
+        android:elevation="4dp"
+        android:stateListAnimator="@null"
+        android:background="@drawable/sel_big_button_color"
+        />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

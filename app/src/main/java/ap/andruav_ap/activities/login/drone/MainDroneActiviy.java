@@ -2,13 +2,18 @@ package ap.andruav_ap.activities.login.drone;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,10 +26,13 @@ import android.widget.TextView;
 
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.io.UnsupportedEncodingException;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONObject;
 import ap.andruav_ap.App;
 import ap.andruav_ap.R;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
@@ -53,8 +61,11 @@ public class MainDroneActiviy extends AppCompatActivity {
         protected DroneLoginShasha Me;
         private Handler mhandle;
         protected Button btnJoin;
+        protected Button btnScanQR;
         protected EditText edtEmail;
         protected EditText edtAccessCode;
+        private ActivityResultLauncher<ScanOptions> mbarcodeLauncher;
+        private ActivityResultLauncher<String> mcameraPermissionLauncher;
 
         protected TextView txtSubscribe;
         private ProgressDialog mprogressDialog;
@@ -138,9 +149,32 @@ public class MainDroneActiviy extends AppCompatActivity {
         private void initGUI() {
 
             btnJoin         = findViewById(R.id.droneloginactivity_btnSaveAccessCode);
+            btnScanQR       = findViewById(R.id.droneloginactivity_btnScanQR);
             txtSubscribe    = findViewById(R.id.droneloginactivity_txtSubscribe);
             edtEmail        = findViewById(R.id.droneloginactivity_edtEmail);
             edtAccessCode   = findViewById(R.id.droneloginactivity_edtAccessCode);
+
+            mbarcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
+                if (result == null || result.getContents() == null) return;
+                applyQrLoginPayload(result.getContents());
+            });
+            mcameraPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
+                if (Boolean.TRUE.equals(granted)) {
+                    launchQrScanner();
+                } else {
+                    DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.login_scan_qr), getString(ap.andruavmiddlelibrary.R.string.login_qr_camera_permission), null);
+                }
+            });
+            btnScanQR.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (ContextCompat.checkSelfPermission(DroneLoginShasha.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        launchQrScanner();
+                    } else {
+                        mcameraPermissionLauncher.launch(Manifest.permission.CAMERA);
+                    }
+                }
+            });
             TextWatcher enableWatcher = new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -210,6 +244,62 @@ public class MainDroneActiviy extends AppCompatActivity {
                 }
             }
 
+        }
+
+        private void launchQrScanner() {
+            final ScanOptions options = new ScanOptions();
+            options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
+            options.setPrompt(getString(ap.andruavmiddlelibrary.R.string.login_scan_qr));
+            options.setBeepEnabled(false);
+            options.setOrientationLocked(true);
+            mbarcodeLauncher.launch(options);
+        }
+
+        /***
+         * Parses a "de_login" QR payload produced by the webclient team-admin
+         * page or the auth-server admin UI, fills the login form and signs in.
+         * Payload: {"v":1,"t":"de_login","acc":..,"pwd":..,"ah":..,"ap":..,"gr":..}
+         * ah/ap/gr are optional; ah/ap are also stored as the custom (local)
+         * server values so the HUB sheet reflects the scanned server.
+         */
+        private void applyQrLoginPayload(final String contents) {
+            try {
+                final JSONObject json = new JSONObject(contents);
+                if (!"de_login".equals(json.optString("t"))) {
+                    DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.login_scan_qr), getString(ap.andruavmiddlelibrary.R.string.login_qr_invalid), null);
+                    return;
+                }
+                final String acc = json.optString("acc", "").trim();
+                final String pwd = json.optString("pwd", "").trim();
+                if (acc.isEmpty() || pwd.isEmpty()) {
+                    DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.login_scan_qr), getString(ap.andruavmiddlelibrary.R.string.login_qr_invalid), null);
+                    return;
+                }
+
+                edtEmail.setText(acc);
+                edtAccessCode.setText(pwd);
+
+                final String authHost = json.optString("ah", "").trim();
+                if (!authHost.isEmpty()) {
+                    Preference.setAuthServerURL(null, authHost);
+                    Preference.setLocalServerURL(null, authHost);
+                    final String cloudHost = getString(ap.andruavmiddlelibrary.R.string.pref_auth_URL);
+                    Preference.isLocalServer(null, !cloudHost.equalsIgnoreCase(authHost));
+                }
+                final int authPort = json.optInt("ap", 0);
+                if (authPort > 0) {
+                    Preference.setAuthServerPort(null, authPort);
+                    Preference.setLocalServerPort(null, authPort);
+                }
+                final String group = json.optString("gr", "").trim();
+                if (!group.isEmpty()) {
+                    Preference.setWebServerGroupName(null, group.toLowerCase());
+                }
+
+                doSaveAccessCode();
+            } catch (Exception e) {
+                DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.login_scan_qr), getString(ap.andruavmiddlelibrary.R.string.login_qr_invalid), null);
+            }
         }
 
         private void doProgressDialog()

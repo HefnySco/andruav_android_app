@@ -167,6 +167,28 @@ public class Preference {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "ai8pfERTTONDQ", servicePort);
     }
 
+
+    /***
+     * Last custom (local) auth server values entered by the user.
+     * Kept separate from AuthServerURL/AuthServerPort because those are overwritten
+     * with the cloud defaults whenever the Andruav Cloud Server toggle is ON.
+     */
+    public static String getLocalServerURL(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "qL9xVmTzR4", AndruavEngine.getPreference().getContext().getString(R.string.pref_auth_URL));
+    }
+
+    public static void setLocalServerURL(final android.content.ContextWrapper contextWrapper, String webserverURL) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "qL9xVmTzR4", webserverURL);
+    }
+
+    public static int getLocalServerPort(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "mT5wXyZpQnA", AndruavEngine.getPreference().getContext().getResources().getInteger(R.integer.pref_auth_Port));
+    }
+
+    public static void setLocalServerPort(final android.content.ContextWrapper contextWrapper, final int servicePort) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "mT5wXyZpQnA", servicePort);
+    }
+
     /***
      * This function is not useful anymore as it is updated each time server connects to the authentication site.
      *
@@ -1269,6 +1291,8 @@ public class Preference {
         Preference.setWebServerUserName(contextWrapper, Build.MODEL);
         Preference.setAuthServerURL(contextWrapper, AndruavEngine.getPreference().getContext().getString(R.string.pref_auth_URL));
         Preference.setAuthServerPort(contextWrapper, AndruavEngine.getPreference().getContext().getResources().getInteger(R.integer.pref_auth_Port));
+        Preference.setLocalServerURL(contextWrapper, AndruavEngine.getPreference().getContext().getString(R.string.pref_auth_URL));
+        Preference.setLocalServerPort(contextWrapper, AndruavEngine.getPreference().getContext().getResources().getInteger(R.integer.pref_auth_Port));
         Preference.setWebServerURL(contextWrapper, AndruavEngine.getPreference().getContext().getString(R.string.pref_ws_URL));
         Preference.setWebServerPort(contextWrapper, AndruavEngine.getPreference().getContext().getResources().getInteger(R.integer.pref_ws_Port));
         Preference.setFirstServer(null, 0);

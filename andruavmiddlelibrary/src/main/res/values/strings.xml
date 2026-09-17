@@ -381,6 +381,9 @@
     <string name="login_login">Join</string>
     <string name="hyper_subscribe">https://cloud.ardupilot.org:8001/accounts.html</string>
     <string name="login_access_code">Access Code</string>
+    <string name="login_scan_qr">Scan QR Code</string>
+    <string name="login_qr_invalid">Not a valid DroneEngage login QR code.</string>
+    <string name="login_qr_camera_permission">Camera permission is required to scan QR codes.</string>
     <string name="login_first_section">Create Account</string>
     <string name="login_action_accontexist">Account already registered.\r\nUse access code direclty.\r\nPress OK to send access code to your email.</string>
     <string name="login_second_section">Already have Accesscode</string>

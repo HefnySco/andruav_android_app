@@ -112,6 +112,7 @@
 
     <string name="home_hub_sheet_title">MISSION SERVER CONNECTION</string>
     <string name="home_hub_cloud_toggle_label">Andruav Cloud Server</string>
+    <string name="home_hub_sheet_custom_suffix">" - custom"</string>
     <string name="home_btn_save">SAVE</string>
 
     <!-- AndruavLinkService: the ongoing link-guardian notification is the single persistent
