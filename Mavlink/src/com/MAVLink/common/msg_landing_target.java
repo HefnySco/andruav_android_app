@@ -104,7 +104,7 @@ public class msg_landing_target extends MAVLinkMessage {
      */
     @Description("Quaternion of landing target orientation (w, x, y, z order, zero-rotation is 1, 0, 0, 0)")
     @Units("")
-    public float[] q = new float[4];
+    public float q[] = new float[4];
     
     /**
      * Type of landing target
@@ -114,9 +114,9 @@ public class msg_landing_target extends MAVLinkMessage {
     public short type;
     
     /**
-     * Boolean indicating whether the position fields (x, y, z, q, type) contain valid target position information (valid: 1, invalid: 0). Default is 0 (invalid).
+     * Position fields (x, y, z, q, type) contain valid target position information (MAV_BOOL_FALSE: invalid values). Values not equal to 0 or 1 are invalid.
      */
-    @Description("Boolean indicating whether the position fields (x, y, z, q, type) contain valid target position information (valid: 1, invalid: 0). Default is 0 (invalid).")
+    @Description("Position fields (x, y, z, q, type) contain valid target position information (MAV_BOOL_FALSE: invalid values). Values not equal to 0 or 1 are invalid.")
     @Units("")
     public short position_valid;
     
@@ -266,7 +266,7 @@ public class msg_landing_target extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_LANDING_TARGET - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" angle_x:"+angle_x+" angle_y:"+angle_y+" distance:"+distance+" size_x:"+size_x+" size_y:"+size_y+" target_num:"+target_num+" frame:"+frame+" x:"+x+" y:"+y+" z:"+z+" q:"+q+" type:"+type+" position_valid:"+position_valid;
+        return "MAVLINK_MSG_ID_LANDING_TARGET - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" angle_x:"+angle_x+" angle_y:"+angle_y+" distance:"+distance+" size_x:"+size_x+" size_y:"+size_y+" target_num:"+target_num+" frame:"+frame+" x:"+x+" y:"+y+" z:"+z+" q:"+q+" type:"+type+" position_valid:"+position_valid+"";
     }
 
     /**

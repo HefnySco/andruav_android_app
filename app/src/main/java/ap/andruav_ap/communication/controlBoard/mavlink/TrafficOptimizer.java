@@ -19,7 +19,7 @@ import com.MAVLink.common.msg_scaled_imu2;
 import com.MAVLink.common.msg_scaled_imu3;
 import com.MAVLink.common.msg_gps_raw_int;
 import com.MAVLink.common.msg_gps_rtk;
-import com.MAVLink.common.msg_global_position_int;
+import com.MAVLink.standard.msg_global_position_int;
 import com.MAVLink.common.msg_local_position_ned;
 import com.MAVLink.minimal.msg_heartbeat;
 import com.MAVLink.common.msg_mission_current;

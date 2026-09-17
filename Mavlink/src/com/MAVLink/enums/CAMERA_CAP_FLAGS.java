@@ -22,5 +22,7 @@ public class CAMERA_CAP_FLAGS {
    public static final int CAMERA_CAP_FLAGS_HAS_TRACKING_POINT = 512; /* Camera supports tracking of a point on the camera view. | */
    public static final int CAMERA_CAP_FLAGS_HAS_TRACKING_RECTANGLE = 1024; /* Camera supports tracking of a selection rectangle on the camera view. | */
    public static final int CAMERA_CAP_FLAGS_HAS_TRACKING_GEO_STATUS = 2048; /* Camera supports tracking geo status (CAMERA_TRACKING_GEO_STATUS). | */
-   public static final int CAMERA_CAP_FLAGS_ENUM_END = 2049; /*  | */
+   public static final int CAMERA_CAP_FLAGS_HAS_THERMAL_RANGE = 4096; /* Camera supports absolute thermal range (request CAMERA_THERMAL_RANGE with MAV_CMD_REQUEST_MESSAGE). | */
+   public static final int CAMERA_CAP_FLAGS_HAS_MTI = 8192; /* Camera supports Moving Target Indicators (MTI) on the camera view (using MAV_CMD_CAMERA_START_MTI). | */
+   public static final int CAMERA_CAP_FLAGS_ENUM_END = 8193; /*  | */
 }

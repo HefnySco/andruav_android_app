@@ -13,7 +13,11 @@ import com.MAVLink.Messages.Units;
 import com.MAVLink.Messages.Description;
 
 /**
- * Message that announces the sequence number of the current active mission item. The MAV will fly towards this mission item.
+ * 
+        Message that announces the sequence number of the current target mission item (that the system will fly towards/execute when the mission is running).
+        This message should be streamed all the time (nominally at 1Hz).
+        This message should be emitted following a call to MAV_CMD_DO_SET_MISSION_CURRENT or MISSION_SET_CURRENT.
+      
  */
 public class msg_mission_current extends MAVLinkMessage {
 
@@ -148,7 +152,7 @@ public class msg_mission_current extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_MISSION_CURRENT - sysid:"+sysid+" compid:"+compid+" seq:"+seq+" total:"+total+" mission_state:"+mission_state+" mission_mode:"+mission_mode;
+        return "MAVLINK_MSG_ID_MISSION_CURRENT - sysid:"+sysid+" compid:"+compid+" seq:"+seq+" total:"+total+" mission_state:"+mission_state+" mission_mode:"+mission_mode+"";
     }
 
     /**

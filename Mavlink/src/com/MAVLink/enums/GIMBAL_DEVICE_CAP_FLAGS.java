@@ -21,8 +21,10 @@ public class GIMBAL_DEVICE_CAP_FLAGS {
    public static final int GIMBAL_DEVICE_CAP_FLAGS_HAS_YAW_AXIS = 256; /* Gimbal device supports rotating around yaw axis. | */
    public static final int GIMBAL_DEVICE_CAP_FLAGS_HAS_YAW_FOLLOW = 512; /* Gimbal device supports to follow a yaw angle relative to the vehicle (generally that's the default). | */
    public static final int GIMBAL_DEVICE_CAP_FLAGS_HAS_YAW_LOCK = 1024; /* Gimbal device supports locking to an absolute heading, i.e., yaw angle relative to North (earth frame, often this is an option available). | */
-   public static final int GIMBAL_DEVICE_CAP_FLAGS_SUPPORTS_INFINITE_YAW = 2048; /* Gimbal device supports yawing/panning infinetely (e.g. using slip disk). | */
+   public static final int GIMBAL_DEVICE_CAP_FLAGS_SUPPORTS_INFINITE_YAW = 2048; /* Gimbal device supports yawing/panning infinitely (e.g. using slip disk). | */
    public static final int GIMBAL_DEVICE_CAP_FLAGS_SUPPORTS_YAW_IN_EARTH_FRAME = 4096; /* Gimbal device supports yaw angles and angular velocities relative to North (earth frame). This usually requires support by an autopilot via AUTOPILOT_STATE_FOR_GIMBAL_DEVICE. Support can go on and off during runtime, which is reported by the flag GIMBAL_DEVICE_FLAGS_CAN_ACCEPT_YAW_IN_EARTH_FRAME. | */
    public static final int GIMBAL_DEVICE_CAP_FLAGS_HAS_RC_INPUTS = 8192; /* Gimbal device supports radio control inputs as an alternative input for controlling the gimbal orientation. | */
-   public static final int GIMBAL_DEVICE_CAP_FLAGS_ENUM_END = 8193; /*  | */
+   public static final int GIMBAL_DEVICE_CAP_FLAGS_CAN_POINT_LOCATION_LOCAL = 65536; /* Gimbal device supports to point to a local position. | */
+   public static final int GIMBAL_DEVICE_CAP_FLAGS_CAN_POINT_LOCATION_GLOBAL = 131072; /* Gimbal device supports to point to a global latitude, longitude, altitude position. | */
+   public static final int GIMBAL_DEVICE_CAP_FLAGS_ENUM_END = 131073; /*  | */
 }

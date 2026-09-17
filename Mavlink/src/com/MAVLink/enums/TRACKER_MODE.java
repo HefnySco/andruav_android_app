@@ -10,11 +10,12 @@ package com.MAVLink.enums;
  * A mapping of antenna tracker flight modes for custom_mode field of heartbeat.
  */
 public class TRACKER_MODE {
-   public static final int TRACKER_MODE_MANUAL = 0; /*  | */
-   public static final int TRACKER_MODE_STOP = 1; /*  | */
-   public static final int TRACKER_MODE_SCAN = 2; /*  | */
-   public static final int TRACKER_MODE_SERVO_TEST = 3; /*  | */
-   public static final int TRACKER_MODE_AUTO = 10; /*  | */
-   public static final int TRACKER_MODE_INITIALIZING = 16; /*  | */
+   public static final int TRACKER_MODE_MANUAL = 0; /* MANUAL | */
+   public static final int TRACKER_MODE_STOP = 1; /* STOP | */
+   public static final int TRACKER_MODE_SCAN = 2; /* SCAN | */
+   public static final int TRACKER_MODE_SERVO_TEST = 3; /* SERVO TEST | */
+   public static final int TRACKER_MODE_GUIDED = 4; /* GUIDED | */
+   public static final int TRACKER_MODE_AUTO = 10; /* AUTO | */
+   public static final int TRACKER_MODE_INITIALIZING = 16; /* INITIALISING | */
    public static final int TRACKER_MODE_ENUM_END = 17; /*  | */
 }

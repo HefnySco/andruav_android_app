@@ -44,9 +44,9 @@ public class msg_can_frame extends MAVLinkMessage {
     public short target_component;
     
     /**
-     * bus number
+     * Bus number
      */
-    @Description("bus number")
+    @Description("Bus number")
     @Units("")
     public short bus;
     
@@ -62,7 +62,7 @@ public class msg_can_frame extends MAVLinkMessage {
      */
     @Description("Frame data")
     @Units("")
-    public short[] data = new short[8];
+    public short data[] = new short[8];
     
 
     /**
@@ -178,7 +178,7 @@ public class msg_can_frame extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_CAN_FRAME - sysid:"+sysid+" compid:"+compid+" id:"+id+" target_system:"+target_system+" target_component:"+target_component+" bus:"+bus+" len:"+len+" data:"+data;
+        return "MAVLINK_MSG_ID_CAN_FRAME - sysid:"+sysid+" compid:"+compid+" id:"+id+" target_system:"+target_system+" target_component:"+target_component+" bus:"+bus+" len:"+len+" data:"+data+"";
     }
 
     /**

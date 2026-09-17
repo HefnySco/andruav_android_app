@@ -37,16 +37,16 @@ public class msg_open_drone_id_system extends MAVLinkMessage {
     public int operator_longitude;
     
     /**
-     * Area Operations Ceiling relative to WGS84. If unknown: -1000 m.
+     * Area Operations Ceiling relative to WGS84. If unknown: -1000 m. Used only for swarms/multiple UA.
      */
-    @Description("Area Operations Ceiling relative to WGS84. If unknown: -1000 m.")
+    @Description("Area Operations Ceiling relative to WGS84. If unknown: -1000 m. Used only for swarms/multiple UA.")
     @Units("m")
     public float area_ceiling;
     
     /**
-     * Area Operations Floor relative to WGS84. If unknown: -1000 m.
+     * Area Operations Floor relative to WGS84. If unknown: -1000 m. Used only for swarms/multiple UA.
      */
-    @Description("Area Operations Floor relative to WGS84. If unknown: -1000 m.")
+    @Description("Area Operations Floor relative to WGS84. If unknown: -1000 m. Used only for swarms/multiple UA.")
     @Units("m")
     public float area_floor;
     
@@ -65,16 +65,16 @@ public class msg_open_drone_id_system extends MAVLinkMessage {
     public long timestamp;
     
     /**
-     * Number of aircraft in the area, group or formation (default 1).
+     * Number of aircraft in the area, group or formation (default 1). Used only for swarms/multiple UA.
      */
-    @Description("Number of aircraft in the area, group or formation (default 1).")
+    @Description("Number of aircraft in the area, group or formation (default 1). Used only for swarms/multiple UA.")
     @Units("")
     public int area_count;
     
     /**
-     * Radius of the cylindrical area of the group or formation (default 0).
+     * Radius of the cylindrical area of the group or formation (default 0). Used only for swarms/multiple UA.
      */
-    @Description("Radius of the cylindrical area of the group or formation (default 0).")
+    @Description("Radius of the cylindrical area of the group or formation (default 0). Used only for swarms/multiple UA.")
     @Units("m")
     public int area_radius;
     
@@ -97,7 +97,7 @@ public class msg_open_drone_id_system extends MAVLinkMessage {
      */
     @Description("Only used for drone ID data received from other UAs. See detailed description at https://mavlink.io/en/services/opendroneid.html. ")
     @Units("")
-    public short[] id_or_mac = new short[20];
+    public short id_or_mac[] = new short[20];
     
     /**
      * Specifies the operator location type.
@@ -277,7 +277,7 @@ public class msg_open_drone_id_system extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_OPEN_DRONE_ID_SYSTEM - sysid:"+sysid+" compid:"+compid+" operator_latitude:"+operator_latitude+" operator_longitude:"+operator_longitude+" area_ceiling:"+area_ceiling+" area_floor:"+area_floor+" operator_altitude_geo:"+operator_altitude_geo+" timestamp:"+timestamp+" area_count:"+area_count+" area_radius:"+area_radius+" target_system:"+target_system+" target_component:"+target_component+" id_or_mac:"+id_or_mac+" operator_location_type:"+operator_location_type+" classification_type:"+classification_type+" category_eu:"+category_eu+" class_eu:"+class_eu;
+        return "MAVLINK_MSG_ID_OPEN_DRONE_ID_SYSTEM - sysid:"+sysid+" compid:"+compid+" operator_latitude:"+operator_latitude+" operator_longitude:"+operator_longitude+" area_ceiling:"+area_ceiling+" area_floor:"+area_floor+" operator_altitude_geo:"+operator_altitude_geo+" timestamp:"+timestamp+" area_count:"+area_count+" area_radius:"+area_radius+" target_system:"+target_system+" target_component:"+target_component+" id_or_mac:"+id_or_mac+" operator_location_type:"+operator_location_type+" classification_type:"+classification_type+" category_eu:"+category_eu+" class_eu:"+class_eu+"";
     }
 
     /**

@@ -14,7 +14,7 @@ import com.MAVLink.Messages.Description;
 
 /**
  * The global position, as returned by the Global Positioning System (GPS). This is
-                NOT the global position estimate of the system, but rather a RAW sensor value. See message GLOBAL_POSITION for the global position estimate.
+                NOT the global position estimate of the system, but rather a RAW sensor value. See message GLOBAL_POSITION_INT for the global position estimate.
  */
 public class msg_gps_raw_int extends MAVLinkMessage {
 
@@ -52,16 +52,16 @@ public class msg_gps_raw_int extends MAVLinkMessage {
     public int alt;
     
     /**
-     * GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX
+     * GPS HDOP horizontal dilution of position (unitless * 100). If unknown, set to: UINT16_MAX
      */
-    @Description("GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX")
+    @Description("GPS HDOP horizontal dilution of position (unitless * 100). If unknown, set to: UINT16_MAX")
     @Units("")
     public int eph;
     
     /**
-     * GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX
+     * GPS VDOP vertical dilution of position (unitless * 100). If unknown, set to: UINT16_MAX
      */
-    @Description("GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX")
+    @Description("GPS VDOP vertical dilution of position (unitless * 100). If unknown, set to: UINT16_MAX")
     @Units("")
     public int epv;
     
@@ -87,9 +87,9 @@ public class msg_gps_raw_int extends MAVLinkMessage {
     public short fix_type;
     
     /**
-     * Number of satellites visible. If unknown, set to 255
+     * Number of satellites visible. If unknown, set to UINT8_MAX
      */
-    @Description("Number of satellites visible. If unknown, set to 255")
+    @Description("Number of satellites visible. If unknown, set to UINT8_MAX")
     @Units("")
     public short satellites_visible;
     
@@ -118,7 +118,7 @@ public class msg_gps_raw_int extends MAVLinkMessage {
      * Speed uncertainty.
      */
     @Description("Speed uncertainty.")
-    @Units("mm")
+    @Units("mm/s")
     public long vel_acc;
     
     /**
@@ -129,9 +129,9 @@ public class msg_gps_raw_int extends MAVLinkMessage {
     public long hdg_acc;
     
     /**
-     * Yaw in earth frame from north. Use 0 if this GPS does not provide yaw. Use 65535 if this GPS is configured to provide yaw and is currently unable to provide it. Use 36000 for north.
+     * Yaw in earth frame from north. Use 0 if this GPS does not provide yaw. Use UINT16_MAX if this GPS is configured to provide yaw and is currently unable to provide it. Use 36000 for north.
      */
-    @Description("Yaw in earth frame from north. Use 0 if this GPS does not provide yaw. Use 65535 if this GPS is configured to provide yaw and is currently unable to provide it. Use 36000 for north.")
+    @Description("Yaw in earth frame from north. Use 0 if this GPS does not provide yaw. Use UINT16_MAX if this GPS is configured to provide yaw and is currently unable to provide it. Use 36000 for north.")
     @Units("cdeg")
     public int yaw;
     
@@ -281,7 +281,7 @@ public class msg_gps_raw_int extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_GPS_RAW_INT - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" lat:"+lat+" lon:"+lon+" alt:"+alt+" eph:"+eph+" epv:"+epv+" vel:"+vel+" cog:"+cog+" fix_type:"+fix_type+" satellites_visible:"+satellites_visible+" alt_ellipsoid:"+alt_ellipsoid+" h_acc:"+h_acc+" v_acc:"+v_acc+" vel_acc:"+vel_acc+" hdg_acc:"+hdg_acc+" yaw:"+yaw;
+        return "MAVLINK_MSG_ID_GPS_RAW_INT - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" lat:"+lat+" lon:"+lon+" alt:"+alt+" eph:"+eph+" epv:"+epv+" vel:"+vel+" cog:"+cog+" fix_type:"+fix_type+" satellites_visible:"+satellites_visible+" alt_ellipsoid:"+alt_ellipsoid+" h_acc:"+h_acc+" v_acc:"+v_acc+" vel_acc:"+vel_acc+" hdg_acc:"+hdg_acc+" yaw:"+yaw+"";
     }
 
     /**

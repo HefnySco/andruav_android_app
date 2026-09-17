@@ -7,7 +7,7 @@
 package com.MAVLink.enums;
 
 /**
- * These flags encode the MAV mode.
+ * These flags encode the MAV mode, see MAV_MODE enum for useful combinations.
  */
 public class MAV_MODE_FLAG {
    public static final int MAV_MODE_FLAG_CUSTOM_MODE_ENABLED = 1; /* 0b00000001 Reserved for future use. | */

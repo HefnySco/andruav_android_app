@@ -10,14 +10,16 @@ package com.MAVLink.enums;
  * A mapping of sub flight modes for custom_mode field of heartbeat.
  */
 public class SUB_MODE {
-   public static final int SUB_MODE_STABILIZE = 0; /*  | */
-   public static final int SUB_MODE_ACRO = 1; /*  | */
-   public static final int SUB_MODE_ALT_HOLD = 2; /*  | */
-   public static final int SUB_MODE_AUTO = 3; /*  | */
-   public static final int SUB_MODE_GUIDED = 4; /*  | */
-   public static final int SUB_MODE_CIRCLE = 7; /*  | */
-   public static final int SUB_MODE_SURFACE = 9; /*  | */
-   public static final int SUB_MODE_POSHOLD = 16; /*  | */
-   public static final int SUB_MODE_MANUAL = 19; /*  | */
-   public static final int SUB_MODE_ENUM_END = 20; /*  | */
+   public static final int SUB_MODE_STABILIZE = 0; /* STABILIZE | */
+   public static final int SUB_MODE_ACRO = 1; /* ACRO | */
+   public static final int SUB_MODE_ALT_HOLD = 2; /* ALT HOLD | */
+   public static final int SUB_MODE_AUTO = 3; /* AUTO | */
+   public static final int SUB_MODE_GUIDED = 4; /* GUIDED | */
+   public static final int SUB_MODE_CIRCLE = 7; /* CIRCLE | */
+   public static final int SUB_MODE_SURFACE = 9; /* SURFACE | */
+   public static final int SUB_MODE_POSHOLD = 16; /* POSHOLD | */
+   public static final int SUB_MODE_MANUAL = 19; /* MANUAL | */
+   public static final int SUB_MODE_MOTORDETECT = 20; /* MOTORDETECT | */
+   public static final int SUB_MODE_SURFTRAK = 21; /* SURFTRAK | */
+   public static final int SUB_MODE_ENUM_END = 22; /*  | */
 }

@@ -13,7 +13,7 @@ import com.MAVLink.Messages.Units;
 import com.MAVLink.Messages.Description;
 
 /**
- * Wind covariance estimate from vehicle.
+ * Wind estimate from vehicle. Note that despite the name, this message does not actually contain any covariances but instead variability and accuracy fields in terms of standard deviation (1-STD).
  */
 public class msg_wind_cov extends MAVLinkMessage {
 
@@ -30,59 +30,59 @@ public class msg_wind_cov extends MAVLinkMessage {
     public long time_usec;
     
     /**
-     * Wind in X (NED) direction
+     * Wind in North (NED) direction (NAN if unknown)
      */
-    @Description("Wind in X (NED) direction")
+    @Description("Wind in North (NED) direction (NAN if unknown)")
     @Units("m/s")
     public float wind_x;
     
     /**
-     * Wind in Y (NED) direction
+     * Wind in East (NED) direction (NAN if unknown)
      */
-    @Description("Wind in Y (NED) direction")
+    @Description("Wind in East (NED) direction (NAN if unknown)")
     @Units("m/s")
     public float wind_y;
     
     /**
-     * Wind in Z (NED) direction
+     * Wind in down (NED) direction (NAN if unknown)
      */
-    @Description("Wind in Z (NED) direction")
+    @Description("Wind in down (NED) direction (NAN if unknown)")
     @Units("m/s")
     public float wind_z;
     
     /**
-     * Variability of the wind in XY. RMS of a 1 Hz lowpassed wind estimate.
+     * Variability of wind in XY, 1-STD estimated from a 1 Hz lowpassed wind estimate (NAN if unknown)
      */
-    @Description("Variability of the wind in XY. RMS of a 1 Hz lowpassed wind estimate.")
+    @Description("Variability of wind in XY, 1-STD estimated from a 1 Hz lowpassed wind estimate (NAN if unknown)")
     @Units("m/s")
     public float var_horiz;
     
     /**
-     * Variability of the wind in Z. RMS of a 1 Hz lowpassed wind estimate.
+     * Variability of wind in Z, 1-STD estimated from a 1 Hz lowpassed wind estimate (NAN if unknown)
      */
-    @Description("Variability of the wind in Z. RMS of a 1 Hz lowpassed wind estimate.")
+    @Description("Variability of wind in Z, 1-STD estimated from a 1 Hz lowpassed wind estimate (NAN if unknown)")
     @Units("m/s")
     public float var_vert;
     
     /**
-     * Altitude (MSL) that this measurement was taken at
+     * Altitude (MSL) that this measurement was taken at (NAN if unknown)
      */
-    @Description("Altitude (MSL) that this measurement was taken at")
+    @Description("Altitude (MSL) that this measurement was taken at (NAN if unknown)")
     @Units("m")
     public float wind_alt;
     
     /**
-     * Horizontal speed 1-STD accuracy
+     * Horizontal speed 1-STD accuracy (0 if unknown)
      */
-    @Description("Horizontal speed 1-STD accuracy")
-    @Units("m")
+    @Description("Horizontal speed 1-STD accuracy (0 if unknown)")
+    @Units("m/s")
     public float horiz_accuracy;
     
     /**
-     * Vertical speed 1-STD accuracy
+     * Vertical speed 1-STD accuracy (0 if unknown)
      */
-    @Description("Vertical speed 1-STD accuracy")
-    @Units("m")
+    @Description("Vertical speed 1-STD accuracy (0 if unknown)")
+    @Units("m/s")
     public float vert_accuracy;
     
 
@@ -203,7 +203,7 @@ public class msg_wind_cov extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_WIND_COV - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" wind_x:"+wind_x+" wind_y:"+wind_y+" wind_z:"+wind_z+" var_horiz:"+var_horiz+" var_vert:"+var_vert+" wind_alt:"+wind_alt+" horiz_accuracy:"+horiz_accuracy+" vert_accuracy:"+vert_accuracy;
+        return "MAVLINK_MSG_ID_WIND_COV - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" wind_x:"+wind_x+" wind_y:"+wind_y+" wind_z:"+wind_z+" var_horiz:"+var_horiz+" var_vert:"+var_vert+" wind_alt:"+wind_alt+" horiz_accuracy:"+horiz_accuracy+" vert_accuracy:"+vert_accuracy+"";
     }
 
     /**

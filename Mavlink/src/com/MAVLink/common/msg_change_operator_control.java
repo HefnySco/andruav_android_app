@@ -40,7 +40,7 @@ public class msg_change_operator_control extends MAVLinkMessage {
      * 0: key as plaintext, 1-255: future, different hashing/encryption variants. The GCS should in general use the safest mode possible initially and then gradually move down the encryption level if it gets a NACK message indicating an encryption mismatch.
      */
     @Description("0: key as plaintext, 1-255: future, different hashing/encryption variants. The GCS should in general use the safest mode possible initially and then gradually move down the encryption level if it gets a NACK message indicating an encryption mismatch.")
-    @Units("rad")
+    @Units("")
     public short version;
     
     /**
@@ -48,7 +48,7 @@ public class msg_change_operator_control extends MAVLinkMessage {
      */
     @Description("Password / Key, depending on version plaintext or encrypted. 25 or less characters, NULL terminated. The characters may involve A-Z, a-z, 0-9, and '!?,.-'")
     @Units("")
-    public byte[] passkey = new byte[25];
+    public byte passkey[] = new byte[25];
     
 
     /**
@@ -185,7 +185,7 @@ public class msg_change_operator_control extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_CHANGE_OPERATOR_CONTROL - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" control_request:"+control_request+" version:"+version+" passkey:"+passkey;
+        return "MAVLINK_MSG_ID_CHANGE_OPERATOR_CONTROL - sysid:"+sysid+" compid:"+compid+" target_system:"+target_system+" control_request:"+control_request+" version:"+version+" passkey:"+passkey+"";
     }
 
     /**

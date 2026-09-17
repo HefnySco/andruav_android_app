@@ -7,10 +7,12 @@
 package com.MAVLink.enums;
 
 /**
- * 
+ * Fence types to enable or disable when using MAV_CMD_DO_FENCE_ENABLE.
+        Note that at least one of these flags must be set in MAV_CMD_DO_FENCE_ENABLE.param2.
+        If none are set, the flight stack will ignore the field and enable/disable its default set of fences (usually all of them).
+      
  */
 public class FENCE_TYPE {
-   public static final int FENCE_TYPE_ALL = 0; /* All fence types | */
    public static final int FENCE_TYPE_ALT_MAX = 1; /* Maximum altitude fence | */
    public static final int FENCE_TYPE_CIRCLE = 2; /* Circle fence | */
    public static final int FENCE_TYPE_POLYGON = 4; /* Polygon fence | */

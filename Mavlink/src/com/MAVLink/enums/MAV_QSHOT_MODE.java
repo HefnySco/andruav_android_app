@@ -11,7 +11,7 @@ package com.MAVLink.enums;
  */
 public class MAV_QSHOT_MODE {
    public static final int MAV_QSHOT_MODE_UNDEFINED = 0; /* Undefined shot mode. Can be used to determine if qshots should be used or not. | */
-   public static final int MAV_QSHOT_MODE_DEFAULT = 1; /* Start normal gimbal operation. Is usally used to return back from a shot. | */
+   public static final int MAV_QSHOT_MODE_DEFAULT = 1; /* Start normal gimbal operation. Is usually used to return back from a shot. | */
    public static final int MAV_QSHOT_MODE_GIMBAL_RETRACT = 2; /* Load and keep safe gimbal position and stop stabilization. | */
    public static final int MAV_QSHOT_MODE_GIMBAL_NEUTRAL = 3; /* Load neutral gimbal position and keep it while stabilizing. | */
    public static final int MAV_QSHOT_MODE_GIMBAL_MISSION = 4; /* Start mission with gimbal control. | */

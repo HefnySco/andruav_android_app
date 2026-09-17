@@ -23,44 +23,44 @@ public class msg_storm32_gimbal_manager_control_pitchyaw extends MAVLinkMessage 
 
     
     /**
-     * Pitch/tilt angle (positive: tilt up, NaN to be ignored).
+     * Pitch/tilt angle (positive: tilt up). NaN to be ignored.
      */
-    @Description("Pitch/tilt angle (positive: tilt up, NaN to be ignored).")
+    @Description("Pitch/tilt angle (positive: tilt up). NaN to be ignored.")
     @Units("rad")
     public float pitch;
     
     /**
-     * Yaw/pan angle (positive: pan the right, the frame is determined by the STORM32_GIMBAL_DEVICE_FLAGS_YAW_ABSOLUTE flag, NaN to be ignored).
+     * Yaw/pan angle (positive: pan the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.
      */
-    @Description("Yaw/pan angle (positive: pan the right, the frame is determined by the STORM32_GIMBAL_DEVICE_FLAGS_YAW_ABSOLUTE flag, NaN to be ignored).")
+    @Description("Yaw/pan angle (positive: pan the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.")
     @Units("rad")
     public float yaw;
     
     /**
-     * Pitch/tilt angular rate (positive: tilt up, NaN to be ignored).
+     * Pitch/tilt angular rate (positive: tilt up). NaN to be ignored.
      */
-    @Description("Pitch/tilt angular rate (positive: tilt up, NaN to be ignored).")
+    @Description("Pitch/tilt angular rate (positive: tilt up). NaN to be ignored.")
     @Units("rad/s")
     public float pitch_rate;
     
     /**
-     * Yaw/pan angular rate (positive: pan to the right, the frame is determined by the STORM32_GIMBAL_DEVICE_FLAGS_YAW_ABSOLUTE flag, NaN to be ignored).
+     * Yaw/pan angular rate (positive: pan to the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.
      */
-    @Description("Yaw/pan angular rate (positive: pan to the right, the frame is determined by the STORM32_GIMBAL_DEVICE_FLAGS_YAW_ABSOLUTE flag, NaN to be ignored).")
+    @Description("Yaw/pan angular rate (positive: pan to the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.")
     @Units("rad/s")
     public float yaw_rate;
     
     /**
-     * Gimbal device flags (UINT16_MAX to be ignored).
+     * Gimbal device flags to be applied (UINT16_MAX to be ignored). Same flags as used in GIMBAL_DEVICE_SET_ATTITUDE.
      */
-    @Description("Gimbal device flags (UINT16_MAX to be ignored).")
+    @Description("Gimbal device flags to be applied (UINT16_MAX to be ignored). Same flags as used in GIMBAL_DEVICE_SET_ATTITUDE.")
     @Units("")
     public int device_flags;
     
     /**
-     * Gimbal manager flags (0 to be ignored).
+     * Gimbal manager flags to be applied (0 to be ignored).
      */
-    @Description("Gimbal manager flags (0 to be ignored).")
+    @Description("Gimbal manager flags to be applied (0 to be ignored).")
     @Units("")
     public int manager_flags;
     
@@ -79,9 +79,9 @@ public class msg_storm32_gimbal_manager_control_pitchyaw extends MAVLinkMessage 
     public short target_component;
     
     /**
-     * Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals, send command multiple times for more than one but not all gimbals).
+     * Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.
      */
-    @Description("Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals, send command multiple times for more than one but not all gimbals).")
+    @Description("Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.")
     @Units("")
     public short gimbal_id;
     
@@ -214,7 +214,7 @@ public class msg_storm32_gimbal_manager_control_pitchyaw extends MAVLinkMessage 
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_CONTROL_PITCHYAW - sysid:"+sysid+" compid:"+compid+" pitch:"+pitch+" yaw:"+yaw+" pitch_rate:"+pitch_rate+" yaw_rate:"+yaw_rate+" device_flags:"+device_flags+" manager_flags:"+manager_flags+" target_system:"+target_system+" target_component:"+target_component+" gimbal_id:"+gimbal_id+" client:"+client;
+        return "MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_CONTROL_PITCHYAW - sysid:"+sysid+" compid:"+compid+" pitch:"+pitch+" yaw:"+yaw+" pitch_rate:"+pitch_rate+" yaw_rate:"+yaw_rate+" device_flags:"+device_flags+" manager_flags:"+manager_flags+" target_system:"+target_system+" target_component:"+target_component+" gimbal_id:"+gimbal_id+" client:"+client+"";
     }
 
     /**

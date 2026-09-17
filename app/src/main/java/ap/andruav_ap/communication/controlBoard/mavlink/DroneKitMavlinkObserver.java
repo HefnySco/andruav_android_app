@@ -3,7 +3,7 @@ package ap.andruav_ap.communication.controlBoard.mavlink;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.common.msg_attitude;
 import com.MAVLink.common.msg_command_long;
-import com.MAVLink.common.msg_global_position_int;
+import com.MAVLink.standard.msg_global_position_int;
 import com.MAVLink.common.msg_open_drone_id_basic_id;
 import com.MAVLink.common.msg_open_drone_id_location;
 import com.MAVLink.minimal.msg_heartbeat;

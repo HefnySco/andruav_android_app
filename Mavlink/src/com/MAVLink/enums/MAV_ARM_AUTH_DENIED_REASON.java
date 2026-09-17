@@ -7,7 +7,7 @@
 package com.MAVLink.enums;
 
 /**
- * 
+ * Reasons for denying an authorization request made with MAV_CMD_ARM_AUTHORIZATION_REQUEST. If the COMMAND_ACK result is MAV_RESULT_DENIED, this is used to set the reason in the result_param2 field.
  */
 public class MAV_ARM_AUTH_DENIED_REASON {
    public static final int MAV_ARM_AUTH_DENIED_REASON_GENERIC = 0; /* Not a specific reason | */

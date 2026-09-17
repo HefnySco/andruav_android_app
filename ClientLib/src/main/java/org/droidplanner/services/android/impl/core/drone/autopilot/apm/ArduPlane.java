@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.MAVLink.Messages.MAVLinkMessage;
-import com.MAVLink.common.msg_global_position_int;
+import com.MAVLink.standard.msg_global_position_int;
 import com.MAVLink.common.msg_vfr_hud;
 import com.MAVLink.enums.MAV_TYPE;
 import com.github.zafarkhaja.semver.Version;

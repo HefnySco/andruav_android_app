@@ -10,7 +10,7 @@ package com.MAVLink.enums;
  * Flags for gimbal device (lower level) operation.
  */
 public class GIMBAL_DEVICE_FLAGS {
-   public static final int GIMBAL_DEVICE_FLAGS_RETRACT = 1; /* Set to retracted safe position (no stabilization), takes presedence over all other flags. | */
+   public static final int GIMBAL_DEVICE_FLAGS_RETRACT = 1; /* Set to retracted safe position (no stabilization), takes precedence over all other flags. | */
    public static final int GIMBAL_DEVICE_FLAGS_NEUTRAL = 2; /* Set to neutral/default position, taking precedence over all other flags except RETRACT. Neutral is commonly forward-facing and horizontal (roll=pitch=yaw=0) but may be any orientation. | */
    public static final int GIMBAL_DEVICE_FLAGS_ROLL_LOCK = 4; /* Lock roll angle to absolute angle relative to horizon (not relative to vehicle). This is generally the default with a stabilizing gimbal. | */
    public static final int GIMBAL_DEVICE_FLAGS_PITCH_LOCK = 8; /* Lock pitch angle to absolute angle relative to horizon (not relative to vehicle). This is generally the default with a stabilizing gimbal. | */

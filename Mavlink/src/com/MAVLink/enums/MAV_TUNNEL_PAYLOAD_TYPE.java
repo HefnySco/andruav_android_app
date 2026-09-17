@@ -21,5 +21,8 @@ public class MAV_TUNNEL_PAYLOAD_TYPE {
    public static final int MAV_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED7 = 207; /* Registered for STorM32 gimbal controller. | */
    public static final int MAV_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED8 = 208; /* Registered for STorM32 gimbal controller. | */
    public static final int MAV_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED9 = 209; /* Registered for STorM32 gimbal controller. | */
-   public static final int MAV_TUNNEL_PAYLOAD_TYPE_ENUM_END = 210; /*  | */
+   public static final int MAV_TUNNEL_PAYLOAD_TYPE_MODALAI_REMOTE_OSD = 210; /* Registered for ModalAI remote OSD protocol. | */
+   public static final int MAV_TUNNEL_PAYLOAD_TYPE_MODALAI_ESC_UART_PASSTHRU = 211; /* Registered for ModalAI ESC UART passthru protocol. | */
+   public static final int MAV_TUNNEL_PAYLOAD_TYPE_MODALAI_IO_UART_PASSTHRU = 212; /* Registered for ModalAI vendor use. | */
+   public static final int MAV_TUNNEL_PAYLOAD_TYPE_ENUM_END = 213; /*  | */
 }

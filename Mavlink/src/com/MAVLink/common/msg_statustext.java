@@ -30,11 +30,11 @@ public class msg_statustext extends MAVLinkMessage {
     public short severity;
     
     /**
-     * Status text message, without null termination character
+     * Status text message, without null termination character. UTF-8 encoded.
      */
-    @Description("Status text message, without null termination character")
+    @Description("Status text message, without null termination character. UTF-8 encoded.")
     @Units("")
-    public byte[] text = new byte[50];
+    public byte text[] = new byte[50];
     
     /**
      * Unique (opaque) identifier for this statustext message.  May be used to reassemble a logical long-statustext message from a sequence of chunks.  A value of zero indicates this is the only chunk in the sequence and the message can be emitted immediately.
@@ -185,7 +185,7 @@ public class msg_statustext extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_STATUSTEXT - sysid:"+sysid+" compid:"+compid+" severity:"+severity+" text:"+text+" id:"+id+" chunk_seq:"+chunk_seq;
+        return "MAVLINK_MSG_ID_STATUSTEXT - sysid:"+sysid+" compid:"+compid+" severity:"+severity+" text:"+text+" id:"+id+" chunk_seq:"+chunk_seq+"";
     }
 
     /**

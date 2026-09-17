@@ -30,9 +30,9 @@ public class msg_data_stream extends MAVLinkMessage {
     public int message_rate;
     
     /**
-     * The ID of the requested data stream
+     * The ID of the requested data stream.
      */
-    @Description("The ID of the requested data stream")
+    @Description("The ID of the requested data stream.")
     @Units("")
     public short stream_id;
     
@@ -137,7 +137,7 @@ public class msg_data_stream extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_DATA_STREAM - sysid:"+sysid+" compid:"+compid+" message_rate:"+message_rate+" stream_id:"+stream_id+" on_off:"+on_off;
+        return "MAVLINK_MSG_ID_DATA_STREAM - sysid:"+sysid+" compid:"+compid+" message_rate:"+message_rate+" stream_id:"+stream_id+" on_off:"+on_off+"";
     }
 
     /**

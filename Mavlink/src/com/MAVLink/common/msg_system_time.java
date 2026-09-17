@@ -13,7 +13,11 @@ import com.MAVLink.Messages.Units;
 import com.MAVLink.Messages.Description;
 
 /**
- * The system time is the time of the master clock, typically the computer clock of the main onboard computer.
+ * The system time is the time of the sender's master clock.
+        This can be emitted by flight controllers, onboard computers, or other components in the MAVLink network.
+        Components that are using a less reliable time source, such as a battery-backed real time clock, can choose to match their system clock to that of a system that indicates a more recent time.
+        This allows more broadly accurate date stamping of logs, and so on.
+        If precise time synchronization is needed then use TIMESYNC instead.
  */
 public class msg_system_time extends MAVLinkMessage {
 
@@ -126,7 +130,7 @@ public class msg_system_time extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_SYSTEM_TIME - sysid:"+sysid+" compid:"+compid+" time_unix_usec:"+time_unix_usec+" time_boot_ms:"+time_boot_ms;
+        return "MAVLINK_MSG_ID_SYSTEM_TIME - sysid:"+sysid+" compid:"+compid+" time_unix_usec:"+time_unix_usec+" time_boot_ms:"+time_boot_ms+"";
     }
 
     /**

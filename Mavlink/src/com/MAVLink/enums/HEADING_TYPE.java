@@ -7,10 +7,11 @@
 package com.MAVLink.enums;
 
 /**
- * 
+ * Heading setpoint types used in MAV_CMD_GUIDED_CHANGE_HEADING
  */
 public class HEADING_TYPE {
-   public static final int HEADING_TYPE_COURSE_OVER_GROUND = 0; /*  | */
-   public static final int HEADING_TYPE_HEADING = 1; /*  | */
-   public static final int HEADING_TYPE_ENUM_END = 2; /*  | */
+   public static final int HEADING_TYPE_COURSE_OVER_GROUND = 0; /* Course over ground. | */
+   public static final int HEADING_TYPE_HEADING = 1; /* Raw vehicle heading. | */
+   public static final int HEADING_TYPE_DEFAULT = 2; /* Default heading. | */
+   public static final int HEADING_TYPE_ENUM_END = 3; /*  | */
 }

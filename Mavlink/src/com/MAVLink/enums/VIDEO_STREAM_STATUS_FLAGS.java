@@ -12,5 +12,6 @@ package com.MAVLink.enums;
 public class VIDEO_STREAM_STATUS_FLAGS {
    public static final int VIDEO_STREAM_STATUS_FLAGS_RUNNING = 1; /* Stream is active (running) | */
    public static final int VIDEO_STREAM_STATUS_FLAGS_THERMAL = 2; /* Stream is thermal imaging | */
-   public static final int VIDEO_STREAM_STATUS_FLAGS_ENUM_END = 3; /*  | */
+   public static final int VIDEO_STREAM_STATUS_FLAGS_THERMAL_RANGE_ENABLED = 4; /* Stream can report absolute thermal range (see CAMERA_THERMAL_RANGE). | */
+   public static final int VIDEO_STREAM_STATUS_FLAGS_ENUM_END = 5; /*  | */
 }

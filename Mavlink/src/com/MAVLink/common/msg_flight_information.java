@@ -13,33 +13,38 @@ import com.MAVLink.Messages.Units;
 import com.MAVLink.Messages.Description;
 
 /**
- * Information about flight since last arming.
+ * Flight information.
+        This includes time since boot for arm, takeoff, and land, and a flight number.
+        Takeoff and landing values reset to zero on arm.
+        This can be requested using MAV_CMD_REQUEST_MESSAGE.
+        Note, some fields are misnamed - timestamps are from boot (not UTC) and the flight_uuid is a sequence number.
+      
  */
 public class msg_flight_information extends MAVLinkMessage {
 
     public static final int MAVLINK_MSG_ID_FLIGHT_INFORMATION = 264;
-    public static final int MAVLINK_MSG_LENGTH = 28;
+    public static final int MAVLINK_MSG_LENGTH = 32;
     private static final long serialVersionUID = MAVLINK_MSG_ID_FLIGHT_INFORMATION;
 
     
     /**
-     * Timestamp at arming (time since UNIX epoch) in UTC, 0 for unknown
+     * Timestamp at arming (since system boot). Set to 0 on boot. Set value on arming. Note, field is misnamed UTC.
      */
-    @Description("Timestamp at arming (time since UNIX epoch) in UTC, 0 for unknown")
+    @Description("Timestamp at arming (since system boot). Set to 0 on boot. Set value on arming. Note, field is misnamed UTC.")
     @Units("us")
     public long arming_time_utc;
     
     /**
-     * Timestamp at takeoff (time since UNIX epoch) in UTC, 0 for unknown
+     * Timestamp at takeoff (since system boot). Set to 0 at boot and on arming. Note, field is misnamed UTC.
      */
-    @Description("Timestamp at takeoff (time since UNIX epoch) in UTC, 0 for unknown")
+    @Description("Timestamp at takeoff (since system boot). Set to 0 at boot and on arming. Note, field is misnamed UTC.")
     @Units("us")
     public long takeoff_time_utc;
     
     /**
-     * Universally unique identifier (UUID) of flight, should correspond to name of log files
+     * Flight number. Note, field is misnamed UUID.
      */
-    @Description("Universally unique identifier (UUID) of flight, should correspond to name of log files")
+    @Description("Flight number. Note, field is misnamed UUID.")
     @Units("")
     public long flight_uuid;
     
@@ -49,6 +54,13 @@ public class msg_flight_information extends MAVLinkMessage {
     @Description("Timestamp (time since system boot).")
     @Units("ms")
     public long time_boot_ms;
+    
+    /**
+     * Timestamp at landing (in ms since system boot). Set to 0 at boot and on arming.
+     */
+    @Description("Timestamp at landing (in ms since system boot). Set to 0 at boot and on arming.")
+    @Units("ms")
+    public long landing_time;
     
 
     /**
@@ -68,6 +80,7 @@ public class msg_flight_information extends MAVLinkMessage {
         packet.payload.putUnsignedInt(time_boot_ms);
         
         if (isMavlink2) {
+             packet.payload.putUnsignedInt(landing_time);
             
         }
         return packet;
@@ -88,6 +101,7 @@ public class msg_flight_information extends MAVLinkMessage {
         this.time_boot_ms = payload.getUnsignedInt();
         
         if (isMavlink2) {
+             this.landing_time = payload.getUnsignedInt();
             
         }
     }
@@ -102,20 +116,21 @@ public class msg_flight_information extends MAVLinkMessage {
     /**
      * Constructor for a new message, initializes msgid and all payload variables
      */
-    public msg_flight_information( long arming_time_utc, long takeoff_time_utc, long flight_uuid, long time_boot_ms) {
+    public msg_flight_information( long arming_time_utc, long takeoff_time_utc, long flight_uuid, long time_boot_ms, long landing_time) {
         this.msgid = MAVLINK_MSG_ID_FLIGHT_INFORMATION;
 
         this.arming_time_utc = arming_time_utc;
         this.takeoff_time_utc = takeoff_time_utc;
         this.flight_uuid = flight_uuid;
         this.time_boot_ms = time_boot_ms;
+        this.landing_time = landing_time;
         
     }
 
     /**
      * Constructor for a new message, initializes everything
      */
-    public msg_flight_information( long arming_time_utc, long takeoff_time_utc, long flight_uuid, long time_boot_ms, int sysid, int compid, boolean isMavlink2) {
+    public msg_flight_information( long arming_time_utc, long takeoff_time_utc, long flight_uuid, long time_boot_ms, long landing_time, int sysid, int compid, boolean isMavlink2) {
         this.msgid = MAVLINK_MSG_ID_FLIGHT_INFORMATION;
         this.sysid = sysid;
         this.compid = compid;
@@ -125,6 +140,7 @@ public class msg_flight_information extends MAVLinkMessage {
         this.takeoff_time_utc = takeoff_time_utc;
         this.flight_uuid = flight_uuid;
         this.time_boot_ms = time_boot_ms;
+        this.landing_time = landing_time;
         
     }
 
@@ -142,13 +158,13 @@ public class msg_flight_information extends MAVLinkMessage {
         unpack(mavLinkPacket.payload);
     }
 
-            
+              
     /**
      * Returns a string with the MSG name and data
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_FLIGHT_INFORMATION - sysid:"+sysid+" compid:"+compid+" arming_time_utc:"+arming_time_utc+" takeoff_time_utc:"+takeoff_time_utc+" flight_uuid:"+flight_uuid+" time_boot_ms:"+time_boot_ms;
+        return "MAVLINK_MSG_ID_FLIGHT_INFORMATION - sysid:"+sysid+" compid:"+compid+" arming_time_utc:"+arming_time_utc+" takeoff_time_utc:"+takeoff_time_utc+" flight_uuid:"+flight_uuid+" time_boot_ms:"+time_boot_ms+" landing_time:"+landing_time+"";
     }
 
     /**

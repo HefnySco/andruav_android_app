@@ -51,9 +51,9 @@ public class msg_logging_data extends MAVLinkMessage {
     public short length;
     
     /**
-     * offset into data where first message starts. This can be used for recovery, when a previous message got lost (set to 255 if no start exists).
+     * offset into data where first message starts. This can be used for recovery, when a previous message got lost (set to UINT8_MAX if no start exists).
      */
-    @Description("offset into data where first message starts. This can be used for recovery, when a previous message got lost (set to 255 if no start exists).")
+    @Description("offset into data where first message starts. This can be used for recovery, when a previous message got lost (set to UINT8_MAX if no start exists).")
     @Units("bytes")
     public short first_message_offset;
     
@@ -62,7 +62,7 @@ public class msg_logging_data extends MAVLinkMessage {
      */
     @Description("logged data")
     @Units("")
-    public short[] data = new short[249];
+    public short data[] = new short[249];
     
 
     /**
@@ -178,7 +178,7 @@ public class msg_logging_data extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_LOGGING_DATA - sysid:"+sysid+" compid:"+compid+" sequence:"+sequence+" target_system:"+target_system+" target_component:"+target_component+" length:"+length+" first_message_offset:"+first_message_offset+" data:"+data;
+        return "MAVLINK_MSG_ID_LOGGING_DATA - sysid:"+sysid+" compid:"+compid+" sequence:"+sequence+" target_system:"+target_system+" target_component:"+target_component+" length:"+length+" first_message_offset:"+first_message_offset+" data:"+data+"";
     }
 
     /**

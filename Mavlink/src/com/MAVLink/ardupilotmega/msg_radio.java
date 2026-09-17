@@ -51,9 +51,9 @@ public class msg_radio extends MAVLinkMessage {
     public short remrssi;
     
     /**
-     * How full the tx buffer is.
+     * Remaining free transmitter buffer space.
      */
-    @Description("How full the tx buffer is.")
+    @Description("Remaining free transmitter buffer space.")
     @Units("%")
     public short txbuf;
     
@@ -181,7 +181,7 @@ public class msg_radio extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_RADIO - sysid:"+sysid+" compid:"+compid+" rxerrors:"+rxerrors+" fixed:"+fixed+" rssi:"+rssi+" remrssi:"+remrssi+" txbuf:"+txbuf+" noise:"+noise+" remnoise:"+remnoise;
+        return "MAVLINK_MSG_ID_RADIO - sysid:"+sysid+" compid:"+compid+" rxerrors:"+rxerrors+" fixed:"+fixed+" rssi:"+rssi+" remrssi:"+remrssi+" txbuf:"+txbuf+" noise:"+noise+" remnoise:"+remnoise+"";
     }
 
     /**

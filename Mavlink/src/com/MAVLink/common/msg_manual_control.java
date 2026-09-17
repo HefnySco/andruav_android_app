@@ -13,7 +13,7 @@ import com.MAVLink.Messages.Units;
 import com.MAVLink.Messages.Description;
 
 /**
- * This message provides an API for manually controlling the vehicle using standard joystick axes nomenclature, along with a joystick-like input device. Unused axes can be disabled an buttons are also transmit as boolean values of their 
+ * This message provides an API for manually controlling the vehicle using standard joystick axes nomenclature, along with a joystick-like input device. Unused axes can be disabled and buttons states are transmitted as individual on/off bits of a bitmask
  */
 public class msg_manual_control extends MAVLinkMessage {
 
@@ -280,7 +280,7 @@ public class msg_manual_control extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_MANUAL_CONTROL - sysid:"+sysid+" compid:"+compid+" x:"+x+" y:"+y+" z:"+z+" r:"+r+" buttons:"+buttons+" target:"+target+" buttons2:"+buttons2+" enabled_extensions:"+enabled_extensions+" s:"+s+" t:"+t+" aux1:"+aux1+" aux2:"+aux2+" aux3:"+aux3+" aux4:"+aux4+" aux5:"+aux5+" aux6:"+aux6;
+        return "MAVLINK_MSG_ID_MANUAL_CONTROL - sysid:"+sysid+" compid:"+compid+" x:"+x+" y:"+y+" z:"+z+" r:"+r+" buttons:"+buttons+" target:"+target+" buttons2:"+buttons2+" enabled_extensions:"+enabled_extensions+" s:"+s+" t:"+t+" aux1:"+aux1+" aux2:"+aux2+" aux3:"+aux3+" aux4:"+aux4+" aux5:"+aux5+" aux6:"+aux6+"";
     }
 
     /**

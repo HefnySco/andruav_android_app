@@ -13,7 +13,7 @@ import com.MAVLink.Messages.Units;
 import com.MAVLink.Messages.Description;
 
 /**
- * The RAW IMU readings for a 9DOF sensor, which is identified by the id (default IMU1). This message should always contain the true raw values without any scaling to allow data capture and system debugging.
+ * The RAW IMU readings for a 9DOF sensor, which is identified by the id (default IMU1). This message should always contain the true raw values without any scaling to allow data capture and system debugging. On ArduPilot platforms, this message is identical to SCALED_IMU. By default, only RAW_IMU is sent via telemetry for historical reasons, SCALED_IMU can be requested.
  */
 public class msg_raw_imu extends MAVLinkMessage {
 
@@ -33,63 +33,63 @@ public class msg_raw_imu extends MAVLinkMessage {
      * X acceleration (raw)
      */
     @Description("X acceleration (raw)")
-    @Units("")
+    @Units("mG")
     public short xacc;
     
     /**
      * Y acceleration (raw)
      */
     @Description("Y acceleration (raw)")
-    @Units("")
+    @Units("mG")
     public short yacc;
     
     /**
      * Z acceleration (raw)
      */
     @Description("Z acceleration (raw)")
-    @Units("")
+    @Units("mG")
     public short zacc;
     
     /**
      * Angular speed around X axis (raw)
      */
     @Description("Angular speed around X axis (raw)")
-    @Units("")
+    @Units("mrad/s")
     public short xgyro;
     
     /**
      * Angular speed around Y axis (raw)
      */
     @Description("Angular speed around Y axis (raw)")
-    @Units("")
+    @Units("mrad/s")
     public short ygyro;
     
     /**
      * Angular speed around Z axis (raw)
      */
     @Description("Angular speed around Z axis (raw)")
-    @Units("")
+    @Units("mrad/s")
     public short zgyro;
     
     /**
      * X Magnetic field (raw)
      */
     @Description("X Magnetic field (raw)")
-    @Units("")
+    @Units("mgauss")
     public short xmag;
     
     /**
      * Y Magnetic field (raw)
      */
     @Description("Y Magnetic field (raw)")
-    @Units("")
+    @Units("mgauss")
     public short ymag;
     
     /**
      * Z Magnetic field (raw)
      */
     @Description("Z Magnetic field (raw)")
-    @Units("")
+    @Units("mgauss")
     public short zmag;
     
     /**
@@ -236,7 +236,7 @@ public class msg_raw_imu extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_RAW_IMU - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" xacc:"+xacc+" yacc:"+yacc+" zacc:"+zacc+" xgyro:"+xgyro+" ygyro:"+ygyro+" zgyro:"+zgyro+" xmag:"+xmag+" ymag:"+ymag+" zmag:"+zmag+" id:"+id+" temperature:"+temperature;
+        return "MAVLINK_MSG_ID_RAW_IMU - sysid:"+sysid+" compid:"+compid+" time_usec:"+time_usec+" xacc:"+xacc+" yacc:"+yacc+" zacc:"+zacc+" xgyro:"+xgyro+" ygyro:"+ygyro+" zgyro:"+zgyro+" xmag:"+xmag+" ymag:"+ymag+" zmag:"+zmag+" id:"+id+" temperature:"+temperature+"";
     }
 
     /**

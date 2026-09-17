@@ -7,7 +7,7 @@
 package com.MAVLink.enums;
 
 /**
- * Gimbal manager high level capability flags (bitmap). The first 16 bits are identical to the GIMBAL_DEVICE_CAP_FLAGS. However, the gimbal manager does not need to copy the flags from the gimbal but can also enhance the capabilities and thus add flags.
+ * Gimbal manager high level capability flags (bitmap). The flags are identical to the GIMBAL_DEVICE_CAP_FLAGS. However, the gimbal manager does not need to copy the flags from the gimbal but can also enhance the capabilities and thus add flags.
  */
 public class GIMBAL_MANAGER_CAP_FLAGS {
    public static final int GIMBAL_MANAGER_CAP_FLAGS_HAS_RETRACT = 1; /* Based on GIMBAL_DEVICE_CAP_FLAGS_HAS_RETRACT. | */
@@ -24,7 +24,7 @@ public class GIMBAL_MANAGER_CAP_FLAGS {
    public static final int GIMBAL_MANAGER_CAP_FLAGS_SUPPORTS_INFINITE_YAW = 2048; /* Based on GIMBAL_DEVICE_CAP_FLAGS_SUPPORTS_INFINITE_YAW. | */
    public static final int GIMBAL_MANAGER_CAP_FLAGS_SUPPORTS_YAW_IN_EARTH_FRAME = 4096; /* Based on GIMBAL_DEVICE_CAP_FLAGS_SUPPORTS_YAW_IN_EARTH_FRAME. | */
    public static final int GIMBAL_MANAGER_CAP_FLAGS_HAS_RC_INPUTS = 8192; /* Based on GIMBAL_DEVICE_CAP_FLAGS_HAS_RC_INPUTS. | */
-   public static final int GIMBAL_MANAGER_CAP_FLAGS_CAN_POINT_LOCATION_LOCAL = 65536; /* Gimbal manager supports to point to a local position. | */
-   public static final int GIMBAL_MANAGER_CAP_FLAGS_CAN_POINT_LOCATION_GLOBAL = 131072; /* Gimbal manager supports to point to a global latitude, longitude, altitude position. | */
+   public static final int GIMBAL_MANAGER_CAP_FLAGS_CAN_POINT_LOCATION_LOCAL = 65536; /* Based on GIMBAL_DEVICE_CAP_FLAGS_CAN_POINT_LOCATION_LOCAL. | */
+   public static final int GIMBAL_MANAGER_CAP_FLAGS_CAN_POINT_LOCATION_GLOBAL = 131072; /* Based on GIMBAL_DEVICE_CAP_FLAGS_CAN_POINT_LOCATION_GLOBAL. | */
    public static final int GIMBAL_MANAGER_CAP_FLAGS_ENUM_END = 131073; /*  | */
 }

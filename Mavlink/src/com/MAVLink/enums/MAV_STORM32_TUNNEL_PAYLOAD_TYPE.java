@@ -10,15 +10,11 @@ package com.MAVLink.enums;
  * 
  */
 public class MAV_STORM32_TUNNEL_PAYLOAD_TYPE {
-   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH1_IN = 200; /* Registered for STorM32 gimbal controller. | */
-   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH1_OUT = 201; /* Registered for STorM32 gimbal controller. | */
-   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH2_IN = 202; /* Registered for STorM32 gimbal controller. | */
-   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH2_OUT = 203; /* Registered for STorM32 gimbal controller. | */
-   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH3_IN = 204; /* Registered for STorM32 gimbal controller. | */
-   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH3_OUT = 205; /* Registered for STorM32 gimbal controller. | */
-   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED6 = 206; /* Registered for STorM32 gimbal controller. | */
-   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED7 = 207; /* Registered for STorM32 gimbal controller. | */
-   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED8 = 208; /* Registered for STorM32 gimbal controller. | */
-   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_RESERVED9 = 209; /* Registered for STorM32 gimbal controller. | */
-   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_ENUM_END = 210; /*  | */
+   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH1_IN = 200; /* Registered for STorM32 gimbal controller. For communication with gimbal or camera. | */
+   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH1_OUT = 201; /* Registered for STorM32 gimbal controller. For communication with gimbal or camera. | */
+   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH2_IN = 202; /* Registered for STorM32 gimbal controller. For communication with gimbal. | */
+   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH2_OUT = 203; /* Registered for STorM32 gimbal controller. For communication with gimbal. | */
+   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH3_IN = 204; /* Registered for STorM32 gimbal controller. For communication with camera. | */
+   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH3_OUT = 205; /* Registered for STorM32 gimbal controller. For communication with camera. | */
+   public static final int MAV_STORM32_TUNNEL_PAYLOAD_TYPE_ENUM_END = 206; /*  | */
 }

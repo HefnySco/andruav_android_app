@@ -13,7 +13,7 @@ import com.MAVLink.Messages.Units;
 import com.MAVLink.Messages.Description;
 
 /**
- * Information about a gimbal manager. This message should be requested by a ground station using MAV_CMD_REQUEST_MESSAGE. It mirrors some fields of the STORM32_GIMBAL_DEVICE_INFORMATION message, but not all. If the additional information is desired, also STORM32_GIMBAL_DEVICE_INFORMATION should be requested.
+ * Information about a gimbal manager. This message should be requested by a ground station using MAV_CMD_REQUEST_MESSAGE. It mirrors some fields of the GIMBAL_DEVICE_INFORMATION message, but not all. If the additional information is desired, also GIMBAL_DEVICE_INFORMATION should be requested.
  */
 public class msg_storm32_gimbal_manager_information extends MAVLinkMessage {
 
@@ -23,9 +23,9 @@ public class msg_storm32_gimbal_manager_information extends MAVLinkMessage {
 
     
     /**
-     * Gimbal device capability flags.
+     * Gimbal device capability flags. Same flags as reported by GIMBAL_DEVICE_INFORMATION. The flag is only 16 bit wide, but stored in 32 bit, for backwards compatibility (high word is zero).
      */
-    @Description("Gimbal device capability flags.")
+    @Description("Gimbal device capability flags. Same flags as reported by GIMBAL_DEVICE_INFORMATION. The flag is only 16 bit wide, but stored in 32 bit, for backwards compatibility (high word is zero).")
     @Units("")
     public long device_cap_flags;
     
@@ -37,44 +37,44 @@ public class msg_storm32_gimbal_manager_information extends MAVLinkMessage {
     public long manager_cap_flags;
     
     /**
-     * Hardware minimum roll angle (positive: roll to the right, NaN if unknown).
+     * Hardware minimum roll angle (positive: roll to the right). NaN if unknown.
      */
-    @Description("Hardware minimum roll angle (positive: roll to the right, NaN if unknown).")
+    @Description("Hardware minimum roll angle (positive: roll to the right). NaN if unknown.")
     @Units("rad")
     public float roll_min;
     
     /**
-     * Hardware maximum roll angle (positive: roll to the right, NaN if unknown).
+     * Hardware maximum roll angle (positive: roll to the right). NaN if unknown.
      */
-    @Description("Hardware maximum roll angle (positive: roll to the right, NaN if unknown).")
+    @Description("Hardware maximum roll angle (positive: roll to the right). NaN if unknown.")
     @Units("rad")
     public float roll_max;
     
     /**
-     * Hardware minimum pitch/tilt angle (positive: tilt up, NaN if unknown).
+     * Hardware minimum pitch/tilt angle (positive: tilt up). NaN if unknown.
      */
-    @Description("Hardware minimum pitch/tilt angle (positive: tilt up, NaN if unknown).")
+    @Description("Hardware minimum pitch/tilt angle (positive: tilt up). NaN if unknown.")
     @Units("rad")
     public float pitch_min;
     
     /**
-     * Hardware maximum pitch/tilt angle (positive: tilt up, NaN if unknown).
+     * Hardware maximum pitch/tilt angle (positive: tilt up). NaN if unknown.
      */
-    @Description("Hardware maximum pitch/tilt angle (positive: tilt up, NaN if unknown).")
+    @Description("Hardware maximum pitch/tilt angle (positive: tilt up). NaN if unknown.")
     @Units("rad")
     public float pitch_max;
     
     /**
-     * Hardware minimum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base, NaN if unknown).
+     * Hardware minimum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.
      */
-    @Description("Hardware minimum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base, NaN if unknown).")
+    @Description("Hardware minimum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.")
     @Units("rad")
     public float yaw_min;
     
     /**
-     * Hardware maximum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base, NaN if unknown).
+     * Hardware maximum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.
      */
-    @Description("Hardware maximum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base, NaN if unknown).")
+    @Description("Hardware maximum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.")
     @Units("rad")
     public float yaw_max;
     
@@ -203,7 +203,7 @@ public class msg_storm32_gimbal_manager_information extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_INFORMATION - sysid:"+sysid+" compid:"+compid+" device_cap_flags:"+device_cap_flags+" manager_cap_flags:"+manager_cap_flags+" roll_min:"+roll_min+" roll_max:"+roll_max+" pitch_min:"+pitch_min+" pitch_max:"+pitch_max+" yaw_min:"+yaw_min+" yaw_max:"+yaw_max+" gimbal_id:"+gimbal_id;
+        return "MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_INFORMATION - sysid:"+sysid+" compid:"+compid+" device_cap_flags:"+device_cap_flags+" manager_cap_flags:"+manager_cap_flags+" roll_min:"+roll_min+" roll_max:"+roll_max+" pitch_min:"+pitch_min+" pitch_max:"+pitch_max+" yaw_min:"+yaw_min+" yaw_max:"+yaw_max+" gimbal_id:"+gimbal_id+"";
     }
 
     /**

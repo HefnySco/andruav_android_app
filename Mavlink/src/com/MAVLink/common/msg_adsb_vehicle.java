@@ -79,9 +79,9 @@ public class msg_adsb_vehicle extends MAVLinkMessage {
     public int flags;
     
     /**
-     * Squawk code
+     * Squawk code. Note that the code is in decimal: e.g. 7700 (general emergency) is encoded as binary 0b0001_1110_0001_0100, not(!) as 0b0000_111_111_000_000
      */
-    @Description("Squawk code")
+    @Description("Squawk code. Note that the code is in decimal: e.g. 7700 (general emergency) is encoded as binary 0b0001_1110_0001_0100, not(!) as 0b0000_111_111_000_000")
     @Units("")
     public int squawk;
     
@@ -97,7 +97,7 @@ public class msg_adsb_vehicle extends MAVLinkMessage {
      */
     @Description("The callsign, 8+null")
     @Units("")
-    public byte[] callsign = new byte[9];
+    public byte callsign[] = new byte[9];
     
     /**
      * ADSB emitter type.
@@ -284,7 +284,7 @@ public class msg_adsb_vehicle extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ADSB_VEHICLE - sysid:"+sysid+" compid:"+compid+" ICAO_address:"+ICAO_address+" lat:"+lat+" lon:"+lon+" altitude:"+altitude+" heading:"+heading+" hor_velocity:"+hor_velocity+" ver_velocity:"+ver_velocity+" flags:"+flags+" squawk:"+squawk+" altitude_type:"+altitude_type+" callsign:"+callsign+" emitter_type:"+emitter_type+" tslc:"+tslc;
+        return "MAVLINK_MSG_ID_ADSB_VEHICLE - sysid:"+sysid+" compid:"+compid+" ICAO_address:"+ICAO_address+" lat:"+lat+" lon:"+lon+" altitude:"+altitude+" heading:"+heading+" hor_velocity:"+hor_velocity+" ver_velocity:"+ver_velocity+" flags:"+flags+" squawk:"+squawk+" altitude_type:"+altitude_type+" callsign:"+callsign+" emitter_type:"+emitter_type+" tslc:"+tslc+"";
     }
 
     /**

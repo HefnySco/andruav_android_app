@@ -13,7 +13,7 @@ import com.MAVLink.Messages.Units;
 import com.MAVLink.Messages.Description;
 
 /**
- * The scaled values of the RC channels received: (-100%) -10000, (0%) 0, (100%) 10000. Channels that are inactive should be set to UINT16_MAX.
+ * The scaled values of the RC channels received: (-100%) -10000, (0%) 0, (100%) 10000. Channels that are inactive should be set to INT16_MAX.
  */
 public class msg_rc_channels_scaled extends MAVLinkMessage {
 
@@ -93,9 +93,9 @@ public class msg_rc_channels_scaled extends MAVLinkMessage {
     public short port;
     
     /**
-     * Receive signal strength indicator in device-dependent units/scale. Values: [0-254], 255: invalid/unknown.
+     * Receive signal strength indicator in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.
      */
-    @Description("Receive signal strength indicator in device-dependent units/scale. Values: [0-254], 255: invalid/unknown.")
+    @Description("Receive signal strength indicator in device-dependent units/scale. Values: [0-254], UINT8_MAX: invalid/unknown.")
     @Units("")
     public short rssi;
     
@@ -225,7 +225,7 @@ public class msg_rc_channels_scaled extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_RC_CHANNELS_SCALED - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" chan1_scaled:"+chan1_scaled+" chan2_scaled:"+chan2_scaled+" chan3_scaled:"+chan3_scaled+" chan4_scaled:"+chan4_scaled+" chan5_scaled:"+chan5_scaled+" chan6_scaled:"+chan6_scaled+" chan7_scaled:"+chan7_scaled+" chan8_scaled:"+chan8_scaled+" port:"+port+" rssi:"+rssi;
+        return "MAVLINK_MSG_ID_RC_CHANNELS_SCALED - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" chan1_scaled:"+chan1_scaled+" chan2_scaled:"+chan2_scaled+" chan3_scaled:"+chan3_scaled+" chan4_scaled:"+chan4_scaled+" chan5_scaled:"+chan5_scaled+" chan6_scaled:"+chan6_scaled+" chan7_scaled:"+chan7_scaled+" chan8_scaled:"+chan8_scaled+" port:"+port+" rssi:"+rssi+"";
     }
 
     /**

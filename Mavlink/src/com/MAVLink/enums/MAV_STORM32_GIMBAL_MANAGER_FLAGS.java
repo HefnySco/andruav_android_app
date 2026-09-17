@@ -7,10 +7,9 @@
 package com.MAVLink.enums;
 
 /**
- * Flags for gimbal manager operation. Used for setting and reporting, unless specified otherwise. If a setting is accepted by the gimbal manger, is reported in the STORM32_GIMBAL_MANAGER_STATUS message.
+ * Flags for gimbal manager operation. Used for setting and reporting, unless specified otherwise. If a setting has been accepted by the gimbal manager is reported in the STORM32_GIMBAL_MANAGER_STATUS message.
  */
 public class MAV_STORM32_GIMBAL_MANAGER_FLAGS {
-   public static final int MAV_STORM32_GIMBAL_MANAGER_FLAGS_NONE = 0; /* 0 = ignore. | */
    public static final int MAV_STORM32_GIMBAL_MANAGER_FLAGS_RC_ACTIVE = 1; /* Request to set RC input to active, or report RC input is active. Implies RC mixed. RC exclusive is achieved by setting all clients to inactive. | */
    public static final int MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_ONBOARD_ACTIVE = 2; /* Request to set onboard/companion computer client to active, or report this client is active. | */
    public static final int MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_AUTOPILOT_ACTIVE = 4; /* Request to set autopliot client to active, or report this client is active. | */

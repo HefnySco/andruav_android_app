@@ -11,6 +11,5 @@ package com.MAVLink.enums;
  */
 public class MAV_STORM32_GIMBAL_MANAGER_CAP_FLAGS {
    public static final int MAV_STORM32_GIMBAL_MANAGER_CAP_FLAGS_HAS_PROFILES = 1; /* The gimbal manager supports several profiles. | */
-   public static final int MAV_STORM32_GIMBAL_MANAGER_CAP_FLAGS_SUPPORTS_CHANGE = 2; /* The gimbal manager supports changing the gimbal manager during run time, i.e. can be enabled/disabled. | */
-   public static final int MAV_STORM32_GIMBAL_MANAGER_CAP_FLAGS_ENUM_END = 3; /*  | */
+   public static final int MAV_STORM32_GIMBAL_MANAGER_CAP_FLAGS_ENUM_END = 2; /*  | */
 }

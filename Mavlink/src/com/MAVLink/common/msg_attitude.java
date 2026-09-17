@@ -13,7 +13,7 @@ import com.MAVLink.Messages.Units;
 import com.MAVLink.Messages.Description;
 
 /**
- * The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right).
+ * The attitude in the aeronautical frame (right-handed, Z-down, Y-right, X-front, ZYX, intrinsic).
  */
 public class msg_attitude extends MAVLinkMessage {
 
@@ -181,7 +181,7 @@ public class msg_attitude extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ATTITUDE - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" roll:"+roll+" pitch:"+pitch+" yaw:"+yaw+" rollspeed:"+rollspeed+" pitchspeed:"+pitchspeed+" yawspeed:"+yawspeed;
+        return "MAVLINK_MSG_ID_ATTITUDE - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" roll:"+roll+" pitch:"+pitch+" yaw:"+yaw+" rollspeed:"+rollspeed+" pitchspeed:"+pitchspeed+" yawspeed:"+yawspeed+"";
     }
 
     /**

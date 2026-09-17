@@ -85,7 +85,7 @@ public class MAVLinkPacket implements Serializable {
 
     static final boolean V = false;
     static void logv(String str) {
-        if(V) System.out.printf("MAVLinkPacket: %s%n", str);
+        if(V) System.out.println(String.format("MAVLinkPacket: %s", str));
     }
 
     /**
@@ -698,6 +698,8 @@ public class MAVLinkPacket implements Serializable {
                 return  new msg_camera_tracking_image_status(this);
                         case msg_camera_tracking_geo_status.MAVLINK_MSG_ID_CAMERA_TRACKING_GEO_STATUS:
                 return  new msg_camera_tracking_geo_status(this);
+                        case msg_camera_thermal_range.MAVLINK_MSG_ID_CAMERA_THERMAL_RANGE:
+                return  new msg_camera_thermal_range(this);
                         case msg_gimbal_manager_information.MAVLINK_MSG_ID_GIMBAL_MANAGER_INFORMATION:
                 return  new msg_gimbal_manager_information(this);
                         case msg_gimbal_manager_status.MAVLINK_MSG_ID_GIMBAL_MANAGER_STATUS:
@@ -718,6 +720,8 @@ public class MAVLinkPacket implements Serializable {
                 return  new msg_gimbal_manager_set_manual_control(this);
                         case msg_airspeed.MAVLINK_MSG_ID_AIRSPEED:
                 return  new msg_airspeed(this);
+                        case msg_global_position_sensor.MAVLINK_MSG_ID_GLOBAL_POSITION_SENSOR:
+                return  new msg_global_position_sensor(this);
                         case msg_wifi_config_ap.MAVLINK_MSG_ID_WIFI_CONFIG_AP:
                 return  new msg_wifi_config_ap(this);
                         case msg_ais_vessel.MAVLINK_MSG_ID_AIS_VESSEL:
@@ -740,14 +744,22 @@ public class MAVLinkPacket implements Serializable {
                 return  new msg_obstacle_distance(this);
                         case msg_odometry.MAVLINK_MSG_ID_ODOMETRY:
                 return  new msg_odometry(this);
+                        case msg_trajectory_representation_waypoints.MAVLINK_MSG_ID_TRAJECTORY_REPRESENTATION_WAYPOINTS:
+                return  new msg_trajectory_representation_waypoints(this);
+                        case msg_trajectory_representation_bezier.MAVLINK_MSG_ID_TRAJECTORY_REPRESENTATION_BEZIER:
+                return  new msg_trajectory_representation_bezier(this);
                         case msg_isbd_link_status.MAVLINK_MSG_ID_ISBD_LINK_STATUS:
                 return  new msg_isbd_link_status(this);
                         case msg_raw_rpm.MAVLINK_MSG_ID_RAW_RPM:
                 return  new msg_raw_rpm(this);
                         case msg_utm_global_position.MAVLINK_MSG_ID_UTM_GLOBAL_POSITION:
                 return  new msg_utm_global_position(this);
+                        case msg_param_error.MAVLINK_MSG_ID_PARAM_ERROR:
+                return  new msg_param_error(this);
                         case msg_debug_float_array.MAVLINK_MSG_ID_DEBUG_FLOAT_ARRAY:
                 return  new msg_debug_float_array(this);
+                        case msg_orbit_execution_status.MAVLINK_MSG_ID_ORBIT_EXECUTION_STATUS:
+                return  new msg_orbit_execution_status(this);
                         case msg_smart_battery_info.MAVLINK_MSG_ID_SMART_BATTERY_INFO:
                 return  new msg_smart_battery_info(this);
                         case msg_generator_status.MAVLINK_MSG_ID_GENERATOR_STATUS:
@@ -764,8 +776,20 @@ public class MAVLinkPacket implements Serializable {
                 return  new msg_canfd_frame(this);
                         case msg_can_filter_modify.MAVLINK_MSG_ID_CAN_FILTER_MODIFY:
                 return  new msg_can_filter_modify(this);
+                        case msg_onboard_computer_status.MAVLINK_MSG_ID_ONBOARD_COMPUTER_STATUS:
+                return  new msg_onboard_computer_status(this);
                         case msg_radio_rc_channels.MAVLINK_MSG_ID_RADIO_RC_CHANNELS:
                 return  new msg_radio_rc_channels(this);
+                        case msg_available_modes.MAVLINK_MSG_ID_AVAILABLE_MODES:
+                return  new msg_available_modes(this);
+                        case msg_current_mode.MAVLINK_MSG_ID_CURRENT_MODE:
+                return  new msg_current_mode(this);
+                        case msg_available_modes_monitor.MAVLINK_MSG_ID_AVAILABLE_MODES_MONITOR:
+                return  new msg_available_modes_monitor(this);
+                        case msg_gnss_integrity.MAVLINK_MSG_ID_GNSS_INTEGRITY:
+                return  new msg_gnss_integrity(this);
+                        case msg_ranging_beacon.MAVLINK_MSG_ID_RANGING_BEACON:
+                return  new msg_ranging_beacon(this);
                         case msg_sens_power.MAVLINK_MSG_ID_SENS_POWER:
                 return  new msg_sens_power(this);
                         case msg_sens_mppt.MAVLINK_MSG_ID_SENS_MPPT:
@@ -866,6 +890,8 @@ public class MAVLinkPacket implements Serializable {
                 return  new msg_esc_telemetry_25_to_28(this);
                         case msg_esc_telemetry_29_to_32.MAVLINK_MSG_ID_ESC_TELEMETRY_29_TO_32:
                 return  new msg_esc_telemetry_29_to_32(this);
+                        case msg_named_value_string.MAVLINK_MSG_ID_NAMED_VALUE_STRING:
+                return  new msg_named_value_string(this);
                         case msg_open_drone_id_basic_id.MAVLINK_MSG_ID_OPEN_DRONE_ID_BASIC_ID:
                 return  new msg_open_drone_id_basic_id(this);
                         case msg_open_drone_id_location.MAVLINK_MSG_ID_OPEN_DRONE_ID_LOCATION:
@@ -922,10 +948,8 @@ public class MAVLinkPacket implements Serializable {
                 return  new msg_airlink_auth(this);
                         case msg_airlink_auth_response.MAVLINK_MSG_ID_AIRLINK_AUTH_RESPONSE:
                 return  new msg_airlink_auth_response(this);
-                        case msg_storm32_gimbal_device_status.MAVLINK_MSG_ID_STORM32_GIMBAL_DEVICE_STATUS:
-                return  new msg_storm32_gimbal_device_status(this);
-                        case msg_storm32_gimbal_device_control.MAVLINK_MSG_ID_STORM32_GIMBAL_DEVICE_CONTROL:
-                return  new msg_storm32_gimbal_device_control(this);
+                        case msg_autopilot_state_for_gimbal_device_ext.MAVLINK_MSG_ID_AUTOPILOT_STATE_FOR_GIMBAL_DEVICE_EXT:
+                return  new msg_autopilot_state_for_gimbal_device_ext(this);
                         case msg_storm32_gimbal_manager_information.MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_INFORMATION:
                 return  new msg_storm32_gimbal_manager_information(this);
                         case msg_storm32_gimbal_manager_status.MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_STATUS:
@@ -936,12 +960,18 @@ public class MAVLinkPacket implements Serializable {
                 return  new msg_storm32_gimbal_manager_control_pitchyaw(this);
                         case msg_storm32_gimbal_manager_correct_roll.MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_CORRECT_ROLL:
                 return  new msg_storm32_gimbal_manager_correct_roll(this);
-                        case msg_storm32_gimbal_manager_profile.MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_PROFILE:
-                return  new msg_storm32_gimbal_manager_profile(this);
                         case msg_qshot_status.MAVLINK_MSG_ID_QSHOT_STATUS:
                 return  new msg_qshot_status(this);
-                        case msg_component_prearm_status.MAVLINK_MSG_ID_COMPONENT_PREARM_STATUS:
-                return  new msg_component_prearm_status(this);
+                        case msg_frsky_passthrough_array.MAVLINK_MSG_ID_FRSKY_PASSTHROUGH_ARRAY:
+                return  new msg_frsky_passthrough_array(this);
+                        case msg_param_value_array.MAVLINK_MSG_ID_PARAM_VALUE_ARRAY:
+                return  new msg_param_value_array(this);
+                        case msg_mlrs_radio_link_stats.MAVLINK_MSG_ID_MLRS_RADIO_LINK_STATS:
+                return  new msg_mlrs_radio_link_stats(this);
+                        case msg_mlrs_radio_link_information.MAVLINK_MSG_ID_MLRS_RADIO_LINK_INFORMATION:
+                return  new msg_mlrs_radio_link_information(this);
+                        case msg_mlrs_radio_link_flow_control.MAVLINK_MSG_ID_MLRS_RADIO_LINK_FLOW_CONTROL:
+                return  new msg_mlrs_radio_link_flow_control(this);
                         case msg_avss_prs_sys_status.MAVLINK_MSG_ID_AVSS_PRS_SYS_STATUS:
                 return  new msg_avss_prs_sys_status(this);
                         case msg_avss_drone_position.MAVLINK_MSG_ID_AVSS_DRONE_POSITION:

@@ -16,7 +16,10 @@ public class MAG_CAL_STATUS {
    public static final int MAG_CAL_RUNNING_STEP_TWO = 3; /*  | */
    public static final int MAG_CAL_SUCCESS = 4; /*  | */
    public static final int MAG_CAL_FAILED = 5; /*  | */
-   public static final int MAG_CAL_BAD_ORIENTATION = 6; /*  | */
-   public static final int MAG_CAL_BAD_RADIUS = 7; /*  | */
-   public static final int MAG_CAL_STATUS_ENUM_END = 8; /*  | */
+   public static final int MAG_CAL_FAILED_ORIENTATION = 6; /* Compass calibration failed: the vehicle orientation is outside the required tolerance. | */
+   public static final int MAG_CAL_FAILED_RADIUS = 7; /* Compass calibration failed: the radius of the fitted sphere is unrealistically small or large. | */
+   public static final int MAG_CAL_FAILED_OFFSETS = 8; /* Compass calibration failed: offset magnitude too large. | */
+   public static final int MAG_CAL_FAILED_DIAG_SCALING = 9; /* Compass calibration failed: diagonal or off-diagonal scaling values out of valid range. | */
+   public static final int MAG_CAL_FAILED_RESIDUALS_HIGH = 10; /* Compass calibration failed: fitness (RMS residual) exceeds tolerance. | */
+   public static final int MAG_CAL_STATUS_ENUM_END = 11; /*  | */
 }

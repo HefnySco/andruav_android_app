@@ -37,9 +37,9 @@ public class msg_camera_capture_status extends MAVLinkMessage {
     public float image_interval;
     
     /**
-     * Time since recording started
+     * Elapsed time since recording started (0: Not supported/available). A GCS should compute recording time and use non-zero values of this field to correct any discrepancy.
      */
-    @Description("Time since recording started")
+    @Description("Elapsed time since recording started (0: Not supported/available). A GCS should compute recording time and use non-zero values of this field to correct any discrepancy.")
     @Units("ms")
     public long recording_time_ms;
     
@@ -181,7 +181,7 @@ public class msg_camera_capture_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_CAMERA_CAPTURE_STATUS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" image_interval:"+image_interval+" recording_time_ms:"+recording_time_ms+" available_capacity:"+available_capacity+" image_status:"+image_status+" video_status:"+video_status+" image_count:"+image_count;
+        return "MAVLINK_MSG_ID_CAMERA_CAPTURE_STATUS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" image_interval:"+image_interval+" recording_time_ms:"+recording_time_ms+" available_capacity:"+available_capacity+" image_status:"+image_status+" video_status:"+video_status+" image_count:"+image_count+"";
     }
 
     /**

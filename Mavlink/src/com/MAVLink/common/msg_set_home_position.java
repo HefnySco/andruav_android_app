@@ -13,7 +13,15 @@ import com.MAVLink.Messages.Units;
 import com.MAVLink.Messages.Description;
 
 /**
- * The position the system will return to and land on. The position is set automatically by the system during the takeoff in case it was not explicitly set by the operator before or after. The global and local positions encode the position in the respective coordinate frames, while the q parameter encodes the orientation of the surface. Under normal conditions it describes the heading and terrain slope, which can be used by the aircraft to adjust the approach. The approach 3D vector describes the point to which the system should fly in normal flight mode and then perform a landing sequence along the vector.
+ * 
+        Sets the home position.
+        The home position is the default position that the system will return to and land on.
+        The position is set automatically by the system during the takeoff (and may also be set using this message).
+        The global and local positions encode the position in the respective coordinate frames, while the q parameter encodes the orientation of the surface.
+        Under normal conditions it describes the heading and terrain slope, which can be used by the aircraft to adjust the approach.
+        The approach 3D vector describes the point to which the system should fly in normal flight mode and then perform a landing sequence along the vector.
+        Note: the current home position may be emitted in a HOME_POSITION message on request (using MAV_CMD_REQUEST_MESSAGE with param1=242).
+      
  */
 public class msg_set_home_position extends MAVLinkMessage {
 
@@ -44,23 +52,23 @@ public class msg_set_home_position extends MAVLinkMessage {
     public int altitude;
     
     /**
-     * Local X position of this position in the local coordinate frame
+     * Local X position of this position in the local coordinate frame (NED)
      */
-    @Description("Local X position of this position in the local coordinate frame")
+    @Description("Local X position of this position in the local coordinate frame (NED)")
     @Units("m")
     public float x;
     
     /**
-     * Local Y position of this position in the local coordinate frame
+     * Local Y position of this position in the local coordinate frame (NED)
      */
-    @Description("Local Y position of this position in the local coordinate frame")
+    @Description("Local Y position of this position in the local coordinate frame (NED)")
     @Units("m")
     public float y;
     
     /**
-     * Local Z position of this position in the local coordinate frame
+     * Local Z position of this position in the local coordinate frame (NED: positive 'down')
      */
-    @Description("Local Z position of this position in the local coordinate frame")
+    @Description("Local Z position of this position in the local coordinate frame (NED: positive 'down')")
     @Units("m")
     public float z;
     
@@ -69,7 +77,7 @@ public class msg_set_home_position extends MAVLinkMessage {
      */
     @Description("World to surface normal and heading transformation of the takeoff position. Used to indicate the heading and slope of the ground")
     @Units("")
-    public float[] q = new float[4];
+    public float q[] = new float[4];
     
     /**
      * Local X position of the end of the approach vector. Multicopters should set this position based on their takeoff path. Grass-landing fixed wing aircraft should set it the same way as multicopters. Runway-landing fixed wing aircraft should set it to the opposite direction of the takeoff, assuming the takeoff happened from the threshold / touchdown zone.
@@ -244,7 +252,7 @@ public class msg_set_home_position extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_SET_HOME_POSITION - sysid:"+sysid+" compid:"+compid+" latitude:"+latitude+" longitude:"+longitude+" altitude:"+altitude+" x:"+x+" y:"+y+" z:"+z+" q:"+q+" approach_x:"+approach_x+" approach_y:"+approach_y+" approach_z:"+approach_z+" target_system:"+target_system+" time_usec:"+time_usec;
+        return "MAVLINK_MSG_ID_SET_HOME_POSITION - sysid:"+sysid+" compid:"+compid+" latitude:"+latitude+" longitude:"+longitude+" altitude:"+altitude+" x:"+x+" y:"+y+" z:"+z+" q:"+q+" approach_x:"+approach_x+" approach_y:"+approach_y+" approach_z:"+approach_z+" target_system:"+target_system+" time_usec:"+time_usec+"";
     }
 
     /**

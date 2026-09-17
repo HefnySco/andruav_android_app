@@ -18,7 +18,7 @@ import com.MAVLink.Messages.Description;
 public class msg_video_stream_information extends MAVLinkMessage {
 
     public static final int MAVLINK_MSG_ID_VIDEO_STREAM_INFORMATION = 269;
-    public static final int MAVLINK_MSG_LENGTH = 213;
+    public static final int MAVLINK_MSG_LENGTH = 214;
     private static final long serialVersionUID = MAVLINK_MSG_ID_VIDEO_STREAM_INFORMATION;
 
     
@@ -97,14 +97,21 @@ public class msg_video_stream_information extends MAVLinkMessage {
      */
     @Description("Stream name.")
     @Units("")
-    public byte[] name = new byte[32];
+    public byte name[] = new byte[32];
     
     /**
      * Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).
      */
     @Description("Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).")
     @Units("")
-    public byte[] uri = new byte[160];
+    public byte uri[] = new byte[160];
+    
+    /**
+     * Encoding of stream.
+     */
+    @Description("Encoding of stream.")
+    @Units("")
+    public short encoding;
     
 
     /**
@@ -140,6 +147,7 @@ public class msg_video_stream_information extends MAVLinkMessage {
                     
         
         if (isMavlink2) {
+             packet.payload.putUnsignedByte(encoding);
             
         }
         return packet;
@@ -176,6 +184,7 @@ public class msg_video_stream_information extends MAVLinkMessage {
                 
         
         if (isMavlink2) {
+             this.encoding = payload.getUnsignedByte();
             
         }
     }
@@ -190,7 +199,7 @@ public class msg_video_stream_information extends MAVLinkMessage {
     /**
      * Constructor for a new message, initializes msgid and all payload variables
      */
-    public msg_video_stream_information( float framerate, long bitrate, int flags, int resolution_h, int resolution_v, int rotation, int hfov, short stream_id, short count, short type, byte[] name, byte[] uri) {
+    public msg_video_stream_information( float framerate, long bitrate, int flags, int resolution_h, int resolution_v, int rotation, int hfov, short stream_id, short count, short type, byte[] name, byte[] uri, short encoding) {
         this.msgid = MAVLINK_MSG_ID_VIDEO_STREAM_INFORMATION;
 
         this.framerate = framerate;
@@ -205,13 +214,14 @@ public class msg_video_stream_information extends MAVLinkMessage {
         this.type = type;
         this.name = name;
         this.uri = uri;
+        this.encoding = encoding;
         
     }
 
     /**
      * Constructor for a new message, initializes everything
      */
-    public msg_video_stream_information( float framerate, long bitrate, int flags, int resolution_h, int resolution_v, int rotation, int hfov, short stream_id, short count, short type, byte[] name, byte[] uri, int sysid, int compid, boolean isMavlink2) {
+    public msg_video_stream_information( float framerate, long bitrate, int flags, int resolution_h, int resolution_v, int rotation, int hfov, short stream_id, short count, short type, byte[] name, byte[] uri, short encoding, int sysid, int compid, boolean isMavlink2) {
         this.msgid = MAVLINK_MSG_ID_VIDEO_STREAM_INFORMATION;
         this.sysid = sysid;
         this.compid = compid;
@@ -229,6 +239,7 @@ public class msg_video_stream_information extends MAVLinkMessage {
         this.type = type;
         this.name = name;
         this.uri = uri;
+        this.encoding = encoding;
         
     }
 
@@ -304,13 +315,13 @@ public class msg_video_stream_information extends MAVLinkMessage {
         return buf.toString();
 
     }
-                         
+                           
     /**
      * Returns a string with the MSG name and data
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_VIDEO_STREAM_INFORMATION - sysid:"+sysid+" compid:"+compid+" framerate:"+framerate+" bitrate:"+bitrate+" flags:"+flags+" resolution_h:"+resolution_h+" resolution_v:"+resolution_v+" rotation:"+rotation+" hfov:"+hfov+" stream_id:"+stream_id+" count:"+count+" type:"+type+" name:"+name+" uri:"+uri;
+        return "MAVLINK_MSG_ID_VIDEO_STREAM_INFORMATION - sysid:"+sysid+" compid:"+compid+" framerate:"+framerate+" bitrate:"+bitrate+" flags:"+flags+" resolution_h:"+resolution_h+" resolution_v:"+resolution_v+" rotation:"+rotation+" hfov:"+hfov+" stream_id:"+stream_id+" count:"+count+" type:"+type+" name:"+name+" uri:"+uri+" encoding:"+encoding+"";
     }
 
     /**

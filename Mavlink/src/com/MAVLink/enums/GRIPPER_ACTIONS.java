@@ -12,5 +12,6 @@ package com.MAVLink.enums;
 public class GRIPPER_ACTIONS {
    public static final int GRIPPER_ACTION_RELEASE = 0; /* Gripper release cargo. | */
    public static final int GRIPPER_ACTION_GRAB = 1; /* Gripper grab onto cargo. | */
-   public static final int GRIPPER_ACTIONS_ENUM_END = 2; /*  | */
+   public static final int GRIPPER_ACTION_HOLD = 2; /* Gripper hold current grip state/position. | */
+   public static final int GRIPPER_ACTIONS_ENUM_END = 3; /*  | */
 }

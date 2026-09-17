@@ -7,10 +7,10 @@
 package com.MAVLink.enums;
 
 /**
- * RC type
+ * RC type. Used in MAV_CMD_START_RX_PAIR.
  */
 public class RC_TYPE {
-   public static final int RC_TYPE_SPEKTRUM_DSM2 = 0; /* Spektrum DSM2 | */
-   public static final int RC_TYPE_SPEKTRUM_DSMX = 1; /* Spektrum DSMX | */
+   public static final int RC_TYPE_SPEKTRUM = 0; /* Spektrum | */
+   public static final int RC_TYPE_CRSF = 1; /* CRSF | */
    public static final int RC_TYPE_ENUM_END = 2; /*  | */
 }

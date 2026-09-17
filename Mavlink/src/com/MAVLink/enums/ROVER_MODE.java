@@ -10,17 +10,19 @@ package com.MAVLink.enums;
  * A mapping of rover flight modes for custom_mode field of heartbeat.
  */
 public class ROVER_MODE {
-   public static final int ROVER_MODE_MANUAL = 0; /*  | */
-   public static final int ROVER_MODE_ACRO = 1; /*  | */
-   public static final int ROVER_MODE_STEERING = 3; /*  | */
-   public static final int ROVER_MODE_HOLD = 4; /*  | */
-   public static final int ROVER_MODE_LOITER = 5; /*  | */
-   public static final int ROVER_MODE_FOLLOW = 6; /*  | */
-   public static final int ROVER_MODE_SIMPLE = 7; /*  | */
-   public static final int ROVER_MODE_AUTO = 10; /*  | */
-   public static final int ROVER_MODE_RTL = 11; /*  | */
-   public static final int ROVER_MODE_SMART_RTL = 12; /*  | */
-   public static final int ROVER_MODE_GUIDED = 15; /*  | */
-   public static final int ROVER_MODE_INITIALIZING = 16; /*  | */
+   public static final int ROVER_MODE_MANUAL = 0; /* MANUAL | */
+   public static final int ROVER_MODE_ACRO = 1; /* ACRO | */
+   public static final int ROVER_MODE_STEERING = 3; /* STEERING | */
+   public static final int ROVER_MODE_HOLD = 4; /* HOLD | */
+   public static final int ROVER_MODE_LOITER = 5; /* LOITER | */
+   public static final int ROVER_MODE_FOLLOW = 6; /* FOLLOW | */
+   public static final int ROVER_MODE_SIMPLE = 7; /* SIMPLE | */
+   public static final int ROVER_MODE_DOCK = 8; /* DOCK | */
+   public static final int ROVER_MODE_CIRCLE = 9; /* CIRCLE | */
+   public static final int ROVER_MODE_AUTO = 10; /* AUTO | */
+   public static final int ROVER_MODE_RTL = 11; /* RTL | */
+   public static final int ROVER_MODE_SMART_RTL = 12; /* SMART RTL | */
+   public static final int ROVER_MODE_GUIDED = 15; /* GUIDED | */
+   public static final int ROVER_MODE_INITIALIZING = 16; /* INITIALISING | */
    public static final int ROVER_MODE_ENUM_END = 17; /*  | */
 }

@@ -16,5 +16,15 @@ public class PID_TUNING_AXIS {
    public static final int PID_TUNING_ACCZ = 4; /*  | */
    public static final int PID_TUNING_STEER = 5; /*  | */
    public static final int PID_TUNING_LANDING = 6; /*  | */
-   public static final int PID_TUNING_AXIS_ENUM_END = 7; /*  | */
+   public static final int PID_TUNING_WHEEL_LEFT = 7; /* Left wheel rate. | */
+   public static final int PID_TUNING_WHEEL_RIGHT = 8; /* Right wheel rate. | */
+   public static final int PID_TUNING_SAIL_HEEL = 9; /* Sailboat heel to mainsail. | */
+   public static final int PID_TUNING_VEL_NORTH = 10; /* Velocity north. | */
+   public static final int PID_TUNING_VEL_EAST = 11; /* Velocity east. | */
+   public static final int PID_TUNING_VEL_DOWN = 12; /* Velocity down. | */
+   public static final int PID_TUNING_POS_NORTH = 13; /* Position north. | */
+   public static final int PID_TUNING_POS_EAST = 14; /* Position east. | */
+   public static final int PID_TUNING_POS_DOWN = 15; /* Position down. | */
+   public static final int PID_TUNING_YAW_ANGLE = 16; /* Yaw angle. | */
+   public static final int PID_TUNING_AXIS_ENUM_END = 17; /*  | */
 }

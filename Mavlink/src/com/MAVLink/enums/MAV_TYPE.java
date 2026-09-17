@@ -53,5 +53,11 @@ public class MAV_TYPE {
    public static final int MAV_TYPE_IMU = 40; /* IMU | */
    public static final int MAV_TYPE_GPS = 41; /* GPS | */
    public static final int MAV_TYPE_WINCH = 42; /* Winch | */
-   public static final int MAV_TYPE_ENUM_END = 43; /*  | */
+   public static final int MAV_TYPE_GENERIC_MULTIROTOR = 43; /* Generic multirotor that does not fit into a specific type or whose type is unknown | */
+   public static final int MAV_TYPE_ILLUMINATOR = 44; /* Illuminator. An illuminator is a light source that is used for lighting up dark areas external to the system: e.g. a torch or searchlight (as opposed to a light source for illuminating the system itself, e.g. an indicator light). | */
+   public static final int MAV_TYPE_SPACECRAFT_ORBITER = 45; /* Orbiter spacecraft. Includes satellites orbiting terrestrial and extra-terrestrial bodies. Follows NASA Spacecraft Classification. | */
+   public static final int MAV_TYPE_GROUND_QUADRUPED = 46; /* A generic four-legged ground vehicle (e.g., a robot dog). | */
+   public static final int MAV_TYPE_VTOL_GYRODYNE = 47; /* VTOL hybrid of helicopter and autogyro. It has a main rotor for lift and separate propellers for forward flight. The rotor must be powered for hover but can autorotate in cruise flight. See: https://en.wikipedia.org/wiki/Gyrodyne | */
+   public static final int MAV_TYPE_GRIPPER = 48; /* Gripper | */
+   public static final int MAV_TYPE_ENUM_END = 49; /*  | */
 }

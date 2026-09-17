@@ -9,7 +9,7 @@ import android.view.Surface;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_ekf_status_report;
 import com.MAVLink.common.msg_attitude;
-import com.MAVLink.common.msg_global_position_int;
+import com.MAVLink.standard.msg_global_position_int;
 import com.MAVLink.common.msg_gps_raw_int;
 import com.MAVLink.common.msg_mission_current;
 import com.MAVLink.common.msg_mission_item;

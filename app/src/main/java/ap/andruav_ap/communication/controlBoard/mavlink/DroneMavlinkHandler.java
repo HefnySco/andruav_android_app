@@ -5,7 +5,7 @@ import static com.MAVLink.enums.MAV_TYPE.MAV_TYPE_GCS;
 import static com.MAVLink.enums.MAV_TYPE.MAV_TYPE_GIMBAL;
 import static com.MAVLink.enums.MAV_TYPE.MAV_TYPE_ONBOARD_CONTROLLER;
 
-import com.MAVLink.common.msg_global_position_int;
+import com.MAVLink.standard.msg_global_position_int;
 import com.MAVLink.common.msg_sys_status;
 import com.MAVLink.enums.MAV_AUTOPILOT;
 import com.MAVLink.enums.MAV_SYS_STATUS_SENSOR;

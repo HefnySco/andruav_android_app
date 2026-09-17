@@ -14,6 +14,9 @@ import com.MAVLink.Messages.Description;
 
 /**
  * Reports the on/off state of relays, as controlled by MAV_CMD_DO_SET_RELAY.
+        Message streaming should be requested using MAV_CMD_SET_MESSAGE_INTERVAL.
+        Note that it should not be sent on every relay state change to avoid flooding the link.
+      
  */
 public class msg_relay_status extends MAVLinkMessage {
 
@@ -30,16 +33,16 @@ public class msg_relay_status extends MAVLinkMessage {
     public long time_boot_ms;
     
     /**
-     * Relay states.  Relay instance numbers are represented as individual bits in this mask by offset.
+     * Relay states. Relay instance numbers are represented as individual bits in this mask by offset.
      */
-    @Description("Relay states.  Relay instance numbers are represented as individual bits in this mask by offset.")
+    @Description("Relay states. Relay instance numbers are represented as individual bits in this mask by offset.")
     @Units("")
     public int on;
     
     /**
-     * Relay present.  Relay instance numbers are represented as individual bits in this mask by offset.  Bits will be true if a relay instance is configured.
+     * Relay present. Relay instance numbers are represented as individual bits in this mask by offset.  Bits will be true if a relay instance is configured.
      */
-    @Description("Relay present.  Relay instance numbers are represented as individual bits in this mask by offset.  Bits will be true if a relay instance is configured.")
+    @Description("Relay present. Relay instance numbers are represented as individual bits in this mask by offset.  Bits will be true if a relay instance is configured.")
     @Units("")
     public int present;
     
@@ -137,7 +140,7 @@ public class msg_relay_status extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_RELAY_STATUS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" on:"+on+" present:"+present;
+        return "MAVLINK_MSG_ID_RELAY_STATUS - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" on:"+on+" present:"+present+"";
     }
 
     /**

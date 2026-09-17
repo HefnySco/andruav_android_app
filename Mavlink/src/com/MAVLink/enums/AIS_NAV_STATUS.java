@@ -10,21 +10,21 @@ package com.MAVLink.enums;
  * Navigational status of AIS vessel, enum duplicated from AIS standard, https://gpsd.gitlab.io/gpsd/AIVDM.html
  */
 public class AIS_NAV_STATUS {
-   public static final int UNDER_WAY = 0; /* Under way using engine. | */
-   public static final int AIS_NAV_ANCHORED = 1; /*  | */
-   public static final int AIS_NAV_UN_COMMANDED = 2; /*  | */
-   public static final int AIS_NAV_RESTRICTED_MANOEUVERABILITY = 3; /*  | */
-   public static final int AIS_NAV_DRAUGHT_CONSTRAINED = 4; /*  | */
-   public static final int AIS_NAV_MOORED = 5; /*  | */
-   public static final int AIS_NAV_AGROUND = 6; /*  | */
-   public static final int AIS_NAV_FISHING = 7; /*  | */
-   public static final int AIS_NAV_SAILING = 8; /*  | */
-   public static final int AIS_NAV_RESERVED_HSC = 9; /*  | */
-   public static final int AIS_NAV_RESERVED_WIG = 10; /*  | */
-   public static final int AIS_NAV_RESERVED_1 = 11; /*  | */
-   public static final int AIS_NAV_RESERVED_2 = 12; /*  | */
-   public static final int AIS_NAV_RESERVED_3 = 13; /*  | */
-   public static final int AIS_NAV_AIS_SART = 14; /* Search And Rescue Transponder. | */
-   public static final int AIS_NAV_UNKNOWN = 15; /* Not available (default). | */
+   public static final int AIS_NAV_STATUS_UNDER_WAY = 0; /* Under way using engine. | */
+   public static final int AIS_NAV_STATUS_ANCHORED = 1; /*  | */
+   public static final int AIS_NAV_STATUS_UN_COMMANDED = 2; /*  | */
+   public static final int AIS_NAV_STATUS_RESTRICTED_MANOEUVERABILITY = 3; /*  | */
+   public static final int AIS_NAV_STATUS_DRAUGHT_CONSTRAINED = 4; /*  | */
+   public static final int AIS_NAV_STATUS_MOORED = 5; /*  | */
+   public static final int AIS_NAV_STATUS_AGROUND = 6; /*  | */
+   public static final int AIS_NAV_STATUS_FISHING = 7; /*  | */
+   public static final int AIS_NAV_STATUS_SAILING = 8; /*  | */
+   public static final int AIS_NAV_STATUS_RESERVED_HSC = 9; /*  | */
+   public static final int AIS_NAV_STATUS_RESERVED_WIG = 10; /*  | */
+   public static final int AIS_NAV_STATUS_RESERVED_1 = 11; /*  | */
+   public static final int AIS_NAV_STATUS_RESERVED_2 = 12; /*  | */
+   public static final int AIS_NAV_STATUS_RESERVED_3 = 13; /*  | */
+   public static final int AIS_NAV_STATUS_AIS_SART = 14; /* Search And Rescue Transponder. | */
+   public static final int AIS_NAV_STATUS_UNKNOWN = 15; /* Not available (default). | */
    public static final int AIS_NAV_STATUS_ENUM_END = 16; /*  | */
 }

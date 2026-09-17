@@ -34,7 +34,7 @@ public class msg_attitude_target extends MAVLinkMessage {
      */
     @Description("Attitude quaternion (w, x, y, z order, zero-rotation is 1, 0, 0, 0)")
     @Units("")
-    public float[] q = new float[4];
+    public float q[] = new float[4];
     
     /**
      * Body roll rate
@@ -58,9 +58,9 @@ public class msg_attitude_target extends MAVLinkMessage {
     public float body_yaw_rate;
     
     /**
-     * Collective thrust, normalized to 0 .. 1 (-1 .. 1 for vehicles capable of reverse trust)
+     * Collective thrust, normalized to 0 .. 1 (-1 .. 1 for vehicles capable of reverse thrust)
      */
-    @Description("Collective thrust, normalized to 0 .. 1 (-1 .. 1 for vehicles capable of reverse trust)")
+    @Description("Collective thrust, normalized to 0 .. 1 (-1 .. 1 for vehicles capable of reverse thrust)")
     @Units("")
     public float thrust;
     
@@ -189,7 +189,7 @@ public class msg_attitude_target extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_ATTITUDE_TARGET - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" q:"+q+" body_roll_rate:"+body_roll_rate+" body_pitch_rate:"+body_pitch_rate+" body_yaw_rate:"+body_yaw_rate+" thrust:"+thrust+" type_mask:"+type_mask;
+        return "MAVLINK_MSG_ID_ATTITUDE_TARGET - sysid:"+sysid+" compid:"+compid+" time_boot_ms:"+time_boot_ms+" q:"+q+" body_roll_rate:"+body_roll_rate+" body_pitch_rate:"+body_pitch_rate+" body_yaw_rate:"+body_yaw_rate+" thrust:"+thrust+" type_mask:"+type_mask+"";
     }
 
     /**

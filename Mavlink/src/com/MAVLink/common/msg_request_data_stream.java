@@ -44,9 +44,9 @@ public class msg_request_data_stream extends MAVLinkMessage {
     public short target_component;
     
     /**
-     * The ID of the requested data stream
+     * The ID of the requested data stream.
      */
-    @Description("The ID of the requested data stream")
+    @Description("The ID of the requested data stream.")
     @Units("")
     public short req_stream_id;
     
@@ -159,7 +159,7 @@ public class msg_request_data_stream extends MAVLinkMessage {
      */
     @Override
     public String toString() {
-        return "MAVLINK_MSG_ID_REQUEST_DATA_STREAM - sysid:"+sysid+" compid:"+compid+" req_message_rate:"+req_message_rate+" target_system:"+target_system+" target_component:"+target_component+" req_stream_id:"+req_stream_id+" start_stop:"+start_stop;
+        return "MAVLINK_MSG_ID_REQUEST_DATA_STREAM - sysid:"+sysid+" compid:"+compid+" req_message_rate:"+req_message_rate+" target_system:"+target_system+" target_component:"+target_component+" req_stream_id:"+req_stream_id+" start_stop:"+start_stop+"";
     }
 
     /**
