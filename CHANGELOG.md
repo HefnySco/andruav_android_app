@@ -1,11 +1,12 @@
 # Changelog: `Andruav_AP_Original` → `Andruav_AP_2026`
 
 This document summarizes everything that changed between the `Andruav_AP_Original`
-baseline (version 7.2.1, 2025-09-26) and `Andruav_AP_2026` (version 11.0.2, 2026-08-15).
+baseline (version 7.2.1, 2025-09-26) and `Andruav_AP_2026` (version 13.4.0, 2026-09-17).
 
 **Scope:** 33 commits · 189 files changed · +3,881 / −7,559 lines for the v7.2.1 → v9.0.1
 baseline rewrite (net code reduction, despite the new features, from aggressive dead-code
-removal alongside the rewrite), followed by 27 commits for v10.0.0 → v11.0.2.
+removal alongside the rewrite), followed by 27 commits for v10.0.0 → v11.0.2 and a
+further 75 commits for v11.1.0 → v13.4.0.
 
 For deeper technical write-ups of individual efforts, see the [`wiki/`](wiki/) folder:
 - [Architecture Migration](wiki/Architecture-Migration.md) — ClientLib de-AIDL-ification, EventBus 2→3, GreenDAO 2→3
@@ -13,6 +14,8 @@ For deeper technical write-ups of individual efforts, see the [`wiki/`](wiki/) f
 - [FPV & WebRTC Streaming](wiki/FPV-Streaming.md) — foreground streaming service, PiP, signaling race-condition fix
 - [UI Theme System](wiki/UI-Theme-System.md) — new dark theme, color palette, screen-by-screen restyle
 - [Dependency Upgrades](wiki/Dependency-Upgrades.md) — full before/after table with rationale
+- [GPS Injection](wiki/GPS-Injection.md) — GPS_INPUT injection setup and troubleshooting
+- [RC Channel Triggers](wiki/RC-Channel-Triggers.md) — RC-channel camera/feature triggers
 
 ---
 
@@ -32,7 +35,32 @@ For deeper technical write-ups of individual efforts, see the [`wiki/`](wiki/) f
 | 10.2.0 | `229c097` | 2026-08-13 |
 | 11.0.0 | `10f6d21` | 2026-08-15 |
 | 11.0.1 | `7fc5b3a` | 2026-08-15 |
-| 11.0.2 (current) | `70a8390` | 2026-08-15 |
+| 11.0.2 | `70a8390` | 2026-08-15 |
+| 11.1.0 | `16966e4` | 2026-08-16 |
+| 11.3.0 | `0bdf2d1` | 2026-08-16 |
+| 11.3.1 | `8d06fff` | 2026-08-16 |
+| 11.3.2 | `7301a14` | 2026-08-17 |
+| 11.3.4 | `e35a167` | 2026-08-18 |
+| 11.3.5 | `af8a00e` | 2026-08-18 |
+| 11.3.6 | `5f0be94` | 2026-08-18 |
+| 11.4.1 | `125e541` | 2026-08-19 |
+| 11.4.5 | `02cbd48` | 2026-08-20 |
+| 11.5.0 | `8ea6e61` | 2026-08-20 |
+| 12.0.0 | `ab650ad` | 2026-08-20 |
+| 11.6.0 * | `4b7f330` | 2026-08-20 |
+| 13.0.0 | `954f114` | 2026-08-22 |
+| 13.0.1 | `13ca1fa` | 2026-08-22 |
+| 13.0.2 | `160d935` | 2026-08-26 |
+| 13.0.3 | `40e6d63` | 2026-08-26 |
+| 13.1.0 | `d5a8fb4` | 2026-09-12 |
+| 13.1.4 | `de89a7e` | 2026-09-14 |
+| 13.1.5 | `9eebae6` | 2026-09-14 |
+| 13.1.6 | `bad6cef` | 2026-09-16 |
+| 13.1.7 | `0f95cc7` | 2026-09-17 |
+| 13.4.0 (current) | `8db159e` | 2026-09-17 |
+
+\* 11.6.0 was versioned on a parallel branch and merged after 12.0.0; 13.0.0 follows it
+in history.
 
 ---
 
@@ -272,6 +300,203 @@ several connection-state bug fixes.
   dead-code detection/removal (CRLF-safe).
 - **`3d49f02`** — added `build_release_apk.sh` release build script.
 - **`a288c23`** — added DeepWiki link to `README.md`.
+
+---
+
+## v11.1.0 – v13.4.0 (2026-08-16 → 2026-09-17)
+
+75 commits: real account login (email + access code, then QR-code), a persistent
+link-guardian foreground service with process-death and boot recovery, screen
+streaming over WebRTC, an NTRIP/RTK client, a GPS_INPUT injection overhaul, a
+MAVLink library regeneration, SMS command extensions, and a batch of performance
+and Android-14 compliance fixes.
+
+### 🔐 Login & server connection
+
+- **`492efce`** — drone login switched from the access-code-only reverse lookup
+  (`/agent/aam`) to the real `/agent/al` `ValidateAccount` flow (email + access
+  code), mirroring the C++ DroneEngage client's `doAuthentication()`. Email field
+  added to the drone login layout.
+- **`73fa99c`** — home menu reordered; Sign-In moved to a header button.
+- **`73fa99c`**, **`ef53e71`** — unknown message types handled gracefully instead
+  of throwing; unused `CONST_APP_VER_PARAMETER` removed from `LoginClient`.
+- **`bf02d12`** — Mission Server (HUB) connection settings converted to a
+  `BottomSheetDialogFragment` (`HubConnectionSheet`), matching the FCB sheet
+  pattern; **`29c0268`** refreshes its subtitle when the settings change.
+- **`3a1472b`** — QR-code login and custom (local) server support. A "Scan QR
+  Code" button on the drone login screen parses `de_login` payloads produced by
+  the WebClient team-admin / auth-server admin UI: fills account and access code,
+  applies optional auth host/port and group, mirrors host/port into new
+  `LocalServerURL`/`LocalServerPort` prefs, then signs in. Camera permission is
+  requested on demand (`zxing-android-embedded` added). The Hub sheet's cloud
+  toggle stashes the custom server fields when switched on and restores them when
+  switched back; custom mode marks the IP label red with a " - custom" suffix.
+
+### 🛰️ Link guardian — persistent server connection (v13.4.0)
+
+- **`e31ecd2`** (phase 1) — new `AndruavLinkService`: a `specialUse` foreground
+  service that owns the Andruav server link while it is desired. Ongoing
+  link-status notification (single source — the transient "Connected to Internet
+  Server" notification is gone), 12h-bounded partial wake lock re-armed hourly,
+  default-network watchdog, battery-optimization enforcement, and a safe
+  reconnect API. `AndruavWSClientBase` gained `requestReconnectNow()` (resets
+  disconnect state so a reconnect works after `disconnect()` or mid-connect);
+  `TooTallNate` client got an `isConnected()` null-guard and
+  `setConnectionLostTimeout(45)` for half-dead sockets. The
+  `link_service_desired` pref survives process death and is cleared only on
+  explicit disconnect.
+- **`6f6e434`** (phase 2) — process-death recovery and boot autostart.
+  `START_STICKY` null-intent restart (or a start with no WS client in the
+  process) triggers `App.resumeLink()` → `requestReconnectNow()`; the first
+  `onRegistered` then runs a one-shot headless recovery (broadcastID, requestID,
+  sendID, permanent tasks, signal monitor). Deliberately link + IDs only: no
+  headless FCB auto-connect (USB/BT permission dialogs) and no `SensorService`
+  start (location-type FGS from background is rejected on API 34).
+  `BOOT_Receiver` now starts the link service headless when autostart is on and
+  the link was left desired — repairing boot autostart, which has been broken
+  since API 29 blocked the old background-activity launch. A stray-start guard
+  quits non-STICKY starts while the link is not desired.
+- **`7aa63d7`** — link guardian thread safety, sticky-restart self-heal, and
+  release-ordering fixes.
+
+### 🖥️ Screen streaming (v11.6.0)
+
+- **`6dfdd73`**, **`551a76c`**, **`83460fe`**, **`8421099`** (merged via
+  **`0526879`**) — screen-capture streaming mode over the existing WebRTC
+  pipeline. In-place capture-source switching preserves peer connections; a
+  1×1 view toggle forces a 5 fps minimum on a static screen; screen capture is
+  a simple click with a blue button tint; the camera can be re-enabled per
+  preference and streaming never auto-stops on web disconnect while screen
+  capture is active (MediaProjection is single-use — stopping would revoke it).
+  Fixed `stopStreamingAndSelf()` clearing `iFPVStreamingService` before WebRTC
+  teardown (a disposed-MediaSource exception could trap the stream in
+  "can't restart").
+
+### 📡 NTRIP / RTK corrections (v13.1.6+)
+
+- **`7c712e6`** — new `NtripClient` pulls RTCM3 corrections from NTRIP casters
+  and forwards them to the FC GPS. NTRIP v1 protocol with exponential-backoff
+  reconnect, 180-byte chunking matched to `GPS_RTCM_DATA` size, and optional
+  GGA-sentence upload every 10 s for VRS / network-RTK casters. New
+  `RtcmInjector` in the telemetry path, preference accessors (enable, host,
+  port, mountpoint, credentials, GGA flag), settings UI, and localized strings
+  (en/ar/es/ru).
+- **`0f95cc7`** — NTRIP fields stay editable while the client is disabled
+  (enabling still requires host/mountpoint).
+
+### 🛰️ GPS_INPUT injection overhaul
+
+- **`c8fb2bf`** — GPS_INPUT now sent as MAVLink2 so the yaw extension field
+  reaches the FC; sender sysid/compid stamped as GCS (255/190) instead of the
+  FC's own identity, which ArduPilot's routing loopback check was silently
+  dropping; `gps_id` selected from `GPS1_TYPE`/`GPS2_TYPE` values (ArduPilot 4.6
+  rename) instead of parameter existence; optional compass-heading injection
+  (`GPS_INPUT.yaw`) with magnetic-declination correction behind a new
+  `gps_inject_heading` pref; unused NMEA injection path removed; settings show
+  live FC `GPS_TYPE` state. NMEA parsing: GSA/GGA sentence types now match
+  regardless of talker ID so `$GNGSA`/`$GNGGA` from multi-constellation
+  receivers parse (fix_type was stuck at 0), best fix mode tracked across
+  per-epoch GSA sentences, GeoidSeparation exposed from GGA field 11.
+- **`58af576`** — periodic send, velocity fields, used-in-fix count, and NaN
+  handling.
+- **`09f935e`** — removed a redundant `mSoundEnabled` check from
+  `TTS.SpeakNow()` (the new home-screen speaker toggle mutes SoundManager + TTS
+  and persists).
+- **`bad6cef`** — added `wiki/GPS-Injection.md`.
+
+Full detail in [GPS Injection](wiki/GPS-Injection.md).
+
+### 📶 Telephony / signal status
+
+- **`02cbd48`** — removed unused permissions (`USE_CREDENTIALS`,
+  `GET_ACCOUNTS`, `SYSTEM_ALERT_WINDOW`, `USE_FULL_SCREEN_INTENT`); extended
+  `AndruavMessage_CommSignalsStatus` with operatorName/countryIso/dataState via
+  a new `setMobileInfo()` on `AndruavUnitBase`; fixed `initSignalMonitor`
+  (`LISTEN_CELL_LOCATION` threw `SecurityException` on API 31+, which had been
+  preventing `LISTEN_SIGNAL_STRENGTHS` from registering); 15 s periodic signal
+  status send in the scheduler for reliable delivery.
+- **`8ea6e61`** — hardened `READ_PHONE_STATE` paths against denied permission.
+- **`9f52d37`** — signal level fallback when RAT-specific dBm reads are
+  unavailable.
+
+### 📱 Android 14 / OS compliance
+
+- **`9ba9cb1`** — typed `startForeground()` + permission gating for API 34 FGS
+  compliance.
+- **`59ca138`** — full-screen notification for remote FPV start while
+  backgrounded: Android 14+ cannot start camera/mic foreground services from
+  the background, so a `pendingFPVStart` flag + high-priority full-screen
+  notification brings the app forward; the resumed Activity consumes the flag
+  and starts streaming. (The `USE_FULL_SCREEN_INTENT` manifest permission was
+  later dropped in `02cbd48` — the notification path doesn't need it declared.)
+- **`1e60186`** — prevented a `SensorService` crash on missing location
+  permission.
+
+### 💬 SMS commands & protocol
+
+- **`6aef330`** — `AndruavSMSClientParser` handles `AUTO X` (engage auto mode
+  and jump to mission step X) and a new `HLP` command that replies with the
+  list of supported SMS commands; cmd field trimmed for whitespace.
+- **`a665457`** — forced flag on `sendSMSLocation` + `RemoteCommand_SMSwGPS`
+  handler.
+- **`de89a7e`** — SENDSMS/SMSwGPS RemoteExecute requests now get a
+  `RemoteExecute_Result` (1084) reply.
+
+### ⚡ Performance
+
+- **`449c334`** — fixed a duplicate frame encode and main-thread hop in the FPV
+  recorder.
+- **`896ab40`** — FPV still-image processing moved off the WebRTC renderer
+  thread.
+- **`e2b1614`** — Bluetooth FCB 1 ms polling loop replaced with a blocking
+  read.
+- **`2e46f41`** — a single background thread reused for exception-log DB
+  inserts.
+- **`4fe1115`** — per-draw compass-label array hoisted in `NEWSWidget`.
+
+### 🧹 Cleanup, removals & i18n
+
+- **`af924f5`** — removed the dead DroneEngage/UAVOS external-module
+  integration.
+- **`f357407`** — removed the unused `data` package; app header renamed to
+  `ANDRUAV_AP`.
+- **`2023fdd`** — removed the GCS-mode screens and controls.
+- **`5024ce3`** — removed the dead remote-control (gamepad) feature and the
+  unused `ValueBar` widget.
+- **`6fbf5e6`** — `SettingsDrone` migrated from the deprecated
+  `PreferenceActivity` to `AppCompatActivity` + `PreferenceFragmentCompat`.
+- **`74ef6d7`**, **`27cfe63`** — internationalization: PanicFacade error
+  levels, GPS mode messages, and hardcoded UI strings extracted to resources.
+- **`af87a3c`** — removed obsolete TODO/FIXME comments; renamed
+  `ExceptionHTTPLogger` → `ExceptionDaoLogger`; **`1664353`** added
+  Export/Delete Error Logs menu items backed by the DAO-only logger.
+- **`e5f4889`** — distribution link moved from Google Play to SourceForge;
+  keystore files git-ignored.
+- **`e5aaf73`** — UDP telemetry proxy endpoint displayed on the home screen.
+- **`3a360af`** — fixed a missing `@Subscribe` on the
+  `Event_Remote_ChannelsCMD` handler.
+- **`1664353` / `975c20b` / `af8a00e` / `cdbc023` / `dcd61f4`** — misc cleanup:
+  deduplicated `autoConnect` check in `MainScreen.onResume`, pattern-matching
+  instanceof, email name fix.
+
+### 📚 MAVLink library regeneration
+
+- **`365c3f7`** — regenerated the `Mavlink` module from current upstream message
+  definitions (~500 files): new dialects (`development`, `csAirLink`,
+  `cubepilot`, `ASLUAV`, `AVSSUAS`, `python_array_test`), new common messages
+  (`onboard_computer_status`, `param_error`, `trajectory_representation_*`,
+  `orbit_execution_status`, `camera_thermal_range`, `global_position_sensor`),
+  ~40 new enums (`MAV_STANDARD_MODE`, `MAV_FTP_*`, `GPS_*_STATE`, `MLRS_*`,
+  `ACTUATOR_*`, ...), refreshed `storm32`/`uAvionix`/`ualberta`/`icarous`
+  dialects, and the upstream `minimal.xml`/`all.xml` definitions vendored under
+  `Mavlink/message_definitions/`.
+
+### 🔧 Build tooling
+
+- **`bad6cef`** — `build_release_apk.sh` gained `--install`/`--upload` (adb
+  streamed install) and JDK 17 auto-detection.
+- **`1924194`** — robust SDK/JDK auto-detection with a multi-source fallback
+  chain in the build scripts.
 
 ---
 
