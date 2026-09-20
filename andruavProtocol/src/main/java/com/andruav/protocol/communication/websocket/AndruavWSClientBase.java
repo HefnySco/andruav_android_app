@@ -139,13 +139,11 @@ public abstract class AndruavWSClientBase {
 
 
     //////////////////// Timing
-    private final static  long monSendIDDuration                =60000;  //should be > monSlowOperationTicks
-    private final static  long monSendIDMinDuration             =10000;
+    private final static  long monSendIDDuration                =10000;  // send ID keepalive only when no other comm traffic for this long; must stay below the WebClient 20s offline timeout
     private final static  long monPingDuration                  =90000;  //should be > monSlowOperationTicks
     private final static  long monSlowOperationTicks            =10000;  //calling rate of SlowSehculeTasks
 
-    private static  long monSendIDStepDuration=monSendIDMinDuration;
-    private static  long monSendID=0;
+    private static volatile long monLastSendTime = 0;   // last outbound comm (non-system) message
     private static  long monPing=0;
 
     /***
@@ -497,8 +495,8 @@ public abstract class AndruavWSClientBase {
 
     protected void onOpen ()
     {
-        // reset ID timer
-        monSendIDStepDuration=monSendIDMinDuration;
+        // reset ID keepalive timer
+        monLastSendTime = 0;
         //merrorRecovery = false;
 
         merrorRecovery = true; /// are should be safe now
@@ -588,22 +586,16 @@ public abstract class AndruavWSClientBase {
 
             onScheduledTasks(now);
 
-            // ID timer here we try to make it increment by steps
-            // and reset on connect
-            if ((now - monSendID) > monSendIDStepDuration) {
+            // ID keepalive: sent only when the link has been quiet — any other
+            // outbound comm traffic already proves liveness to GCSs.
+            if ((now - monLastSendTime) >= monSendIDDuration) {
                 // The only reason we sendMessageToModule ID message here
                 // is that sometimes a unit specially GCS not sending anything, and need to tell
                 // others that it is still alive.
                 // note that Others sendMessageToModule requestID anyway when they start or need to know
                 // who is online.
                 // Regularly sendMessageToModule my ID
-                monSendID = now;
                 AndruavFacade.broadcastID();
-                monSendIDStepDuration = monSendIDStepDuration + 1000;
-                if (monSendIDStepDuration > monSendIDDuration )
-                {
-                    monSendIDStepDuration = monSendIDDuration;
-                }
             }
 
             if ((now - monPing) > monPingDuration) {
@@ -2028,6 +2020,11 @@ public abstract class AndruavWSClientBase {
             //Dont broadcast local messages  - performance-.
             final byte[] finalMsg = andruavBinary2MR.getJscon(addTime);
 
+            if (!ProtocolHeaders.CMD_TYPE_SYS.equals(andruavBinary2MR.MessageRouting))
+            {
+                monLastSendTime = System.currentTimeMillis();
+            }
+
             TotalBinaryBytesSent += finalMsg.length;
             TotalBinaryPacketsSent +=1;
             if (instant)
@@ -2065,6 +2062,11 @@ public abstract class AndruavWSClientBase {
             }
             //Dont broadcast local messages  - performance-.
             final String finalMsg = andruav2MR.getJscon(addTime);
+
+            if (!ProtocolHeaders.CMD_TYPE_SYS.equals(andruav2MR.MessageRouting))
+            {
+                monLastSendTime = System.currentTimeMillis();
+            }
 
             TotalBytesSent += finalMsg.length();
             TotalPacketsSent +=1;
