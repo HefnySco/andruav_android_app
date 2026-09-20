@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 
+import com.andruav.AndruavEngine;
 import com.andruav.AndruavFacade;
 import com.andruav.AndruavSettings;
 import com.andruav.event.droneReport_Event.Event_Signalling;
@@ -15,6 +16,8 @@ import org.json.JSONObject;
 import org.webrtc.PeerConnectionFactory;
 import java.util.concurrent.ConcurrentHashMap;
 import org.greenrobot.eventbus.EventBus;
+
+import ap.andruavmiddlelibrary.webrtc.events.Event_WebRTC;
 
 /**
  * Created by mhefny on 4/28/16.
@@ -76,7 +79,18 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
                             return ;
                         }
 
-                        // Possibly threshold number of allowed users
+                        if (peers.size() >= MAX_CONNECTIONS) {
+                            // Incoming join beyond the viewer cap - reject before allocating a
+                            // native PeerConnection. The hangup tells the viewer to tear down and
+                            // stop retrying; the event surfaces it in the local UI/log.
+                            mRtcListener.onDebug(new PnRTCResala("MAX peers reached (" + MAX_CONNECTIONS + "). Rejecting " + peerId));
+                            sendHangUpTo(peerId);
+                            if (a7adath_signalling.andruavUnitBase != null) {
+                                AndruavEngine.getEventBus().post(new Event_WebRTC(a7adath_signalling.andruavUnitBase, Event_WebRTC.EVENT_CONNECTION_ERROR));
+                            }
+                            return;
+                        }
+
                         peer = addPeer(peerId,channel, a7adath_signalling.andruavUnitBase);
                     } else {
                         peer = peers.get(peerId+channel);

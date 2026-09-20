@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import ap.andruavmiddlelibrary.preference.Preference;
 import ap.andruavmiddlelibrary.webrtc.events.Event_WebRTC;
 
 import static ap.andruavmiddlelibrary.webrtc.classes.PnPeer.STATUS_DISCONNECTED;
@@ -31,7 +32,7 @@ public class PeerConnectionClientBase {
 
     SessionDescription localSdp  = null; // either offer or answer SDP
     MediaStream localMediaStream = null;
-    int MAX_CONNECTIONS = Integer.MAX_VALUE;
+    int MAX_CONNECTIONS = Integer.MAX_VALUE; // set from Preference.getMaxWebRTCViewers in init()
     PeerConnectionFactory pcFactory;
     PnRTCListener mRtcListener;
     PnSignalingParams signalingParams;
@@ -106,6 +107,7 @@ public class PeerConnectionClientBase {
 
 
     protected void init(){
+        MAX_CONNECTIONS = Preference.getMaxWebRTCViewers(null);
         this.actionMap = new HashMap<String, PnAction>();
         this.actionMap.put(CreateOfferAction.TRIGGER,     new CreateOfferAction());
         this.actionMap.put(CreateAnswerAction.TRIGGER,    new CreateAnswerAction());

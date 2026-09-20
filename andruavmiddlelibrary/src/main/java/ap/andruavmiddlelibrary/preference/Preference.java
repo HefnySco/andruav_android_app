@@ -190,6 +190,19 @@ public class Preference {
     }
 
     /***
+     * Max simultaneous WebRTC peer connections (viewers) a unit will accept.
+     * Each accepted peer holds a native PeerConnection + encoder resources, so this is
+     * a hard resource bound. Default 4 - conservative, pending product/hardware sign-off.
+     */
+    public static int getMaxWebRTCViewers(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "MxWbVwCnTs", 4);
+    }
+
+    public static void setMaxWebRTCViewers(final android.content.ContextWrapper contextWrapper, final int maxViewers) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "MxWbVwCnTs", maxViewers);
+    }
+
+    /***
      * This function is not useful anymore as it is updated each time server connects to the authentication site.
      *
      * @param contextWrapper
