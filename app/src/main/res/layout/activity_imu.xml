@@ -67,6 +67,12 @@
         android:layout_marginTop="24dp"
         android:layout_marginBottom="20dp" />
 
+    <ap.andruav_ap.widgets.flightControlWidgets.AndruavUnitInfoWidget
+        android:id="@+id/imuactivity_widget_andruavinfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

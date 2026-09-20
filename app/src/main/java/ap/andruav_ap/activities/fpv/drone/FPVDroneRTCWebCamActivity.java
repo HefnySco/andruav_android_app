@@ -73,8 +73,6 @@ import java.util.concurrent.TimeUnit;
 import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.guiEvent.GUIEvent_EnableFlashing;
 import ap.andruav_ap.widgets.AlarmWidget;
-import ap.andruav_ap.widgets.flightControlWidgets.AndruavUnitInfoWidget;
-import ap.andruav_ap.widgets.flightControlWidgets.AttitudeWidget;
 import ap.andruav_ap.App;
 import ap.andruav_ap.DeviceManagerFacade;
 import ap.andruav_ap.services.fpv.FPVStreamingService;
@@ -84,7 +82,6 @@ import ap.andruavmiddlelibrary.factory.util.ActivityMosa3ed;
 import ap.andruavmiddlelibrary.factory.util.Image_Helper;
 import ap.andruavmiddlelibrary.webrtc.events.Event_WebRTC;
 import ap.andruavmiddlelibrary.webrtc.classes.PeerConnectionManager;
-import ap.andruav_ap.widgets.flightControlWidgets.NEWSWidget;
 import ap.andruav_ap.R;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_IMU_CMD;
 
@@ -147,9 +144,6 @@ public class FPVDroneRTCWebCamActivity extends Activity {
     private Button btnZeroTilt;
     private Button btnCameraSwitch;
     private Button btnStopStream;
-    private NEWSWidget newsWidget;
-    private AttitudeWidget attitudeWidget;
-    private AndruavUnitInfoWidget andruavUnitInfoWidget;
 
     int mImgWidth =0;
     int mImgHeight =0;
@@ -435,11 +429,6 @@ public class FPVDroneRTCWebCamActivity extends Activity {
 
     private void initGUI ()
     {
-        attitudeWidget = findViewById((R.id.fpvactivity_widget_attitude));
-
-        newsWidget = findViewById(R.id.NEWSWidget);
-
-
         txtVideoStatus = findViewById(R.id.fpvactivity_txtVideoStatus);
         txtVideoStatus.setVisibility(View.INVISIBLE);
 
@@ -503,13 +492,6 @@ public class FPVDroneRTCWebCamActivity extends Activity {
                 finish();
             }
         });
-
-
-        andruavUnitInfoWidget = findViewById(R.id.fpvactivity_widget_andruavinfo);
-        andruavUnitInfoWidget.setAndruavUnit(andruavUnit_selected);
-        andruavUnitInfoWidget.isRecording = false;
-        newsWidget.setAndruavUnit(andruavUnit_selected);
-        attitudeWidget.setAndruavUnit(andruavUnit_selected);
 
 
     }

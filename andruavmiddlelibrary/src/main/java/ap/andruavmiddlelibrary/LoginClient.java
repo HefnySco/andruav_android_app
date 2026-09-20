@@ -2,7 +2,6 @@ package ap.andruavmiddlelibrary;
 
 
 import android.location.Location;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.core.util.Pair;
@@ -20,6 +19,7 @@ import java.net.ConnectException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
@@ -29,6 +29,8 @@ import javax.net.ssl.X509TrustManager;
 
 import org.greenrobot.eventbus.EventBus;
 import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Dispatcher;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -44,7 +46,58 @@ import ap.andruavmiddlelibrary.preference.Preference;
  */
 public class LoginClient {
 
-    private final static OkHttpClient mclientHTTP = new OkHttpClient();
+    private final static OkHttpClient mclientHTTP = buildClient();
+
+    /***
+     * Builds the shared OkHttpClient once for the process lifetime instead of
+     * deriving a new client (and SSLContext/TrustManager setup) per request.
+     * A single-thread dispatcher preserves the old AsyncTask SERIAL_EXECUTOR
+     * semantics: SendRequest calls are queued and executed one at a time, so
+     * the shared static Parameters/LastError/LastMessage state is never
+     * touched by two requests concurrently.
+     */
+    private static OkHttpClient buildClient ()
+    {
+        final OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
+                .readTimeout(100, TimeUnit.SECONDS)
+                .dispatcher(new Dispatcher(Executors.newSingleThreadExecutor()));
+
+        try {
+            boolean allowUntrusted = true;
+
+            if (allowUntrusted) {
+                final TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+                    @Override
+                    public X509Certificate[] getAcceptedIssuers() {
+                        X509Certificate[] cArrr = new X509Certificate[0];
+                        return cArrr;
+                    }
+
+                    @Override
+                    public void checkServerTrusted(final X509Certificate[] chain,
+                                                   final String authType) {
+                    }
+
+                    @Override
+                    public void checkClientTrusted(final X509Certificate[] chain,
+                                                   final String authType) {
+                    }
+                }};
+
+                SSLContext sslContext = SSLContext.getInstance("SSL");
+
+                sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+                clientBuilder.sslSocketFactory(sslContext.getSocketFactory());
+
+                HostnameVerifier hostnameVerifier = (hostname, session) -> true;
+                clientBuilder.hostnameVerifier(hostnameVerifier);
+            }
+        } catch (Exception error) {
+            AndruavEngine.log().logException("loginclient", "exception_log", error);
+        }
+
+        return clientBuilder.build();
+    }
 
     private  final static String  pageNameDebug = "https://192.168.1.144:19408";  //"https://192.168.1.139:19408"; //"https://192.168.2.42:19108/?";
     private  final static String  pageNameRelease = "https://cloud.ardupilot.org:19408";
@@ -191,91 +244,69 @@ public class LoginClient {
 
         final String url;
         url= getPageName() + urlRoute;
-        new AsyncTask<Void, Integer, Void>(){
 
-          @Override
-            protected Void doInBackground(Void... params) {
-                   OkHttpClient.Builder clientBuilder = mclientHTTP.newBuilder().readTimeout(100, TimeUnit.SECONDS);
-               final EventLoginClient eventLoginClient = new EventLoginClient(cmd,urls[0].second,urls[1].second,LoginClient.LastError,LoginClient.LastMessage,Parameters);
+        FormBody.Builder builder = new FormBody.Builder();
 
-              try {
-                      boolean allowUntrusted = true;
+        for (int i=0;i<urls.length;++i)
+        {
+            builder.add(urls[i].first, urls[i].second);
+        }
 
-                      if (allowUntrusted) {
-                          final TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-                              @Override
-                              public X509Certificate[] getAcceptedIssuers() {
-                                  X509Certificate[] cArrr = new X509Certificate[0];
-                                  return cArrr;
-                              }
-
-                              @Override
-                              public void checkServerTrusted(final X509Certificate[] chain,
-                                                             final String authType) {
-                              }
-
-                              @Override
-                              public void checkClientTrusted(final X509Certificate[] chain,
-                                                             final String authType) {
-                              }
-                          }};
-
-                          SSLContext sslContext = SSLContext.getInstance("SSL");
-
-                          sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-                          clientBuilder.sslSocketFactory(sslContext.getSocketFactory());
-
-                          HostnameVerifier hostnameVerifier = (hostname, session) -> true;
-                          clientBuilder.hostnameVerifier(hostnameVerifier);
-                      }
+        RequestBody formBody = builder.build();
 
 
-
-                      FormBody.Builder builder = new FormBody.Builder();
-
-                      for (int i=0;i<urls.length;++i)
-                      {
-                        builder.add(urls[i].first, urls[i].second);
-                      }
-
-                  RequestBody formBody = builder.build();
+        Request request = new Request.Builder()
+                    .url(url)
+                    .post(formBody)
+                    .build();
 
 
-                  Request request = new Request.Builder()
-                              .url(url)
-                              .post(formBody)
-                              .build();
+        mclientHTTP.newCall(request).enqueue(new Callback() {
 
+            @Override
+            public void onFailure(final Call call, final IOException error) {
+                final EventLoginClient eventLoginClient = new EventLoginClient(cmd,urls[0].second,urls[1].second,LoginClient.LastError,LoginClient.LastMessage,Parameters);
+                if (!(error instanceof ConnectException)) {
+                    // ConnectException is hen Net is OFF - expected, not logged
+                    AndruavEngine.log().logException(urls[0].second, "exception_log", error);
+                }
+                if (iLoginClientCallback !=null) {
+                    iLoginClientCallback.onError();
+                }
+                else {
+                    eventLoginClient.LastMessage = error.getMessage();
+                    eventLoginClient.LastError = LoginClient.ERR_SERVER_UNREACHABLE;
+                    EventBus.getDefault().post(eventLoginClient);
+                }
+            }
 
-                  final Call call = clientBuilder.build().newCall(request);
-                  Response response = call.execute();
+            @Override
+            public void onResponse(final Call call, final Response response) {
+                final EventLoginClient eventLoginClient = new EventLoginClient(cmd,urls[0].second,urls[1].second,LoginClient.LastError,LoginClient.LastMessage,Parameters);
+                try {
+                    ParseReply(response.body().string());
 
+                    eventLoginClient.LastError = LastError;
 
-                  ParseReply(response.body().string());
-
-                  eventLoginClient.LastError = LastError;
-
-                  if (iLoginClientCallback ==null) {
-                            if (!response.isSuccessful()) {
-                                throw new IOException("Unexpected code " + response);
-                            }
-                            else {
-                                EventBus.getDefault().post(eventLoginClient);
-                            }
+                    if (iLoginClientCallback ==null) {
+                        if (!response.isSuccessful()) {
+                            throw new IOException("Unexpected code " + response);
                         }
-                        else
-                        {
-                            // NOTE HERE WE DONT SEND NOTIFICATION ON EVENTBUS IF THERE IS A CALLBACK
-                            if (!response.isSuccessful()) {
-                                iLoginClientCallback.onError();
-
-                            }
-                            else {
-                                iLoginClientCallback.onSuccess(eventLoginClient);
-                            }
+                        else {
+                            EventBus.getDefault().post(eventLoginClient);
                         }
+                    }
+                    else
+                    {
+                        // NOTE HERE WE DONT SEND NOTIFICATION ON EVENTBUS IF THERE IS A CALLBACK
+                        if (!response.isSuccessful()) {
+                            iLoginClientCallback.onError();
 
-                    System.out.println(response.body().string());
+                        }
+                        else {
+                            iLoginClientCallback.onSuccess(eventLoginClient);
+                        }
+                    }
                 } catch (ConnectException error)
                 {
                     // this is hen Net is OFF
@@ -289,7 +320,6 @@ public class LoginClient {
                         eventLoginClient.LastError = LoginClient.ERR_SERVER_UNREACHABLE;
                         EventBus.getDefault().post(eventLoginClient);
                     }
-                    return  null;
                 } catch (IOException error)
                 {
                     AndruavEngine.log().logException(urls[0].second, "exception_log", error);
@@ -302,24 +332,6 @@ public class LoginClient {
                         eventLoginClient.LastError = LoginClient.ERR_SERVER_UNREACHABLE;
                         EventBus.getDefault().post(eventLoginClient);
                     }
-                    return null;
-                } catch (IllegalStateException error)
-                {
-                    // leave it empty
-                    if (!error.getMessage().equals("closed")) {
-
-                        if (iLoginClientCallback !=null) {
-                            iLoginClientCallback.onError();
-
-                        }
-                        else {
-                            eventLoginClient.LastMessage = error.getMessage();
-                            eventLoginClient.LastError = LoginClient.ERR_SERVER_UNREACHABLE;
-                            EventBus.getDefault().post(eventLoginClient);
-                        }
-                    }
-
-                    return null;
                 }
                 catch (Exception error) {
                    // ExceptionDaoLogger.logException(App.Account_SID, "exception", error);
@@ -331,13 +343,9 @@ public class LoginClient {
                         eventLoginClient.LastError = LoginClient.ERR_SERVER_UNREACHABLE;
                         EventBus.getDefault().post(eventLoginClient);
                     }
-                    return null;
                 }
-                    return null;
             }
-
-
-        }.execute();
+        });
 
     }
 

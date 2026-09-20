@@ -37,6 +37,7 @@ import com.andruav.event.droneReport_Event.Event_IMU_Ready;
 import ap.andruavmiddlelibrary.sensors.Sensor_Accelerometer;
 import ap.andruavmiddlelibrary.sensors.Sensor_Gyro;
 import ap.andruavmiddlelibrary.sensors.Sensor_Mag;
+import ap.andruav_ap.widgets.flightControlWidgets.AndruavUnitInfoWidget;
 
 public class IMUShasha extends BaseAndruavShasha {
 
@@ -45,6 +46,7 @@ public class IMUShasha extends BaseAndruavShasha {
     private Button btnCalibrate;
     private Button btnZeroTilt;
     private Button btnMobileDirection;
+    private AndruavUnitInfoWidget andruavUnitInfoWidget;
     private EditText txtLog;
     private TextView txtAcc;
     private Handler mhandle;
@@ -352,6 +354,11 @@ public class IMUShasha extends BaseAndruavShasha {
         });
 
         updateArrowButton(false);
+
+        andruavUnitInfoWidget = findViewById(R.id.imuactivity_widget_andruavinfo);
+        andruavUnitInfoWidget.setParentFragmentManager(getSupportFragmentManager());
+        andruavUnitInfoWidget.setAndruavUnit(AndruavSettings.andruavWe7daBase);
+
         UIHandler();
     }
 

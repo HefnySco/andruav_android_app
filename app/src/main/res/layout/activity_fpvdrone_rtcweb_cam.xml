@@ -16,49 +16,6 @@
         android:layout_alignParentRight="false"
         android:layout_alignParentEnd="false"
         />
-    <view
-        class="ap.andruav_ap.widgets.flightControlWidgets.NEWSWidget"
-        android:layout_width="fill_parent"
-        android:layout_height="25dp"
-        android:id="@+id/NEWSWidget"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="false"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignWithParentIfMissing="false"
-        android:layout_centerHorizontal="true"
-        android:visibility="visible"
-        android:layout_margin="0dp" />
-
-    <ap.andruav_ap.widgets.flightControlWidgets.AndruavUnitInfoWidget
-        android:id="@+id/fpvactivity_widget_andruavinfo"
-        android:layout_gravity="center_horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/action_bar_telem_height"
-        android:keepScreenOn="true"
-        android:layout_alignParentBottom="false"
-        android:weightSum="1"
-        android:orientation="horizontal"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentRight="false"
-        android:layout_toRightOf="@+id/fpvactivity_btn_CameraSwitch"
-        android:layout_toEndOf="@+id/fpvactivity_btn_CameraSwitch"
-        android:layout_below="@+id/NEWSWidget"
-        android:layout_margin="5dp" />
-
-    <ap.andruav_ap.widgets.flightControlWidgets.AttitudeWidget
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:id="@+id/fpvactivity_widget_attitude"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/fpvactivity_widget_andruavinfo"
-        android:alpha="0.8" />
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
@@ -72,7 +29,7 @@
         android:textSize="10sp"
         android:text="@string/action_imu_zero"
         android:padding="1dp"
-        android:layout_below="@+id/NEWSWidget" />
+        android:layout_alignParentTop="true" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
