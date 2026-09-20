@@ -9,7 +9,6 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.util.Arrays;
 
 import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
@@ -152,7 +151,9 @@ public class AndruavGCSSerialSocketServer {
                     }
                     // Happens when u disable telemetry before closing sockets..
                     if (AndruavSettings.remoteTelemetryAndruavWe7da!=null) {
-                        mevent_socketData.Data = Arrays.copyOf(buffer, len);
+                        // No subscriber retains Data beyond the synchronous EventBus post
+                        // (all consume via DataLength), so the read buffer is shared directly.
+                        mevent_socketData.Data = buffer;
                         mevent_socketData.IsLocal = Event_SocketData.SOURCE_LOCAL;  // the event is not a translation of AndruavEvent.
                         mevent_socketData.DataLength = len;
                         mevent_socketData.targetName = AndruavSettings.remoteTelemetryAndruavWe7da.PartyID;

@@ -817,12 +817,15 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
         try {
 
+            byte[] msg = null;
+
             if (sendPacket )
             {
                 /**
                  * This is Telemetry via WS.
                  */
-                App.sendTelemetryfromDrone(mavLinkPacket.encodePacket());
+                msg = mavLinkPacket.encodePacket();
+                App.sendTelemetryfromDrone(msg);
             }
 
 
@@ -834,16 +837,14 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
             {
                 if (AndruavSettings.andruavWe7daBase.isUdpProxyAccessedLately())
                 {
-                    final byte[] msg = mavLinkPacket.encodePacket();
-                    final int length = msg.length;
-                    AndruavEngine.getUDPProxy().sendMessage(msg, length);
+                    if (msg == null) msg = mavLinkPacket.encodePacket();
+                    AndruavEngine.getUDPProxy().sendMessage(msg, msg.length);
                 }
                 else
                 if ((AndruavSettings.andruavWe7daBase.isUdpProxyEnabled()) && (mavLinkPacket.msgid == MAVLINK_MSG_ID_HEARTBEAT))
                 {
-                    final byte[] msg = mavLinkPacket.encodePacket();
-                    final int length = msg.length;
-                    AndruavEngine.getUDPProxy().sendMessage(msg, length);
+                    if (msg == null) msg = mavLinkPacket.encodePacket();
+                    AndruavEngine.getUDPProxy().sendMessage(msg, msg.length);
                 }
             }
 
