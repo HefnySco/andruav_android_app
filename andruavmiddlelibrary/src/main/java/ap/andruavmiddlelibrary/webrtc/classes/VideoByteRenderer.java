@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 
 import org.webrtc.EglBase;
+import org.webrtc.Logging;
 import org.webrtc.ThreadUtils;
 import org.webrtc.VideoFrame;
 import org.webrtc.VideoSink;
@@ -11,11 +12,14 @@ import org.webrtc.YuvHelper;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import ap.andruavmiddlelibrary.com.serenegiant.encoder.MediaVideoEncoder;
 
 public class VideoByteRenderer implements VideoSink {
     private static final String TAG = "VideoFileRenderer";
+    private static final int MAX_PENDING_FRAMES = 2;
+    private static final long DROP_LOG_INTERVAL_MS = 1000;
     private final HandlerThread renderThread;
     private final Handler renderThreadHandler;
     //private final FileOutputStream videoOutFile;
@@ -27,6 +31,10 @@ public class VideoByteRenderer implements VideoSink {
     private final ByteBuffer outputFrameBuffer;
     private final ByteBuffer outputFrameBuffer2;
     private final VSink iVideoSink;
+    private final AtomicInteger pendingFrames = new AtomicInteger(0);
+    private final AtomicInteger droppedFrames = new AtomicInteger(0);
+    private final AtomicInteger processedFrames = new AtomicInteger(0);
+    private long lastDropLogTimeMs = 0;
 
     public VideoByteRenderer(VSink videoSink, int outputFileWidth, int outputFileHeight, final EglBase.Context sharedContext) throws IllegalArgumentException {
         if (outputFileWidth % 2 != 1 && outputFileHeight % 2 != 1) {
@@ -56,8 +64,23 @@ public class VideoByteRenderer implements VideoSink {
     }
 
     public void onFrame(VideoFrame frame) {
+        if (this.pendingFrames.get() >= MAX_PENDING_FRAMES) {
+            frame.release();
+            this.logDroppedFrame();
+            return;
+        }
+        this.pendingFrames.incrementAndGet();
         frame.retain();
         this.renderThreadHandler.post(() -> this.renderFrameOnRenderThread(frame));
+    }
+
+    private void logDroppedFrame() {
+        int dropped = this.droppedFrames.incrementAndGet();
+        long now = System.currentTimeMillis();
+        if (now - this.lastDropLogTimeMs >= DROP_LOG_INTERVAL_MS) {
+            this.lastDropLogTimeMs = now;
+            Logging.w(TAG, "Recording backpressure: dropping frame, encoder feed cannot keep up (" + dropped + " frames dropped so far)");
+        }
     }
 
 
@@ -85,38 +108,43 @@ public class VideoByteRenderer implements VideoSink {
         VideoFrame.I420Buffer i420 = scaledBuffer.toI420();
         scaledBuffer.release();
 
-        if (MediaVideoEncoder.VIDEO_FORMAT == MediaVideoEncoder.MOBILE_MATE10_STYLE)
-        {
-            YuvHelper.I420ToNV12(i420.getDataY(), i420.getStrideY(), i420.getDataU(), i420.getStrideU(), i420.getDataV(), i420.getStrideV(),this.outputFrameBuffer2,i420.getWidth(), i420.getHeight());
-            i420.release();
-            iVideoSink.onFrame(this.outputFrameBuffer2.array(),this.outputFrameBuffer2.arrayOffset(), this.outputFrameSize);
-        }
-        else
-        if (MediaVideoEncoder.VIDEO_FORMAT == MediaVideoEncoder.MOBILE_S5_STYLE)
-        {
-            YuvHelper.I420ToNV12(i420.getDataY(), i420.getStrideY(), i420.getDataU(), i420.getStrideU(), i420.getDataV(), i420.getStrideV(),this.outputFrameBuffer2,i420.getWidth(), i420.getHeight());
-            i420.release();
-            iVideoSink.onFrame(this.outputFrameBuffer2.array(),this.outputFrameBuffer2.arrayOffset(), this.outputFrameSize);
-        }
-        else
-        if (MediaVideoEncoder.VIDEO_FORMAT == MediaVideoEncoder.MOBILE_MATE8_STYLE)
-        {
-            YuvHelper.I420ToNV12(i420.getDataY(), i420.getStrideY(), i420.getDataV(), i420.getStrideV(),i420.getDataU(), i420.getStrideU(), this.outputFrameBuffer2,i420.getWidth(), i420.getHeight());
-            i420.release();
-            iVideoSink.onFrame(this.outputFrameBuffer2.array(),this.outputFrameBuffer2.arrayOffset(), this.outputFrameSize);
-        }
-        else
-        if (MediaVideoEncoder.VIDEO_FORMAT == MediaVideoEncoder.MOBILE_OPPO_F11_STYLE)
-        {
-            YuvHelper.I420Rotate(i420.getDataY(), i420.getStrideY(),i420.getDataU(), i420.getStrideU(), i420.getDataV(), i420.getStrideV(), this.outputFrameBuffer, i420.getWidth(), i420.getHeight(), frame.getRotation());
-            i420.release();
-            iVideoSink.onFrame(this.outputFrameBuffer.array(),this.outputFrameBuffer.arrayOffset(), this.outputFrameSize);
-        }
-        else
-        {
-            YuvHelper.I420Rotate(i420.getDataY(), i420.getStrideY(),i420.getDataU(), i420.getStrideU(), i420.getDataV(), i420.getStrideV(), this.outputFrameBuffer, i420.getWidth(), i420.getHeight(), frame.getRotation());
-            i420.release();
-            iVideoSink.onFrame(this.outputFrameBuffer.array(),this.outputFrameBuffer.arrayOffset(), this.outputFrameSize);
+        try {
+            if (MediaVideoEncoder.VIDEO_FORMAT == MediaVideoEncoder.MOBILE_MATE10_STYLE)
+            {
+                YuvHelper.I420ToNV12(i420.getDataY(), i420.getStrideY(), i420.getDataU(), i420.getStrideU(), i420.getDataV(), i420.getStrideV(),this.outputFrameBuffer2,i420.getWidth(), i420.getHeight());
+                i420.release();
+                iVideoSink.onFrame(this.outputFrameBuffer2.array(),this.outputFrameBuffer2.arrayOffset(), this.outputFrameSize);
+            }
+            else
+            if (MediaVideoEncoder.VIDEO_FORMAT == MediaVideoEncoder.MOBILE_S5_STYLE)
+            {
+                YuvHelper.I420ToNV12(i420.getDataY(), i420.getStrideY(), i420.getDataU(), i420.getStrideU(), i420.getDataV(), i420.getStrideV(),this.outputFrameBuffer2,i420.getWidth(), i420.getHeight());
+                i420.release();
+                iVideoSink.onFrame(this.outputFrameBuffer2.array(),this.outputFrameBuffer2.arrayOffset(), this.outputFrameSize);
+            }
+            else
+            if (MediaVideoEncoder.VIDEO_FORMAT == MediaVideoEncoder.MOBILE_MATE8_STYLE)
+            {
+                YuvHelper.I420ToNV12(i420.getDataY(), i420.getStrideY(), i420.getDataV(), i420.getStrideV(),i420.getDataU(), i420.getStrideU(), this.outputFrameBuffer2,i420.getWidth(), i420.getHeight());
+                i420.release();
+                iVideoSink.onFrame(this.outputFrameBuffer2.array(),this.outputFrameBuffer2.arrayOffset(), this.outputFrameSize);
+            }
+            else
+            if (MediaVideoEncoder.VIDEO_FORMAT == MediaVideoEncoder.MOBILE_OPPO_F11_STYLE)
+            {
+                YuvHelper.I420Rotate(i420.getDataY(), i420.getStrideY(),i420.getDataU(), i420.getStrideU(), i420.getDataV(), i420.getStrideV(), this.outputFrameBuffer, i420.getWidth(), i420.getHeight(), frame.getRotation());
+                i420.release();
+                iVideoSink.onFrame(this.outputFrameBuffer.array(),this.outputFrameBuffer.arrayOffset(), this.outputFrameSize);
+            }
+            else
+            {
+                YuvHelper.I420Rotate(i420.getDataY(), i420.getStrideY(),i420.getDataU(), i420.getStrideU(), i420.getDataV(), i420.getStrideV(), this.outputFrameBuffer, i420.getWidth(), i420.getHeight(), frame.getRotation());
+                i420.release();
+                iVideoSink.onFrame(this.outputFrameBuffer.array(),this.outputFrameBuffer.arrayOffset(), this.outputFrameSize);
+            }
+            this.processedFrames.incrementAndGet();
+        } finally {
+            this.pendingFrames.decrementAndGet();
         }
 
     }
@@ -132,6 +160,7 @@ public class VideoByteRenderer implements VideoSink {
             cleanupBarrier.countDown();
         });
         ThreadUtils.awaitUninterruptibly(cleanupBarrier);
+        Logging.d(TAG, "VideoByteRenderer released. " + this.processedFrames.get() + " frames delivered to encoder feed, " + this.droppedFrames.get() + " dropped by backpressure.");
 
     }
 }
