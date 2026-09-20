@@ -4,6 +4,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 
 import com.andruav.AndruavFacade;
@@ -12,7 +13,7 @@ import com.andruav.event.droneReport_Event.Event_Signalling;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.webrtc.PeerConnectionFactory;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import org.greenrobot.eventbus.EventBus;
 
 /**
@@ -20,7 +21,7 @@ import org.greenrobot.eventbus.EventBus;
  */
 public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase {
 
-
+    private HandlerThread signalingThread;
 
     // sticky = true: the poster (AndruavWSClientBase) uses postSticky() because this signal can
     // arrive before this object even exists yet (its EventBus registration happens at the end of
@@ -46,7 +47,14 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
     {
         killHandler();
 
-        mhandler = new Handler()
+        // Dedicated signaling thread: this object is constructed on the main thread (via
+        // PeerConnectionManager.init() from FPVStreamingService.onStartCommand()), so a bare
+        // new Handler() would bind to the main looper and run all ICE/SDP dispatch on the UI
+        // thread. keep it on its own HandlerThread instead.
+        signalingThread = new HandlerThread("PnSignalingThread");
+        signalingThread.start();
+
+        mhandler = new Handler(signalingThread.getLooper())
         {
             @Override
             public void handleMessage(Message msg) {
@@ -127,10 +135,16 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
 
     private void killHandler()
     {
-        if (mhandler== null) return;
-
-        mhandler.removeCallbacksAndMessages(null);
-        mhandler= null;
+        if (mhandler != null)
+        {
+            mhandler.removeCallbacksAndMessages(null);
+            mhandler = null;
+        }
+        if (signalingThread != null)
+        {
+            signalingThread.quitSafely();
+            signalingThread = null;
+        }
 
     }
 
@@ -143,7 +157,7 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
         this.signalingParams = signalingParams;
         this.mRtcListener = rtcListener;
         this.pcFactory = pcFactory;
-        this.peers = new HashMap<String, PnPeer>();
+        this.peers = new ConcurrentHashMap<String, PnPeer>();
         init();
         initHandler();
     }
