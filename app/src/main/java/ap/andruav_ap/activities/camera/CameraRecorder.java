@@ -187,7 +187,6 @@ public class CameraRecorder extends CameraRecorderBase {
         if ((width == 0) || (height ==0)) return ;
 
         if (mhandler== null) return ;
-        // mhandler.sendEmptyMessage(MSG_CAPTURE_START)  ;
         mRecordAudio = recordAudio;
         mEncrypted = encrypted;
         VIDEO_WIDTH =width;
@@ -195,7 +194,9 @@ public class CameraRecorder extends CameraRecorderBase {
         FRAME_RATE = frameRate;
         mVideoSurface = null; //videoSurface;
         mDefaultVideoEncoderFactory = videoEncoder;
-        handle_StartRecording(VIDEO_WIDTH, VIDEO_HEIGHT, FRAME_RATE,mVideoSurface, mDefaultVideoEncoderFactory);
+        // Run muxer/file/encoder setup on the recorder's own HandlerThread - callers
+        // reach us on the EventBus dispatch thread, which can be the main thread.
+        mhandler.sendEmptyMessage(MSG_CAPTURE_START)  ;
     }
 
     public void startRecording (final boolean recordAudio)
@@ -209,9 +210,7 @@ public class CameraRecorder extends CameraRecorderBase {
 
         if (mhandler== null) return ;
         mhandler.removeCallbacksAndMessages(null);
-        //mhandler.sendEmptyMessage(MSG_CAPTURE_STOP)  ;
-
-        handle_StopRecording();
+        mhandler.sendEmptyMessage(MSG_CAPTURE_STOP)  ;
     }
 
 
@@ -318,7 +317,12 @@ public class CameraRecorder extends CameraRecorderBase {
     public void shutDown()
     {
 
-        this.stopRecording();
+        // Synchronous teardown - super.shutDown() wipes the handler queue and nulls
+        // mhandler, so a posted MSG_CAPTURE_STOP would never run.
+        if (mhandler != null) {
+            mhandler.removeCallbacksAndMessages(null);
+            handle_StopRecording();
+        }
 
         super.shutDown();
 
