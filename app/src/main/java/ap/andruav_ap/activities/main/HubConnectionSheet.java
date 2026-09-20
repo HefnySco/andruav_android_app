@@ -164,6 +164,12 @@ public class HubConnectionSheet extends BottomSheetDialogFragment {
 
         Preference.setAuthServerPort(null, Integer.parseInt(edtServerPort.getText().toString()));
         Preference.setAuthServerURL(null, edtServerIp.getText().toString());
+        if (!cloudServer) {
+            // Keep the local stash in sync with the last saved custom server, so toggling to
+            // cloud and back (here or in HUBCommunication) restores these values, not an older set.
+            Preference.setLocalServerURL(null, edtServerIp.getText().toString());
+            Preference.setLocalServerPort(null, Integer.parseInt(edtServerPort.getText().toString()));
+        }
         Preference.setWebServerUserName(null, edtUsername.getText().toString().toLowerCase());
         Preference.setWebServerGroupName(null, App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.pref_groupname).toLowerCase());
         Preference.setWebServerUserDescription(null, edtDescription.getText().toString());

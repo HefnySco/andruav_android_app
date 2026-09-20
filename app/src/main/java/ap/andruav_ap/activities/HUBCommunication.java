@@ -59,6 +59,7 @@ public class HUBCommunication extends BaseAndruavShasha {
     private Menu mMenu;
     private Handler mhandle;
     protected String text;
+    private boolean mLoadingPrefs = false;
 
 
     ////// EOF  Attributes
@@ -119,6 +120,29 @@ public class HUBCommunication extends BaseAndruavShasha {
         }
     }
 
+    private void stashLocalServer() {
+        Preference.setLocalServerURL(null, mtxtWebServerIP.getText().toString());
+        if (mtxtWebServerPort.getText().length() > 0) {
+            Preference.setLocalServerPort(null, Integer.parseInt(mtxtWebServerPort.getText().toString()));
+        }
+    }
+
+    private void restoreLocalServer() {
+        String localUrl = Preference.getLocalServerURL(null);
+        final String cloudUrl = getString(ap.andruavmiddlelibrary.R.string.pref_auth_URL);
+        if (localUrl.isEmpty() || localUrl.equalsIgnoreCase(cloudUrl)) {
+            // Local stash was never customized (or still holds the cloud default) - fall back to
+            // the saved auth URL, which itself holds the local server when isLocalServer desynced.
+            localUrl = Preference.getAuthServerURL(null);
+        }
+        int localPort = Preference.getLocalServerPort(null);
+        if (localPort == getResources().getInteger(ap.andruavmiddlelibrary.R.integer.pref_auth_Port)) {
+            localPort = Preference.getAuthServerPort(null);
+        }
+        mtxtWebServerIP.setText(localUrl);
+        mtxtWebServerPort.setText(String.valueOf(localPort));
+    }
+
     private void initGUI ()
     {
         mtxtWebServerIP = findViewById(R.id.hubactivity_edtWSIP);
@@ -127,6 +151,13 @@ public class HUBCommunication extends BaseAndruavShasha {
         mcheckAndruavServer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (!mLoadingPrefs) {
+                    if (b) {
+                        stashLocalServer();
+                    } else {
+                        restoreLocalServer();
+                    }
+                }
                 updateUI();
 
 
@@ -355,6 +386,7 @@ public class HUBCommunication extends BaseAndruavShasha {
 
     private void readPreference ()
     {
+        mLoadingPrefs = true;
         mtxtWebServerPort.setText(String.valueOf(Preference.getAuthServerPort(null)));
         mtxtWebServerIP.setText(String.valueOf(Preference.getAuthServerURL(null)));
         mtxtWebUserName.setText(String.valueOf(Preference.getWebServerUserName(null)));
@@ -369,6 +401,7 @@ public class HUBCommunication extends BaseAndruavShasha {
 
         mtxtWebDescription.setText(String.valueOf(Preference.getWebServerUserDescription(null)));
         mcheckAndruavServer.setChecked(!Preference.isLocalServer(null));
+        mLoadingPrefs = false;
 
     }
 
