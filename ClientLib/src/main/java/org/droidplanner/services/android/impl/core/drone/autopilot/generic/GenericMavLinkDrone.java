@@ -22,7 +22,6 @@ import com.MAVLink.enums.MAV_STATE;
 import com.MAVLink.minimal.msg_heartbeat;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
-import com.o3dr.services.android.lib.drone.action.CapabilityActions;
 import com.o3dr.services.android.lib.drone.action.ControlActions;
 import com.o3dr.services.android.lib.drone.action.ExperimentalActions;
 import com.o3dr.services.android.lib.drone.action.StateActions;
@@ -66,8 +65,6 @@ import org.droidplanner.services.android.impl.core.drone.variables.MissionStats;
 import org.droidplanner.services.android.impl.core.drone.variables.State;
 import org.droidplanner.services.android.impl.core.drone.variables.StreamRates;
 import org.droidplanner.services.android.impl.core.drone.variables.Type;
-import org.droidplanner.services.android.impl.core.drone.variables.calibration.AccelCalibration;
-import org.droidplanner.services.android.impl.core.drone.variables.calibration.MagnetometerCalibrationImpl;
 import org.droidplanner.services.android.impl.core.firmware.FirmwareType;
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
 import org.droidplanner.services.android.impl.core.model.AutopilotWarningParser;
@@ -164,19 +161,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     }
 
     @Override
-    public AccelCalibration getCalibrationSetup() {
-        //TODO: complete implementation
-        return null;
-    }
-
-    @Override
     public WaypointManager getWaypointManager() {
-        //TODO: complete implementation
-        return null;
-    }
-
-    @Override
-    public MagnetometerCalibrationImpl getMagnetometerCalibration() {
         //TODO: complete implementation
         return null;
     }
@@ -187,9 +172,6 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         if (parameterManager != null)
             parameterManager.setParameterListener(null);
 
-        MagnetometerCalibrationImpl magnetometer = getMagnetometerCalibration();
-        if (magnetometer != null)
-            magnetometer.setListener(null);
     }
 
     protected HeartBeat initHeartBeat(Handler handler) {
@@ -370,10 +352,6 @@ public class GenericMavLinkDrone implements MavLinkDrone {
                 requestHomeUpdate();
                 return true;
 
-            //**************** CAPABILITY ACTIONS **************//
-            case CapabilityActions.ACTION_CHECK_FEATURE_SUPPORT:
-                return checkFeatureSupport(data, listener);
-
             default:
                 CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
                 return true;
@@ -396,25 +374,6 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         return false;
     }
 
-    private boolean checkFeatureSupport(Bundle data, ICommandListener listener) {
-            String featureId = data.getString(CapabilityActions.EXTRA_FEATURE_ID);
-            if (!TextUtils.isEmpty(featureId)) {
-                if(isFeatureSupported(featureId)){
-                    CommonApiUtils.postSuccessEvent(listener);
-                }else{
-                    CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
-                }
-            }
-            else{
-                CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
-            }
-
-        return true;
-    }
-
-    protected boolean isFeatureSupported(String featureId){
-        return false;
-    }
 
     protected boolean enableManualControl(Bundle data, ICommandListener listener) {
         boolean enable = data.getBoolean(ControlActions.EXTRA_DO_ENABLE);

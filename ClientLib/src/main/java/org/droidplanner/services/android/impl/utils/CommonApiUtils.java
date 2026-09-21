@@ -1,21 +1,14 @@
 package org.droidplanner.services.android.impl.utils;
 
-import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.MAVLink.common.msg_mag_cal_report;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_ekf_status_report;
-import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
 
-import com.MAVLink.enums.MAG_CAL_STATUS;
 import com.MAVLink.enums.MAV_TYPE;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
-import com.o3dr.services.android.lib.drone.calibration.magnetometer.MagnetometerCalibrationProgress;
-import com.o3dr.services.android.lib.drone.calibration.magnetometer.MagnetometerCalibrationResult;
-import com.o3dr.services.android.lib.drone.calibration.magnetometer.MagnetometerCalibrationStatus;
 import com.o3dr.services.android.lib.drone.mission.Mission;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 import com.o3dr.services.android.lib.drone.property.EkfStatus;
@@ -26,8 +19,6 @@ import com.o3dr.services.android.lib.drone.property.State;
 import com.o3dr.services.android.lib.drone.property.Type;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
 import com.o3dr.services.android.lib.drone.property.Vibration;
-import com.o3dr.services.android.lib.gcs.follow.FollowState;
-import com.o3dr.services.android.lib.gcs.follow.FollowType;
 import com.o3dr.services.android.lib.mavlink.MavlinkMessageWrapper;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
 import com.o3dr.services.android.lib.model.ICommandListener;
@@ -39,16 +30,10 @@ import org.droidplanner.services.android.impl.core.drone.autopilot.apm.ArduPilot
 import org.droidplanner.services.android.impl.core.drone.profiles.ParameterManager;
 import org.droidplanner.services.android.impl.core.drone.variables.ApmModes;
 import org.droidplanner.services.android.impl.core.drone.variables.GuidedPoint;
-import org.droidplanner.services.android.impl.core.drone.variables.calibration.AccelCalibration;
-import org.droidplanner.services.android.impl.core.drone.variables.calibration.MagnetometerCalibrationImpl;
-import org.droidplanner.services.android.impl.core.gcs.follow.Follow;
-import org.droidplanner.services.android.impl.core.gcs.follow.FollowAlgorithm;
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
 import org.droidplanner.services.android.impl.core.mission.MissionItemImpl;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -287,100 +272,15 @@ public class CommonApiUtils {
         }
     }
 
-    public static FollowAlgorithm.FollowModes followTypeToMode(MavLinkDrone drone, FollowType followType) {
-        FollowAlgorithm.FollowModes followMode;
-
-        switch (followType) {
-            case ABOVE:
-                followMode = FollowAlgorithm.FollowModes.ABOVE;
-                break;
-
-            case LEAD:
-                followMode = FollowAlgorithm.FollowModes.LEAD;
-                break;
-
-            default:
-            case LEASH:
-                followMode = FollowAlgorithm.FollowModes.LEASH;
-                break;
-
-            case CIRCLE:
-                followMode = FollowAlgorithm.FollowModes.CIRCLE;
-                break;
-
-            case LEFT:
-                followMode = FollowAlgorithm.FollowModes.LEFT;
-                break;
-
-            case RIGHT:
-                followMode = FollowAlgorithm.FollowModes.RIGHT;
-                break;
-
-            case GUIDED_SCAN:
-                followMode = FollowAlgorithm.FollowModes.GUIDED_SCAN;
-                break;
-
-            case LOOK_AT_ME:
-                followMode = FollowAlgorithm.FollowModes.LOOK_AT_ME;
-                break;
-        }
-        return followMode;
-    }
-
-    public static FollowType followModeToType(FollowAlgorithm.FollowModes followMode) {
-        FollowType followType;
-
-        switch (followMode) {
-            default:
-            case LEASH:
-                followType = FollowType.LEASH;
-                break;
-
-            case LEAD:
-                followType = FollowType.LEAD;
-                break;
-
-            case RIGHT:
-                followType = FollowType.RIGHT;
-                break;
-
-            case LEFT:
-                followType = FollowType.LEFT;
-                break;
-
-            case CIRCLE:
-                followType = FollowType.CIRCLE;
-                break;
-
-            case ABOVE:
-                followType = FollowType.ABOVE;
-                break;
-
-            case GUIDED_SCAN:
-                followType = FollowType.GUIDED_SCAN;
-                break;
-
-            case LOOK_AT_ME:
-                followType = FollowType.LOOK_AT_ME;
-                break;
-        }
-
-        return followType;
-    }
-
     public static State getState(MavLinkDrone drone, boolean isConnected, Vibration vibration) {
         if (drone == null)
             return new State();
 
         org.droidplanner.services.android.impl.core.drone.variables.State droneState = drone.getState();
         ApmModes droneMode = droneState.getMode();
-        AccelCalibration accelCalibration = drone.getCalibrationSetup();
-        String calibrationMessage = accelCalibration != null && accelCalibration.isCalibrating()
-                ? accelCalibration.getMessage()
-                : null;
 
         return new State(isConnected, CommonApiUtils.getVehicleMode(droneMode), droneState.isArmed(),
-            droneState.isFlying(), droneState.getErrorId(), drone.getMavlinkVersion(), calibrationMessage,
+            droneState.isFlying(), droneState.getErrorId(), drone.getMavlinkVersion(), null,
             droneState.getFlightStartTime(), generateEkfStatus(droneState.getEkfStatus()),
             isConnected && drone.isConnectionAlive(), vibration);
     }
@@ -474,67 +374,6 @@ public class CommonApiUtils {
         }
 
         drone.getState().changeFlightMode(ApmModes.getMode(newMode.getMode(), mavType), listener);
-    }
-
-    public static FollowState getFollowState(Follow followMe) {
-        if (followMe == null)
-            return new FollowState();
-
-        int state;
-        switch (followMe.getState()) {
-
-            default:
-            case FOLLOW_INVALID_STATE:
-                state = FollowState.STATE_INVALID;
-                break;
-
-            case FOLLOW_DRONE_NOT_ARMED:
-                state = FollowState.STATE_DRONE_NOT_ARMED;
-                break;
-
-            case FOLLOW_DRONE_DISCONNECTED:
-                state = FollowState.STATE_DRONE_DISCONNECTED;
-                break;
-
-            case FOLLOW_START:
-                state = FollowState.STATE_START;
-                break;
-
-            case FOLLOW_RUNNING:
-                state = FollowState.STATE_RUNNING;
-                break;
-
-            case FOLLOW_END:
-                state = FollowState.STATE_END;
-                break;
-        }
-
-        FollowAlgorithm currentAlg = followMe.getFollowAlgorithm();
-        Map<String, Object> modeParams = currentAlg.getParams();
-        Bundle params = new Bundle();
-        for (Map.Entry<String, Object> entry : modeParams.entrySet()) {
-            switch (entry.getKey()) {
-                case FollowType.EXTRA_FOLLOW_ROI_TARGET:
-                    LatLongAlt target = (LatLongAlt) entry.getValue();
-                    if (target != null) {
-                        params.putParcelable(entry.getKey(), target);
-                    }
-                    break;
-
-                case FollowType.EXTRA_FOLLOW_RADIUS:
-                    Double radius = (Double) entry.getValue();
-                    if (radius != null)
-                        params.putDouble(entry.getKey(), radius);
-                    break;
-            }
-        }
-        return new FollowState(state, CommonApiUtils.followModeToType(currentAlg.getType()), params);
-    }
-
-    public static void disableFollowMe(Follow follow) {
-        if(follow != null) {
-            follow.disableFollowMe();
-        }
     }
 
     public static void triggerCamera(MavLinkDrone drone) {
@@ -729,40 +568,6 @@ public class CommonApiUtils {
 
     }
 
-    public static void startMagnetometerCalibration(MavLinkDrone drone, boolean retryOnFailure, boolean saveAutomatically, int
-            startDelay) {
-        if (drone == null)
-            return;
-
-        drone.getMagnetometerCalibration().startCalibration(retryOnFailure, saveAutomatically, startDelay);
-    }
-
-    public static void cancelMagnetometerCalibration(MavLinkDrone drone) {
-        if (drone == null)
-            return;
-
-        drone.getMagnetometerCalibration().cancelCalibration();
-    }
-
-    public static void acceptMagnetometerCalibration(MavLinkDrone drone) {
-        if (drone == null)
-            return;
-
-        drone.getMagnetometerCalibration().acceptCalibration();
-    }
-
-    public static void startIMUCalibration(MavLinkDrone drone, ICommandListener listener) {
-        if (drone != null)
-            drone.getCalibrationSetup().startCalibration(listener);
-    }
-
-    public static void sendIMUCalibrationAck(MavLinkDrone drone, int step) {
-        if (drone == null)
-            return;
-
-        drone.getCalibrationSetup().sendAck(step);
-    }
-
     public static void doGuidedTakeoff(MavLinkDrone drone, double altitude, ICommandListener listener) {
         if (drone == null)
             return;
@@ -858,38 +663,4 @@ public class CommonApiUtils {
         MavLinkDoCmds.gotoWaypoint(drone, waypoint, listener);
     }
 
-    public static MagnetometerCalibrationStatus getMagnetometerCalibrationStatus(MavLinkDrone drone) {
-        MagnetometerCalibrationStatus calStatus = new MagnetometerCalibrationStatus();
-        if (drone != null) {
-            MagnetometerCalibrationImpl magCalImpl = drone.getMagnetometerCalibration();
-            calStatus.setCalibrationCancelled(magCalImpl.isCancelled());
-
-            Collection<MagnetometerCalibrationImpl.Info> calibrationInfo = magCalImpl.getMagCalibrationTracker().values();
-            for (MagnetometerCalibrationImpl.Info info : calibrationInfo) {
-                calStatus.addCalibrationProgress(getMagnetometerCalibrationProgress(info.getCalProgress()));
-                calStatus.addCalibrationResult(getMagnetometerCalibrationResult(info.getCalReport()));
-            }
-        }
-
-        return calStatus;
-    }
-
-    public static MagnetometerCalibrationProgress getMagnetometerCalibrationProgress(msg_mag_cal_progress msgProgress) {
-        if (msgProgress == null)
-            return null;
-
-        return new MagnetometerCalibrationProgress(msgProgress.compass_id, msgProgress.completion_pct,
-                msgProgress.direction_x, msgProgress.direction_y, msgProgress.direction_z);
-    }
-
-    public static MagnetometerCalibrationResult getMagnetometerCalibrationResult(msg_mag_cal_report msgReport) {
-        if (msgReport == null)
-            return null;
-
-        return new MagnetometerCalibrationResult(msgReport.compass_id,
-                msgReport.cal_status == MAG_CAL_STATUS.MAG_CAL_SUCCESS, msgReport.autosaved == 1, msgReport.fitness,
-                msgReport.ofs_x, msgReport.ofs_y, msgReport.ofs_z,
-                msgReport.diag_x, msgReport.diag_y, msgReport.diag_z,
-                msgReport.offdiag_x, msgReport.offdiag_y, msgReport.offdiag_z);
-    }
 }

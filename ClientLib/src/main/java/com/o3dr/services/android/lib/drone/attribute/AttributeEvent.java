@@ -31,32 +31,6 @@ public class AttributeEvent {
     public static final String AUTOPILOT_MESSAGE = PACKAGE_NAME + ".AUTOPILOT_MESSAGE";
 
     /**
-     * Event to signal cancellation of the magnetometer calibration process.
-     */
-    public static final String CALIBRATION_MAG_CANCELLED = PACKAGE_NAME + ".CALIBRATION_MAG_CANCELLED";
-
-    /**
-     * Signals completion of the magnetometer calibration.
-     *
-     * @see {@link AttributeEventExtra#EXTRA_CALIBRATION_MAG_RESULT}
-     */
-    public static final String CALIBRATION_MAG_COMPLETED = PACKAGE_NAME + ".CALIBRATION_MAG_COMPLETED";
-
-    /**
-     * Provides progress updates for the magnetometer calibration.
-     *
-     * @see {@link AttributeEventExtra#EXTRA_CALIBRATION_MAG_PROGRESS}
-     */
-    public static final String CALIBRATION_MAG_PROGRESS = PACKAGE_NAME + ".CALIBRATION_MAG_PROGRESS";
-
-    public static final String CALIBRATION_IMU = PACKAGE_NAME + ".CALIBRATION_IMU";
-    public static final String CALIBRATION_IMU_TIMEOUT = PACKAGE_NAME + ".CALIBRATION_IMU_TIMEOUT";
-
-    public static final String FOLLOW_START = PACKAGE_NAME + ".FOLLOW_START";
-    public static final String FOLLOW_STOP = PACKAGE_NAME + ".FOLLOW_STOP";
-    public static final String FOLLOW_UPDATE = PACKAGE_NAME + ".FOLLOW_UPDATE";
-
-    /**
      * GuidedState attribute events.
      */
     public static final String GUIDED_POINT_UPDATED = PACKAGE_NAME + ".GUIDED_POINT_UPDATED";

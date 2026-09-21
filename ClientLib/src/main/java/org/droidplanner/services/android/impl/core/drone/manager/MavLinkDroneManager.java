@@ -1,24 +1,14 @@
 package org.droidplanner.services.android.impl.core.drone.manager;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Handler;
 
 import com.MAVLink.MAVLinkPacket;
-import com.MAVLink.common.msg_mag_cal_report;
 import com.MAVLink.Messages.MAVLinkMessage;
-import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
 import com.MAVLink.common.msg_command_ack;
-import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.drone.action.GimbalActions;
-import com.o3dr.services.android.lib.drone.attribute.AttributeType;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
-import com.o3dr.services.android.lib.drone.property.DroneAttribute;
-import com.o3dr.services.android.lib.gcs.action.FollowMeActions;
-import com.o3dr.services.android.lib.gcs.follow.FollowLocationSource;
-import com.o3dr.services.android.lib.gcs.follow.FollowType;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
-import com.o3dr.services.android.lib.model.ICommandListener;
 import com.o3dr.services.android.lib.model.action.Action;
 
 import org.droidplanner.services.android.impl.api.DroneApi;
@@ -35,18 +25,10 @@ import org.droidplanner.services.android.impl.core.drone.autopilot.generic.Gener
 import org.droidplanner.services.android.impl.core.drone.autopilot.px4.Px4Native;
 import org.droidplanner.services.android.impl.core.drone.profiles.ParameterManager;
 import org.droidplanner.services.android.impl.core.drone.variables.StreamRates;
-import org.droidplanner.services.android.impl.core.drone.variables.calibration.MagnetometerCalibrationImpl;
 import org.droidplanner.services.android.impl.core.firmware.FirmwareType;
 import org.droidplanner.services.android.impl.core.gcs.GCSHeartbeat;
-import org.droidplanner.services.android.impl.core.gcs.follow.Follow;
-import org.droidplanner.services.android.impl.core.gcs.follow.FollowAlgorithm;
-import org.droidplanner.services.android.impl.core.gcs.location.FusedLocation;
 import org.droidplanner.services.android.impl.utils.AndroidApWarningParser;
-import org.droidplanner.services.android.impl.utils.CommonApiUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import timber.log.Timber;
@@ -54,11 +36,9 @@ import timber.log.Timber;
 /**
  * Created by Fredia Huya-Kouadio on 12/17/15.
  */
-public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacket> implements MagnetometerCalibrationImpl.OnMagnetometerCalibrationListener {
+public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacket> {
 
     private static final int DEFAULT_STREAM_RATE = 2; //Hz
-
-    private Follow followMe;
 
     private final MAVLinkClient mavClient;
     private final MavLinkMsgHandler mavLinkMsgHandler;
@@ -120,8 +100,6 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
                 break;
         }
 
-        this.followMe = new Follow(this, handler, new FusedLocation(context, handler));
-
         StreamRates streamRates = drone.getStreamRates();
         if (streamRates != null) {
             streamRates.setRates(new StreamRates.Rates(droneStreamRate.get()));
@@ -135,17 +113,6 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
             parameterManager.setParameterListener(this);
         }
 
-        MagnetometerCalibrationImpl magnetometer = drone.getMagnetometerCalibration();
-        if (magnetometer != null) {
-            magnetometer.setListener(this);
-        }
-    }
-
-    @Override
-    public void destroy() {
-        super.destroy();
-        if (followMe != null && followMe.isEnabled())
-            followMe.disableFollowMe();
     }
 
     @Override
@@ -254,121 +221,4 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
         }
     }
 
-    @Override
-    public DroneAttribute getAttribute(DroneApi.ClientInfo clientInfo, String attributeType) {
-        switch (attributeType) {
-            case AttributeType.FOLLOW_STATE:
-                return CommonApiUtils.getFollowState(followMe);
-
-            default:
-                return super.getAttribute(clientInfo, attributeType);
-        }
-    }
-
-    @Override
-    protected boolean executeAsyncAction(Action action, ICommandListener listener) {
-        String type = action.getType();
-        Bundle data = action.getData();
-
-        Timber.d("executeAsyncAction(): action=%s", type);
-
-        switch (type) {
-            //FOLLOW-ME ACTIONS
-            case FollowMeActions.ACTION_ENABLE_FOLLOW_ME:
-                data.setClassLoader(FollowType.class.getClassLoader());
-
-                FollowLocationSource locationSource = data.getParcelable(FollowMeActions.EXTRA_LOCATION_SOURCE);
-
-                // Default to internal GPS locations
-                if(locationSource == null) {
-                    locationSource = FollowLocationSource.INTERNAL;
-                }
-
-                FollowType followType = data.getParcelable(FollowMeActions.EXTRA_FOLLOW_TYPE);
-                enableFollowMe(followType, locationSource, listener);
-                return true;
-
-            case FollowMeActions.ACTION_UPDATE_FOLLOW_PARAMS:
-                if (followMe != null) {
-                    data.setClassLoader(LatLong.class.getClassLoader());
-
-                    FollowAlgorithm followAlgorithm = followMe.getFollowAlgorithm();
-                    if (followAlgorithm != null) {
-                        Map<String, Object> paramsMap = new HashMap<>();
-                        Set<String> dataKeys = data.keySet();
-
-                        for (String key : dataKeys) {
-                            paramsMap.put(key, data.get(key));
-                        }
-
-                        followAlgorithm.updateAlgorithmParams(paramsMap);
-                    }
-                }
-                return true;
-
-            case FollowMeActions.ACTION_DISABLE_FOLLOW_ME:
-                CommonApiUtils.disableFollowMe(followMe);
-                return true;
-
-            case FollowMeActions.ACTION_NEW_EXTERNAL_LOCATION:
-                data.setClassLoader(android.location.Location.class.getClassLoader());
-                if(followMe != null && data != null) {
-                    android.location.Location loc = data.getParcelable(FollowMeActions.EXTRA_LOCATION);
-                    if(loc != null) {
-                        Timber.i("onNewLocation(%s)", loc);
-                        followMe.onFollowNewLocation(loc);
-                    }
-                }
-                return true;
-
-            default:
-                return super.executeAsyncAction(action, listener);
-        }
-    }
-
-    private void enableFollowMe(FollowType followType, FollowLocationSource source, ICommandListener listener) {
-        Timber.d("enableFollowMe(): followType=%s source=%s", followType, source);
-
-        FollowAlgorithm.FollowModes selectedMode = CommonApiUtils.followTypeToMode(drone, followType);
-
-        if (selectedMode != null) {
-            if (followMe == null) {
-                Timber.d("enableFollowMe(): followMe is null");
-                return;
-            }
-
-            Timber.d("CURRENT: followMe.enabled=%s followMe.state=%s source=%s",
-                    followMe.isEnabled(), followMe.getState(), source);
-
-            followMe.enableFollowMe(source);
-
-            FollowAlgorithm currentAlg = followMe.getFollowAlgorithm();
-            if (currentAlg.getType() != selectedMode) {
-                FollowAlgorithm algo = selectedMode.getAlgorithmType(this, handler);
-                Timber.d("Setting followAlgorithm to %s", algo);
-                followMe.setAlgorithm(algo);
-                CommonApiUtils.postSuccessEvent(listener);
-            }
-
-            Timber.i("AFTER: followMe.state=%s type=%s", followMe.getState(), followType);
-        }
-    }
-
-    @Override
-    public void onCalibrationCancelled() {
-        if (connectedApp!=null)
-            connectedApp.onCalibrationCancelled();
-    }
-
-    @Override
-    public void onCalibrationProgress(msg_mag_cal_progress progress) {
-        if (connectedApp!=null)
-            connectedApp.onCalibrationProgress(progress);
-    }
-
-    @Override
-    public void onCalibrationCompleted(msg_mag_cal_report report) {
-        if (connectedApp!=null)
-            connectedApp.onCalibrationCompleted(report);
-    }
 }

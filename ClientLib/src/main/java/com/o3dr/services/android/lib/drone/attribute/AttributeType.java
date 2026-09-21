@@ -29,12 +29,6 @@ public class AttributeType {
     public static final String BATTERY = PACKAGE_NAME + ".BATTERY";
 
     /**
-     * Used to acces the vehicle's follow state.
-     * @see {@link com.o3dr.services.android.lib.gcs.follow.FollowState}
-     */
-    public static final String FOLLOW_STATE = PACKAGE_NAME + ".FOLLOW_STATE";
-
-    /**
      * Used to access the vehicle's guided state.
      * @see {@link com.o3dr.services.android.lib.drone.property.GuidedState}
      */
@@ -88,11 +82,5 @@ public class AttributeType {
      * @see {@link com.o3dr.services.android.lib.drone.property.Type}
      */
     public static final String TYPE = PACKAGE_NAME + ".TYPE";
-
-    /**
-     * Used to retrieve the status of the currently or last running magnetometer calibration.
-     * @see {@link com.o3dr.services.android.lib.drone.calibration.magnetometer.MagnetometerCalibrationStatus}
-     */
-    public static final String MAGNETOMETER_CALIBRATION_STATUS = PACKAGE_NAME + ".MAGNETOMETER_CALIBRATION_STATUS";
 
 }

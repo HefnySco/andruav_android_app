@@ -101,16 +101,6 @@ public class DroneInterfaces {
         /**
          *
          */
-        CALIBRATION_IMU,
-
-        /**
-         *
-         */
-        CALIBRATION_TIMEOUT,
-
-        /**
-         *
-         */
         HEARTBEAT_TIMEOUT,
 
         /**
@@ -171,11 +161,6 @@ public class DroneInterfaces {
          * Warn that the drone has no gps signal
          */
         WARNING_NO_GPS,
-
-        /**
-         * New magnetometer data has been received
-         */
-        MAGNETOMETER,
 
         /**
          * The ekf status was updated.

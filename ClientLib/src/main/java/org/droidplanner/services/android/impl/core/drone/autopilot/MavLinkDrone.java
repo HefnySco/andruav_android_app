@@ -9,8 +9,6 @@ import org.droidplanner.services.android.impl.core.drone.variables.GuidedPoint;
 import org.droidplanner.services.android.impl.core.drone.variables.MissionStats;
 import org.droidplanner.services.android.impl.core.drone.variables.State;
 import org.droidplanner.services.android.impl.core.drone.variables.StreamRates;
-import org.droidplanner.services.android.impl.core.drone.variables.calibration.AccelCalibration;
-import org.droidplanner.services.android.impl.core.drone.variables.calibration.MagnetometerCalibrationImpl;
 import org.droidplanner.services.android.impl.core.firmware.FirmwareType;
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
 
@@ -49,10 +47,6 @@ public interface MavLinkDrone extends Drone {
     MissionStats getMissionStats();
 
     GuidedPoint getGuidedPoint();
-
-    AccelCalibration getCalibrationSetup();
-
-    MagnetometerCalibrationImpl getMagnetometerCalibration();
 
     String getFirmwareVersion();
 

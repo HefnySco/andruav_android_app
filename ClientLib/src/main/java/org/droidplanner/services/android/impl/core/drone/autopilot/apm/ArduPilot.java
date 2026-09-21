@@ -6,15 +6,12 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.MAVLink.common.msg_mag_cal_report;
 import com.MAVLink.Messages.MAVLinkMessage;
-import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
 
 import com.MAVLink.ardupilotmega.msg_mount_configure;
 import com.MAVLink.ardupilotmega.msg_mount_status;
 import com.MAVLink.ardupilotmega.msg_radio;
 import com.MAVLink.common.msg_named_value_int;
-import com.MAVLink.common.msg_raw_imu;
 import com.MAVLink.common.msg_statustext;
 import com.MAVLink.common.msg_sys_status;
 import com.MAVLink.common.msg_vfr_hud;
@@ -28,14 +25,9 @@ import org.droidplanner.services.android.impl.core.MAVLink.WaypointManager;
 import org.droidplanner.services.android.impl.core.MAVLink.command.doCmd.MavLinkDoCmds;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces;
 import org.droidplanner.services.android.impl.core.drone.LogMessageListener;
-import org.droidplanner.services.android.impl.core.drone.autopilot.apm.variables.APMHeartBeat;
 import org.droidplanner.services.android.impl.core.drone.autopilot.generic.GenericMavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.variables.ApmModes;
 import org.droidplanner.services.android.impl.core.drone.variables.GuidedPoint;
-import org.droidplanner.services.android.impl.core.drone.variables.HeartBeat;
-import org.droidplanner.services.android.impl.core.drone.variables.Magnetometer;
-import org.droidplanner.services.android.impl.core.drone.variables.calibration.AccelCalibration;
-import org.droidplanner.services.android.impl.core.drone.variables.calibration.MagnetometerCalibrationImpl;
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
 import org.droidplanner.services.android.impl.core.model.AutopilotWarningParser;
 import com.o3dr.services.android.lib.coordinate.LatLong;
@@ -53,7 +45,6 @@ import com.o3dr.services.android.lib.drone.mission.action.MissionActions;
 import com.o3dr.services.android.lib.drone.property.DroneAttribute;
 import com.o3dr.services.android.lib.drone.property.Parameter;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
-import com.o3dr.services.android.lib.gcs.action.CalibrationActions;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
 import com.o3dr.services.android.lib.model.ICommandListener;
 import com.o3dr.services.android.lib.model.action.Action;
@@ -76,11 +67,7 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
 
     private final MissionImpl missionImpl;
     private final GuidedPoint guidedPoint;
-    private final AccelCalibration accelCalibrationSetup;
     private final WaypointManager waypointManager;
-    private final Magnetometer mag;
-
-    private final MagnetometerCalibrationImpl magCalibration;
 
     protected Version firmwareVersionNumber = Version.forIntegers(0, 0, 0);
     
@@ -94,14 +81,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
 
         this.missionImpl = new MissionImpl(this);
         this.guidedPoint = new GuidedPoint(this, handler);
-        this.accelCalibrationSetup = new AccelCalibration(this, handler);
-        this.magCalibration = new MagnetometerCalibrationImpl(this);
-        this.mag = new Magnetometer(this);
-    }
-
-    @Override
-    protected HeartBeat initHeartBeat(Handler handler) {
-        return new APMHeartBeat(this, handler);
     }
 
     protected void setAltitudeGroundAndAirSpeeds(double altitude, double groundSpeed, double airSpeed, double climb) {
@@ -135,16 +114,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
     }
 
     @Override
-    public AccelCalibration getCalibrationSetup() {
-        return accelCalibrationSetup;
-    }
-
-    @Override
-    public MagnetometerCalibrationImpl getMagnetometerCalibration() {
-        return magCalibration;
-    }
-
-    @Override
     public DroneAttribute getAttribute(String attributeType) {
         if (!TextUtils.isEmpty(attributeType)) {
             switch (attributeType) {
@@ -155,8 +124,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
                 case AttributeType.GUIDED_STATE:
                     return CommonApiUtils.getGuidedState(this);
 
-                case AttributeType.MAGNETOMETER_CALIBRATION_STATUS:
-                    return CommonApiUtils.getMagnetometerCalibrationStatus(this);
             }
         }
 
@@ -308,28 +275,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
                 }
                 return true;
 
-            //CALIBRATION ACTIONS
-
-            case CalibrationActions.ACTION_SEND_IMU_CALIBRATION_ACK:
-                int imuAck = data.getInt(CalibrationActions.EXTRA_IMU_STEP);
-                CommonApiUtils.sendIMUCalibrationAck(this, imuAck);
-                return true;
-
-            case CalibrationActions.ACTION_START_MAGNETOMETER_CALIBRATION:
-                boolean retryOnFailure = data.getBoolean(CalibrationActions.EXTRA_RETRY_ON_FAILURE, false);
-                boolean saveAutomatically = data.getBoolean(CalibrationActions.EXTRA_SAVE_AUTOMATICALLY, true);
-                int startDelay = data.getInt(CalibrationActions.EXTRA_START_DELAY, 0);
-                CommonApiUtils.startMagnetometerCalibration(this, retryOnFailure, saveAutomatically, startDelay);
-                return true;
-
-            case CalibrationActions.ACTION_CANCEL_MAGNETOMETER_CALIBRATION:
-                CommonApiUtils.cancelMagnetometerCalibration(this);
-                return true;
-
-            case CalibrationActions.ACTION_ACCEPT_MAGNETOMETER_CALIBRATION:
-                CommonApiUtils.acceptMagnetometerCalibration(this);
-                return true;
-
             //************ Gimbal ACTIONS *************//
             case GimbalActions.ACTION_SET_GIMBAL_ORIENTATION:
                 float pitch = data.getFloat(GimbalActions.GIMBAL_PITCH);
@@ -418,7 +363,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
         if (!getParameterManager().processMessage(message)) {
 
             getWaypointManager().processMessage(message);
-            getCalibrationSetup().processMessage(message);
 
             switch (message.msgid) {
 
@@ -437,11 +381,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
                     processVfrHud((msg_vfr_hud) message);
                     break;
 
-                case msg_raw_imu.MAVLINK_MSG_ID_RAW_IMU:
-                    msg_raw_imu msg_imu = (msg_raw_imu) message;
-                    mag.newData(msg_imu);
-                    break;
-
                 case msg_radio.MAVLINK_MSG_ID_RADIO:
                     msg_radio m_radio = (msg_radio) message;
                     processSignalUpdate(m_radio.rxerrors, m_radio.fixed, m_radio.rssi,
@@ -454,12 +393,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
 
                 case msg_named_value_int.MAVLINK_MSG_ID_NAMED_VALUE_INT:
                     processNamedValueInt((msg_named_value_int) message);
-                    break;
-
-                //*************** Magnetometer calibration messages handling *************//
-                case msg_mag_cal_progress.MAVLINK_MSG_ID_MAG_CAL_PROGRESS:
-                case msg_mag_cal_report.MAVLINK_MSG_ID_MAG_CAL_REPORT:
-                    getMagnetometerCalibration().processCalibrationMessage(message);
                     break;
 
                 default:

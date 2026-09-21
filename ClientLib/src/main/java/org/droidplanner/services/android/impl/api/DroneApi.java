@@ -7,9 +7,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.MAVLink.common.msg_mag_cal_report;
 import com.MAVLink.Messages.MAVLinkMessage;
-import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.action.ConnectionActions;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
@@ -39,8 +37,6 @@ import org.droidplanner.services.android.impl.core.drone.DroneInterfaces;
 import org.droidplanner.services.android.impl.core.drone.DroneManager;
 import org.droidplanner.services.android.impl.core.drone.autopilot.Drone;
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
-import org.droidplanner.services.android.impl.core.drone.variables.calibration.AccelCalibration;
-import org.droidplanner.services.android.impl.core.drone.variables.calibration.MagnetometerCalibrationImpl;
 import org.droidplanner.services.android.impl.exception.ConnectionException;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
 
@@ -57,7 +53,7 @@ import timber.log.Timber;
  * Drone command/attribute API, called directly (in-process) by {@link com.o3dr.android.client.Drone}.
  */
 public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInterfaces.AttributeEventListener,
-    DroneInterfaces.OnParameterManagerListener, MagnetometerCalibrationImpl.OnMagnetometerCalibrationListener {
+    DroneInterfaces.OnParameterManagerListener {
 
     //The Reset ROI mission item was introduced in version 2.6.8. Any client library older than this do not support it.
     private final static int RESET_ROI_LIB_VERSION = 206080;
@@ -463,35 +459,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
                 droneEvent = AttributeEvent.HOME_UPDATED;
                 break;
 
-            case CALIBRATION_IMU:
-                if (drone instanceof MavLinkDrone) {
-                    String calIMUMessage = ((MavLinkDrone) drone).getCalibrationSetup().getMessage();
-                    extrasBundle.putString(AttributeEventExtra.EXTRA_CALIBRATION_IMU_MESSAGE, calIMUMessage);
-                    droneEvent = AttributeEvent.CALIBRATION_IMU;
-                }
-                break;
-
-            case CALIBRATION_TIMEOUT:
-                if (drone instanceof MavLinkDrone) {
-                /*
-                 * here we will check if we are in calibration mode but if at
-                 * the same time 'msg' is empty - then it is actually not doing
-                 * calibration what we should do is to reset the calibration
-                 * flag and re-trigger the HEARTBEAT_TIMEOUT this however should
-                 * not be happening
-                 */
-                    AccelCalibration accelCalibration = ((MavLinkDrone) drone).getCalibrationSetup();
-                    String message = accelCalibration.getMessage();
-                    if (accelCalibration.isCalibrating() && TextUtils.isEmpty(message)) {
-                        accelCalibration.cancelCalibration();
-                        droneEvent = AttributeEvent.HEARTBEAT_TIMEOUT;
-                    } else {
-                        extrasBundle.putString(AttributeEventExtra.EXTRA_CALIBRATION_IMU_MESSAGE, message);
-                        droneEvent = AttributeEvent.CALIBRATION_IMU_TIMEOUT;
-                    }
-                }
-                break;
-
             case HEARTBEAT_TIMEOUT:
                 droneEvent = AttributeEvent.HEARTBEAT_TIMEOUT;
                 break;
@@ -554,8 +521,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
                 droneEvent = AttributeEvent.WARNING_NO_GPS;
                 break;
 
-            case MAGNETOMETER:
-                break;
 
 
             case EKF_STATUS_UPDATE:
@@ -617,29 +582,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
         extras.putParcelable(LinkEventExtra.EXTRA_CONNECTION_STATUS, connectionStatus);
         notifyAttributeUpdate(LinkEvent.LINK_STATE_UPDATED, extras);
 
-    }
-
-    @Override
-    public void onCalibrationCancelled() {
-        notifyAttributeUpdate(AttributeEvent.CALIBRATION_MAG_CANCELLED, null);
-    }
-
-    @Override
-    public void onCalibrationProgress(msg_mag_cal_progress progress) {
-        Bundle progressBundle = new Bundle(1);
-        progressBundle.putParcelable(AttributeEventExtra.EXTRA_CALIBRATION_MAG_PROGRESS,
-            CommonApiUtils.getMagnetometerCalibrationProgress(progress));
-
-        notifyAttributeUpdate(AttributeEvent.CALIBRATION_MAG_PROGRESS, progressBundle);
-    }
-
-    @Override
-    public void onCalibrationCompleted(msg_mag_cal_report report) {
-        Bundle reportBundle = new Bundle(1);
-        reportBundle.putParcelable(AttributeEventExtra.EXTRA_CALIBRATION_MAG_RESULT,
-            CommonApiUtils.getMagnetometerCalibrationResult(report));
-
-        notifyAttributeUpdate(AttributeEvent.CALIBRATION_MAG_COMPLETED, reportBundle);
     }
 
     public static class ClientInfo {

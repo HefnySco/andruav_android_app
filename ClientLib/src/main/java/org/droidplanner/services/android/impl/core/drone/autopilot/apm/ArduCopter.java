@@ -6,7 +6,6 @@ import android.os.Handler;
 
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.github.zafarkhaja.semver.Version;
-import com.o3dr.android.client.apis.CapabilityApi;
 import com.o3dr.services.android.lib.drone.action.ControlActions;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.drone.property.Parameter;
@@ -31,7 +30,6 @@ public class ArduCopter extends ArduPilot {
     private static final Version ARDU_COPTER_V3_4 = Version.forIntegers(3,4,0);
 
     private static final Version BRAKE_FEATURE_FIRMWARE_VERSION = ARDU_COPTER_V3_3;
-    private static final Version COMPASS_CALIBRATION_MIN_VERSION = ARDU_COPTER_V3_4;
 
     private ICommandListener manualControlState = null;
 
@@ -132,21 +130,6 @@ public class ArduCopter extends ArduPilot {
         }
 
         super.notifyDroneEvent(event);
-    }
-
-    @Override
-    protected boolean isFeatureSupported(String featureId){
-        switch(featureId){
-
-            case CapabilityApi.FeatureIds.KILL_SWITCH:
-                return CommonApiUtils.isKillSwitchSupported(this);
-
-            case CapabilityApi.FeatureIds.COMPASS_CALIBRATION:
-                return getFirmwareVersionNumber().greaterThanOrEqualTo(COMPASS_CALIBRATION_MIN_VERSION);
-
-            default:
-                return super.isFeatureSupported(featureId);
-        }
     }
 
     @Override

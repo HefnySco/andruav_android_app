@@ -129,10 +129,6 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyC4zUgr3pzCZgfw7tT0fXygT4-AXjtA3CU" />
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
         <activity
             android:name="ap.andruav_ap.MainActivityBuilder"
             android:launchMode="singleTask"

@@ -860,11 +860,6 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             }
             break;
 
-            case AttributeEvent.FOLLOW_START:
-            case AttributeEvent.FOLLOW_STOP:
-            case AttributeEvent.FOLLOW_UPDATE:
-                break;
-
             case AttributeEvent.AUTOPILOT_MESSAGE:
             case AttributeEvent.AUTOPILOT_ERROR:
                 break;
