@@ -75,11 +75,8 @@ public abstract class FollowAlgorithm {
         LEFT("Left"),
         CIRCLE("Orbit"),
         ABOVE("Above"),
-        SPLINE_LEASH("Vector Leash"),
-        SPLINE_ABOVE("Vector Above"),
         GUIDED_SCAN("Guided Scan"),
-        LOOK_AT_ME("Look At Me"),
-        SOLO_SHOT("Solo Follow Shot");
+        LOOK_AT_ME("Look At Me");
 
         private final String name;
 
@@ -111,10 +108,6 @@ public abstract class FollowAlgorithm {
                     return new FollowCircle(droneMgr, handler, 15.0, 10.0);
                 case ABOVE:
                     return new FollowAbove(droneMgr, handler);
-                case SPLINE_LEASH:
-                    return new FollowSplineLeash(droneMgr, handler, 8.0);
-                case SPLINE_ABOVE:
-                    return new FollowSplineAbove(droneMgr, handler);
                 case GUIDED_SCAN:
                     return new FollowGuidedScan(droneMgr, handler);
                 case LOOK_AT_ME:

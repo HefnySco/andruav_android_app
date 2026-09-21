@@ -8,7 +8,6 @@ import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 
 import org.droidplanner.services.android.impl.core.MAVLink.connection.UdpConnection;
 import org.droidplanner.services.android.impl.core.model.Logger;
-import org.droidplanner.services.android.impl.utils.connection.WifiConnectionHandler;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -28,8 +27,8 @@ public class AndroidUdpConnection extends AndroidIpConnection {
 
     private ScheduledExecutorService pingRunner;
 
-    public AndroidUdpConnection(Context context, int udpServerPort, WifiConnectionHandler wifiHandler) {
-        super(context, wifiHandler);
+    public AndroidUdpConnection(Context context, int udpServerPort) {
+        super(context);
         this.serverPort = udpServerPort;
 
         mConnectionImpl = new UdpConnection(context) {
@@ -53,10 +52,6 @@ public class AndroidUdpConnection extends AndroidIpConnection {
                 AndroidUdpConnection.this.onConnectionStatus(connectionStatus);
             }
         };
-    }
-
-    public AndroidUdpConnection(Context context, int udpServerPort) {
-        this(context, udpServerPort, null);
     }
 
     public void addPingTarget(final InetAddress address, final int port, final long period, final byte[] payload) {

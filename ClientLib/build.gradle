@@ -1,9 +1,9 @@
 apply plugin: 'com.android.library'
 
 ext {
-    VERSION_MAJOR = 3
+    VERSION_MAJOR = 4
     VERSION_MINOR = 0
-    VERSION_PATCH = 2
+    VERSION_PATCH = 0
     VERSION_SUFFIX = "release"
 
     PUBLISH_ARTIFACT_ID = 'dronekit-android'
@@ -35,7 +35,6 @@ android {
 
         //Build config fields
         buildConfigField "boolean", "SITL_DEBUG", "false"
-        buildConfigField "String", "SOLO_LINK_IP", getSoloLinkIp()
         buildConfigField "boolean", "WRITE_LOG_FILE", "false"
         buildConfigField "int", "LOG_FILE_LEVEL", "$logLevelDebug"
         buildConfigField "int", "VERSION_CODE", "$versionCode"
@@ -77,7 +76,6 @@ android {
         }
 
         sitl {
-            buildConfigField "String", "SOLO_LINK_IP", getLocalIp()
             buildConfigField "boolean", "SITL_DEBUG", "true"
         }
 
@@ -104,18 +102,6 @@ dependencies {
     androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation 'org.robolectric:robolectric:3.0'
     implementation 'com.github.mik3y:usb-serial-for-android:3.8.1'
-}
-
-def getSoloLinkIp() {
-    return '"10.1.1.10"'
-}
-
-def getLocalIp() {
-    try {
-        return '"' + InetAddress.getLocalHost().getCanonicalHostName() + '"'
-    } catch(Exception e) {
-        return '""'
-    }
 }
 
 evaluationDependsOn ':Mavlink'

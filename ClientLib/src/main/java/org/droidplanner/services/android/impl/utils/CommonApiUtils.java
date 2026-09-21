@@ -2,7 +2,6 @@ package org.droidplanner.services.android.impl.utils;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Surface;
 
 import com.MAVLink.common.msg_mag_cal_report;
 import com.MAVLink.Messages.MAVLinkMessage;
@@ -46,14 +45,12 @@ import org.droidplanner.services.android.impl.core.MAVLink.command.doCmd.MavLink
 import org.droidplanner.services.android.impl.core.drone.autopilot.Drone;
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.ArduPilot;
-import org.droidplanner.services.android.impl.core.drone.autopilot.generic.GenericMavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.profiles.ParameterManager;
 import org.droidplanner.services.android.impl.core.drone.variables.ApmModes;
 import org.droidplanner.services.android.impl.core.drone.variables.Camera;
 import org.droidplanner.services.android.impl.core.drone.variables.GuidedPoint;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.AccelCalibration;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.MagnetometerCalibrationImpl;
-import org.droidplanner.services.android.impl.core.firmware.FirmwareType;
 import org.droidplanner.services.android.impl.core.gcs.follow.Follow;
 import org.droidplanner.services.android.impl.core.gcs.follow.FollowAlgorithm;
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
@@ -316,9 +313,7 @@ public class CommonApiUtils {
 
         switch (followType) {
             case ABOVE:
-                followMode = (drone.getFirmwareType() == FirmwareType.ARDU_SOLO)
-                        ? FollowAlgorithm.FollowModes.SPLINE_ABOVE
-                        : FollowAlgorithm.FollowModes.ABOVE;
+                followMode = FollowAlgorithm.FollowModes.ABOVE;
                 break;
 
             case LEAD:
@@ -327,9 +322,7 @@ public class CommonApiUtils {
 
             default:
             case LEASH:
-                followMode = (drone.getFirmwareType() == FirmwareType.ARDU_SOLO)
-                        ? FollowAlgorithm.FollowModes.SPLINE_LEASH
-                        : FollowAlgorithm.FollowModes.LEASH;
+                followMode = FollowAlgorithm.FollowModes.LEASH;
                 break;
 
             case CIRCLE:
@@ -351,10 +344,6 @@ public class CommonApiUtils {
             case LOOK_AT_ME:
                 followMode = FollowAlgorithm.FollowModes.LOOK_AT_ME;
                 break;
-
-            case SOLO_SHOT:
-                followMode = FollowAlgorithm.FollowModes.SOLO_SHOT;
-                break;
         }
         return followMode;
     }
@@ -365,7 +354,6 @@ public class CommonApiUtils {
         switch (followMode) {
             default:
             case LEASH:
-            case SPLINE_LEASH:
                 followType = FollowType.LEASH;
                 break;
 
@@ -386,7 +374,6 @@ public class CommonApiUtils {
                 break;
 
             case ABOVE:
-            case SPLINE_ABOVE:
                 followType = FollowType.ABOVE;
                 break;
 
@@ -396,10 +383,6 @@ public class CommonApiUtils {
 
             case LOOK_AT_ME:
                 followType = FollowType.LOOK_AT_ME;
-                break;
-
-            case SOLO_SHOT:
-                followType = FollowType.SOLO_SHOT;
                 break;
         }
 
@@ -797,8 +780,7 @@ public class CommonApiUtils {
             return false;
 
         return !(!firmwareVersion.startsWith("APM:Copter V3.3")
-                && !firmwareVersion.startsWith("APM:Copter V3.4")
-                && !firmwareVersion.startsWith("Solo"));
+                && !firmwareVersion.startsWith("APM:Copter V3.4"));
 
     }
 
@@ -850,22 +832,6 @@ public class CommonApiUtils {
         MAVLinkMessage message = messageWrapper.getMavLinkMessage();
         if (message == null)
             return;
-
-        //message.compid = drone.getCompid();
-        //message.sysid = drone.getSysid();
-
-        //Set the target system and target component for MAVLink messages that support those
-        //attributes.
-//        try {
-//            Class<?> tempMessage = message.getClass();
-//            Field target_system = tempMessage.getDeclaredField("target_system");
-//            Field target_component = tempMessage.getDeclaredField("target_component");
-//
-//            target_system.setByte(message, (byte) message.sysid);
-//            target_component.setByte(message, (byte) message.compid);
-//        } catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException | ExceptionInInitializerError e) {
-//            Timber.e(e, e.getMessage());
-//        }
 
         drone.getMavClient().sendMessage(message, null);
     }
@@ -1036,49 +1002,5 @@ public class CommonApiUtils {
                 msgReport.ofs_x, msgReport.ofs_y, msgReport.ofs_z,
                 msgReport.diag_x, msgReport.diag_y, msgReport.diag_z,
                 msgReport.offdiag_x, msgReport.offdiag_y, msgReport.offdiag_z);
-    }
-
-    public static void startVideoStream(Drone drone, Bundle videoProps, String videoTag,
-                                        Surface videoSurface, ICommandListener listener) {
-        if (!(drone instanceof GenericMavLinkDrone)) {
-            postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
-            return;
-        }
-
-        GenericMavLinkDrone mavLinkDrone = (GenericMavLinkDrone) drone;
-        mavLinkDrone.startVideoStream(videoProps, videoTag, videoSurface, listener);
-    }
-
-    public static void stopVideoStream(Drone drone, String videoTag,
-                                       ICommandListener listener) {
-        if (!(drone instanceof GenericMavLinkDrone)) {
-            postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
-            return;
-        }
-
-        GenericMavLinkDrone mavLinkDrone = (GenericMavLinkDrone) drone;
-        mavLinkDrone.stopVideoStream(listener);
-    }
-
-    public static void startVideoStreamForObserver(Drone drone, String videoTag,
-                                        ICommandListener listener) {
-        if (!(drone instanceof GenericMavLinkDrone)) {
-            postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
-            return;
-        }
-
-        GenericMavLinkDrone mavLinkDrone = (GenericMavLinkDrone) drone;
-        mavLinkDrone.startVideoStreamForObserver(videoTag, listener);
-    }
-
-    public static void stopVideoStreamForObserver(Drone drone, String videoTag,
-                                       ICommandListener listener) {
-        if (!(drone instanceof GenericMavLinkDrone)) {
-            postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
-            return;
-        }
-
-        GenericMavLinkDrone mavLinkDrone = (GenericMavLinkDrone) drone;
-        mavLinkDrone.stopVideoStreamForObserver(listener);
     }
 }

@@ -33,7 +33,6 @@ import com.o3dr.services.android.lib.gcs.follow.FollowState;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 import com.o3dr.services.android.lib.gcs.link.LinkEvent;
 import com.o3dr.services.android.lib.gcs.link.LinkEventExtra;
-import com.o3dr.services.android.lib.gcs.returnToMe.ReturnToMeState;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
 import com.o3dr.services.android.lib.model.IObserver;
 import com.o3dr.services.android.lib.model.action.Action;
@@ -338,10 +337,6 @@ public class Drone {
             case AttributeType.MAGNETOMETER_CALIBRATION_STATUS:
                 return (T) new MagnetometerCalibrationStatus();
 
-            case AttributeType.RETURN_TO_ME_STATE:
-                return (T) new ReturnToMeState();
-
-            case AttributeType.CAMERA:
             default:
                 return null;
         }

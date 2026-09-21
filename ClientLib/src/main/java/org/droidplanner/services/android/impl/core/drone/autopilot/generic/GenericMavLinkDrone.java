@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.view.Surface;
 
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_ekf_status_report;
@@ -273,20 +272,6 @@ public class GenericMavLinkDrone implements MavLinkDrone {
     public void removeDroneListener(DroneInterfaces.OnDroneListener listener) {
         events.removeDroneListener(listener);
     }
-
-    public void startVideoStream(Bundle videoProps, String newVideoTag, Surface videoSurface,
-                                 ICommandListener listener) {
-    }
-
-    public void stopVideoStream(ICommandListener listener) {
-    }
-
-    public void startVideoStreamForObserver(String newVideoTag, ICommandListener listener) {
-    }
-
-    public void stopVideoStreamForObserver(ICommandListener listener) {
-    }
-
 
     protected void notifyAttributeListener(String attributeEvent) {
         notifyAttributeListener(attributeEvent, null);

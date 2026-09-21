@@ -264,7 +264,6 @@ public class WaypointManager extends DroneVariable {
                 break;
 
             case WRITING_WP:
-                // Log.d("TIMEOUT", "re Write Msg: " + String.valueOf(writeIndex));
                 if (writeIndex < mission.size()) {
                     myDrone.getMavClient().sendMessage(mission.get(writeIndex), null);
                 }

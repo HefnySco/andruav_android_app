@@ -232,22 +232,6 @@ public class GoogleApiClientManager implements GoogleApiClient.ConnectionCallbac
         }
     }
 
-//    private boolean isGooglePlayServicesValid(){
-//        // Check for the google play services is available
-//
-//        if(!isValid){
-//            PendingIntent errorPI = GooglePlayServicesUtil.getErrorPendingIntent(playStatus, mContext, 0);
-//            if(errorPI != null){
-//                try {
-//                    errorPI.send();
-//                } catch (PendingIntent.CanceledException e) {
-//                    Log.e(TAG, "Seems the pending intent was cancelled.", e);
-//                }
-//            }
-//        }
-//
-//        return isValid;
-//    }
 
     /**
      * Release the resources used by this manager.

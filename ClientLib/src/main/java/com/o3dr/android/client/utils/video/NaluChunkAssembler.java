@@ -176,7 +176,6 @@ class NaluChunkAssembler {
                 assembledNaluChunk.sequenceNumber = sequenceNumber;
                 assembledNaluChunk.type = fuNalType;
                 assembledNaluChunk.flags = isConfig ? MediaCodec.BUFFER_FLAG_CODEC_CONFIG : 0;
-//                assembledNaluChunk.presentationTime = rtpTimestamp;
                 return null;
             } else {
                 if (sequenceNumber - 1 != assembledNaluChunk.sequenceNumber) {

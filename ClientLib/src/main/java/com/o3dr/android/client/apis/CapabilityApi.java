@@ -1,6 +1,5 @@
 package com.o3dr.android.client.apis;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -85,17 +84,6 @@ public class CapabilityApi extends Api {
                     });
                 break;
 
-            case FeatureIds.SOLO_VIDEO_STREAMING:
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                    drone.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            resultListener.onFeatureSupportResult(featureId, FEATURE_UNSUPPORTED, null);
-                        }
-                    });
-                    break;
-                }
-            //********FALL THROUGH ***********//
             case FeatureIds.COMPASS_CALIBRATION:
             case FeatureIds.KILL_SWITCH:
                 final Bundle params = new Bundle();
@@ -134,11 +122,6 @@ public class CapabilityApi extends Api {
      * Defines the set of feature ids.
      */
     public static final class FeatureIds {
-
-        /**
-         * Id for the video feature.
-         */
-        public static final String SOLO_VIDEO_STREAMING = "feature_solo_video_streaming";
 
         /**
          * Id for the compass calibration feature.

@@ -223,10 +223,6 @@ public class ControlApi extends Api {
     }
 
     public void manualControl(final int x, final int y, final int z, final int r, final int buttons, final AbstractCommandListener listener) {
-//        if (!isWithinBounds(vx, -1f, 1f) || !isWithinBounds(vy, -1f, 1f) || !isWithinBounds(vz, -1f, 1f)) {
-//            postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
-//            return;
-//        }
 
         Bundle params = new Bundle();
         params.putInt(EXTRA_AXIS_X, x);

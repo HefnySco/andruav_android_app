@@ -84,7 +84,6 @@ public class MavLinkCommands {
     }
 
     public static void sendGuidedVelocityLocal(MavLinkDrone drone, double xVel, double yVel, double zVel, double yawRate, double yaw, short coordinateFrame, short typeMask){
-        // msg_set_position_target_global_int msg = new msg_set_position_target_global_int();
         msg_set_position_target_local_ned msg = new msg_set_position_target_local_ned();
         msg.type_mask =  typeMask;
         msg.coordinate_frame = coordinateFrame;

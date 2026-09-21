@@ -95,9 +95,7 @@ public class Follow implements OnDroneListener<MavLinkDrone>, LocationReceiver {
         }
 
         final MavLinkDrone drone = droneMgr.getDrone();
-        // Send a brake command only on APM Follow, Solo Shot follow braking is handled by its Shot Manager onboard
-        if (GuidedPoint.isGuidedMode(drone)
-                && followAlgorithm.getType() != FollowAlgorithm.FollowModes.SOLO_SHOT) {
+        if (GuidedPoint.isGuidedMode(drone)) {
             droneMgr.getDrone().executeAsyncAction(new Action(ControlActions.ACTION_SEND_BRAKE_VEHICLE), null);
         }
     }

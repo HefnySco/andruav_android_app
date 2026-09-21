@@ -19,13 +19,11 @@ import static com.o3dr.services.android.lib.drone.action.ParameterActions.ACTION
 import static com.o3dr.services.android.lib.drone.action.ParameterActions.ACTION_WRITE_PARAMETERS;
 import static com.o3dr.services.android.lib.drone.action.ParameterActions.EXTRA_PARAMETERS;
 import static com.o3dr.services.android.lib.drone.action.StateActions.ACTION_ARM;
-import static com.o3dr.services.android.lib.drone.action.StateActions.ACTION_ENABLE_RETURN_TO_ME;
 import static com.o3dr.services.android.lib.drone.action.StateActions.ACTION_SET_VEHICLE_HOME;
 import static com.o3dr.services.android.lib.drone.action.StateActions.ACTION_SET_VEHICLE_MODE;
 import static com.o3dr.services.android.lib.drone.action.StateActions.ACTION_UPDATE_VEHICLE_DATA_STREAM_RATE;
 import static com.o3dr.services.android.lib.drone.action.StateActions.EXTRA_ARM;
 import static com.o3dr.services.android.lib.drone.action.StateActions.EXTRA_EMERGENCY_DISARM;
-import static com.o3dr.services.android.lib.drone.action.StateActions.EXTRA_IS_RETURN_TO_ME_ENABLED;
 import static com.o3dr.services.android.lib.drone.action.StateActions.EXTRA_VEHICLE_DATA_STREAM_RATE;
 import static com.o3dr.services.android.lib.drone.action.StateActions.EXTRA_VEHICLE_HOME_LOCATION;
 import static com.o3dr.services.android.lib.drone.action.StateActions.EXTRA_VEHICLE_MODE;
@@ -165,21 +163,7 @@ public class VehicleApi extends Api {
     }
 
     /**
-     * Enables 'return to me'
-     * @param isEnabled
-     * @param listener
-     */
-    public void enableReturnToMe(boolean isEnabled, final AbstractCommandListener listener){
-        Bundle params = new Bundle();
-        params.putBoolean(EXTRA_IS_RETURN_TO_ME_ENABLED, isEnabled);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_ENABLE_RETURN_TO_ME, params), listener);
-    }
-
-    /**
      * Update the vehicle data stream rate.
-     *
-     * Note: This is ineffective for Solo vehicles since their data stream rate is handled
-     * by the onboard companion computer.
      *
      * @param rate          The new data stream rate
      * @param listener      Register a callback to receive update of the command execution state

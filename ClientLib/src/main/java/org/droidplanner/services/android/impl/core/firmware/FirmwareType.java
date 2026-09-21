@@ -8,7 +8,6 @@ public enum FirmwareType {
     ARDU_COPTER(MAV_AUTOPILOT.MAV_AUTOPILOT_ARDUPILOTMEGA, "ArduCopter2", "ArduCopter"),
     ARDU_ROVER(MAV_AUTOPILOT.MAV_AUTOPILOT_ARDUPILOTMEGA, "ArduRover", "ArduRover"),
     ARDU_SUB(MAV_AUTOPILOT.MAV_AUTOPILOT_ARDUPILOTMEGA, "ArduSub", "ArduSub"),
-    ARDU_SOLO(MAV_AUTOPILOT.MAV_AUTOPILOT_ARDUPILOTMEGA, "ArduCopter2", "ArduSolo"),
 
     /**
      * PX4 firmware type

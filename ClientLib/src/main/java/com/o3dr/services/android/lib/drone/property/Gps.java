@@ -46,11 +46,6 @@ public class Gps implements DroneAttribute {
     }
 
     public boolean isValid() {
-//        if (ekfStatus == null) {
-//            return position != null;
-//        } else {
-//            return ekfStatus.isPositionOk(vehicleArmed) && position != null;
-//        }
         //  same as in QGround-Control
         return position != null;
     }

@@ -101,10 +101,4 @@ public class AttributeType {
      */
     public static final String MAGNETOMETER_CALIBRATION_STATUS = PACKAGE_NAME + ".MAGNETOMETER_CALIBRATION_STATUS";
 
-    /**
-     * Used to retrieve the 'return to me' state.
-     * @see {@link com.o3dr.services.android.lib.gcs.returnToMe.ReturnToMeState}
-     */
-    public static final String RETURN_TO_ME_STATE = PACKAGE_NAME + ".RETURN_TO_ME_STATE";
-
 }

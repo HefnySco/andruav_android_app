@@ -28,7 +28,6 @@ import com.o3dr.services.android.lib.drone.mission.item.spatial.Waypoint;
 import com.o3dr.services.android.lib.drone.property.Type;
 import com.o3dr.services.android.lib.util.ParcelableUtils;
 
-import org.droidplanner.services.android.impl.core.mission.commands.CameraControlImpl;
 
 /**
  * /**

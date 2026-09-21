@@ -16,7 +16,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import androidx.core.app.NotificationCompat;
-import android.text.TextUtils;
 
 import com.o3dr.android.client.R;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
@@ -217,7 +216,6 @@ public class DroidPlannerService extends Service {
         String NOTIFICATION_CHANNEL_ID = "com.example.simpleapp";
         String channelName = "My Background Service";
         NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
-        //chan.setLightColor(Color.BLUE);
         chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         assert manager != null;

@@ -7,7 +7,6 @@ import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 
 import org.droidplanner.services.android.impl.core.MAVLink.connection.TcpConnection;
 import org.droidplanner.services.android.impl.core.model.Logger;
-import org.droidplanner.services.android.impl.utils.connection.WifiConnectionHandler;
 
 import java.io.IOException;
 
@@ -18,8 +17,8 @@ public class AndroidTcpConnection extends AndroidIpConnection {
     private final String serverIp;
     private final int serverPort;
 
-    public AndroidTcpConnection(Context context, String tcpServerIp, int tcpServerPort, WifiConnectionHandler wifiHandler){
-        super(context, wifiHandler);
+    public AndroidTcpConnection(Context context, String tcpServerIp, int tcpServerPort){
+        super(context);
 
         this.serverIp = tcpServerIp;
         this.serverPort = tcpServerPort;
@@ -50,10 +49,6 @@ public class AndroidTcpConnection extends AndroidIpConnection {
                 AndroidTcpConnection.this.onConnectionStatus(connectionStatus);
             }
         };
-    }
-
-    public AndroidTcpConnection(Context context, String tcpServerIp, int tcpServerPort) {
-        this(context, tcpServerIp, tcpServerPort, null);
     }
 
     @Override

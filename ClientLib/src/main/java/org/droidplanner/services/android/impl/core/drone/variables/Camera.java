@@ -49,7 +49,6 @@ public class Camera extends DroneVariable {
 
 		final Gps droneGps = (Gps) myDrone.getAttribute(AttributeType.GPS);
 		LatLong position = droneGps.getPosition();
-		//double pitch = myDrone.getOrientation().getPitch() - gimbal_pitch;
 
 		final Attitude attitude = (Attitude) myDrone.getAttribute(AttributeType.ATTITUDE);
 		double pitch = attitude.getPitch();

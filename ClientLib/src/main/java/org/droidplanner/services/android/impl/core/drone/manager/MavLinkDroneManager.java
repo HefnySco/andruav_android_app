@@ -9,19 +9,15 @@ import com.MAVLink.common.msg_mag_cal_report;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
 import com.MAVLink.common.msg_command_ack;
-import com.google.android.gms.location.LocationRequest;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.drone.action.GimbalActions;
-import com.o3dr.services.android.lib.drone.action.StateActions;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
-import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.property.DroneAttribute;
 import com.o3dr.services.android.lib.gcs.action.FollowMeActions;
 import com.o3dr.services.android.lib.gcs.follow.FollowLocationSource;
 import com.o3dr.services.android.lib.gcs.follow.FollowType;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
-import com.o3dr.services.android.lib.gcs.returnToMe.ReturnToMeState;
 import com.o3dr.services.android.lib.model.ICommandListener;
 import com.o3dr.services.android.lib.model.action.Action;
 
@@ -42,7 +38,6 @@ import org.droidplanner.services.android.impl.core.drone.variables.StreamRates;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.MagnetometerCalibrationImpl;
 import org.droidplanner.services.android.impl.core.firmware.FirmwareType;
 import org.droidplanner.services.android.impl.core.gcs.GCSHeartbeat;
-import org.droidplanner.services.android.impl.core.gcs.ReturnToMe;
 import org.droidplanner.services.android.impl.core.gcs.follow.Follow;
 import org.droidplanner.services.android.impl.core.gcs.follow.FollowAlgorithm;
 import org.droidplanner.services.android.impl.core.gcs.location.FusedLocation;
@@ -64,7 +59,6 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
     private static final int DEFAULT_STREAM_RATE = 2; //Hz
 
     private Follow followMe;
-    private ReturnToMe returnToMe;
 
     private final MAVLinkClient mavClient;
     private final MavLinkMsgHandler mavLinkMsgHandler;
@@ -127,8 +121,6 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
         }
 
         this.followMe = new Follow(this, handler, new FusedLocation(context, handler));
-        this.returnToMe = new ReturnToMe(this, new FusedLocation(context, handler,
-                LocationRequest.PRIORITY_HIGH_ACCURACY, 1000L, 1000L, ReturnToMe.UPDATE_MINIMAL_DISPLACEMENT), this);
 
         StreamRates streamRates = drone.getStreamRates();
         if (streamRates != null) {
@@ -154,9 +146,6 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
         super.destroy();
         if (followMe != null && followMe.isEnabled())
             followMe.disableFollowMe();
-
-        if (returnToMe != null)
-            returnToMe.disable();
     }
 
     @Override
@@ -247,9 +236,6 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
 
         if (connectedApp!= null) {
             connectedApp.onReceivedMavLinkMessage(receivedMsg);
-//            for (DroneApi droneEventsListener : connectedApps.values()) {
-//                droneEventsListener.onReceivedMavLinkMessage(receivedMsg);
-//            }
         }
     }
 
@@ -273,9 +259,6 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
         switch (attributeType) {
             case AttributeType.FOLLOW_STATE:
                 return CommonApiUtils.getFollowState(followMe);
-
-            case AttributeType.RETURN_TO_ME_STATE:
-                return returnToMe == null ? new ReturnToMeState() : returnToMe.getState();
 
             default:
                 return super.getAttribute(clientInfo, attributeType);
@@ -338,21 +321,6 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
                 }
                 return true;
 
-            //************ RETURN TO ME ACTIONS *********//
-            case StateActions.ACTION_ENABLE_RETURN_TO_ME:
-                boolean isEnabled = data.getBoolean(StateActions.EXTRA_IS_RETURN_TO_ME_ENABLED, false);
-                if (returnToMe != null) {
-                    if (isEnabled) {
-                        returnToMe.enable(listener);
-                    } else {
-                        returnToMe.disable();
-                    }
-                    CommonApiUtils.postSuccessEvent(listener);
-                } else {
-                    CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
-                }
-                return true;
-
             default:
                 return super.executeAsyncAction(action, listener);
         }
@@ -400,7 +368,6 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
 
     @Override
     public void onCalibrationCompleted(msg_mag_cal_report report) {
-        //if (connectedApps.isEmpty())
         if (connectedApp!=null)
             connectedApp.onCalibrationCompleted(report);
     }

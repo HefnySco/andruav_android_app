@@ -44,11 +44,6 @@ public abstract class MavLinkConnection {
     private static final int READ_BUFFER_SIZE = 4096;
 
     /**
-     * @see {@link android.net.Network}
-     */
-    public static final String EXTRA_NETWORK = "extra_network";
-
-    /**
      * Set of listeners subscribed to this mavlink connection. We're using a
      * ConcurrentSkipListSet because the object will be accessed from multiple
      * threads concurrently.

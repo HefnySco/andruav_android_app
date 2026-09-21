@@ -21,7 +21,6 @@ import org.droidplanner.services.android.impl.communication.model.DataLink;
 import org.droidplanner.services.android.impl.core.MAVLink.connection.MavLinkConnection;
 import org.droidplanner.services.android.impl.core.MAVLink.connection.MavLinkConnectionListener;
 import org.droidplanner.services.android.impl.core.drone.manager.DroneCommandTracker;
-import org.droidplanner.services.android.impl.utils.connection.WifiConnectionHandler;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -120,14 +119,14 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
                     final String tcpServerIp = paramsBundle.getString(ConnectionType.EXTRA_TCP_SERVER_IP);
                     final int tcpServerPort = paramsBundle.getInt(ConnectionType
                             .EXTRA_TCP_SERVER_PORT, ConnectionType.DEFAULT_TCP_SERVER_PORT);
-                    mavlinkConn = new AndroidTcpConnection(context, tcpServerIp, tcpServerPort, new WifiConnectionHandler(context));
+                    mavlinkConn = new AndroidTcpConnection(context, tcpServerIp, tcpServerPort);
                     Timber.i("Connecting over tcp.");
                     break;
 
                 case ConnectionType.TYPE_UDP:
                     final int udpServerPort = paramsBundle
                             .getInt(ConnectionType.EXTRA_UDP_SERVER_PORT, ConnectionType.DEFAULT_UDP_SERVER_PORT);
-                    mavlinkConn = new AndroidUdpConnection(context, udpServerPort, new WifiConnectionHandler(context));
+                    mavlinkConn = new AndroidUdpConnection(context, udpServerPort);
                     Timber.i("Connecting over udp.");
                     break;
 
@@ -192,7 +191,6 @@ public class MAVLinkClient implements DataLink.DataLinkProvider<MAVLinkMessage> 
 
     @Override
     public synchronized void sendMessage(MAVLinkMessage message, ICommandListener listener) {
-        //sendMavMessage(message, DEFAULT_SYS_ID, DEFAULT_COMP_ID, listener);
         sendMavMessage(message, message.sysid, message.compid, listener);
     }
 

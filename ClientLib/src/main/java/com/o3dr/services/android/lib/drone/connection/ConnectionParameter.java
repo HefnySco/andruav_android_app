@@ -319,14 +319,6 @@ public class ConnectionParameter implements Parcelable {
                 uniqueId = "usb";
                 break;
 
-            case ConnectionType.TYPE_SOLO:
-                String soloLinkId = "";
-                if(paramsBundle != null){
-                    soloLinkId = paramsBundle.getString(ConnectionType.EXTRA_SOLO_LINK_ID, "");
-                }
-                uniqueId = "solo:" + soloLinkId;
-                break;
-
             default:
                 uniqueId = "";
                 break;
