@@ -192,13 +192,6 @@ public class FPVDroneRTCWebCamActivity extends Activity {
     @Subscribe
     public void onEvent (final GUIEvent_EnableFlashing guiEvent_enableFlashing)
     {
-        if (AndruavSettings.andruavWe7daBase.getIsCGS())
-        {
-            // you cannot switch screen for a user.
-            return;
-        }
-
-
         if (guiEvent_enableFlashing.enableFlashing) {
             mHandle.post(new Runnable() {
                 @Override

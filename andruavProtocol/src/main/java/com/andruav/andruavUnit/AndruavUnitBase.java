@@ -1,7 +1,6 @@
 package com.andruav.andruavUnit;
 
 import android.location.Location;
-import android.text.Html;
 
 import com.andruav.AndruavDroneFacade;
 import com.andruav.AndruavFacade;
@@ -10,7 +9,6 @@ import com.andruav.AndruavSettings;
 import com.andruav.Constants;
 import com.andruav.TelemetryProtocol;
 import com.andruav.controlBoard.shared.missions.MissionBase;
-import com.andruav.event.droneReport_Event.Event_Emergency_Changed;
 import com.andruav.event.droneReport_Event.Event_FCB_Changed;
 import com.andruav.event.droneReport_Event.Event_GCSBlockedChanged;
 import com.andruav.event.droneReport_Event.Event_GPS_Ready;
@@ -290,16 +288,6 @@ public class AndruavUnitBase {
 
     public void setIsFlashing (final boolean value)
     {
-        if (!IsMe() && AndruavSettings.andruavWe7daBase.IsCGS && (isFlashing != value))
-        {
-
-            isFlashing = value;
-
-            AndruavEngine.getEventBus().post(new Event_Emergency_Changed(this));
-
-            return;
-        }
-
         if (IsMe() && (isFlashing != value))
         {
 
@@ -319,15 +307,6 @@ public class AndruavUnitBase {
 
     public void setIsWhisling(final boolean value)
     {
-        if (!IsMe() && AndruavSettings.andruavWe7daBase.IsCGS && (isWhisling != value))
-        {
-            isWhisling = value;
-
-            AndruavEngine.getEventBus().post(new Event_Emergency_Changed(this));
-
-            return;
-        }
-
         if (IsMe() && (isWhisling != value))
         {
 
@@ -346,15 +325,6 @@ public class AndruavUnitBase {
 
     public void setIsEmergencyChangeFlightModeFailSafe(final boolean value)
     {
-        if (!IsMe() && AndruavSettings.andruavWe7daBase.IsCGS && (isEmergencyChangeFlightModeFaileSafe != value))
-        {
-            isEmergencyChangeFlightModeFaileSafe = value;
-
-            AndruavEngine.getEventBus().post(new Event_Emergency_Changed(this));
-
-            return;
-        }
-
         if (IsMe() && (isEmergencyChangeFlightModeFaileSafe != value))
         {
 
@@ -605,13 +575,6 @@ public class AndruavUnitBase {
             if (IsMe()) {
                 AndruavFacade.sendShutDown(null);
             }
-            else
-            {
-                if ((AndruavSettings.andruavWe7daBase.IsCGS) && (!shutdown))
-                { // I am a GCS [The APP] then I want to announce the user that this instance Unit has reconnected.
-                   AndruavEngine.notification().displayNotification(INotification.NOTIFICATION_TYPE_WARNING, Html.fromHtml("Andruav"), Html.fromHtml(UnitID + AndruavEngine.AppContext.getString(R.string.andruav_noti_reconnect)), true, INotification.INFO_TYPE_PROTOCOL, false);
-                }
-            }
 
             AndruavEngine.getEventBus().post(new Event_UnitShutDown(this));
         }
@@ -745,10 +708,10 @@ public class AndruavUnitBase {
     }
 
 
-    public AndruavUnitBase(final boolean mIsMe, final boolean isGCS)
+    public AndruavUnitBase(final boolean mIsMe)
     {
         this.mIsMe = mIsMe;
-        this.IsCGS = isGCS;
+        this.IsCGS = false;
         LastEvent_Battery   = new AndruavBattery();
         LastEvent_IMU       = new AndruavIMU(mIsMe,true,false);
         LastEvent_FCB_IMU   = new AndruavIMU(mIsMe,true,true);

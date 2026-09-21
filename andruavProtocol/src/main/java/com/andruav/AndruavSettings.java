@@ -4,7 +4,6 @@ import android.view.Surface;
 
 import com.andruav.andruavUnit.AndruavUnitMe;
 import com.andruav.andruavUnit.AndruavUnitBase;
-import com.andruav.andruavUnit.AndruavUnitShadow;
 import com.andruav.protocol.commands.ProtocolHeaders;
 
 import java.util.ArrayList;
@@ -90,11 +89,6 @@ public class AndruavSettings {
      * This is a bitwise for RemoteChannel RTC
      */
     public static int RemoteControlRTC =0;
-
-    /***
-     * Andruav Drone that is sending Telemetry Data to me [GCS]
-     */
-    public static AndruavUnitShadow remoteTelemetryAndruavWe7da=null;
 
     public static String AuthIp = "cloud.ardupilot.org";
     public static int AuthPort = 19408;

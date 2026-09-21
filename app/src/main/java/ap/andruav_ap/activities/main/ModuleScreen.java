@@ -309,7 +309,7 @@ public class ModuleScreen extends BaseAndruavShasha {
 
 
         if (AndruavSettings.andruavWe7daBase == null) {
-            App.defineAndruavUnit(false);
+            App.defineAndruavUnit();
         }
 //        mbtnIMU.setEnabled(true);
 //        mbtnFCB.setEnabled(true);

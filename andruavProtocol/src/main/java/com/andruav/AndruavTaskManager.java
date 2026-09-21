@@ -43,7 +43,7 @@ public class AndruavTaskManager {
                 ProtocolHeaders.SPECIAL_NAME_ANY,
                 ProtocolHeaders.SPECIAL_NAME_ANY,
                 null,
-                AndruavSettings.andruavWe7daBase.getIsCGS() ? ProtocolHeaders.SPECIAL_NAME_GCS_RECEIVERS : ProtocolHeaders.SPECIAL_NAME_VEHICLE_RECEIVERS,
+                ProtocolHeaders.SPECIAL_NAME_VEHICLE_RECEIVERS,
                 taskType,
                 true // it is global and should be Permanent
         );
@@ -64,7 +64,7 @@ public class AndruavTaskManager {
                 ProtocolHeaders.SPECIAL_NAME_ANY,
                 ProtocolHeaders.SPECIAL_NAME_ANY,
                 null,   // any value here
-                AndruavSettings.andruavWe7daBase.getIsCGS()?ProtocolHeaders.SPECIAL_NAME_GCS_RECEIVERS:ProtocolHeaders.SPECIAL_NAME_VEHICLE_RECEIVERS,
+                ProtocolHeaders.SPECIAL_NAME_VEHICLE_RECEIVERS,
                 taskType,
                 true);
     }
@@ -86,7 +86,7 @@ public class AndruavTaskManager {
                 ProtocolHeaders.SPECIAL_NAME_ANY,
                 AndruavSettings.andruavWe7daBase.GroupName,
                 null,   // any value here
-                AndruavSettings.andruavWe7daBase.getIsCGS()?ProtocolHeaders.SPECIAL_NAME_GCS_RECEIVERS:ProtocolHeaders.SPECIAL_NAME_VEHICLE_RECEIVERS,
+                ProtocolHeaders.SPECIAL_NAME_VEHICLE_RECEIVERS,
                 taskType,
                 true // it is local-global and should be Permanent
         );

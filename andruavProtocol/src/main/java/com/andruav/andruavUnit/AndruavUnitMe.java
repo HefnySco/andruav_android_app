@@ -13,9 +13,9 @@ public class AndruavUnitMe extends AndruavUnitBase {
 
 
 
-    public AndruavUnitMe(final boolean isGCS)
+    public AndruavUnitMe()
     {
-        super(true,isGCS);
+        super(true);
     }
 
     /*
@@ -40,12 +40,7 @@ public class AndruavUnitMe extends AndruavUnitBase {
 
         if (telemetry_protocol != TelemetryProtocol.TelemetryProtocol_No_Telemetry)
         {
-            if ((!this.IsCGS) )
-            {
-
-                AndruavEngine.getLo7etTa7akomMasna3().getFlightControlBoard(this);
-
-            }
+            AndruavEngine.getLo7etTa7akomMasna3().getFlightControlBoard(this);
         }
     }
 

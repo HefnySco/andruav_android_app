@@ -191,21 +191,9 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
         return eglBaseTX.getEglBaseContext();
     }
 
-    public void rotateNext()
-    {
-        if (!AndruavSettings.andruavWe7daBase.getIsCGS()) return ;
-
-        mRotationGCS = (mRotationGCS + 90) % 360;
-    }
-
     public void setRotationGCS (final int rotation)
     {
         mRotationGCS = rotation;
-    }
-    public void doMirror(final boolean mirror)
-    {
-        if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
-        }
     }
 
     public boolean hasActivePeers ()
@@ -454,14 +442,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
             mExternalVideoSink = externalVideoSink;
             mContext = context;
 
-            if (AndruavSettings.andruavWe7daBase.getIsCGS())
-            {
-                AndruavSettings.videoCameraRotationDegree = Preference.getFPVActivityRotation(null);
-            }
-            else
-            {
-                AndruavSettings.videoCameraRotationDegree = 0;
-            }
+            AndruavSettings.videoCameraRotationDegree = 0;
 
             initHandler();
 
@@ -484,7 +465,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
             CameraID = channelName;
 
-            if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
+            {
                 final boolean screenStreamingPref = Preference.isScreenStreamingEnabled(null);
                 if (screenStreamingPref && screenCaptureIntent == null) {
                     // Screen-streaming preference is ON but no MediaProjection intent yet — idle
@@ -538,7 +519,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
             //  Note that LOCAL_MEDIA_STREAM_ID can be any string
             mediaStream = pcFactory.createLocalMediaStream(LOCAL_MEDIA_STREAM_ID+ System.currentTimeMillis());
 
-            if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
+            {
                 // Now we can add our tracks.
                 localVideoTrack = pcFactory.createVideoTrack(AndruavSettings.andruavWe7daBase.PartyID, localVideoSource);
                 mediaStream.addTrack(localVideoTrack);

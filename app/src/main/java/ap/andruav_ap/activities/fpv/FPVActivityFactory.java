@@ -33,8 +33,7 @@ public class FPVActivityFactory {
         {
             return ;
         }
-        if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-        } else {  // you cannot use a drone if mobile does not have a cam
+        {  // you cannot use a drone if mobile does not have a cam
             // Camera permission is only required when the device actually has a camera.
             // On camera-less devices there is nothing to grant and nothing to stream from,
             // so there is nothing to start either.

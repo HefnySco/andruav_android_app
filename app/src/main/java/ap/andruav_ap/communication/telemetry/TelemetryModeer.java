@@ -87,8 +87,7 @@ public class TelemetryModeer {
 
     public static  synchronized void startAutoConnection (final boolean enforceConnect)
     {
-        if ((!AndruavSettings.andruavWe7daBase.getIsCGS())
-                && (enforceConnect || Preference.isAutoFCBConnect(null))  // not GCS
+        if ((enforceConnect || Preference.isAutoFCBConnect(null))
                 && (TelemetryModeer.getConnectionInfo() == TelemetryModeer.CURRENTCONNECTION_NON)  // No current FCB connection
                 )
         {

@@ -200,11 +200,6 @@
             android:launchMode="singleTask"
             android:theme="@style/SettingsTheme" />
         <activity
-            android:name="ap.andruav_ap.activities.fcb.FCB_TCPShasha"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:label="@string/title_activity_fcb"
-            android:launchMode="singleTask" />
-        <activity
             android:name="ap.andruav_ap.activities.drone.FlashActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_data_activity_flash"

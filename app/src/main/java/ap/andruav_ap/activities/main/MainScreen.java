@@ -47,7 +47,6 @@ import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.activities.settings.SettingsDrone;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.activities.drone.IMUShasha;
-import ap.andruav_ap.activities.fcb.drone.FCB_AndruavShashaL2;
 import ap.andruav_ap.activities.fpv.FPVActivityFactory;
 
 import ap.andruav_ap.App;
@@ -57,7 +56,6 @@ import com.andruav.AndruavInternalCommands;
 import com.andruav.AndruavFacade;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
 
-import ap.andruav_ap.helpers.CheckAppPermissions;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_ProtocolChanged;
 import ap.andruavmiddlelibrary.LoginClient;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
@@ -525,10 +523,6 @@ public class MainScreen extends BaseAndruavShasha {
                                 text += "<br><font color=#75A4D3>" + getString(R.string.toast_msg_duration, eventWSComm.timeStamp) + "</font'>";
                                 Toast.makeText(Me, getString(R.string.toast_ping_time, eventWSComm.timeStamp), Toast.LENGTH_LONG).show();
                                 if (!onFinalConnectionSucceededCalled) onFinalConnectionSucceeded();
-                                /* always start it as u may want to track GCS in follow me forexample
-                                if (App.isCGS == false) {
-                                    App.startSensorService();
-                                }*/
                             } else {
                                 text += "<br><font color=F75050>" + getString(ap.andruavmiddlelibrary.R.string.err_ws_cmd_ping) + "</font'>";
                             }
@@ -1282,7 +1276,7 @@ public class MainScreen extends BaseAndruavShasha {
 
 
         if (AndruavSettings.andruavWe7daBase == null) {
-            App.defineAndruavUnit(false);
+            App.defineAndruavUnit();
         }
         mTileImu.setEnabled(true);
         mTileFpv.setEnabled(true);

@@ -10,9 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.andruav.AndruavFacade;
-import com.andruav.AndruavSettings;
-
 import ap.andruav_ap.App;
 import ap.andruav_ap.R;
 import ap.andruavmiddlelibrary.preference.Preference;
@@ -69,13 +66,6 @@ public class SmartOptimization_Dlg extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Preference.setSmartMavlinkTelemetry(null,position);
-                if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                {
-                    if (AndruavSettings.remoteTelemetryAndruavWe7da != null)
-                    {
-                        AndruavFacade.ResumeTelemetry(Preference.getSmartMavlinkTelemetry(null));
-                    }
-                }
             }
 
             @Override

@@ -27,7 +27,6 @@ import ap.andruavmiddlelibrary.factory.util.Time_Helper;
 import ap.andruavmiddlelibrary.preference.Preference;
 
 import org.webrtc.DefaultVideoEncoderFactory;
-import org.webrtc.VideoFrame;
 
 /*
   Created by mhefny on 12/5/15.
@@ -87,11 +86,7 @@ public class CameraRecorder extends CameraRecorderBase {
             mIsRecording = true;
             AndruavSettings.andruavWe7daBase.VideoRecording = AndruavUnitBase.VIDEORECORDING_ON;
             AndruavEngine.getEventBus().post(new _7adath_RecordVideoStatus(_7adath_RecordVideoStatus.CONST_IS_RECORDING));
-            if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
-
-
-                AndruavFacade.sendID("");        AndruavFacade.requestID();  // guys !! who are there ?
-            }
+            AndruavFacade.sendID("");        AndruavFacade.requestID();  // guys !! who are there ?
         }
 
 
@@ -113,9 +108,7 @@ public class CameraRecorder extends CameraRecorderBase {
                     }
                     AndruavSettings.andruavWe7daBase.VideoRecording = AndruavUnitBase.VIDEORECORDING_OFF;
 
-                    if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                        AndruavFacade.sendID("");        AndruavFacade.requestID();  // guys !! who are there ?
-                    }
+                    AndruavFacade.sendID("");        AndruavFacade.requestID();  // guys !! who are there ?
 
 
 

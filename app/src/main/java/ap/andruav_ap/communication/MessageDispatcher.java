@@ -9,7 +9,6 @@ import com.andruav.Constants;
 import com.andruav.event.droneReport_Event.Event_TelemetryGCSRequest;
 import com.andruav.event.droneReport_Event.Event_WayPointReached;
 import com.andruav.event.fcb_event._7adath_FCB_2AMR;
-import com.andruav.event.fcb_event.Event_FCBData;
 import com.andruav.event.fcb_event.Event_SocketData;
 import com.andruav.event.fpv7adath.Event_FPV_CMD;
 import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
@@ -135,24 +134,13 @@ public class MessageDispatcher {
                 }
                 AndruavResalaBinary_LightTelemetry andruavResalaBinary_lightTelemetry = (AndruavResalaBinary_LightTelemetry) andruav_2MR.andruavResalaBinaryBase;
 
-                if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                {
-                    Event_FCBData event_FCBData = new Event_FCBData();
-                    event_FCBData.senderWe7da = andruavUnit;
-                    event_FCBData.IsLocal = Event_SocketData.SOURCE_REMOTE;
-                    event_FCBData.Data = andruavResalaBinary_lightTelemetry.getData();
-                    event_FCBData.DataLength = event_FCBData.Data.length;
-                    EventBus.getDefault().post(event_FCBData);
-                }
-                else {
-                    Event_SocketData event_socketData = new Event_SocketData();
-                    event_socketData.senderWe7da = andruavUnit;
-                    event_socketData.IsLocal = Event_SocketData.SOURCE_REMOTE;
-                    event_socketData.Data = andruavResalaBinary_lightTelemetry.getData();
-                    event_socketData.DataLength = event_socketData.Data.length;
-                    EventBus.getDefault().post(event_socketData);
+                Event_SocketData event_socketData = new Event_SocketData();
+                event_socketData.senderWe7da = andruavUnit;
+                event_socketData.IsLocal = Event_SocketData.SOURCE_REMOTE;
+                event_socketData.Data = andruavResalaBinary_lightTelemetry.getData();
+                event_socketData.DataLength = event_socketData.Data.length;
+                EventBus.getDefault().post(event_socketData);
 
-                }
                 andruav_2MR.processed = true;
                 break;
             }
@@ -262,38 +250,34 @@ public class MessageDispatcher {
 
                 // This is a request from outside [Drone or GCS] to all or a specific
                 // fence detail. fencename is specific is sent in a variable "fn" -fence name-.
-                if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                    final AndruavMessage_Config_UnitID andruavResala_Config_unitID = (AndruavMessage_Config_UnitID) andruav2MR.andruavMessageBase;
-                    AndruavSettings.andruavWe7daBase.UnitID = andruavResala_Config_unitID.UnitID.toLowerCase();
-                    AndruavSettings.andruavWe7daBase.Description = andruavResala_Config_unitID.Description;
-                    AndruavSettings.andruavWe7daBase.GroupName = andruavResala_Config_unitID.GroupName.toLowerCase();
+                final AndruavMessage_Config_UnitID andruavResala_Config_unitID = (AndruavMessage_Config_UnitID) andruav2MR.andruavMessageBase;
+                AndruavSettings.andruavWe7daBase.UnitID = andruavResala_Config_unitID.UnitID.toLowerCase();
+                AndruavSettings.andruavWe7daBase.Description = andruavResala_Config_unitID.Description;
+                AndruavSettings.andruavWe7daBase.GroupName = andruavResala_Config_unitID.GroupName.toLowerCase();
 
-                    // Save permanent
-                    Preference.setWebServerUserName(null,AndruavSettings.andruavWe7daBase.UnitID);
-                    Preference.setWebServerUserDescription(null, andruavResala_Config_unitID.Description);
-                    Preference.setWebServerGroupName(null, andruavResala_Config_unitID.GroupName);
+                // Save permanent
+                Preference.setWebServerUserName(null,AndruavSettings.andruavWe7daBase.UnitID);
+                Preference.setWebServerUserDescription(null, andruavResala_Config_unitID.Description);
+                Preference.setWebServerGroupName(null, andruavResala_Config_unitID.GroupName);
 
-                    // BUG: CALL RECONNECT HERE
+                // BUG: CALL RECONNECT HERE
 
-                }
                 break;
 
             case AndruavMessage_Config_COM.TYPE_AndruavResala_Config_COM:
             {
                 andruav2MR.processed = true;
-                if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                    final AndruavMessage_Config_COM andruavResala_config_com = (AndruavMessage_Config_COM) andruav2MR.andruavMessageBase;
+                final AndruavMessage_Config_COM andruavResala_config_com = (AndruavMessage_Config_COM) andruav2MR.andruavMessageBase;
 
-                    // YOU DONT NEED TO RESET [AndruavSettings.WebServerURL .... ]
-                    // You NEED TO RECONNECT.
+                // YOU DONT NEED TO RESET [AndruavSettings.WebServerURL .... ]
+                // You NEED TO RECONNECT.
 
-                    Preference.setWebServerPort(null,andruavResala_config_com.Port);
-                    Preference.setWebServerURL(null,andruavResala_config_com.ServerIP);
-                    Preference.isLocalServer(null,andruavResala_config_com.IsLocalServer);
-                    Preference.setWebServerPort(null,andruavResala_config_com.Port);
+                Preference.setWebServerPort(null,andruavResala_config_com.Port);
+                Preference.setWebServerURL(null,andruavResala_config_com.ServerIP);
+                Preference.isLocalServer(null,andruavResala_config_com.IsLocalServer);
+                Preference.setWebServerPort(null,andruavResala_config_com.Port);
 
-                    // BUG: CALL RECONNECT HERE
-                }
+                // BUG: CALL RECONNECT HERE
             }
             break;
 
@@ -338,15 +322,7 @@ public class MessageDispatcher {
 
             case AndruavMessage_Error.TYPE_AndruavMessage_Error: {
                 andruav2MR.processed = true;
-                final AndruavUnitShadow andruavUnit = (AndruavUnitShadow) AndruavEngine.getAndruavWe7daMapBase().get(andruav2MR.partyID);
-                if ((andruavUnit != null) && (AndruavSettings.andruavWe7daBase.getIsCGS())) {
-
-                    // dont display errors of other units in a  mobile working in drone mode. very confusing.
-                    AndruavMessage_Error andruavMessage_error = ((AndruavMessage_Error) (andruav2MR.andruavMessageBase));
-                    String err = andruavMessage_error.Description;
-                    App.notification.displayNotification(andruavMessage_error.notification_Type, andruavUnit.UnitID, err, true, andruavMessage_error.infoType, false);
-                    AndruavEngine.notification().Speak(err);
-                }
+                // dont display errors of other units in a  mobile working in drone mode. very confusing.
             }
             break;
 
@@ -422,23 +398,16 @@ public class MessageDispatcher {
 
 
                         case AndruavMessage_UDPProxy_Info.TYPE_AndruavMessage_UdpProxy_Info:
-                            if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                                break;
                             AndruavFacade.sendUdpProxyStatus(andruavUnit);
                             break;
 
                         case AndruavMessage_CameraList.TYPE_AndruavCMD_CameraList:
-                            if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                                break; // not a valid command to GCSevent_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_TAKEIMAGE);
-
                             AndruavDroneFacade.sendCameraList(true,andruavUnit);
                             EventBus.getDefault().post(new _7adath_InitAndroidCamera());
                             break;
 
                         case AndruavMessage_RemoteExecute.RemoteCommand_MAKETILT:
 
-                            if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                                break;
                             EventBus.getDefault().post(new Event_IMU_CMD(Event_IMU_CMD.IMU_CMD_UpdateZeroTilt));
                             break;
 
@@ -466,15 +435,11 @@ public class MessageDispatcher {
 
                         case AndruavMessage_RemoteExecute.RemoteCommand_SET_GPS_SOURCE:
                             if ((andruavUnit != null) && (!andruavUnit.canControl())) break;
-                            if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                                break;
                             AndruavSettings.andruavWe7daBase.setGPSMode(Integer.parseInt(((AndruavMessage_RemoteExecute) (andruav_2MR.andruavMessageBase)).Variables.get("s")));
                             break;
 
                         case AndruavMessage_RemoteExecute.RemoteCommand_CONNECT_FCB:
                             if ((andruavUnit != null) && (!(andruavUnit.canControl() || andruavUnit.canTelemetry()))) break;
-                            if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                                break;
                             final _7adath_FCB_2AMR adath_fcb_2AMR = new _7adath_FCB_2AMR();
                             adath_fcb_2AMR.enForceConnection = true;
                             EventBus.getDefault().post(adath_fcb_2AMR);
@@ -484,8 +449,6 @@ public class MessageDispatcher {
                         // StartStop recording video
                         case AndruavMessage_RemoteExecute.RemoteCommand_RECORDVIDEO:
                             if ((andruavUnit != null) && (!andruavUnit.canVideo())) break;
-                            if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                                break;
 
                             event_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_RECORDVIDEO);
                             event_fpv_cmd.Requester = andruavUnit;
@@ -496,8 +459,6 @@ public class MessageDispatcher {
 
                         case AndruavMessage_RemoteExecute.RemoteCommand_STREAMVIDEORESUME:
                             if ((andruavUnit != null) && (!andruavUnit.canVideo())) break;
-                            if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                                break;
                             break;
 
                         case AndruavMessage_RemoteExecute.RemoteCommand_ChangeUnitID:
@@ -506,8 +467,6 @@ public class MessageDispatcher {
 
                         case AndruavMessage_RemoteExecute.RemoteCommand_STREAMVIDEO:
                             if ((andruavUnit != null) && (!andruavUnit.canVideo())) break; // not permitted
-                            if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                                break;
 
                             if (andruavUnit != null) {
 
@@ -743,9 +702,6 @@ public class MessageDispatcher {
                     andruav_2MR.processed = true;
 
                     final AndruavMessage_Ctrl_Camera andruavResala_ctrl_camera = (AndruavMessage_Ctrl_Camera) (andruav_2MR.andruavMessageBase);
-                    if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                        break;
-
 
                     EventBus.getDefault().post(new _7adath_InitAndroidCamera());
 

@@ -831,7 +831,6 @@ public abstract class AndruavWSClientBase {
             case AndruavMessage_ExternalCommand_GeoFence.TYPE_AndruavMessage_ExternalGeoFence: {
                 /* I am a drone and need to uploade a Fence Info */
                 /* andruavWe7daBase could be SYSTEM */
-                if (AndruavSettings.andruavWe7daBase.getIsCGS()) break; /// this is a Drone Command.
 
                 final AndruavMessage_ExternalCommand_GeoFence andruavMessage_externalGeoFence = (AndruavMessage_ExternalCommand_GeoFence) andruav_2MR.andruavMessageBase;
                 final GeoFenceBase g = andruavMessage_externalGeoFence.getGeoFencePoints();
@@ -858,16 +857,7 @@ public abstract class AndruavWSClientBase {
 
             case AndruavMessage_GeoFence.TYPE_AndruavMessage_GeoFence:
                 /* Some Drone updated its Geo Fence */
-                if (!AndruavSettings.andruavWe7daBase.getIsCGS())
-                    break; // I as a third Drone dont save GeoFencePoint of other's drones...Not in this version at least :)
-
-                final AndruavMessage_GeoFence andruavMessage_GeoFence = (AndruavMessage_GeoFence) andruav_2MR.andruavMessageBase;
-                final GeoFenceBase g = andruavMessage_GeoFence.getGeoFencePoints();
-                if (g != null) {
-                    if (andruavUnitBase != null) {
-                        GeoFenceManager.addGeoFence(andruavUnitBase, g);
-                    }
-                }
+                // I as a third Drone dont save GeoFencePoint of other's drones...Not in this version at least :)
                 break;
 
             case AndruavMessage_GeoFenceAttachStatus.TYPE_AndruavResala_GeoFenceAttachStatus: {
@@ -875,32 +865,6 @@ public abstract class AndruavWSClientBase {
                 // if you have the fence then use it other wise request full fence info.
                 if (andruavUnitBase == null) {
                     AndruavFacade.requestID(andruav_2MR.partyID);
-                }
-
-                if (AndruavSettings.andruavWe7daBase.getIsCGS()) { // I as a third Drone dont save GeoFencePoint of other's drones...Not in this version at least :)
-
-                    final AndruavMessage_GeoFenceAttachStatus andruavMessage_geoFenceAttachStatus = (AndruavMessage_GeoFenceAttachStatus) andruav_2MR.andruavMessageBase;
-                    final GeoFenceBase geoFenceBase = GeoFenceManager.getGeoFence(andruavMessage_geoFenceAttachStatus.fenceName);
-
-                    if (andruavMessage_geoFenceAttachStatus.isAttachedToFence) {
-                        // we need to
-                        // 1- Make sure we have this fence --- if not then ask for it from this drone.
-                        // 2- Add this Drone to the fence
-
-                        if (geoFenceBase != null) {
-                            // we have it already
-                            GeoFenceManager.attachToGeoFence(geoFenceBase, andruavUnitBase);
-                        } else {    // what is this fence ... please sendMessageToModule fence info & hit info
-                            AndruavFacade.requestGeoFenceInfo(andruavUnitBase, andruavMessage_geoFenceAttachStatus.fenceName);
-                        }
-                    } else {
-                        // Deattach Action
-                        // 1- Deattach Drone from fence... if we dont have this fence then we DONT want IT
-                        // If another drone uses it we will know and ask for it from that drone.
-
-                        GeoFenceManager.removeUnitFromGeoFence(geoFenceBase, andruavUnitBase);
-
-                    }
                 }
             }
             break;
@@ -943,11 +907,8 @@ public abstract class AndruavWSClientBase {
                     AndruavFacade.requestID(andruav_2MR.partyID);
                 }
 
-                if (!AndruavSettings.andruavWe7daBase.getIsCGS())
-                {
-                    final AndruavMessage_SetHomeLocation andruavMessage_setHomeLocation = (AndruavMessage_SetHomeLocation) andruav_2MR.andruavMessageBase;
-                    AndruavSettings.andruavWe7daBase.do_UpdateExternalHomeLocation(andruavMessage_setHomeLocation.home_gps_lng, andruavMessage_setHomeLocation.home_gps_lat, andruavMessage_setHomeLocation.home_gps_alt);
-                }
+                final AndruavMessage_SetHomeLocation andruavMessage_setHomeLocation = (AndruavMessage_SetHomeLocation) andruav_2MR.andruavMessageBase;
+                AndruavSettings.andruavWe7daBase.do_UpdateExternalHomeLocation(andruavMessage_setHomeLocation.home_gps_lng, andruavMessage_setHomeLocation.home_gps_lat, andruavMessage_setHomeLocation.home_gps_alt);
             }
             break;
 
@@ -995,8 +956,6 @@ public abstract class AndruavWSClientBase {
                     final AndruavUnitBase andruavWe7da = (AndruavEngine.getAndruavWe7daMapBase()).get(andruav_2MR.partyID);
 
                     if ((andruavWe7da != null) && (!andruavWe7da.canImage())) break;
-                    if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                        break;
 
                     final AndruavMessage_CameraFlash andruavMessage_cameraFlash = (AndruavMessage_CameraFlash) andruav_2MR.andruavMessageBase;
 
@@ -1029,8 +988,6 @@ public abstract class AndruavWSClientBase {
                     final AndruavUnitBase andruavWe7da = (AndruavEngine.getAndruavWe7daMapBase()).get(andruav_2MR.partyID);
 
                     if ((andruavWe7da != null) && (!andruavWe7da.canImage())) break;
-                    if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                        break; // not a valid command to GCSevent_fpv_cmd = new _7adath_FPV_CMD(_7adath_FPV_CMD.FPV_CMD_TAKEIMAGE);
 
                     final AndruavMessage_CameraSwitch andruavMessage_cameraSwitch = (AndruavMessage_CameraSwitch) andruav_2MR.andruavMessageBase;
 
@@ -1064,11 +1021,6 @@ public abstract class AndruavWSClientBase {
                     final AndruavUnitBase andruavWe7da = (AndruavEngine.getAndruavWe7daMapBase()).get(andruav_2MR.partyID);
                     if (andruavWe7da == null) return;
 
-                    if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                    {
-                        return ;
-                    }
-
                     final AndruavMessage_CameraZoom andruavMessage_cameraZoom = (AndruavMessage_CameraZoom) andruav_2MR.andruavMessageBase;
                     UAVOSModuleCamera cameraModule = UAVOSHelper.getCameraByID(andruavMessage_cameraZoom.CameraUniqueName);
                     if (cameraModule == null) {
@@ -1097,8 +1049,15 @@ public abstract class AndruavWSClientBase {
                     final AndruavMessage_Signaling andruavMessage_signaling = (AndruavMessage_Signaling) andruav_2MR.andruavMessageBase;
 
 
-                    if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                    {
+                    // get Module for Requested Camera
+                    UAVOSModuleCamera cameraModule = UAVOSHelper.getCameraByID(andruavMessage_signaling.getJsonResala().getString("channel"));
+                    if (cameraModule == null) {
+                        // camera is not available
+                        break;
+                    }
+
+                    if (cameraModule.BuiltInModule) {
+                        // This is a local camera for this Andruav Device.
                         // Sticky: the peer-connection client (subscriber) may not be registered
                         // yet when this arrives (its EventBus registration only happens once
                         // PeerConnectionManager.init() has run), so a plain post() can be silently
@@ -1106,26 +1065,6 @@ public abstract class AndruavWSClientBase {
                         // the subscriber registers, however long that takes.
                         Event_Signalling a7adath_signalling = new Event_Signalling(andruavMessage_signaling.getJsonResala(), andruavWe7da);
                         AndruavEngine.getEventBus().postSticky(a7adath_signalling);
-
-                        return ;
-                    }
-                    else {
-
-                        // get Module for Requested Camera
-                        UAVOSModuleCamera cameraModule = UAVOSHelper.getCameraByID(andruavMessage_signaling.getJsonResala().getString("channel"));
-                        if (cameraModule == null) {
-                            // camera is not available
-                            break;
-                        }
-
-                        if (cameraModule.BuiltInModule) {
-                            // This is a local camera for this Andruav Device.
-                            // Sticky for the same reason as the CGS branch above: the incoming
-                            // "joinme" can arrive before PeerConnectionManager.init() has finished
-                            // constructing and registering AndruavPeerConnectionClientClient.
-                            Event_Signalling a7adath_signalling = new Event_Signalling(andruavMessage_signaling.getJsonResala(), andruavWe7da);
-                            AndruavEngine.getEventBus().postSticky(a7adath_signalling);
-                        }
                     }
                 }
                 catch (final Exception e)
@@ -1599,14 +1538,14 @@ public abstract class AndruavWSClientBase {
                     break;
 
                 case AndruavMessage_RemoteExecute.RemoteCommand_GET_WAY_POINTS:
-                    if ((andruavUnit == null) || AndruavSettings.andruavWe7daBase.getIsCGS())
+                    if (andruavUnit == null)
                         break; // this command is broadcasted from a drone.
                     AndruavFacade.sendHomeLocation(andruavUnit);
                     AndruavFacade.sendWayPoints(andruavUnit);
                     break;
 
                 case AndruavMessage_RemoteExecute.RemoteCommand_RELOAD_WAY_POINTS_FROM_FCB:
-                    if ((andruavUnit == null) || (AndruavSettings.andruavWe7daBase.getIsCGS()))
+                    if (andruavUnit == null)
                         break; // this command is broadcasted from a drone.
                     if (AndruavSettings.andruavWe7daBase.useFCBIMU()) {
                         AndruavSettings.andruavWe7daBase.doReloadMissionfromFCB();
@@ -1618,13 +1557,9 @@ public abstract class AndruavWSClientBase {
                     break;
 
                 case AndruavMessage_RemoteExecute.RemoteCommand_CLEAR_WAY_POINTS:
-                    if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                        break; // this command is broadcasted from a drone.
                     AndruavSettings.andruavWe7daBase.doClearMission();
                     break;
                 case AndruavMessage_RemoteExecute.RemoteCommand_SET_START_MISSION_ITEM: {
-                    if (AndruavSettings.andruavWe7daBase.getIsCGS())
-                        break; // this command is broadcasted from a drone.
                     int missionItemNumber = 1;
                     if (andruavResala_remoteExecute.Variables.containsKey("n")) {
                         missionItemNumber = Integer.parseInt(andruavResala_remoteExecute.Variables.get("n")); // n not fn
@@ -1672,7 +1607,7 @@ public abstract class AndruavWSClientBase {
                 // A remote units is RequestING a GeoFencePoint Status of Me
                 case AndruavMessage_GeoFence.TYPE_AndruavMessage_GeoFence: {// This is a request from outside [Drone or GCS] to all or a specific
                     // fence detail. fencename is specific is sent in a variable "fn" -fence name-.
-                    if ((andruavUnit != null) && (!AndruavSettings.andruavWe7daBase.getIsCGS())) {
+                    if (andruavUnit != null) {
                         final String fenceName = andruavResala_remoteExecute.Variables.get("fn");
                         if (fenceName != null) {
                             final GeoFenceBase geoFenceMapBase = GeoFenceManager.get(fenceName);
@@ -1690,7 +1625,7 @@ public abstract class AndruavWSClientBase {
 
 
                 case AndruavSystem_LoadTasks.TYPE_AndruavSystem_LoadTasks:
-                    if ((andruavUnit != null) && (!AndruavSettings.andruavWe7daBase.getIsCGS())) {
+                    if (andruavUnit != null) {
                         int taskscope = 0;
                         if (andruavResala_remoteExecute.Variables.containsKey("ts")) {
                             taskscope = andruavResala_remoteExecute.getIntValue("ts"); // task scope {

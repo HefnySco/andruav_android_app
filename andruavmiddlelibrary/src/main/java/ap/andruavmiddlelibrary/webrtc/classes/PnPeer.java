@@ -3,7 +3,6 @@ package ap.andruavmiddlelibrary.webrtc.classes;
 import android.util.Log;
 
 import com.andruav.AndruavEngine;
-import com.andruav.AndruavSettings;
 import com.andruav.andruavUnit.AndruavUnitBase;
 
 import org.json.JSONException;
@@ -182,9 +181,6 @@ public class PnPeer implements SdpObserver, PeerConnection.Observer {
 
                 break;
             case HAVE_REMOTE_OFFER:
-                if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                    AndruavEngine.getEventBus().post(new Event_WebRTC(this.id, this.mChannel, Event_WebRTC.EVENT_CONNECTION_REQUEST));
-                }
                 break;
 
         }

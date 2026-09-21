@@ -106,7 +106,7 @@ public class MainDroneActiviy extends AppCompatActivity {
                                         }
                                     });
                             App.stopAndruavWS(true); // destroy WS
-                            App.defineAndruavUnit(false);
+                            App.defineAndruavUnit();
                         } else if (event_LoginClient.LastError == LoginClient.ERR_SERVER_UNREACHABLE) {
                             DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.login_login), getString(ap.andruavmiddlelibrary.R.string.login_action_unreachable), null);
                             AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.login_action_unreachable));

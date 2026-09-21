@@ -213,10 +213,6 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
     public static void sendHangUpTo (final String userID)
     {
         try {
-            if (AndruavSettings.andruavWe7daBase.getIsCGS())
-            {
-                return ;
-            }
             final JSONObject packet =  AndruavPeerConnectionClientClient.generateHangupPacket(PeerConnectionManager.CameraID) ;
 
             AndruavFacade.sendWebRTCSignalingJSONMessage(packet,userID,true);

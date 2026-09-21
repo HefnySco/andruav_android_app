@@ -8,14 +8,12 @@ import android.os.HandlerThread;
 import com.MAVLink.Parser;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
-import com.andruav.TelemetryProtocol;
 import com.andruav.controlBoard.ControlBoardBase;
 
 import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 import com.andruav.event.fcb_event.Event_FCBData;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
-import com.andruav.event.fcb_event.Event_SocketAction;
 import com.andruav.event.fcb_event.Event_SocketData;
 
 /**
@@ -46,23 +44,6 @@ public class TelemetryProtocolParser {
         this.shutDown();
         App.telemetryProtocolParser = null;
     }
-
-    @Subscribe
-    public void onEvent(Event_SocketAction eventSocketAction) {
-        try {
-            if (eventSocketAction.socketAction == Event_SocketAction.SOCKETACTION_CLIENT_DISCONNECTED) {
-                if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                    AndruavSettings.andruavWe7daBase.setTelemetry_protocol(TelemetryProtocol.TelemetryProtocol_No_Telemetry);
-                }
-            }
-        }
-        catch ( Exception e)
-        {
-            AndruavEngine.log().logException("gcs-exception1", e);
-        }
-    }
-
-
 
     /**
      * Bluetooth or USB data that should be sent to mTelemetryRequests units.
@@ -105,10 +86,6 @@ public class TelemetryProtocolParser {
 
         if (event.IsLocal == Event_SocketData.SOURCE_SIMULATED) return; // this could be  a loopback
 
-
-        // Parse and sendMessageToModule binary data to FCB Classes
-        sendGCSTelemetry(event);
-
     }
 
 
@@ -131,8 +108,6 @@ public class TelemetryProtocolParser {
         mhandlerThread = new HandlerThread("WS_SendCMD");
         mhandlerThread.start(); //mhandlerThread.getLooper() will return nll if not started.
 
-        // Note that sendGCSTelemetry & sendFCBTelemetry have different implementations
-        // and meaning based on the iimplementer GCS or Drone
         mhandler = new Handler(mhandlerThread.getLooper());
     }
 
@@ -149,12 +124,6 @@ public class TelemetryProtocolParser {
         } catch (Exception e) {
             AndruavEngine.log().logException("teleprotoparser", e);
         }
-    }
-
-
-    protected void sendGCSTelemetry (final Event_SocketData event_socketData)
-    {
-
     }
 
 

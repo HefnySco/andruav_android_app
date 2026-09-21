@@ -574,9 +574,7 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
                 // failed to update camera module.
             }
             AndruavEngine.getEventBus().post(new Event_RecordVideoStatus(Event_RecordVideoStatus.CONST_IS_RECORDING));
-            if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
-                AndruavFacade.broadcastID();
-            }
+            AndruavFacade.broadcastID();
         } catch (Exception e) {
             e.printStackTrace();
             mRecordVideo = false;
@@ -610,9 +608,7 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
         } catch (Exception ex) {
             // failed to update camera module.
         }
-        if (!AndruavSettings.andruavWe7daBase.getIsCGS()) {
-            AndruavFacade.broadcastID();
-        }
+        AndruavFacade.broadcastID();
     }
 
     ///////////////////////  VSink / VideoSink (recording feed)

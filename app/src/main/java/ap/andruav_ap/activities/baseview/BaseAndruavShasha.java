@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.andruav.AndruavSettings;
 import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
 
 import ap.andruav_ap.R;
@@ -43,11 +42,6 @@ public class BaseAndruavShasha extends AppCompatActivity {
     @Subscribe
     public void onEvent(final _7adath_InitAndroidCamera adath_initAndroidCamera) {
 
-        if (AndruavSettings.andruavWe7daBase.getIsCGS()) {
-            // you cannot switch screen for a user.
-            return;
-        }
-
         // Note: starting FPVStreamingService itself is guaranteed by App's own EventBus
         // subscriber, which - unlike this one - is never unregistered and so still fires while
         // the app is backgrounded. This subscriber only runs while some BaseAndruavShasha
@@ -67,13 +61,6 @@ public class BaseAndruavShasha extends AppCompatActivity {
     @Subscribe
     public void onEvent (GUIEvent_EnableFlashing guiEvent_enableFlashing)
     {
-        if (AndruavSettings.andruavWe7daBase.getIsCGS())
-        {
-            // you cannot switch screen for a user.
-            return;
-        }
-
-
         if (guiEvent_enableFlashing.enableFlashing) {
             mbaseAndruavActivityHandler.post(new Runnable() {
                 @Override

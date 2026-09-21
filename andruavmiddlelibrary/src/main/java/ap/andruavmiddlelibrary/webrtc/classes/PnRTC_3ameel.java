@@ -1,6 +1,5 @@
 package ap.andruavmiddlelibrary.webrtc.classes;
 
-import com.andruav.AndruavSettings;
 import com.andruav.andruavUnit.AndruavUnitBase;
 
 import org.json.JSONException;
@@ -47,18 +46,9 @@ public class PnRTC_3ameel {
     {
 
         final MediaConstraints pcConstraints = new MediaConstraints();
-        if (AndruavSettings.andruavWe7daBase.getIsCGS())
-        {
-            pcConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
-            pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "false"));
-            pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
-        }
-        else
-        {
-            pcConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
-            pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "false"));
-            pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "false"));
-        }
+        pcConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
+        pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "false"));
+        pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "false"));
 
         // Actual capture resolution is fixed directly on the VideoCapturer by
         // PeerConnectionManager (per-facing Camera Resolution preference); videoConstraints here

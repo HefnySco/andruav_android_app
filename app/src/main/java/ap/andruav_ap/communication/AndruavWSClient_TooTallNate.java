@@ -8,7 +8,6 @@ import com.andruav.AndruavDroneFacade;
 import com.andruav.AndruavFacade;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
-import com.andruav.Constants;
 import com.andruav.TelemetryProtocol;
 import com.andruav.event.droneReport_Event.Event_Battery_Ready;
 import com.andruav.event.droneReport_Event.Event_GPS_Ready;
@@ -59,8 +58,6 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
     private static final int telemetryBytesIndex=0;
     // private static byte[] telemetryCommand = new byte[telemetryBufferLength + 20];
     private static final int telemetryCommandIndex=0;
-    private final static  long monPingDroneTelemetryDuration    =30000;  //should be > monSlowOperationTicks
-    private static  long monPingDroneTelemetry=0;
 
     /////////// EOF Attributes
 
@@ -188,7 +185,7 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
     @Subscribe(priority = 1)
     public void onEvent (final Event_Battery_Ready a7adath_battery_ready) {
 
-        if ((AndruavSettings.andruavWe7daBase.getIsCGS()) || (getSocketState()!= SOCKETSTATE_REGISTERED)) {
+        if (getSocketState()!= SOCKETSTATE_REGISTERED) {
             return;
         }
 
@@ -240,25 +237,6 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
     private void initHandlerClient () {
 
         mhandler.postDelayed(ScheduledSocket, 100);
-    }
-
-    /**
-     * Send Telemetry message to target Drone
-     * @param Data
-     */
-    public void sendTelemetryfromGCS(final byte[] Data,String telemetryTarget)
-    {
-
-        if (getSocketState() != SOCKETSTATE_REGISTERED) {
-            // TODO: ENH: Add notification here based o TIME
-            return;
-        }
-
-        if (AndruavSettings.remoteTelemetryAndruavWe7da==null) return ; // no broadcast
-        AndruavResalaBinary_LightTelemetry andruavMessage_telemetry = new AndruavResalaBinary_LightTelemetry();
-        andruavMessage_telemetry.setData(Data);
-        sendMessageToIndividual(andruavMessage_telemetry, telemetryTarget, false);
-
     }
 
     /***
@@ -325,12 +303,6 @@ public class AndruavWSClient_TooTallNate extends AndruavWSClientBase_TooTallNate
     @Override
     protected void onScheduledTasks(final long now)
     {
-        // Tell Drone that I am listening for you, so if you restarted for any reason please restart data for me
-        if ((now - monPingDroneTelemetry) > monPingDroneTelemetryDuration) {
-            // Ping Drone Telemetry
-            monPingDroneTelemetry = now;
-            AndruavFacade.ResumeTelemetry(Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
-        }
     }
 
 

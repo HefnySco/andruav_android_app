@@ -701,14 +701,6 @@ public class Preference {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "mePMWRUHZFwA", bEnabled);
     }
 
-    public static int getSerialServerPort(final android.content.ContextWrapper contextWrapper) {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "Mk7t653F7xw", 5760);
-    }
-
-    public static void setSerialServerPort(final android.content.ContextWrapper contextWrapper, final int portNum) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "Mk7t653F7xw", portNum);
-    }
-
     /***
      * Used as a selector with the combo box appeared in the USB screen
      *
@@ -1315,7 +1307,6 @@ public class Preference {
         Preference.setEncryptedWSKey(contextWrapper, "0123456789ABCDEF");
 
 
-        Preference.setSerialServerPort(contextWrapper, AndruavEngine.getPreference().getContext().getResources().getInteger(R.integer.pref_hub_Port));
         Preference.isAutoFCBConnect(contextWrapper, false);
         Preference.isAutoUDPProxyConnect(contextWrapper, true);
         Preference.isMobileSensorsDisabled(contextWrapper, false);

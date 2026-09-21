@@ -51,7 +51,6 @@ import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
 import com.andruav.event.networkEvent._7adath_ConnectionQuality;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
 import com.andruav.andruavUnit.AndruavUnitMe;
-import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.Constants;
 import com.andruav.TelemetryProtocol;
 import com.andruav.event.droneReport_Event.Event_FCB_Changed;
@@ -65,7 +64,6 @@ import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.communication.AndruavWSClient_TooTallNate;
 import ap.andruav_ap.communication.ControlBoardFactory;
 import ap.andruav_ap.communication.telemetry.IEvent_SocketData;
-import ap.andruav_ap.communication.telemetry.SerialSocketServer.AndruavGCSSerialSocketServer;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 
 import com.andruav.event.networkEvent.EventSocketState;
@@ -162,7 +160,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     public static PendingIntent MainPendingIntent;
     public static KMLFileHandler KMLFile;
 
-    protected static AndruavGCSSerialSocketServer andruavGCSSerialSocketServer;
     public static DroneKitServer droneKitServer;
     public static BlueToothFCB BT;
     /*public static USBFCB usbConn;
@@ -242,8 +239,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         // onPause() whenever no Activity is resumed). A remote/board-triggered camera start must
         // reach FPVStreamingService (Context-only, independent of any Activity) even while the app
         // is fully backgrounded - this is the one place guaranteed to still be listening then.
-        if (AndruavSettings.andruavWe7daBase.getIsCGS()) return;
-
         // If a MediaProjection permission was pre-granted (before flight, via the long-press on
         // the camera-swap button), start screen-capture streaming instead of camera. This lets a
         // mid-flight remote stream request use screen capture with no permission dialog. Skip the
@@ -376,16 +371,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                 else if (msg.obj instanceof  _7adath_ConnectionQuality) {
                     AndruavDroneFacade.sendCommSignalStatus(null, true);
                 }
-                else if (msg.obj instanceof Event_FCB_Changed) {
-                    // Restore Old Telemetry
-                    final Event_FCB_Changed adath_fcb_changed = (Event_FCB_Changed) msg.obj;
-                    final AndruavUnitBase andruavWe7da = adath_fcb_changed.andruavUnitBase;
-                    if ((andruavWe7da.FCBoard!= null)  && (AndruavSettings.remoteTelemetryAndruavWe7da != null) && andruavWe7da.IsMe()) {   // it is already connected to me
-
-                        AndruavFacade.ResumeTelemetry(Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
-                        TTS.getInstance().Speak(getString(ap.andruavmiddlelibrary.R.string.action_res_tel));
-                    }
-                }
                 else if (msg.obj instanceof _7adath_FCB_2AMR) {
                     final _7adath_FCB_2AMR adath_fcb_2AMR = (_7adath_FCB_2AMR)msg.obj;
 
@@ -448,7 +433,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         @Override
         public void onSignalStrengthsChanged(SignalStrength sStrength) {
-            if (shutdown || AndruavSettings.andruavWe7daBase.getIsCGS()) return;
+            if (shutdown) return;
 
             try {
                 final int dbm = extractDbm(sStrength);
@@ -715,40 +700,10 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         return iFPVStreamingService != null;
     }
 
-    public static void sendTelemetryfromGCS (final byte[] Data, AndruavUnitBase telemetryTarget)
-    {
-        if (AndruavEngine.getAndruavWS() != null) ((AndruavWSClient_TooTallNate) AndruavEngine.getAndruavWS()).sendTelemetryfromGCS(Data, telemetryTarget.PartyID);
-    }
-
     public static void sendTelemetryfromDrone(final byte[] Data)
     {
         if (AndruavEngine.getAndruavWS() != null) ((AndruavWSClient_TooTallNate) AndruavEngine.getAndruavWS()).sendTelemetryfromDrone(Data);
 
-    }
-
-    public static boolean isSocketListenerRunning()
-    {
-        if (andruavGCSSerialSocketServer == null) return false;
-        return  andruavGCSSerialSocketServer.isRunning();
-    }
-
-    public static void startsocketListener ()
-    {
-
-        TTS.getInstance().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_serialsocket_started));
-        if (andruavGCSSerialSocketServer ==null)
-        {
-            andruavGCSSerialSocketServer = new AndruavGCSSerialSocketServer();
-        }
-        andruavGCSSerialSocketServer.Listen("0.0.0.0", Preference.getSerialServerPort(null));
-    }
-
-
-
-    public static void stopsocketListener () {
-        TTS.getInstance().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_serialsocket_stopped));
-        if (andruavGCSSerialSocketServer == null) return ;
-        andruavGCSSerialSocketServer.stopListening();
     }
 
     /***
@@ -873,10 +828,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         // the link comes alive.
         startAndruavLinkService();
 
-        if ((AndruavSettings.andruavWe7daBase.getTelemetry_protocol()==TelemetryProtocol.TelemetryProtocol_No_Telemetry) && (AndruavSettings.andruavWe7daBase.getIsCGS()))
-        {   // a GCS is always a telemetry
-            AndruavSettings.andruavWe7daBase.setTelemetry_protocol(TelemetryProtocol.TelemetryProtocol_Unknown_Telemetry);
-        }
         String websocketURL = "wss://" + LoginClient.getWSURL();
 
         if (AndruavEngine.getAndruavWS() == null)
@@ -1057,7 +1008,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
 
 
-        defineAndruavUnit(false);
+        defineAndruavUnit();
         //exceptionDaoLogger.Logentris(AndruavSettings.AccessCode,"INFO","Started");
 
 
@@ -1099,9 +1050,9 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
     }
 
-    public static void defineAndruavUnit(final boolean isGCS)
+    public static void defineAndruavUnit()
     {
-        AndruavSettings.andruavWe7daBase = new AndruavUnitMe(isGCS);
+        AndruavSettings.andruavWe7daBase = new AndruavUnitMe();
         AndruavSettings.andruavWe7daBase.setTelemetry_protocol(TelemetryProtocol.TelemetryProtocol_No_Telemetry);  // reset telemetry
 
 
@@ -1149,8 +1100,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                 // deprecated PhoneStateListener is unreliable on newer Android.
                 // This guarantees the web client gets mobile info at least every 15s.
                 if (mManager != null && !shutdown
-                        && AndruavSettings.andruavWe7daBase != null
-                        && !AndruavSettings.andruavWe7daBase.getIsCGS()) {
+                        && AndruavSettings.andruavWe7daBase != null) {
                     if ((now - mlastTimeSignalSend) > 15000) {
                         mlastTimeSignalSend = now;
                         updateMobileInfo();
@@ -1222,7 +1172,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         // GCS Data Block
         Preference.setChannelRCBlock(null,8);
         Preference.setChannelRCBlock_min_value(null,1500);
-        Preference.setSerialServerPort(null,5760);
 
     }
 

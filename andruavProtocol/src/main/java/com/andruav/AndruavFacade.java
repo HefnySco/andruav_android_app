@@ -6,7 +6,6 @@ import com.andruav.controlBoard.shared.missions.MissionBase;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitShadow;
 import com.andruav.event.droneReport_Event.Event_GeoFence_Hit;
-import com.andruav.event.droneReport_Event.Event_TelemetryGCSRequest;
 import com.andruav.interfaces.INotification;
 import com.andruav.controlBoard.shared.missions.MohemmaMapBase;
 import com.andruav.controlBoard.shared.geoFence.GeoFenceBase;
@@ -100,76 +99,6 @@ public class AndruavFacade extends AndruavFacadeBase{
     }
 
 
-    /***
-     *
-     * @param target
-     * @param smartTelemetry_Level {@link  Constants#SMART_TELEMETRY_LEVEL_0} to {@link  Constants#SMART_TELEMETRY_LEVEL_3}. {@link Constants#SMART_TELEMETRY_LEVEL_NEGLECT} means will be neglected, and Drone will use its defined value.
-     */
-    public static void StartTelemetry(final AndruavUnitShadow target, final int smartTelemetry_Level)
-    {
-        if (!AndruavSettings.andruavWe7daBase.canTelemetry())
-        {
-            return;
-        }
-
-        if (AndruavSettings.remoteTelemetryAndruavWe7da != null)
-        {
-            if (AndruavSettings.remoteTelemetryAndruavWe7da.Equals(target))
-            {
-                // resume the current connection
-                ResumeTelemetry(smartTelemetry_Level);
-                return;
-            }
-            else
-            {
-                // disconnect old and connect to new one.
-                StopTelemetry();
-
-            }
-
-        }
-
-        SendTelemetry(Event_TelemetryGCSRequest.REQUEST_START,target,smartTelemetry_Level);
-    }
-
-    /***
-     *
-     * Resume connection with a current defined Drone.
-     *
-     * @param smartTelemetryLevel {@link  Constants#SMART_TELEMETRY_LEVEL_0} to {@link  Constants#SMART_TELEMETRY_LEVEL_3}. {@link Constants#SMART_TELEMETRY_LEVEL_NEGLECT} means will be neglected, and Drone will use its defined value.
-     */
-    public static void ResumeTelemetry(final int smartTelemetryLevel)
-    {
-        if (!AndruavSettings.andruavWe7daBase.canTelemetry())
-        {
-            return;
-        }
-
-        if (AndruavSettings.remoteTelemetryAndruavWe7da == null)
-        {
-            // Nothing to resume
-            return;
-        }
-
-        SendTelemetry(Event_TelemetryGCSRequest.REQUEST_RESUME,AndruavSettings.remoteTelemetryAndruavWe7da,smartTelemetryLevel);
-    }
-
-    public static void StopTelemetry()
-    {
-        if (!AndruavSettings.andruavWe7daBase.canTelemetry())
-        {
-            return;
-        }
-
-        if (AndruavSettings.remoteTelemetryAndruavWe7da == null)
-        {
-            // nothing to stop
-            return;
-        }
-
-        SendTelemetry(Event_TelemetryGCSRequest.REQUEST_END,AndruavSettings.remoteTelemetryAndruavWe7da, Constants.SMART_TELEMETRY_LEVEL_NEGLECT);
-    }
-
     public static void StartUdpProxyTelemetry()
     {
         final AndruavSystem_UdpProxy andruavMessage_UdpProxy = new AndruavSystem_UdpProxy();
@@ -191,48 +120,6 @@ public class AndruavFacade extends AndruavFacadeBase{
 
         sendMessage(andruavMessage_udpProxy_info,target, Boolean.FALSE);
     }
-
-    /***
-     *  /***
-     * Request to (Start or Stop) telemetry data from a remote terminal
-     * @param action _7adath_TelemetryGCSRequest values. Start , Stop , Resume.
-     * @param target remote unit name
-     * @param smartTelemetryLevel
-     */
-    private static void SendTelemetry (final int action, final AndruavUnitShadow target, final int smartTelemetryLevel) {
-
-        final AndruavMessage_RemoteExecute andruavMessage_remoteExecute = new AndruavMessage_RemoteExecute();
-        andruavMessage_remoteExecute.RemoteCommandID = AndruavMessage_RemoteExecute.RemoteCommand_TELEMETRYCTRL;
-        andruavMessage_remoteExecute.Variables.put("Act", String.valueOf(action));
-
-        if (action != Event_TelemetryGCSRequest.REQUEST_END)
-        {
-            AndruavSettings.remoteTelemetryAndruavWe7da = target;
-
-            if (smartTelemetryLevel != Constants.SMART_TELEMETRY_LEVEL_NEGLECT)
-            {
-                // enforce Smart Telemetry Level
-                andruavMessage_remoteExecute.Variables.put("LVL", String.valueOf(smartTelemetryLevel));
-            }
-
-        }
-        else
-        {
-            AndruavSettings.remoteTelemetryAndruavWe7da = null;
-        }
-
-
-        sendMessage(andruavMessage_remoteExecute,target, Boolean.FALSE);
-    }
-
-
-
-
-
-
-
-
-
 
     /***
      *  Possinle Contradiction {@link   }
@@ -418,8 +305,6 @@ public class AndruavFacade extends AndruavFacadeBase{
      */
     public static void sendWayPoints(final AndruavUnitBase andruavUnitBase)
     {
-        if (AndruavSettings.andruavWe7daBase.getIsCGS()) return ;
-
         final MohemmaMapBase mohemmaMapBase = AndruavSettings.andruavWe7daBase.getMohemmaMapBase();
         AndruavMessage_WayPoints andruavMessage_wayPoints = new AndruavMessage_WayPoints();
 

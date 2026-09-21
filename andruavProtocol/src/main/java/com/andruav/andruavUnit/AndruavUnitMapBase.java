@@ -4,7 +4,6 @@ import androidx.collection.SimpleArrayMap;
 
 import com.andruav.AndruavFacade;
 import com.andruav.AndruavEngine;
-import com.andruav.AndruavSettings;
 import com.andruav.Constants;
 import com.andruav.sensors.AndruavIMU;
 import com.andruav.controlBoard.shared.missions.MissionBase;
@@ -98,11 +97,8 @@ public class AndruavUnitMapBase extends SimpleArrayMap<String, AndruavUnitBase> 
      */
     public AndruavUnitBase put(final Andruav_2MR andruav2MR) {
 
-        boolean first = false;
-
         AndruavUnitBase andruavUnit = get(andruav2MR.partyID);
         if (andruavUnit == null) {
-            first = true;
 
             andruavUnit = AndruavEngine.getAndruavWe7daMasna3().createAndruavUnitClass(andruav2MR.groupName, andruav2MR.partyID,((AndruavMessage_ID) andruav2MR.andruavMessageBase).IsCGS);
 
@@ -158,11 +154,6 @@ public class AndruavUnitMapBase extends SimpleArrayMap<String, AndruavUnitBase> 
 
         put(andruav2MR.partyID, andruavUnit);
 
-
-
-        if (first && (!andruavUnit.getIsCGS()) && (AndruavSettings.andruavWe7daBase.getIsCGS())) {
-            AndruavEngine.notification().displayNotification(INotification.NOTIFICATION_TYPE_NORMAL, "Andruav", andruavUnit.UnitID, true, INotification.INFO_TYPE_PROTOCOL, false);
-        }
 
 
         return andruavUnit;
