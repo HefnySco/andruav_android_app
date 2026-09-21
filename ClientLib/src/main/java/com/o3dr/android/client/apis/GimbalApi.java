@@ -127,10 +127,6 @@ public final class GimbalApi extends Api implements DroneListener {
         this.drone.registerDroneListener(this);
     }
 
-    public GimbalOrientation getGimbalOrientation(){
-        return new GimbalOrientation(gimbalOrientation);
-    }
-
     /**
      * Enables control of the gimbal. After calling this method, use {@link GimbalApi#updateGimbalOrientation(float, float, float, GimbalOrientationListener)}
      * to update the gimbal orientation.
@@ -167,45 +163,6 @@ public final class GimbalApi extends Api implements DroneListener {
 
             @Override
             public void onError(int error) {
-                listener.onGimbalOrientationCommandError(error);
-            }
-        });
-    }
-
-    /**
-     * Disables control of the gimbal. After calling this method, no call to {@link GimbalApi#updateGimbalOrientation(float, float, float, GimbalOrientationListener)}
-     * will be allowed.
-     * @param listener non-null GimbalStatusListener callback.
-     *
-     * @since 2.5.0
-     */
-    public void stopGimbalControl(final GimbalOrientationListener listener){
-        if(listener == null)
-            throw new NullPointerException("Listener can't be null.");
-
-        if(!gimbalListeners.contains(listener)){
-            drone.post(new Runnable() {
-                @Override
-                public void run() {
-                    listener.onGimbalOrientationCommandError(CommandExecutionError.COMMAND_DENIED);
-                }
-            });
-            return;
-        }
-
-        gimbalListeners.remove(listener);
-
-        //Reset the gimbal mount to the default.
-        Bundle params = new Bundle(1);
-        params.putInt(GIMBAL_MOUNT_MODE, MAV_MOUNT_MODE.MAV_MOUNT_MODE_RC_TARGETING);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_SET_GIMBAL_MOUNT_MODE, params), new SimpleCommandListener(){
-           @Override
-            public void onTimeout(){
-               listener.onGimbalOrientationCommandError(CommandExecutionError.COMMAND_FAILED);
-           }
-
-            @Override
-            public void onError(int error){
                 listener.onGimbalOrientationCommandError(error);
             }
         });

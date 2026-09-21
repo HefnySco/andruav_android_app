@@ -408,7 +408,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
                 droneEvent = AttributeEvent.SIGNAL_UPDATED;
                 break;
 
-           case ARMING_STARTED:
             case ARMING:
                 droneEvent = AttributeEvent.STATE_ARMING;
                 break;
@@ -490,9 +489,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
                 droneEvent = AttributeEvent.MISSION_SENT;
                 break;
 
-            case INVALID_POLYGON:
-                break;
-
             case MISSION_WP_UPDATE:
                 if (drone instanceof MavLinkDrone) {
                     int currentWaypoint = ((MavLinkDrone) drone).getMissionStats().getCurrentWP();
@@ -513,16 +509,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
                 droneEvent = AttributeEvent.ALTITUDE_UPDATED;
                 break;
 
-            case WARNING_SIGNAL_WEAK:
-                droneEvent = AttributeEvent.SIGNAL_WEAK;
-                break;
-
-            case WARNING_NO_GPS:
-                droneEvent = AttributeEvent.WARNING_NO_GPS;
-                break;
-
-
-
             case EKF_STATUS_UPDATE:
                 droneEvent = AttributeEvent.STATE_EKF_REPORT;
                 break;
@@ -532,10 +518,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
                 break;
 
 
-            //MHEFNY:
-            case VFR_HUD:
-                droneEvent = AttributeEvent.VFR_HUD;
-                break;
         }
 
         if (droneEvent != null) {

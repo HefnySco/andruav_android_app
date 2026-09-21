@@ -57,18 +57,6 @@ public class MavLinkCommands {
         drone.getMavClient().sendMessage(msg, null);
     }
 
-    public static void sendGuidedPosition(MavLinkDrone drone, double latitude, double longitude, double altitude){
-        msg_set_position_target_global_int msg = new msg_set_position_target_global_int();
-        msg.type_mask = MAVLINK_SET_POS_TYPE_MASK_ACC_IGNORE | MAVLINK_SET_POS_TYPE_MASK_VEL_IGNORE;
-        msg.coordinate_frame = MAV_FRAME.MAV_FRAME_GLOBAL_RELATIVE_ALT_INT;
-        msg.lat_int = (int) (latitude * 1E7);
-        msg.lon_int = (int) (longitude * 1E7);
-        msg.alt = (float) altitude;
-        msg.target_system = drone.getSysid();
-        msg.target_component = drone.getCompid();
-        drone.getMavClient().sendMessage(msg, null);
-    }
-
     public static void sendGuidedVelocityGlobal(MavLinkDrone drone, double xVel, double yVel, double zVel, double yawRate, double yaw, short coordinateFrame, short typeMask){
         msg_set_position_target_global_int msg = new msg_set_position_target_global_int();
         msg.type_mask =  typeMask;
@@ -92,33 +80,6 @@ public class MavLinkCommands {
         msg.vz = (float) zVel;
         msg.yaw = (float) yaw;
         msg.yaw_rate = (float) yawRate;
-        msg.target_system = drone.getSysid();
-        msg.target_component = drone.getCompid();
-        drone.getMavClient().sendMessage(msg, null);
-    }
-
-    public static void setVelocityInLocalFrame(MavLinkDrone drone, float xVel, float yVel, float zVel, ICommandListener listener){
-        msg_set_position_target_local_ned msg = new msg_set_position_target_local_ned();
-        msg.type_mask = MAVLINK_SET_POS_TYPE_MASK_ACC_IGNORE | MAVLINK_SET_POS_TYPE_MASK_POS_IGNORE;
-        msg.vx = xVel;
-        msg.vy = yVel;
-        msg.vz = zVel;
-        msg.target_system = drone.getSysid();
-        msg.target_component = drone.getCompid();
-        drone.getMavClient().sendMessage(msg, listener);
-    }
-
-    public static void sendGuidedPositionAndVelocity(MavLinkDrone drone, double latitude, double longitude, double altitude,
-                                                     double xVel, double yVel, double zVel){
-        msg_set_position_target_global_int msg = new msg_set_position_target_global_int();
-        msg.type_mask = MAVLINK_SET_POS_TYPE_MASK_ACC_IGNORE;
-        msg.coordinate_frame = MAV_FRAME.MAV_FRAME_GLOBAL_RELATIVE_ALT_INT;
-        msg.lat_int = (int) (latitude * 1E7);
-        msg.lon_int = (int) (longitude * 1E7);
-        msg.alt = (float) altitude;
-        msg.vx = (float) xVel;
-        msg.vy = (float) yVel;
-        msg.vz = (float) zVel;
         msg.target_system = drone.getSysid();
         msg.target_component = drone.getCompid();
         drone.getMavClient().sendMessage(msg, null);

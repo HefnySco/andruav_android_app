@@ -10,14 +10,12 @@ import com.o3dr.services.android.lib.model.action.Action;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_CHANGE_MISSION_SPEED;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_GOTO_WAYPOINT;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_LOAD_WAYPOINTS;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_SET_MISSION;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_START_MISSION;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_FORCE_ARM;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_FORCE_MODE_CHANGE;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_MISSION;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_MISSION_ITEM_INDEX;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_MISSION_SPEED;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_PUSH_TO_DRONE;
 
@@ -79,33 +77,10 @@ public class MissionApi extends Api {
     }
 
     /**
-     * Jump to the desired command in the mission list. Repeat this action only the specified number of times
-     * @param waypoint command to jump to
-     * @param listener
-     */
-    public void gotoWaypoint(int waypoint, AbstractCommandListener listener){
-        Bundle params = new Bundle();
-        params.putInt(EXTRA_MISSION_ITEM_INDEX, waypoint);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_GOTO_WAYPOINT, params), listener);
-    }
-
-    /**
      * Load waypoints from the target vehicle.
      */
     public void loadWaypoints() {
         drone.performAsyncAction(new Action(ACTION_LOAD_WAYPOINTS));
-    }
-
-    /**
-     * Stops the vehicle at the current location. The vehicle will remain in Auto mode
-     * @param listener
-     *
-     * @since 2.8.0
-     */
-    public void pauseMission(AbstractCommandListener listener) {
-        Bundle params = new Bundle();
-        params.putFloat(EXTRA_MISSION_SPEED, 0);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_CHANGE_MISSION_SPEED, params), listener);
     }
 
     /**

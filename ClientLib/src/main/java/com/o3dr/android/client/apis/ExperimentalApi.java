@@ -3,7 +3,6 @@ package com.o3dr.android.client.apis;
 import android.os.Bundle;
 
 import com.o3dr.android.client.Drone;
-import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.mavlink.MavlinkMessageWrapper;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
 import com.o3dr.services.android.lib.model.action.Action;
@@ -11,16 +10,11 @@ import com.o3dr.services.android.lib.model.action.Action;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.ACTION_SEND_MAVLINK_MESSAGE;
-import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.ACTION_SET_RELAY;
-import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.ACTION_SET_ROI;
 import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.ACTION_SET_SERVO;
 import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.ACTION_TRIGGER_CAMERA;
-import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.EXTRA_IS_RELAY_ON;
 import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.EXTRA_MAVLINK_MESSAGE;
-import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.EXTRA_RELAY_NUMBER;
 import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.EXTRA_SERVO_CHANNEL;
 import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.EXTRA_SERVO_PWM;
-import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.EXTRA_SET_ROI_LAT_LONG_ALT;
 
 /**
  * Contains drone commands with no defined interaction model yet.
@@ -58,28 +52,6 @@ public class ExperimentalApi extends Api {
     }
 
     /**
-     * Specify a region of interest for the vehicle to point at.
-     *
-     * @param roi Region of interest coordinate.
-     */
-    public void setROI(LatLongAlt roi) {
-        setROI(roi, null);
-    }
-
-    /**
-     * Specify a region of interest for the vehicle to point at.
-     *
-     * @param roi      Region of interest coordinate.
-     * @param listener Register a callback to receive update of the command execution state.
-     */
-    public void setROI(LatLongAlt roi, AbstractCommandListener listener) {
-        Bundle params = new Bundle();
-        params.putParcelable(EXTRA_SET_ROI_LAT_LONG_ALT, roi);
-        Action epmAction = new Action(ACTION_SET_ROI, params);
-        drone.performAsyncActionOnDroneThread(epmAction, listener);
-    }
-
-    /**
      * This is an advanced/low-level method to send raw mavlink to the vehicle.
      * <p/>
      * This method is included as an ‘escape hatch’ to allow developers to make progress if we’ve
@@ -98,30 +70,6 @@ public class ExperimentalApi extends Api {
         Bundle params = new Bundle();
         params.putParcelable(EXTRA_MAVLINK_MESSAGE, messageWrapper);
         drone.performAsyncAction(new Action(ACTION_SEND_MAVLINK_MESSAGE, params));
-    }
-
-    /**
-     * Set a Relay pin’s voltage high or low
-     *
-     * @param relayNumber
-     * @param enabled     true for relay to be on, false for relay to be off.
-     */
-    public void setRelay(final int relayNumber, final boolean enabled) {
-        setRelay(relayNumber, enabled, null);
-    }
-
-    /**
-     * Set a Relay pin’s voltage high or low
-     *
-     * @param relayNumber
-     * @param enabled     true for relay to be on, false for relay to be off.
-     * @param listener    Register a callback to receive update of the command execution state.
-     */
-    public void setRelay(final int relayNumber, final boolean enabled, final AbstractCommandListener listener) {
-        Bundle params = new Bundle(2);
-        params.putInt(EXTRA_RELAY_NUMBER, relayNumber);
-        params.putBoolean(EXTRA_IS_RELAY_ON, enabled);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_SET_RELAY, params), listener);
     }
 
     /**

@@ -29,7 +29,6 @@ public class ArduCopter extends ArduPilot {
     private static final Version ARDU_COPTER_V3_3 = Version.forIntegers(3,3,0);
     private static final Version ARDU_COPTER_V3_4 = Version.forIntegers(3,4,0);
 
-    private static final Version BRAKE_FEATURE_FIRMWARE_VERSION = ARDU_COPTER_V3_3;
 
     private ICommandListener manualControlState = null;
 
@@ -40,42 +39,6 @@ public class ArduCopter extends ArduPilot {
     @Override
     public FirmwareType getFirmwareType() {
         return FirmwareType.ARDU_COPTER;
-    }
-
-    @Override
-    protected boolean setVelocity(Bundle data, ICommandListener listener){
-        //Retrieve the normalized values
-        float normalizedXVel = data.getFloat(ControlActions.EXTRA_VELOCITY_X);
-        float normalizedYVel = data.getFloat(ControlActions.EXTRA_VELOCITY_Y);
-        float normalizedZVel = data.getFloat(ControlActions.EXTRA_VELOCITY_Z);
-
-        double attitudeInRad = Math.toRadians(attitude.getYaw());
-
-        final double cosAttitude = Math.cos(attitudeInRad);
-        final double sinAttitude = Math.sin(attitudeInRad);
-
-        float projectedX = (float) (normalizedXVel * cosAttitude) - (float) (normalizedYVel * sinAttitude);
-        float projectedY = (float) (normalizedXVel * sinAttitude) + (float) (normalizedYVel * cosAttitude);
-
-        //Retrieve the speed parameters.
-        float defaultSpeed = 5; //m/s
-
-        ParameterManager parameterManager = getParameterManager();
-
-        //Retrieve the horizontal speed value
-        Parameter horizSpeedParam = parameterManager.getParameter("WPNAV_SPEED");
-        double horizontalSpeed = horizSpeedParam == null ? defaultSpeed : horizSpeedParam.getValue() / 100;
-
-        //Retrieve the vertical speed value.
-        String vertSpeedParamName = normalizedZVel >= 0 ? "WPNAV_SPEED_UP" : "WPNAV_SPEED_DN";
-        Parameter vertSpeedParam = parameterManager.getParameter(vertSpeedParamName);
-        double verticalSpeed = vertSpeedParam == null ? defaultSpeed : vertSpeedParam.getValue() / 100;
-
-        MavLinkCommands.setVelocityInLocalFrame(this, (float) (projectedX * horizontalSpeed),
-                (float) (projectedY * horizontalSpeed),
-                (float) (normalizedZVel * verticalSpeed),
-                listener);
-        return true;
     }
 
     @Override
@@ -132,14 +95,4 @@ public class ArduCopter extends ArduPilot {
         super.notifyDroneEvent(event);
     }
 
-    @Override
-    protected boolean brakeVehicle(ICommandListener listener) {
-        if (getFirmwareVersionNumber().greaterThanOrEqualTo(BRAKE_FEATURE_FIRMWARE_VERSION)) {
-            getState().changeFlightMode(ApmModes.ROTOR_BRAKE, listener);
-        } else {
-            super.brakeVehicle(listener);
-        }
-
-        return true;
-    }
 }

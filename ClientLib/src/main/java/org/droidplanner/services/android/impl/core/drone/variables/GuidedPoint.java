@@ -88,15 +88,6 @@ public class GuidedPoint extends DroneVariable implements OnDroneListener<MavLin
         return false;
     }
 
-    public void pauseAtCurrentLocation(ICommandListener listener) {
-        if (state == GuidedStates.UNINITIALIZED) {
-            changeToGuidedMode(myDrone, listener);
-        } else {
-            newGuidedCoord(getGpsPosition());
-            state = GuidedStates.IDLE;
-        }
-    }
-
     private LatLong getGpsPosition() {
         return getGpsPosition(myDrone);
     }
@@ -177,10 +168,6 @@ public class GuidedPoint extends DroneVariable implements OnDroneListener<MavLin
         changeCoord(coord);
     }
 
-    public void newGuidedPosition(double latitude, double longitude, double altitude) {
-        MavLinkCommands.sendGuidedPosition(myDrone, latitude, longitude, altitude);
-    }
-
     public void newGuidedVelocityInLocalFrame(double xVel, double yVel, double zVel, double yawRate, double yaw, final short coordinate_frame, final short typeMask) {
 
         MavLinkCommands.sendGuidedVelocityLocal(myDrone, xVel, yVel, zVel, yawRate, yaw, coordinate_frame, typeMask);
@@ -189,10 +176,6 @@ public class GuidedPoint extends DroneVariable implements OnDroneListener<MavLin
     public void newGuidedVelocityInGlobalFrame(double xVel, double yVel, double zVel, double yawRate, double yaw, final short coordinate_frame, final short typeMask) {
 
         MavLinkCommands.sendGuidedVelocityGlobal(myDrone, xVel, yVel, zVel, yawRate, yaw, coordinate_frame, typeMask);
-    }
-
-    public void newGuidedCoordAndVelocity(LatLong coord, double xVel, double yVel, double zVel) {
-        changeCoordAndVelocity(coord, xVel, yVel, zVel);
     }
 
     public void changeGuidedAltitude(double alt) {
@@ -214,30 +197,6 @@ public class GuidedPoint extends DroneVariable implements OnDroneListener<MavLin
                 @Override
                 public void run() {
                     changeCoord(coord);
-                }
-            };
-
-            changeToGuidedMode(myDrone, listener);
-        }
-    }
-
-    public void forcedGuidedCoordinate(final LatLong coord, final double alt, final ICommandListener listener) {
-        final Gps droneGps = (Gps) myDrone.getAttribute(AttributeType.GPS);
-        if (!droneGps.has3DLock()) {
-            postErrorEvent(handler, listener, CommandExecutionError.COMMAND_FAILED);
-            return;
-        }
-
-        if (isInitialized()) {
-            changeCoord(coord);
-            changeAlt(alt);
-            postSuccessEvent(handler, listener);
-        } else {
-            mPostInitializationTask = new Runnable() {
-                @Override
-                public void run() {
-                    changeCoord(coord);
-                    changeAlt(alt);
                 }
             };
 
@@ -298,27 +257,6 @@ public class GuidedPoint extends DroneVariable implements OnDroneListener<MavLin
         }
     }
 
-    private void changeCoordAndVelocity(LatLong coord, double xVel, double yVel, double zVel) {
-        switch (state) {
-            case UNINITIALIZED:
-                break;
-
-            case IDLE:
-                state = GuidedStates.ACTIVE;
-                /* FALL THROUGH **/
-            case ACTIVE:
-                this.coord = coord;
-                sendGuidedPointAndVelocity(xVel, yVel, zVel);
-                break;
-        }
-    }
-
-    private void sendGuidedPointAndVelocity(double xVel, double yVel, double zVel) {
-        if (state == GuidedStates.ACTIVE) {
-            forceSendGuidedPointAndVelocity(myDrone, coord, altitude, xVel, yVel, zVel);
-        }
-    }
-
     private void sendGuidedPoint() {
         if (state == GuidedStates.ACTIVE) {
             forceSendGuidedPoint(myDrone, coord, altitude);
@@ -330,15 +268,6 @@ public class GuidedPoint extends DroneVariable implements OnDroneListener<MavLin
         //MHEFNY: BUG when calling change altitude without setting a first destination point coord is NULL
         if (coord != null) {
             MavLinkCommands.setGuidedMode(drone, coord.getLatitude(), coord.getLongitude(), altitudeInMeters);
-        }
-    }
-
-    public static void forceSendGuidedPointAndVelocity(MavLinkDrone drone, LatLong coord, double altitudeInMeters,
-                                                       double xVel, double yVel, double zVel) {
-        drone.notifyDroneEvent(DroneEventsType.GUIDEDPOINT);
-        if (coord != null) {
-            MavLinkCommands.sendGuidedPositionAndVelocity(drone, coord.getLatitude(), coord.getLongitude(), altitudeInMeters, xVel,
-                    yVel, zVel);
         }
     }
 

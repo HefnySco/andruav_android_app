@@ -25,9 +25,7 @@ public class ControlActions {
     public static final String EXTRA_YAW_CHANGE_RATE = "extra_yaw_change_rate";
     public static final String EXTRA_YAW_IS_RELATIVE = "extra_yaw_is_relative";
 
-    public static final String ACTION_SET_VELOCITY = PACKAGE_NAME + ".SET_VELOCITY";
 
-    public static final String ACTION_SEND_BRAKE_VEHICLE = PACKAGE_NAME + ".action.SEND_BRAKE_VEHICLE";
 
     /**
      * X X-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to forward(1000)-backward(-1000) movement on a joystick and the pitch of a vehicle.
@@ -77,12 +75,10 @@ public class ControlActions {
 
     public static final String EXTRA_DO_ENABLE              = "extra_do_enable";
 
-    public static final String ACTION_LOOK_AT_TARGET        = PACKAGE_NAME + ".action.LOOK_AT_TARGET";
 
     /**
      * Geo coordinate to orient the vehicle to
      */
-    public static final String EXTRA_LOOK_AT_TARGET         = "extra_look_at_target";
 
 
     /*

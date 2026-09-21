@@ -158,30 +158,12 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
                 return true;
 
             // EXPERIMENTAL ACTIONS
-            case ExperimentalActions.ACTION_EPM_COMMAND:
-                boolean release = data.getBoolean(ExperimentalActions.EXTRA_EPM_RELEASE);
-                CommonApiUtils.epmCommand(this, release, listener);
-                return true;
-
             case ExperimentalActions.ACTION_TRIGGER_CAMERA:
                 CommonApiUtils.triggerCamera(this);
                 return true;
 
-            case ExperimentalActions.ACTION_SET_ROI:
-                LatLongAlt roi = data.getParcelable(ExperimentalActions.EXTRA_SET_ROI_LAT_LONG_ALT);
-                if (roi != null) {
-                    MavLinkDoCmds.setROI(this, roi, listener);
-                }
-                return true;
-
             case ControlActions.ACTION_RESET_ROI:
                 MavLinkDoCmds.resetROI(this, listener);
-                return true;
-
-            case ExperimentalActions.ACTION_SET_RELAY:
-                int relayNumber = data.getInt(ExperimentalActions.EXTRA_RELAY_NUMBER);
-                boolean isOn = data.getBoolean(ExperimentalActions.EXTRA_IS_RELAY_ON);
-                MavLinkDoCmds.setRelay(this, relayNumber, isOn, listener);
                 return true;
 
             case ExperimentalActions.ACTION_SET_SERVO:
@@ -224,12 +206,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
                 CommonApiUtils.setGuidedVelocityInGlobalFrame(this, xAxis, yAxis, zAxis, yawRate, yaw, coordinateFrame, typeMask, listener);
                 return true;
             }
-
-            case ControlActions.ACTION_LOOK_AT_TARGET:
-                boolean force = data.getBoolean(ControlActions.EXTRA_FORCE_GUIDED_POINT);
-                LatLongAlt lookAtTarget = data.getParcelable(ControlActions.EXTRA_LOOK_AT_TARGET);
-                CommonApiUtils.sendLookAtTarget(this, lookAtTarget, force, listener);
-                return true;
 
             case ControlActions.ACTION_SET_GUIDED_ALTITUDE:
                 double guidedAltitude = data.getDouble(ControlActions.EXTRA_ALTITUDE);
@@ -327,12 +303,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
         data.setClassLoader(VehicleMode.class.getClassLoader());
         VehicleMode newMode = data.getParcelable(StateActions.EXTRA_VEHICLE_MODE);
         CommonApiUtils.changeVehicleMode(this, newMode, listener);
-        return true;
-    }
-
-    @Override
-    protected boolean setVelocity(Bundle data, ICommandListener listener) {
-        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
         return true;
     }
 

@@ -29,10 +29,7 @@ public class MavLinkDoCmds {
         drone.getMavClient().sendMessage(msg, listener);
     }
 
-    public static void setROI(MavLinkDrone drone, LatLongAlt coord, ICommandListener listener) {
-        if (drone == null)
-            return;
-
+    private static void setROI(MavLinkDrone drone, LatLongAlt coord, ICommandListener listener) {
         msg_command_long msg = new msg_command_long();
         msg.target_system = drone.getSysid();
         msg.target_component = drone.getCompid();
@@ -61,40 +58,6 @@ public class MavLinkDoCmds {
         msg.target_component = drone.getCompid();
         msg.shot = 1;
         drone.getMavClient().sendMessage(msg, null);
-    }
-
-    public static void empCommand(MavLinkDrone drone, boolean release, ICommandListener listener) {
-        if (drone == null)
-            return;
-
-        msg_command_long msg = new msg_command_long();
-        msg.target_system = drone.getSysid();
-        msg.target_component = drone.getCompid();
-        msg.command = MAV_CMD.MAV_CMD_DO_GRIPPER;
-        msg.param2 = release ? GRIPPER_ACTIONS.GRIPPER_ACTION_RELEASE : GRIPPER_ACTIONS.GRIPPER_ACTION_GRAB;
-
-        drone.getMavClient().sendMessage(msg, listener);
-    }
-
-    /**
-     * Set a Relay pin’s voltage high or low
-     *
-     * @param drone       target vehicle
-     * @param relayNumber
-     * @param enabled     true for relay to be on, false for relay to be off.
-     */
-    public static void setRelay(MavLinkDrone drone, int relayNumber, boolean enabled, ICommandListener listener) {
-        if (drone == null)
-            return;
-
-        msg_command_long msg = new msg_command_long();
-        msg.target_system = drone.getSysid();
-        msg.target_component = drone.getCompid();
-        msg.command = MAV_CMD.MAV_CMD_DO_SET_RELAY;
-        msg.param1 = relayNumber;
-        msg.param2 = enabled ? 1 : 0;
-
-        drone.getMavClient().sendMessage(msg, listener);
     }
 
     /**
@@ -151,12 +114,4 @@ public class MavLinkDoCmds {
      * @param waypoint command
      * @param listener Register a callback to receive update of the command execution state.
      */
-    public static void gotoWaypoint(MavLinkDrone drone, int waypoint, ICommandListener listener) {
-        if (drone == null)
-            return;
-        msg_mission_set_current msg = new msg_mission_set_current();
-        msg.seq = waypoint;
-        drone.getMavClient().sendMessage(msg, listener);
-    }
-
 }

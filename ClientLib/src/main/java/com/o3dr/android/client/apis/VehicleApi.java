@@ -21,10 +21,8 @@ import static com.o3dr.services.android.lib.drone.action.ParameterActions.EXTRA_
 import static com.o3dr.services.android.lib.drone.action.StateActions.ACTION_ARM;
 import static com.o3dr.services.android.lib.drone.action.StateActions.ACTION_SET_VEHICLE_HOME;
 import static com.o3dr.services.android.lib.drone.action.StateActions.ACTION_SET_VEHICLE_MODE;
-import static com.o3dr.services.android.lib.drone.action.StateActions.ACTION_UPDATE_VEHICLE_DATA_STREAM_RATE;
 import static com.o3dr.services.android.lib.drone.action.StateActions.EXTRA_ARM;
 import static com.o3dr.services.android.lib.drone.action.StateActions.EXTRA_EMERGENCY_DISARM;
-import static com.o3dr.services.android.lib.drone.action.StateActions.EXTRA_VEHICLE_DATA_STREAM_RATE;
 import static com.o3dr.services.android.lib.drone.action.StateActions.EXTRA_VEHICLE_HOME_LOCATION;
 import static com.o3dr.services.android.lib.drone.action.StateActions.EXTRA_VEHICLE_MODE;
 
@@ -162,16 +160,4 @@ public class VehicleApi extends Api {
         drone.performAsyncActionOnDroneThread(new Action(ACTION_SET_VEHICLE_HOME, params), listener);
     }
 
-    /**
-     * Update the vehicle data stream rate.
-     *
-     * @param rate          The new data stream rate
-     * @param listener      Register a callback to receive update of the command execution state
-     * @since 2.9.0
-     */
-    public void updateVehicleDataStreamRate(int rate, final AbstractCommandListener listener){
-        Bundle params = new Bundle();
-        params.putInt(EXTRA_VEHICLE_DATA_STREAM_RATE, rate);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_UPDATE_VEHICLE_DATA_STREAM_RATE, params), listener);
-    }
 }

@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import com.o3dr.services.android.lib.drone.property.Parameter;
 
-import org.droidplanner.services.android.impl.core.MAVLink.WaypointManager;
 import org.droidplanner.services.android.impl.core.drone.autopilot.Drone;
 
 public class DroneInterfaces {
@@ -47,16 +46,6 @@ public class DroneInterfaces {
          *
          */
         RADIO,
-
-        /**
-         *
-         */
-        RC_IN,
-
-        /**
-         *
-         */
-        RC_OUT,
 
         /**
          *
@@ -136,31 +125,12 @@ public class DroneInterfaces {
         /**
          *
          */
-        ARMING_STARTED,
-
-        /**
-         *
-         */
-        INVALID_POLYGON,
-
-        /**
-         *
-         */
         MISSION_WP_UPDATE,
 
-        /**
-         *
-         */
-        WARNING_SIGNAL_WEAK,
         /**
          * Announces that a new version for the firmware has been received
          */
         FIRMWARE,
-
-        /**
-         * Warn that the drone has no gps signal
-         */
-        WARNING_NO_GPS,
 
         /**
          * The ekf status was updated.
@@ -178,8 +148,6 @@ public class DroneInterfaces {
         MISSION_WP_REACHED,
 
 
-        //MHEFNY
-        VFR_HUD,
     }
 
     public interface OnDroneListener<T extends Drone> {
@@ -196,14 +164,6 @@ public class DroneInterfaces {
         void onParameterReceived(Parameter parameter, int index, int count);
 
         void onEndReceivingParameters();
-    }
-
-    public interface OnWaypointManagerListener {
-        void onBeginWaypointEvent(WaypointManager.WaypointEvent_Type wpEvent);
-
-        void onWaypointEvent(WaypointManager.WaypointEvent_Type wpEvent, int index, int count);
-
-        void onEndWaypointEvent(WaypointManager.WaypointEvent_Type wpEvent);
     }
 
 }

@@ -284,11 +284,6 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
         switch (type) {
             //MISSION ACTIONS
-            case MissionActions.ACTION_GOTO_WAYPOINT:
-                int missionItemIndex = data.getInt(MissionActions.EXTRA_MISSION_ITEM_INDEX);
-                CommonApiUtils.gotoWaypoint(this, missionItemIndex, listener);
-                return true;
-
             case MissionActions.ACTION_CHANGE_MISSION_SPEED:
                 float missionSpeed = data.getFloat(MissionActions.EXTRA_MISSION_SPEED);
                 MavLinkCommands.changeMissionSpeed(this, missionSpeed, listener);
@@ -301,15 +296,9 @@ public class GenericMavLinkDrone implements MavLinkDrone {
             case StateActions.ACTION_SET_VEHICLE_MODE:
                 return setVehicleMode(data, listener);
 
-            case StateActions.ACTION_UPDATE_VEHICLE_DATA_STREAM_RATE:
-                return updateVehicleDataStreamRate(data, listener);
-
             // CONTROL ACTIONS
             case ControlActions.ACTION_DO_GUIDED_TAKEOFF:
                 return performTakeoff(data, listener);
-
-            case ControlActions.ACTION_SEND_BRAKE_VEHICLE:
-                return brakeVehicle(listener);
 
             case ControlActions.ACTION_SET_CONDITION_YAW:
                 // Retrieve the yaw turn speed.
@@ -330,9 +319,6 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
                 MavLinkCommands.setConditionYaw(this, targetAngle, Math.abs(yawRate) * turnSpeed, isClockwise, isRelative, listener);
                 return true;
-
-            case ControlActions.ACTION_SET_VELOCITY:
-                return setVelocity(data, listener);
 
             case ControlActions.ACTION_ENABLE_MANUAL_CONTROL:
                 return enableManualControl(data, listener);
@@ -357,23 +343,6 @@ public class GenericMavLinkDrone implements MavLinkDrone {
                 return true;
         }
     }
-
-    private boolean updateVehicleDataStreamRate(Bundle data, ICommandListener listener) {
-        StreamRates streamRates = getStreamRates();
-        if(streamRates != null){
-            int rate = data.getInt(StateActions.EXTRA_VEHICLE_DATA_STREAM_RATE, -1);
-            if(rate != -1) {
-                StreamRates.Rates rates = new StreamRates.Rates(rate);
-                streamRates.setRates(rates);
-            }
-            CommonApiUtils.postSuccessEvent(listener);
-            return true;
-        }
-
-        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
-        return false;
-    }
-
 
     protected boolean enableManualControl(Bundle data, ICommandListener listener) {
         boolean enable = data.getBoolean(ControlActions.EXTRA_DO_ENABLE);
@@ -433,28 +402,9 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         return true;
     }
 
-    protected boolean setVelocity(Bundle data, ICommandListener listener) {
-        float xAxis = data.getFloat(ControlActions.EXTRA_VELOCITY_X);
-        short x = (short) (xAxis * 1000);
-
-        float yAxis = data.getFloat(ControlActions.EXTRA_VELOCITY_Y);
-        short y = (short) (yAxis * 1000);
-
-        float zAxis = data.getFloat(ControlActions.EXTRA_VELOCITY_Z);
-        short z = (short) (zAxis * 1000);
-
-        MavLinkCommands.sendManualControl(this, x, y, z, (short) 0, 0, listener);
-        return true;
-    }
-
     protected boolean performTakeoff(Bundle data, ICommandListener listener) {
         double takeoffAltitude = data.getDouble(ControlActions.EXTRA_ALTITUDE);
         MavLinkCommands.sendTakeoff(this, takeoffAltitude, listener);
-        return true;
-    }
-
-    protected boolean brakeVehicle(ICommandListener listener) {
-        getGuidedPoint().pauseAtCurrentLocation(listener);
         return true;
     }
 

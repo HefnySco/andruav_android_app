@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import com.o3dr.android.client.Drone;
 import com.o3dr.services.android.lib.coordinate.LatLong;
-import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.action.ControlActions;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
@@ -14,16 +13,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_DO_GUIDED_TAKEOFF;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_ENABLE_MANUAL_CONTROL;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_LOOK_AT_TARGET;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_MANUAL_CONTROL;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_RESET_ROI;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_SEND_BRAKE_VEHICLE;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_SEND_GUIDED_POINT;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_SEND_GUIDED_VELOCITY_GLOBAL;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_SEND_GUIDED_VELOCITY_LOCAL;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_SET_CONDITION_YAW;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_SET_GUIDED_ALTITUDE;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_SET_VELOCITY;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_ALTITUDE;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_AXIS_R;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_AXIS_X;
@@ -33,7 +29,6 @@ import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_BU
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_DO_ENABLE;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_FORCE_GUIDED_POINT;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_GUIDED_POINT;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_LOOK_AT_TARGET;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_VELOCITY_X;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_VELOCITY_Y;
 import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_VELOCITY_Z;
@@ -84,16 +79,6 @@ public class ControlApi extends Api {
         Bundle params = new Bundle();
         params.putDouble(EXTRA_ALTITUDE, altitude);
         drone.performAsyncActionOnDroneThread(new Action(ACTION_DO_GUIDED_TAKEOFF, params), listener);
-    }
-
-    /**
-     * Pause the vehicle at its current location.
-     *
-     * @param listener Register a callback to receive update of the command execution state.
-     */
-    public void pauseAtCurrentLocation(final AbstractCommandListener listener) {
-        Bundle params = new Bundle();
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_SEND_BRAKE_VEHICLE, params), listener);
     }
 
     /**
@@ -154,21 +139,6 @@ public class ControlApi extends Api {
     }
 
     /**
-     * Instructs the vehicle to orient toward the specified location
-     *
-     * @param point
-     * @param force
-     * @param listener
-     * @since 2.9.0
-     */
-    public void lookAt(LatLongAlt point, boolean force, AbstractCommandListener listener){
-        Bundle params = new Bundle();
-        params.putBoolean(EXTRA_FORCE_GUIDED_POINT, force);
-        params.putParcelable(EXTRA_LOOK_AT_TARGET, point);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_LOOK_AT_TARGET, params), listener);
-    }
-
-    /**
      * Instructs the vehicle to climb to the specified altitude.
      *
      * @param altitude altitude in meters
@@ -198,28 +168,6 @@ public class ControlApi extends Api {
         params.putFloat(EXTRA_YAW_CHANGE_RATE, turnRate);
         params.putBoolean(EXTRA_YAW_IS_RELATIVE, isRelative);
         drone.performAsyncActionOnDroneThread(new Action(ACTION_SET_CONDITION_YAW, params), listener);
-    }
-
-    /**
-     * Move the vehicle along the specified normalized velocity vector.
-     *
-     * @param vx       x velocity normalized to the range [-1.0f, 1.0f]. Generally correspond to the pitch of the vehicle.
-     * @param vy       y velocity normalized to the range [-1.0f, 1.0f]. Generally correspond to the roll of the vehicle.
-     * @param vz       z velocity normalized to the range [-1.0f, 1.0f]. Generally correspond to the thrust of the vehicle.
-     * @param listener Register a callback to receive update of the command execution state.
-     * @since 2.6.9
-     */
-    public void setVelocity(final float vx, final float vy, final float vz, AbstractCommandListener listener) {
-        if (!isWithinBounds(vx, -1f, 1f) || !isWithinBounds(vy, -1f, 1f) || !isWithinBounds(vz, -1f, 1f)) {
-            postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
-            return;
-        }
-
-        Bundle params = new Bundle();
-        params.putFloat(EXTRA_VELOCITY_X, vx);
-        params.putFloat(EXTRA_VELOCITY_Y, vy);
-        params.putFloat(EXTRA_VELOCITY_Z, vz);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_SET_VELOCITY, params), listener);
     }
 
     public void manualControl(final int x, final int y, final int z, final int r, final int buttons, final AbstractCommandListener listener) {

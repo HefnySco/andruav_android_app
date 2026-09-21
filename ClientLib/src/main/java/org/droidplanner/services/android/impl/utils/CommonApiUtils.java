@@ -382,13 +382,6 @@ public class CommonApiUtils {
         MavLinkDoCmds.triggerCamera(drone);
     }
 
-    public static void epmCommand(MavLinkDrone drone, boolean release, ICommandListener listener) {
-        if (drone == null)
-            return;
-
-        MavLinkDoCmds.empCommand(drone, release, listener);
-    }
-
     public static void loadWaypoints(MavLinkDrone drone) {
         if (drone == null)
             return;
@@ -618,49 +611,11 @@ public class CommonApiUtils {
         }
     }
 
-    public static void sendLookAtTarget(final MavLinkDrone drone, final LatLongAlt target, final boolean force, final ICommandListener listener){
-        if(drone == null)
-            return;
-
-        GuidedPoint guidedPoint = drone.getGuidedPoint();
-        if(guidedPoint.isInitialized()){
-            MavLinkDoCmds.setROI(drone, target, listener);
-        }
-        else if (force) {
-            GuidedPoint.changeToGuidedMode(drone, new AbstractCommandListener() {
-                @Override
-                public void onSuccess() {
-                    MavLinkDoCmds.setROI(drone, target, listener);
-                }
-
-                @Override
-                public void onError(int executionError) {
-                    postErrorEvent(executionError, listener);
-                }
-
-                @Override
-                public void onTimeout() {
-                    postTimeoutEvent(listener);
-                }
-            });
-        }
-    }
-
     public static void setGuidedAltitude(MavLinkDrone drone, double altitude) {
         if (drone == null)
             return;
 
         drone.getGuidedPoint().changeGuidedAltitude(altitude);
-    }
-
-    public static void gotoWaypoint(MavLinkDrone drone, int waypoint, ICommandListener listener) {
-        if (drone == null)
-            return;
-        if (waypoint < 0) {
-            postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
-            return;
-        }
-        MavLinkDoCmds.gotoWaypoint(drone, waypoint, listener);
     }
 
 }

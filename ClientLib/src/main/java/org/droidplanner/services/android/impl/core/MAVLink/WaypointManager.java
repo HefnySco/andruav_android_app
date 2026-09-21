@@ -10,7 +10,6 @@ import com.MAVLink.common.msg_mission_item;
 import com.MAVLink.common.msg_mission_item_reached;
 import com.MAVLink.common.msg_mission_request;
 
-import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.OnWaypointManagerListener;
 import org.droidplanner.services.android.impl.core.drone.DroneVariable;
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 
@@ -41,7 +40,6 @@ public class WaypointManager extends DroneVariable {
     private int readIndex;
     private int writeIndex;
     private int retryIndex;
-    private OnWaypointManagerListener wpEventListener;
 
     WaypointStates state = WaypointStates.IDLE;
 
@@ -62,10 +60,6 @@ public class WaypointManager extends DroneVariable {
     public WaypointManager(MavLinkDrone drone, Handler handler) {
         super(drone);
         this.watchdog = handler;
-    }
-
-    public void setWaypointManagerListener(OnWaypointManagerListener wpEventListener) {
-        this.wpEventListener = wpEventListener;
     }
 
     private void startWatchdog() {
@@ -308,32 +302,14 @@ public class WaypointManager extends DroneVariable {
 
     private void doBeginWaypointEvent(WaypointEvent_Type wpEvent) {
         retryIndex = 0;
-
-        if (wpEventListener == null)
-            return;
-
-        wpEventListener.onBeginWaypointEvent(wpEvent);
     }
 
     private void doEndWaypointEvent(WaypointEvent_Type wpEvent) {
-        if (retryIndex > 0)// if retry successful, notify that we now continue
-            doWaypointEvent(WaypointEvent_Type.WP_CONTINUE, retryIndex, RETRY_LIMIT);
-
         retryIndex = 0;
-
-        if (wpEventListener == null)
-            return;
-
-        wpEventListener.onEndWaypointEvent(wpEvent);
     }
 
     private void doWaypointEvent(WaypointEvent_Type wpEvent, int index, int count) {
         retryIndex = 0;
-
-        if (wpEventListener == null)
-            return;
-
-        wpEventListener.onWaypointEvent(wpEvent, index, count);
     }
 
 }
