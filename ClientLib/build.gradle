@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 ext {
     VERSION_MAJOR = 4
-    VERSION_MINOR = 0
+    VERSION_MINOR = 1
     VERSION_PATCH = 0
     VERSION_SUFFIX = "release"
 
