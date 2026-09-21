@@ -12,21 +12,13 @@ import com.MAVLink.enums.MAG_CAL_STATUS;
 import com.MAVLink.enums.MAV_TYPE;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
-import com.o3dr.services.android.lib.drone.attribute.AttributeType;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.drone.calibration.magnetometer.MagnetometerCalibrationProgress;
 import com.o3dr.services.android.lib.drone.calibration.magnetometer.MagnetometerCalibrationResult;
 import com.o3dr.services.android.lib.drone.calibration.magnetometer.MagnetometerCalibrationStatus;
 import com.o3dr.services.android.lib.drone.mission.Mission;
-import com.o3dr.services.android.lib.drone.mission.MissionItemType;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
-import com.o3dr.services.android.lib.drone.mission.item.complex.CameraDetail;
-import com.o3dr.services.android.lib.drone.mission.item.complex.StructureScanner;
-import com.o3dr.services.android.lib.drone.mission.item.complex.Survey;
-import com.o3dr.services.android.lib.drone.property.CameraProxy;
 import com.o3dr.services.android.lib.drone.property.EkfStatus;
-import com.o3dr.services.android.lib.drone.property.FootPrint;
-import com.o3dr.services.android.lib.drone.property.Gps;
 import com.o3dr.services.android.lib.drone.property.GuidedState;
 import com.o3dr.services.android.lib.drone.property.Parameter;
 import com.o3dr.services.android.lib.drone.property.Parameters;
@@ -42,12 +34,10 @@ import com.o3dr.services.android.lib.model.ICommandListener;
 
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkCommands;
 import org.droidplanner.services.android.impl.core.MAVLink.command.doCmd.MavLinkDoCmds;
-import org.droidplanner.services.android.impl.core.drone.autopilot.Drone;
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.ArduPilot;
 import org.droidplanner.services.android.impl.core.drone.profiles.ParameterManager;
 import org.droidplanner.services.android.impl.core.drone.variables.ApmModes;
-import org.droidplanner.services.android.impl.core.drone.variables.Camera;
 import org.droidplanner.services.android.impl.core.drone.variables.GuidedPoint;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.AccelCalibration;
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.MagnetometerCalibrationImpl;
@@ -55,12 +45,7 @@ import org.droidplanner.services.android.impl.core.gcs.follow.Follow;
 import org.droidplanner.services.android.impl.core.gcs.follow.FollowAlgorithm;
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
 import org.droidplanner.services.android.impl.core.mission.MissionItemImpl;
-import org.droidplanner.services.android.impl.core.mission.survey.SplineSurveyImpl;
-import org.droidplanner.services.android.impl.core.mission.survey.SurveyImpl;
-import org.droidplanner.services.android.impl.core.mission.waypoints.StructureScannerImpl;
-import org.droidplanner.services.android.impl.core.survey.Footprint;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -302,12 +287,6 @@ public class CommonApiUtils {
         }
     }
 
-    public static FootPrint getProxyCameraFootPrint(Footprint footprint) {
-        if (footprint == null) return null;
-
-        return new FootPrint(footprint.getGSD(), footprint.getVertexInGlobalFrame());
-    }
-
     public static FollowAlgorithm.FollowModes followTypeToMode(MavLinkDrone drone, FollowType followType) {
         FollowAlgorithm.FollowModes followMode;
 
@@ -387,33 +366,6 @@ public class CommonApiUtils {
         }
 
         return followType;
-    }
-
-    public static CameraProxy getCameraProxy(Drone drone, List<CameraDetail> cameraDetails) {
-        CameraDetail camDetail;
-        FootPrint currentFieldOfView;
-        List<FootPrint> proxyPrints = new ArrayList<>();
-
-        if (!(drone instanceof MavLinkDrone)) {
-            camDetail = new CameraDetail();
-            currentFieldOfView = new FootPrint();
-        } else {
-            Camera droneCamera = ((MavLinkDrone) drone).getCamera();
-
-            camDetail = ProxyUtils.getCameraDetail(droneCamera.getCamera());
-
-            List<Footprint> footprints = droneCamera.getFootprints();
-            for (Footprint footprint : footprints) {
-                proxyPrints.add(CommonApiUtils.getProxyCameraFootPrint(footprint));
-            }
-
-            Gps droneGps = (Gps) drone.getAttribute(AttributeType.GPS);
-            currentFieldOfView = droneGps != null && droneGps.isValid()
-                    ? CommonApiUtils.getProxyCameraFootPrint(droneCamera.getCurrentFieldOfView())
-                    : new FootPrint();
-        }
-
-        return new CameraProxy(camDetail, currentFieldOfView, proxyPrints, cameraDetails);
     }
 
     public static State getState(MavLinkDrone drone, boolean isConnected, Vibration vibration) {
@@ -708,13 +660,6 @@ public class CommonApiUtils {
         modeCheckRunnable.run();
     }
 
-    public static float generateDronie(MavLinkDrone drone) {
-        if (drone == null)
-            return -1;
-
-        return (float) drone.getMission().makeAndUploadDronie();
-    }
-
     public static void arm(ArduPilot drone, boolean arm, ICommandListener listener) {
         arm(drone, arm, false, listener);
     }
@@ -911,62 +856,6 @@ public class CommonApiUtils {
             return;
         }
         MavLinkDoCmds.gotoWaypoint(drone, waypoint, listener);
-    }
-
-    public static void buildComplexMissionItem(MavLinkDrone drone, Bundle itemBundle) {
-        MissionItem missionItem = MissionItemType.restoreMissionItemFromBundle(itemBundle);
-        if (missionItem == null || !(missionItem instanceof MissionItem.ComplexItem))
-            return;
-
-        MissionItemType itemType = missionItem.getType();
-        switch (itemType) {
-            case SURVEY:
-                Survey updatedSurvey = buildSurvey(drone, (Survey) missionItem);
-                if (updatedSurvey != null)
-                    itemType.storeMissionItem(updatedSurvey, itemBundle);
-                break;
-
-            case SPLINE_SURVEY:
-                Survey updatedSplineSurvey = buildSplineSurvey(drone, (Survey) missionItem);
-                if (updatedSplineSurvey != null)
-                    itemType.storeMissionItem(updatedSplineSurvey, itemBundle);
-                break;
-
-            case STRUCTURE_SCANNER:
-                StructureScanner updatedScanner = buildStructureScanner(drone, (StructureScanner) missionItem);
-                if (updatedScanner != null)
-                    itemType.storeMissionItem(updatedScanner, itemBundle);
-                break;
-
-            default:
-                Timber.w("Unrecognized complex mission item.");
-                break;
-        }
-    }
-
-    public static Survey buildSurvey(MavLinkDrone drone, Survey survey) {
-        MissionImpl droneMissionImpl = drone == null ? null : drone.getMission();
-        SurveyImpl updatedSurveyImpl = (SurveyImpl) ProxyUtils.getMissionItemImpl
-                (droneMissionImpl, survey);
-
-        return (Survey) ProxyUtils.getProxyMissionItem(updatedSurveyImpl);
-    }
-
-    public static Survey buildSplineSurvey(MavLinkDrone drone, Survey survey) {
-        MissionImpl droneMissionImpl = drone == null ? null : drone.getMission();
-        SplineSurveyImpl updatedSplineSurvey = (SplineSurveyImpl)
-                ProxyUtils.getMissionItemImpl(droneMissionImpl, survey);
-
-        return (Survey) ProxyUtils.getProxyMissionItem(updatedSplineSurvey);
-    }
-
-    public static StructureScanner buildStructureScanner(MavLinkDrone drone, StructureScanner item) {
-        MissionImpl droneMissionImpl = drone == null ? null : drone.getMission();
-        StructureScannerImpl updatedScan = (StructureScannerImpl) ProxyUtils
-                .getMissionItemImpl(droneMissionImpl, item);
-
-        StructureScanner proxyScanner = (StructureScanner) ProxyUtils.getProxyMissionItem(updatedScan);
-        return proxyScanner;
     }
 
     public static MagnetometerCalibrationStatus getMagnetometerCalibrationStatus(MavLinkDrone drone) {

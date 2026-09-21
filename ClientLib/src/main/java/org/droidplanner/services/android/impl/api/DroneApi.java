@@ -1,8 +1,6 @@
 package org.droidplanner.services.android.impl.api;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,14 +18,12 @@ import com.o3dr.services.android.lib.drone.attribute.AttributeType;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.mission.Mission;
-import com.o3dr.services.android.lib.drone.mission.action.MissionActions;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 import com.o3dr.services.android.lib.drone.mission.item.command.ResetROI;
 import com.o3dr.services.android.lib.drone.mission.item.spatial.RegionOfInterest;
 import com.o3dr.services.android.lib.drone.property.DroneAttribute;
 import com.o3dr.services.android.lib.drone.property.Parameter;
 import com.o3dr.services.android.lib.drone.property.State;
-import com.o3dr.services.android.lib.gcs.event.GCSEvent;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 import com.o3dr.services.android.lib.gcs.link.LinkEvent;
 import com.o3dr.services.android.lib.gcs.link.LinkEventExtra;
@@ -47,7 +43,6 @@ import org.droidplanner.services.android.impl.core.drone.variables.calibration.A
 import org.droidplanner.services.android.impl.core.drone.variables.calibration.MagnetometerCalibrationImpl;
 import org.droidplanner.services.android.impl.exception.ConnectionException;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
-import org.droidplanner.services.android.impl.utils.MissionUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -57,9 +52,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import timber.log.Timber;
 
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_SET_MISSION;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_MISSION;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_PUSH_TO_DRONE;
 
 /**
  * Drone command/attribute API, called directly (in-process) by {@link com.o3dr.android.client.Drone}.
@@ -159,33 +151,29 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
     public Bundle getAttribute(String type) {
         Bundle carrier = new Bundle();
 
-        if (AttributeType.CAMERA.equals(type)) {
-            carrier.putParcelable(type, CommonApiUtils.getCameraProxy(getDrone(), service.getCameraDetails()));
-        } else {
-            if (droneMgr != null) {
-                DroneAttribute attribute = droneMgr.getAttribute(clientInfo, type);
-                if (attribute != null) {
+        if (droneMgr != null) {
+            DroneAttribute attribute = droneMgr.getAttribute(clientInfo, type);
+            if (attribute != null) {
 
-                    //Check if the client supports the ResetROI mission item.
-                    // Replace it with a RegionOfInterest with coordinate set to 0 if it doesn't.
-                    if (clientInfo.clientVersionCode < RESET_ROI_LIB_VERSION && attribute instanceof Mission) {
-                        Mission proxyMission = (Mission) attribute;
-                        List<MissionItem> missionItems = proxyMission.getMissionItems();
-                        int missionItemsCount = missionItems.size();
-                        for (int i = 0; i < missionItemsCount; i++) {
-                            MissionItem missionItem = missionItems.get(i);
-                            if (missionItem instanceof ResetROI) {
-                                missionItems.remove(i);
+                //Check if the client supports the ResetROI mission item.
+                // Replace it with a RegionOfInterest with coordinate set to 0 if it doesn't.
+                if (clientInfo.clientVersionCode < RESET_ROI_LIB_VERSION && attribute instanceof Mission) {
+                    Mission proxyMission = (Mission) attribute;
+                    List<MissionItem> missionItems = proxyMission.getMissionItems();
+                    int missionItemsCount = missionItems.size();
+                    for (int i = 0; i < missionItemsCount; i++) {
+                        MissionItem missionItem = missionItems.get(i);
+                        if (missionItem instanceof ResetROI) {
+                            missionItems.remove(i);
 
-                                RegionOfInterest replacement = new RegionOfInterest();
-                                replacement.setCoordinate(new LatLongAlt(0, 0, 0));
-                                missionItems.add(i, replacement);
-                            }
+                            RegionOfInterest replacement = new RegionOfInterest();
+                            replacement.setCoordinate(new LatLongAlt(0, 0, 0));
+                            missionItems.add(i, replacement);
                         }
                     }
-
-                    carrier.putParcelable(type, attribute);
                 }
+
+                carrier.putParcelable(type, attribute);
             }
         }
         return carrier;
@@ -300,46 +288,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
                 disconnect();
                 break;
 
-            // MISSION ACTIONS
-            case MissionActions.ACTION_BUILD_COMPLEX_MISSION_ITEM:
-                if (drone instanceof MavLinkDrone || drone == null) {
-                    CommonApiUtils.buildComplexMissionItem((MavLinkDrone) drone, data);
-                } else {
-                    CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
-                }
-                break;
-
-            case MissionActions.ACTION_SAVE_MISSION: {
-                Mission mission = data.getParcelable(MissionActions.EXTRA_MISSION);
-                Uri saveUri = data.getParcelable(MissionActions.EXTRA_SAVE_MISSION_URI);
-                if (saveUri == null) {
-                    CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
-                } else {
-                    MissionUtils.saveMission(context, mission, saveUri, listener);
-                }
-                break;
-            }
-
-            case MissionActions.ACTION_LOAD_MISSION: {
-                Uri loadUri = data.getParcelable(MissionActions.EXTRA_LOAD_MISSION_URI);
-                boolean setMission = data.getBoolean(MissionActions.EXTRA_SET_LOADED_MISSION, false);
-                if (loadUri != null) {
-                    Mission mission = MissionUtils.loadMission(context, loadUri);
-                    if(mission != null){
-                        // Going back to the caller.
-                        data.putParcelable(MissionActions.EXTRA_MISSION, mission);
-
-                        if(setMission){
-                            Bundle params = new Bundle();
-                            params.putParcelable(EXTRA_MISSION, mission);
-                            params.putBoolean(EXTRA_PUSH_TO_DRONE, false);
-                            executeAction(new Action(ACTION_SET_MISSION, params), listener);
-                        }
-                    }
-                }
-                break;
-            }
-
             default:
                 if (droneMgr != null) {
                     droneMgr.executeAsyncAction(clientInfo, action, listener);
@@ -450,10 +398,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
 
         switch (event) {
             case DISCONNECTED:
-                //Broadcast the disconnection with the vehicle.
-                context.sendBroadcast(new Intent(GCSEvent.ACTION_VEHICLE_DISCONNECTION)
-                    .putExtra(GCSEvent.EXTRA_APP_ID, getOwnerId()));
-
                 droneEvent = AttributeEvent.STATE_DISCONNECTED;
 
                 //Empty the event buffer queue
@@ -565,13 +509,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
                 attributesInfo.add(Pair.create(AttributeEvent.HEARTBEAT_FIRST, heartBeatExtras));
 
             case CONNECTED:
-                //Broadcast the vehicle connection.
-                ConnectionParameter sanitizedParameter = connectionParams.clone();
-
-                context.sendBroadcast(new Intent(GCSEvent.ACTION_VEHICLE_CONNECTION)
-                    .putExtra(GCSEvent.EXTRA_APP_ID, getOwnerId())
-                    .putExtra(GCSEvent.EXTRA_VEHICLE_CONNECTION_PARAMETER, sanitizedParameter));
-
                 attributesInfo.add(Pair.create(AttributeEvent.STATE_CONNECTED, extrasBundle));
                 break;
 
@@ -620,9 +557,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
             case MAGNETOMETER:
                 break;
 
-            case FOOTPRINT:
-                droneEvent = AttributeEvent.CAMERA_FOOTPRINTS_UPDATED;
-                break;
 
             case EKF_STATUS_UPDATE:
                 droneEvent = AttributeEvent.STATE_EKF_REPORT;

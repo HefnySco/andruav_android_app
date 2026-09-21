@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.MAVLink.common.msg_mag_cal_report;
 import com.MAVLink.Messages.MAVLinkMessage;
-import com.MAVLink.ardupilotmega.msg_camera_feedback;
 import com.MAVLink.ardupilotmega.msg_mag_cal_progress;
 
 import com.MAVLink.ardupilotmega.msg_mount_configure;
@@ -32,7 +31,6 @@ import org.droidplanner.services.android.impl.core.drone.LogMessageListener;
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.variables.APMHeartBeat;
 import org.droidplanner.services.android.impl.core.drone.autopilot.generic.GenericMavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.variables.ApmModes;
-import org.droidplanner.services.android.impl.core.drone.variables.Camera;
 import org.droidplanner.services.android.impl.core.drone.variables.GuidedPoint;
 import org.droidplanner.services.android.impl.core.drone.variables.HeartBeat;
 import org.droidplanner.services.android.impl.core.drone.variables.Magnetometer;
@@ -81,7 +79,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
     private final AccelCalibration accelCalibrationSetup;
     private final WaypointManager waypointManager;
     private final Magnetometer mag;
-    private final Camera footprints;
 
     private final MagnetometerCalibrationImpl magCalibration;
 
@@ -100,7 +97,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
         this.accelCalibrationSetup = new AccelCalibration(this, handler);
         this.magCalibration = new MagnetometerCalibrationImpl(this);
         this.mag = new Magnetometer(this);
-        this.footprints = new Camera(this);
     }
 
     @Override
@@ -146,10 +142,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
     @Override
     public MagnetometerCalibrationImpl getMagnetometerCalibration() {
         return magCalibration;
-    }
-
-    public Camera getCamera() {
-        return footprints;
     }
 
     @Override
@@ -456,10 +448,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
                             m_radio.remrssi, m_radio.txbuf, m_radio.noise, m_radio.remnoise);
                     break;
 
-                case msg_camera_feedback.MAVLINK_MSG_ID_CAMERA_FEEDBACK:
-                    getCamera().newImageLocation((msg_camera_feedback) message);
-                    break;
-
                 case msg_mount_status.MAVLINK_MSG_ID_MOUNT_STATUS:
                     processMountStatus((msg_mount_status) message);
                     break;
@@ -536,8 +524,6 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
     }
 
     protected void processMountStatus(msg_mount_status mountStatus) {
-        footprints.updateMountOrientation(mountStatus);
-
         Bundle eventInfo = new Bundle(3);
         eventInfo.putFloat(AttributeEventExtra.EXTRA_GIMBAL_ORIENTATION_PITCH, mountStatus.pointing_a / 100f);
         eventInfo.putFloat(AttributeEventExtra.EXTRA_GIMBAL_ORIENTATION_ROLL, mountStatus.pointing_b / 100f);

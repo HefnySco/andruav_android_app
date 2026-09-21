@@ -16,9 +16,6 @@ import com.o3dr.services.android.lib.drone.mission.item.command.SetRelay;
 import com.o3dr.services.android.lib.drone.mission.item.command.SetServo;
 import com.o3dr.services.android.lib.drone.mission.item.command.Takeoff;
 import com.o3dr.services.android.lib.drone.mission.item.command.YawCondition;
-import com.o3dr.services.android.lib.drone.mission.item.complex.SplineSurvey;
-import com.o3dr.services.android.lib.drone.mission.item.complex.StructureScanner;
-import com.o3dr.services.android.lib.drone.mission.item.complex.Survey;
 import com.o3dr.services.android.lib.drone.mission.item.spatial.Circle;
 import com.o3dr.services.android.lib.drone.mission.item.spatial.DoLandStart;
 import com.o3dr.services.android.lib.drone.mission.item.spatial.Land;
@@ -168,30 +165,6 @@ public enum MissionItemType {
         }
     },
 
-    SURVEY("Survey") {
-        @Override
-        public MissionItem getNewItem() {
-            return new Survey();
-        }
-
-        @Override
-        protected Creator<Survey> getMissionItemCreator() {
-            return Survey.CREATOR;
-        }
-    },
-
-    STRUCTURE_SCANNER("Structure Scanner") {
-        @Override
-        public MissionItem getNewItem() {
-            return new StructureScanner();
-        }
-
-        @Override
-        protected Creator<StructureScanner> getMissionItemCreator() {
-            return StructureScanner.CREATOR;
-        }
-    },
-
     SET_SERVO("Set Servo") {
         @Override
         public MissionItem getNewItem() {
@@ -242,18 +215,6 @@ public enum MissionItemType {
         @Override
         protected Creator<DoLandStart> getMissionItemCreator() {
             return DoLandStart.CREATOR;
-        }
-    },
-
-    SPLINE_SURVEY("Spline Survey") {
-        @Override
-        public MissionItem getNewItem() {
-            return new SplineSurvey();
-        }
-
-        @Override
-        protected Creator<SplineSurvey> getMissionItemCreator() {
-            return SplineSurvey.CREATOR;
         }
     },
 

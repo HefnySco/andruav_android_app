@@ -1,36 +1,25 @@
 package com.o3dr.android.client.apis;
 
-import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 
 import com.o3dr.android.client.Drone;
 import com.o3dr.services.android.lib.drone.mission.Mission;
-import com.o3dr.services.android.lib.drone.mission.MissionItemType;
-import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
 import com.o3dr.services.android.lib.model.action.Action;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_BUILD_COMPLEX_MISSION_ITEM;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_CHANGE_MISSION_SPEED;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_GENERATE_DRONIE;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_GOTO_WAYPOINT;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_LOAD_MISSION;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_LOAD_WAYPOINTS;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_SAVE_MISSION;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_SET_MISSION;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_START_MISSION;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_FORCE_ARM;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_FORCE_MODE_CHANGE;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_LOAD_MISSION_URI;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_MISSION;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_MISSION_ITEM_INDEX;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_MISSION_SPEED;
 import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_PUSH_TO_DRONE;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_SAVE_MISSION_URI;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_SET_LOADED_MISSION;
 
 /**
  * Provides access to missions specific functionality.
@@ -59,13 +48,6 @@ public class MissionApi extends Api {
 
     private MissionApi(Drone drone){
         this.drone = drone;
-    }
-
-    /**
-     * Generate action to create a dronie mission, and upload it to the connected drone.
-     */
-    public void generateDronie() {
-        drone.performAsyncAction(new Action(ACTION_GENERATE_DRONIE));
     }
 
     /**
@@ -115,152 +97,6 @@ public class MissionApi extends Api {
     }
 
     /**
-     * Loads the mission from the given source uri
-     * @param sourceUri
-     * @param loadingCallback Invoked when the loading operation completes.
-     * @since 3.0.0
-     */
-    @Nullable
-    public void loadMission(Uri sourceUri, LoadingCallback<Mission> loadingCallback) {
-        loadAndSetMission(sourceUri, false, loadingCallback);
-    }
-
-    /**
-     * Loads and sets the mission retrieved from the source uri.
-     * @param sourceUri
-     * @param loadingCallback Invoked when the loading operation completes.
-     * @since 3.0.0
-     */
-    public void loadAndSetMission(Uri sourceUri, LoadingCallback<Mission> loadingCallback){
-        loadAndSetMission(sourceUri, true, loadingCallback);
-    }
-
-    private void loadAndSetMission(final Uri sourceUri, final boolean setMission, final LoadingCallback<Mission> loadingCallback){
-        if(sourceUri == null){
-            throw new NullPointerException("Mission source uri must be non null.");
-        }
-        if(!setMission && loadingCallback == null){
-            // No point to load the mission if no one is listening for it.
-            return;
-        }
-
-        drone.getAsyncScheduler().execute(new Runnable() {
-            @Override
-            public void run() {
-                postLoadingStart(loadingCallback);
-
-                Bundle params = new Bundle();
-                params.putParcelable(EXTRA_LOAD_MISSION_URI, sourceUri);
-                params.putBoolean(EXTRA_SET_LOADED_MISSION, setMission);
-
-                Action loadAction = new Action(ACTION_LOAD_MISSION, params);
-                boolean result = drone.performAction(loadAction);
-                if (loadingCallback != null) {
-                    if (result) {
-                        final Mission loadedMission = loadAction.getData().getParcelable(EXTRA_MISSION);
-                        if (loadedMission == null) {
-                            postLoadingFailed(loadingCallback);
-                        }
-                        else {
-                            postLoadingComplete(loadedMission, loadingCallback);
-                        }
-                    } else {
-                        postLoadingFailed(loadingCallback);
-                    }
-                }
-            }
-        });
-    }
-
-    private void postLoadingStart(final LoadingCallback<?> callback) {
-        if(callback != null){
-            drone.getHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onLoadingStart();
-                }
-            });
-        }
-    }
-
-    private void postLoadingFailed(final LoadingCallback<?> callback){
-        if(callback != null){
-            drone.getHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onLoadingFailed();
-                }
-            });
-        }
-    }
-
-    private <T> void postLoadingComplete(final T loaded, final LoadingCallback<T> callback) {
-        if(callback != null){
-            drone.getHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onLoadingComplete(loaded);
-                }
-            });
-        }
-    }
-
-    /**
-     * Saves a mission to the given save uri.
-     * @param mission Mission to save
-     * @param saveUri Destination uri for the mission
-     * @param listener
-     *
-     * @since 3.0.0
-     */
-    public void saveMission(Mission mission, Uri saveUri, AbstractCommandListener listener){
-        if(mission == null){
-            throw new NullPointerException("Mission must be non null.");
-        }
-        if(saveUri == null){
-            throw new NullPointerException("Mission destination uri must be non null.");
-        }
-        Bundle params = new Bundle();
-        params.putParcelable(EXTRA_MISSION, mission);
-        params.putParcelable(EXTRA_SAVE_MISSION_URI, saveUri);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_SAVE_MISSION, params), listener);
-    }
-
-    /**
-     * Build and return complex mission item.
-     * @param itemBundle bundle containing the complex mission item to update.
-     */
-    private Action buildComplexMissionItem(Bundle itemBundle) {
-        Action payload = new Action(ACTION_BUILD_COMPLEX_MISSION_ITEM, itemBundle);
-        boolean result = drone.performAction(payload);
-        if(result)
-            return payload;
-        else
-            return null;
-    }
-
-    /**
-     * Builds and validates a complex mission item against the target vehicle.
-     * @param complexItem Mission item to build.
-     * @return an updated mission item.
-     */
-    public <T extends MissionItem> T buildMissionItem(MissionItem.ComplexItem<T> complexItem){
-        T missionItem = (T) complexItem;
-        Bundle payload = missionItem.getType().storeMissionItem(missionItem);
-        if (payload == null)
-            return null;
-
-        Action result = buildComplexMissionItem(payload);
-        if(result != null){
-            T updatedItem = MissionItemType.restoreMissionItemFromBundle(result.getData());
-            complexItem.copy(updatedItem);
-            return (T) complexItem;
-        }
-        else
-            return null;
-    }
-
-    /**
      * Stops the vehicle at the current location. The vehicle will remain in Auto mode
      * @param listener
      *
@@ -283,11 +119,5 @@ public class MissionApi extends Api {
         Bundle params = new Bundle();
         params.putFloat(EXTRA_MISSION_SPEED, speed);
         drone.performAsyncActionOnDroneThread(new Action(ACTION_CHANGE_MISSION_SPEED, params), listener);
-    }
-
-    public interface LoadingCallback<T> {
-        void onLoadingStart();
-        void onLoadingComplete(T loaded);
-        void onLoadingFailed();
     }
 }

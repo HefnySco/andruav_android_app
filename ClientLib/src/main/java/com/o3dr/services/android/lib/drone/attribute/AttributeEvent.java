@@ -57,12 +57,6 @@ public class AttributeEvent {
     public static final String FOLLOW_UPDATE = PACKAGE_NAME + ".FOLLOW_UPDATE";
 
     /**
-     * Camera attribute events.
-     */
-    public static final String CAMERA_UPDATED = PACKAGE_NAME + ".CAMERA_UPDATED";
-    public static final String CAMERA_FOOTPRINTS_UPDATED = PACKAGE_NAME + ".CAMERA_FOOTPRINTS_UPDATED";
-
-    /**
      * GuidedState attribute events.
      */
     public static final String GUIDED_POINT_UPDATED = PACKAGE_NAME + ".GUIDED_POINT_UPDATED";
@@ -71,7 +65,6 @@ public class AttributeEvent {
      * Mission attribute events.
      */
     public static final String MISSION_UPDATED = PACKAGE_NAME + ".MISSION_UPDATED";
-    public static final String MISSION_DRONIE_CREATED = PACKAGE_NAME + ".MISSION_DRONIE_CREATED";
     public static final String MISSION_SENT = PACKAGE_NAME + ".MISSION_SENT";
     public static final String MISSION_RECEIVED = PACKAGE_NAME + ".MISSION_RECEIVED";
     public static final String MISSION_ITEM_UPDATED = PACKAGE_NAME + ".MISSION_ITEM_UPDATED";

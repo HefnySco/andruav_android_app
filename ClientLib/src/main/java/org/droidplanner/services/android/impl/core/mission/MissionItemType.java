@@ -10,17 +10,12 @@ import org.droidplanner.services.android.impl.core.mission.commands.ReturnToHome
 import org.droidplanner.services.android.impl.core.mission.commands.SetRelayImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.SetServoImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.TakeoffImpl;
-import org.droidplanner.services.android.impl.core.mission.survey.SplineSurveyImpl;
-import org.droidplanner.services.android.impl.core.mission.survey.SurveyImpl;
 import org.droidplanner.services.android.impl.core.mission.waypoints.CircleImpl;
 import org.droidplanner.services.android.impl.core.mission.waypoints.DoLandStartImpl;
 import org.droidplanner.services.android.impl.core.mission.waypoints.LandImpl;
 import org.droidplanner.services.android.impl.core.mission.waypoints.RegionOfInterestImpl;
 import org.droidplanner.services.android.impl.core.mission.waypoints.SplineWaypointImpl;
-import org.droidplanner.services.android.impl.core.mission.waypoints.StructureScannerImpl;
 import org.droidplanner.services.android.impl.core.mission.waypoints.WaypointImpl;
-
-import java.util.Collections;
 
 public enum MissionItemType {
     WAYPOINT("Waypoint"),
@@ -30,9 +25,6 @@ public enum MissionItemType {
     LAND("Land"),
     CIRCLE("Circle"),
     ROI("Region of Interest"),
-    SURVEY("Survey"),
-    SPLINE_SURVEY("Spline Survey"),
-    CYLINDRICAL_SURVEY("Structure Scan"),
     CHANGE_SPEED("Change Speed"),
     CAMERA_TRIGGER("Camera Trigger"),
     CAMERA_CONTROL("Camera Control"),
@@ -77,12 +69,6 @@ public enum MissionItemType {
                 return new CircleImpl(referenceItem);
             case ROI:
                 return new RegionOfInterestImpl(referenceItem);
-            case SURVEY:
-                return new SurveyImpl(referenceItem.getMission(), Collections.emptyList());
-            case SPLINE_SURVEY:
-                return new SplineSurveyImpl(referenceItem.getMission(), Collections.emptyList());
-            case CYLINDRICAL_SURVEY:
-                return new StructureScannerImpl(referenceItem);
             case SET_SERVO:
                 return new SetServoImpl(referenceItem);
             case CONDITION_YAW:

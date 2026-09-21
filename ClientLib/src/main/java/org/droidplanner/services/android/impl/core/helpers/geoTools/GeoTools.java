@@ -1,20 +1,10 @@
 package org.droidplanner.services.android.impl.core.helpers.geoTools;
 
-import org.droidplanner.services.android.impl.core.helpers.units.Area;
-import org.droidplanner.services.android.impl.core.polygon.Polygon;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.util.MathUtils;
 
 import java.util.List;
-
-import static java.lang.Math.PI;
-import static java.lang.Math.abs;
-import static java.lang.Math.atan2;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-import static java.lang.Math.tan;
-import static java.lang.Math.toRadians;
 
 public class GeoTools {
     private static final double RADIUS_OF_EARTH = 6378137.0;// In meters.
@@ -166,52 +156,6 @@ public class GeoTools {
         } else {
             return 360 + degree;
         }
-    }
-
-    /**
-     * Copied from android-map-utils (licensed under Apache v2)
-     * com.google.maps.android.SphericalUtil.java
-     *
-     * @return area in m�
-     */
-    public static Area getArea(Polygon poly) {
-        List<LatLong> path = poly.getPoints();
-        int size = path.size();
-        if (size < 3) {
-            return new Area(0);
-        }
-        double total = 0;
-        LatLong prev = path.get(size - 1);
-        double prevTanLat = tan((PI / 2 - toRadians(prev.getLatitude())) / 2);
-        double prevLng = toRadians(prev.getLongitude());
-        // For each edge, accumulate the signed area of the triangle formed by
-        // the North Pole
-        // and that edge ("polar triangle").
-        for (LatLong point : path) {
-            double tanLat = tan((PI / 2 - toRadians(point.getLatitude())) / 2);
-            double lng = toRadians(point.getLongitude());
-            total += polarTriangleArea(tanLat, lng, prevTanLat, prevLng);
-            prevTanLat = tanLat;
-            prevLng = lng;
-        }
-        return new Area(abs(total * (RADIUS_OF_EARTH * RADIUS_OF_EARTH)));
-    }
-
-    /**
-     * Copied from android-map-utils (licensed under Apache v2)
-     * com.google.maps.android.SphericalUtil.java
-     * <p/>
-     * Returns the signed area of a triangle which has North Pole as a vertex.
-     * Formula derived from
-     * "Area of a spherical triangle given two edges and the included angle" as
-     * per "Spherical Trigonometry" by Todhunter, page 71, section 103, point 2.
-     * See http://books.google.com/books?id=3uBHAAAAIAAJ&pg=PA71 The arguments
-     * named "tan" are tan((pi/2 - latitude)/2).
-     */
-    private static double polarTriangleArea(double tan1, double lng1, double tan2, double lng2) {
-        double deltaLng = lng1 - lng2;
-        double t = tan1 * tan2;
-        return 2 * atan2(t * sin(deltaLng), 1 + t * cos(deltaLng));
     }
 
     public static LatLong pointAlongTheLine(LatLong start, LatLong end, int distance) {

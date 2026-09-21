@@ -178,11 +178,6 @@ public class DroneInterfaces {
         MAGNETOMETER,
 
         /**
-         * The drone camera footprints has been updated
-         */
-        FOOTPRINT,
-
-        /**
          * The ekf status was updated.
          */
         EKF_STATUS_UPDATE,

@@ -29,12 +29,6 @@ public class AttributeType {
     public static final String BATTERY = PACKAGE_NAME + ".BATTERY";
 
     /**
-     * Used to access the set of camera information available for the connected drone.
-     * @see {@link com.o3dr.services.android.lib.drone.property.CameraProxy}
-     */
-    public static final String CAMERA = PACKAGE_NAME + ".CAMERA";
-
-    /**
      * Used to acces the vehicle's follow state.
      * @see {@link com.o3dr.services.android.lib.gcs.follow.FollowState}
      */

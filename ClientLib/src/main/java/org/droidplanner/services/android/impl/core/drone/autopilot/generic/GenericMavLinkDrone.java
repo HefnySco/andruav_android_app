@@ -60,7 +60,6 @@ import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.autopilot.apm.APMConstants;
 import org.droidplanner.services.android.impl.core.drone.profiles.ParameterManager;
 import org.droidplanner.services.android.impl.core.drone.variables.ApmModes;
-import org.droidplanner.services.android.impl.core.drone.variables.Camera;
 import org.droidplanner.services.android.impl.core.drone.variables.GuidedPoint;
 import org.droidplanner.services.android.impl.core.drone.variables.HeartBeat;
 import org.droidplanner.services.android.impl.core.drone.variables.MissionStats;
@@ -154,12 +153,6 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
     @Override
     public MissionImpl getMission() {
-        //TODO: complete implementation
-        return null;
-    }
-
-    @Override
-    public Camera getCamera() {
         //TODO: complete implementation
         return null;
     }
@@ -309,15 +302,6 @@ public class GenericMavLinkDrone implements MavLinkDrone {
 
         switch (type) {
             //MISSION ACTIONS
-            case MissionActions.ACTION_GENERATE_DRONIE:
-                float bearing = CommonApiUtils.generateDronie(this);
-                if (bearing != -1) {
-                    Bundle bundle = new Bundle(1);
-                    bundle.putFloat(AttributeEventExtra.EXTRA_MISSION_DRONIE_BEARING, bearing);
-                    notifyAttributeListener(AttributeEvent.MISSION_DRONIE_CREATED, bundle);
-                }
-                return true;
-
             case MissionActions.ACTION_GOTO_WAYPOINT:
                 int missionItemIndex = data.getInt(MissionActions.EXTRA_MISSION_ITEM_INDEX);
                 CommonApiUtils.gotoWaypoint(this, missionItemIndex, listener);

@@ -1246,9 +1246,6 @@ public class ControlBoard_DroneKit extends ControlBoard_MavlinkBase {
 
                 case SET_RELAY:
                 case SET_SERVO:
-                case SPLINE_SURVEY:
-                case STRUCTURE_SCANNER:
-                case SURVEY:
                 case YAW_CONDITION:
 
 

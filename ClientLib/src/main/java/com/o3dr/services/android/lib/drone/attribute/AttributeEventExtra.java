@@ -64,8 +64,6 @@ public class AttributeEventExtra {
     public static final String EXTRA_MISSION_LAST_REACHED_WAYPOINT = PACKAGE_NAME +
             ".MISSION_REACHED_WAYPOINT";
 
-    public static final String EXTRA_MISSION_DRONIE_BEARING = PACKAGE_NAME + ".MISSION_DRONIE_BEARING";
-
     /**
      * Used to retrieve the count of the set of parameters being refreshed.
      *

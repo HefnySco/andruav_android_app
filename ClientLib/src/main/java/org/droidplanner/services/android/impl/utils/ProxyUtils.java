@@ -2,8 +2,6 @@ package org.droidplanner.services.android.impl.utils;
 
 
 
-import android.util.Log;
-
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 import com.o3dr.services.android.lib.drone.mission.item.command.CameraControl;
@@ -17,11 +15,6 @@ import com.o3dr.services.android.lib.drone.mission.item.command.SetRelay;
 import com.o3dr.services.android.lib.drone.mission.item.command.SetServo;
 import com.o3dr.services.android.lib.drone.mission.item.command.Takeoff;
 import com.o3dr.services.android.lib.drone.mission.item.command.YawCondition;
-import com.o3dr.services.android.lib.drone.mission.item.complex.CameraDetail;
-import com.o3dr.services.android.lib.drone.mission.item.complex.SplineSurvey;
-import com.o3dr.services.android.lib.drone.mission.item.complex.StructureScanner;
-import com.o3dr.services.android.lib.drone.mission.item.complex.Survey;
-import com.o3dr.services.android.lib.drone.mission.item.complex.SurveyDetail;
 import com.o3dr.services.android.lib.drone.mission.item.spatial.Circle;
 import com.o3dr.services.android.lib.drone.mission.item.spatial.DoLandStart;
 import com.o3dr.services.android.lib.drone.mission.item.spatial.Land;
@@ -41,58 +34,17 @@ import org.droidplanner.services.android.impl.core.mission.commands.ReturnToHome
 import org.droidplanner.services.android.impl.core.mission.commands.SetRelayImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.SetServoImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.TakeoffImpl;
-import org.droidplanner.services.android.impl.core.mission.survey.SplineSurveyImpl;
-import org.droidplanner.services.android.impl.core.mission.survey.SurveyImpl;
 import org.droidplanner.services.android.impl.core.mission.waypoints.CircleImpl;
 import org.droidplanner.services.android.impl.core.mission.waypoints.DoLandStartImpl;
 import org.droidplanner.services.android.impl.core.mission.waypoints.LandImpl;
 import org.droidplanner.services.android.impl.core.mission.waypoints.RegionOfInterestImpl;
 import org.droidplanner.services.android.impl.core.mission.waypoints.SplineWaypointImpl;
-import org.droidplanner.services.android.impl.core.mission.waypoints.StructureScannerImpl;
 import org.droidplanner.services.android.impl.core.mission.waypoints.WaypointImpl;
-import org.droidplanner.services.android.impl.core.survey.CameraInfo;
-import org.droidplanner.services.android.impl.core.survey.SurveyData;
 
 /**
  * Created by fhuya on 11/10/14.
  */
 public class ProxyUtils {
-
-    private static final String TAG = ProxyUtils.class.getSimpleName();
-
-    public static CameraDetail getCameraDetail(CameraInfo camInfo) {
-        if (camInfo == null) return null;
-        return new CameraDetail(camInfo.name, camInfo.sensorWidth,
-                camInfo.sensorHeight, camInfo.sensorResolution, camInfo.focalLength,
-                camInfo.overlap, camInfo.sidelap, camInfo.isInLandscapeOrientation);
-    }
-
-    public static CameraInfo getCameraInfo(CameraDetail camDetail) {
-        if (camDetail == null) return null;
-
-        CameraInfo camInfo = new CameraInfo();
-        camInfo.name = camDetail.getName();
-        camInfo.sensorWidth = camDetail.getSensorWidth();
-        camInfo.sensorHeight = camDetail.getSensorHeight();
-        camInfo.sensorResolution = camDetail.getSensorResolution();
-        camInfo.focalLength = camDetail.getFocalLength();
-        camInfo.overlap = camDetail.getOverlap();
-        camInfo.sidelap = camDetail.getSidelap();
-        camInfo.isInLandscapeOrientation = camDetail.isInLandscapeOrientation();
-
-        return camInfo;
-    }
-
-    public static SurveyDetail getSurveyDetail(SurveyData surveyData) {
-        SurveyDetail surveyDetail = new SurveyDetail();
-        surveyDetail.setCameraDetail(getCameraDetail(surveyData.getCameraInfo()));
-        surveyDetail.setSidelap(surveyData.getSidelap());
-        surveyDetail.setOverlap(surveyData.getOverlap());
-        surveyDetail.setAngle(surveyData.getAngle());
-        surveyDetail.setAltitude(surveyData.getAltitude());
-        surveyDetail.setLockOrientation(surveyData.getLockOrientation());
-        return surveyDetail;
-    }
 
     public static MissionItemImpl getMissionItemImpl(MissionImpl missionImpl, MissionItem proxyItem) {
         if (proxyItem == null)
@@ -215,22 +167,6 @@ public class ProxyUtils {
                 missionItemImpl = temp;
                 break;
             }
-            case STRUCTURE_SCANNER: {
-                StructureScanner proxy = (StructureScanner) proxyItem;
-
-                StructureScannerImpl temp = new StructureScannerImpl(missionImpl, (proxy.getCoordinate()));
-                temp.setRadius((int) proxy.getRadius());
-                temp.setNumberOfSteps(proxy.getStepsCount());
-                temp.setAltitudeStep((int) proxy.getHeightStep());
-                temp.enableCrossHatch(proxy.isCrossHatch());
-
-                CameraDetail camDetail = proxy.getSurveyDetail().getCameraDetail();
-                if (camDetail != null)
-                    temp.setCamera(getCameraInfo(camDetail));
-
-                missionItemImpl = temp;
-                break;
-            }
             case WAYPOINT: {
                 Waypoint proxy = (Waypoint) proxyItem;
 
@@ -241,56 +177,6 @@ public class ProxyUtils {
                 temp.setOrbitCCW(proxy.isOrbitCCW());
                 temp.setOrbitalRadius(proxy.getOrbitalRadius());
                 temp.setYawAngle(proxy.getYawAngle());
-
-                missionItemImpl = temp;
-                break;
-            }
-            case SURVEY: {
-                Survey proxy = (Survey) proxyItem;
-                SurveyDetail surveyDetail = proxy.getSurveyDetail();
-
-                SurveyImpl temp = new SurveyImpl(missionImpl, proxy.getPolygonPoints());
-                temp.setStartCameraBeforeFirstWaypoint(proxy.isStartCameraBeforeFirstWaypoint());
-
-                if (surveyDetail != null) {
-                    CameraDetail cameraDetail = surveyDetail.getCameraDetail();
-                    if (cameraDetail != null)
-                        temp.setCameraInfo(getCameraInfo(cameraDetail));
-
-                    temp.update(surveyDetail.getAngle(), (surveyDetail.getAltitude()),
-                            surveyDetail.getOverlap(), surveyDetail.getSidelap(), surveyDetail.getLockOrientation());
-                }
-
-                try {
-                    temp.build();
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage(), e);
-                }
-
-                missionItemImpl = temp;
-                break;
-            }
-            case SPLINE_SURVEY: {
-                SplineSurvey proxy = (SplineSurvey) proxyItem;
-                SurveyDetail surveyDetail = proxy.getSurveyDetail();
-
-                SplineSurveyImpl temp = new SplineSurveyImpl(missionImpl, proxy.getPolygonPoints());
-                temp.setStartCameraBeforeFirstWaypoint(proxy.isStartCameraBeforeFirstWaypoint());
-
-                if (surveyDetail != null) {
-                    CameraDetail cameraDetail = surveyDetail.getCameraDetail();
-                    if (cameraDetail != null)
-                        temp.setCameraInfo(getCameraInfo(cameraDetail));
-
-                    temp.update(surveyDetail.getAngle(), (surveyDetail.getAltitude()),
-                            surveyDetail.getOverlap(), surveyDetail.getSidelap(), surveyDetail.getLockOrientation());
-                }
-
-                try {
-                    temp.build();
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage(), e);
-                }
 
                 missionItemImpl = temp;
                 break;
@@ -419,76 +305,6 @@ public class ProxyUtils {
 
                     proxyMissionItem = temp;
                 }
-                break;
-            }
-
-            case SURVEY: {
-                SurveyImpl source = (SurveyImpl) itemImpl;
-
-                boolean isValid = true;
-                try {
-                    source.build();
-                } catch (Exception e) {
-                    isValid = false;
-                }
-
-                Survey temp = new Survey();
-                temp.setStartCameraBeforeFirstWaypoint(source.isStartCameraBeforeFirstWaypoint());
-                temp.setValid(isValid);
-                temp.setSurveyDetail(getSurveyDetail(source.surveyData));
-                temp.setPolygonPoints((source.polygon.getPoints()));
-
-                if (source.grid != null) {
-                    temp.setGridPoints((source.grid.gridPoints));
-                    temp.setCameraLocations((source.grid.getCameraLocations()));
-                }
-
-                temp.setPolygonArea(source.polygon.getArea().valueInSqMeters());
-
-                proxyMissionItem = temp;
-                break;
-            }
-
-            case SPLINE_SURVEY: {
-                SplineSurveyImpl source = (SplineSurveyImpl) itemImpl;
-
-                boolean isValid = true;
-                try {
-                    source.build();
-                } catch (Exception e) {
-                    isValid = false;
-                }
-
-                Survey temp = new Survey();
-                temp.setStartCameraBeforeFirstWaypoint(source.isStartCameraBeforeFirstWaypoint());
-                temp.setValid(isValid);
-                temp.setSurveyDetail(getSurveyDetail(source.surveyData));
-                temp.setPolygonPoints((source.polygon.getPoints()));
-
-                if (source.grid != null) {
-                    temp.setGridPoints((source.grid.gridPoints));
-                    temp.setCameraLocations((source.grid.getCameraLocations()));
-                }
-
-                temp.setPolygonArea(source.polygon.getArea().valueInSqMeters());
-
-                proxyMissionItem = temp;
-                break;
-            }
-
-            case CYLINDRICAL_SURVEY: {
-                StructureScannerImpl source = (StructureScannerImpl) itemImpl;
-
-                StructureScanner temp = new StructureScanner();
-                temp.setSurveyDetail(getSurveyDetail(source.getSurveyData()));
-                temp.setCoordinate((source.getCoordinate()));
-                temp.setRadius(source.getRadius());
-                temp.setCrossHatch(source.isCrossHatchEnabled());
-                temp.setHeightStep(source.getEndAltitude());
-                temp.setStepsCount(source.getNumberOfSteps());
-                temp.setPath((source.getPath()));
-
-                proxyMissionItem = temp;
                 break;
             }
 

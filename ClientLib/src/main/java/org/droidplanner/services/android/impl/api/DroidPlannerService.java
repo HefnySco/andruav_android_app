@@ -19,14 +19,8 @@ import androidx.core.app.NotificationCompat;
 
 import com.o3dr.android.client.R;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
-import com.o3dr.services.android.lib.drone.mission.item.complex.CameraDetail;
 
 import org.droidplanner.services.android.impl.core.drone.DroneManager;
-import org.droidplanner.services.android.impl.core.survey.CameraInfo;
-import org.droidplanner.services.android.impl.utils.file.IO.CameraInfoLoader;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -67,9 +61,6 @@ public class DroidPlannerService extends Service {
      * Caches drone managers per connection type.
      */
     DroneManager droneManager = null;
-
-    private CameraInfoLoader cameraInfoLoader;
-    private List<CameraDetail> cachedCameraDetails;
 
     /**
      * Generate a drone api instance for the connecting client.
@@ -136,37 +127,6 @@ public class DroidPlannerService extends Service {
         droneManager = null;
     }
 
-    /**
-     * Retrieves the set of camera info provided by the app.
-     *
-     * @return a list of {@link CameraDetail} objects.
-     */
-    synchronized List<CameraDetail> getCameraDetails() {
-        if (cachedCameraDetails == null) {
-            List<String> cameraInfoNames = cameraInfoLoader.getCameraInfoList();
-
-            List<CameraInfo> cameraInfos = new ArrayList<>(cameraInfoNames.size());
-            for (String infoName : cameraInfoNames) {
-                try {
-                    cameraInfos.add(cameraInfoLoader.openFile(infoName));
-                } catch (Exception e) {
-                    Timber.e(e, e.getMessage());
-                }
-            }
-
-            List<CameraDetail> cameraDetails = new ArrayList<>(cameraInfos.size());
-            for (CameraInfo camInfo : cameraInfos) {
-                cameraDetails.add(new CameraDetail(camInfo.name, camInfo.sensorWidth,
-                        camInfo.sensorHeight, camInfo.sensorResolution, camInfo.focalLength,
-                        camInfo.overlap, camInfo.sidelap, camInfo.isInLandscapeOrientation));
-            }
-
-            cachedCameraDetails = cameraDetails;
-        }
-
-        return cachedCameraDetails;
-    }
-
     @Override
     public IBinder onBind(Intent intent) {
         Timber.d("Binding intent: " + intent);
@@ -179,10 +139,6 @@ public class DroidPlannerService extends Service {
         super.onCreate();
 
         Timber.d("Creating drone services.");
-
-        final Context context = getApplicationContext();
-
-        this.cameraInfoLoader = new CameraInfoLoader(context);
 
         updateForegroundNotification();
     }

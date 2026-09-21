@@ -5,7 +5,6 @@ import com.MAVLink.Messages.MAVLinkMessage;
 import org.droidplanner.services.android.impl.communication.model.DataLink;
 import org.droidplanner.services.android.impl.core.MAVLink.WaypointManager;
 import org.droidplanner.services.android.impl.core.drone.profiles.ParameterManager;
-import org.droidplanner.services.android.impl.core.drone.variables.Camera;
 import org.droidplanner.services.android.impl.core.drone.variables.GuidedPoint;
 import org.droidplanner.services.android.impl.core.drone.variables.MissionStats;
 import org.droidplanner.services.android.impl.core.drone.variables.State;
@@ -56,7 +55,5 @@ public interface MavLinkDrone extends Drone {
     MagnetometerCalibrationImpl getMagnetometerCalibration();
 
     String getFirmwareVersion();
-
-    Camera getCamera();
 
 }

@@ -19,10 +19,6 @@ public abstract class MissionItem implements Cloneable, Parcelable {
         void setCoordinate(LatLongAlt coordinate);
     }
 
-    public interface ComplexItem<T extends MissionItem> {
-        void copy(T source);
-    }
-
     private final MissionItemType type;
 
     protected MissionItem(MissionItemType type) {

@@ -7,7 +7,6 @@ import android.os.Parcelable;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.o3dr.android.client.apis.MissionApi;
 import com.o3dr.android.client.apis.VehicleApi;
 import com.o3dr.android.client.interfaces.DroneListener;
 import com.o3dr.android.client.interfaces.LinkListener;
@@ -16,7 +15,6 @@ import com.o3dr.services.android.lib.drone.attribute.AttributeType;
 import com.o3dr.services.android.lib.drone.calibration.magnetometer.MagnetometerCalibrationStatus;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.mission.Mission;
-import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 import com.o3dr.services.android.lib.drone.property.Altitude;
 import com.o3dr.services.android.lib.drone.property.Attitude;
 import com.o3dr.services.android.lib.drone.property.Battery;
@@ -66,10 +64,6 @@ public class Drone {
         @Override
         public void onRetrievalFailed() {
         }
-    }
-
-    public interface OnMissionItemsBuiltCallback<T extends MissionItem> {
-        void onMissionItemsBuilt(MissionItem.ComplexItem<T>[] complexItems);
     }
 
     public static final int COLLISION_SECONDS_BEFORE_COLLISION = 2;
@@ -464,32 +458,6 @@ public class Drone {
 
     public ConnectionParameter getConnectionParameter() {
         return this.connectionParameter;
-    }
-
-    public <T extends MissionItem> void buildMissionItemsAsync(final MissionItem.ComplexItem<T>[] missionItems,
-                                                               final OnMissionItemsBuiltCallback<T> callback) {
-        if (callback == null) {
-            throw new IllegalArgumentException("Callback must be non-null.");
-        }
-
-        if (missionItems == null || missionItems.length == 0) {
-            return;
-        }
-
-        asyncScheduler.execute(new Runnable() {
-            @Override
-            public void run() {
-                for (MissionItem.ComplexItem<T> missionItem : missionItems)
-                    MissionApi.getApi(Drone.this).buildMissionItem(missionItem);
-
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onMissionItemsBuilt(missionItems);
-                    }
-                });
-            }
-        });
     }
 
     public void registerDroneListener(DroneListener listener) {
