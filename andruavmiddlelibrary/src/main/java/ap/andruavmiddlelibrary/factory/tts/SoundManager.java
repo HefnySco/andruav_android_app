@@ -72,19 +72,21 @@ public class SoundManager {
      * @param volume from 0 to 1.0f
      * @return index of playing sound. this is used to STOP it. this is NOT the input {@param index}.
      */
-    public int playLoopedSound(final int index, final float volume) {
-        if (!mEnabled) return -1;
+    public int playLoopedSound(final int index, final float volume, final boolean force) {
+        if (!mEnabled && !force) return -1;
 
         mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,(int) (volume * mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)), 0);
 
         return  mSoundPool.play(mSoundPoolMap.get(index), volume, volume, 1, -1, 1f);
     }
 
-    public int playLoopedSound(final int index) {
+    public int playLoopedSound(final int index, final boolean force) {
+
+         if (!mEnabled && !force) return -1; // should we add this here ??
 
         int streamVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 
-        return playLoopedSound (index, streamVolume);
+        return playLoopedSound (index, streamVolume, force);
     }
 
     public void stopLoopedSound (final int index)
@@ -100,9 +102,7 @@ public class SoundManager {
             return;
         }
 
-        if (!mEnabled) return;
-
-        mSirenIndex = playLoopedSound(SoundManager.SND_EMERGENCY, SoundManager.HIGHEST_VOLUME);
+        mSirenIndex = playLoopedSound(SoundManager.SND_EMERGENCY, SoundManager.HIGHEST_VOLUME, true);
 
         AndruavSettings.andruavWe7daBase.setIsWhisling(true);
 
