@@ -41,6 +41,7 @@ public final class Constants {
     public final static int SMART_TELEMETRY_LEVEL_1 = 1; // no smart telemetry
     public final static int SMART_TELEMETRY_LEVEL_2 = 2; // no smart telemetry
     public final static int SMART_TELEMETRY_LEVEL_3 = 3; // no smart telemetry
+    public final static int SMART_TELEMETRY_LEVEL_AUTO = 4; // automatic level adjustment based on UDP send feedback
 
 
 

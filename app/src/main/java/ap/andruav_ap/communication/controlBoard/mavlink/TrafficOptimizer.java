@@ -45,7 +45,108 @@ import com.andruav.Constants;
 
 public class TrafficOptimizer {
 
+    private static final Object LOCK = new Object();
 
+    // Requested level as last passed to setOptimizationLevel (0-3, or SMART_TELEMETRY_LEVEL_AUTO).
+    // Used to make setOptimizationLevel idempotent since callers invoke it once per incoming message.
+    private static int requestedLevel = Constants.SMART_TELEMETRY_LEVEL_2;
+    private static volatile boolean autoMode = false;
+    // Effective level (0-3) actually used to index the per-message duration tables below.
+    private static volatile int effectiveLevel = Constants.SMART_TELEMETRY_LEVEL_2;
+
+    // AUTO level controller tuning, mirrors CMavlinkTrafficOptimizer defaults.
+    private static final long AUTO_STALL_US = 20000; // send() slower than this counts as a stall
+    private static final int AUTO_UP_AFTER_STALLS = 4; // consecutive stalls before stepping up
+    private static final int AUTO_MIN_LEVEL = Constants.SMART_TELEMETRY_LEVEL_1;
+    private static final int AUTO_START_LEVEL = Constants.SMART_TELEMETRY_LEVEL_2;
+    // Dwell time per current level with clean sends before stepping down (index = level).
+    private static final long[] AUTO_DOWN_AFTER_MS = new long[] {0, 5000, 10000, 20000};
+
+    private static int autoStallCount = 0;
+    private static long autoLastStallUs = 0;
+    private static long autoLastChangeUs = 0;
+
+    /***
+     * Sets the requested optimization level/mode.
+     * @param level 0-3 for a fixed level, or {@link Constants#SMART_TELEMETRY_LEVEL_AUTO} to enable
+     *              automatic adjustment driven by {@link #recordSendFeedback(long)}.
+     */
+    public static void setOptimizationLevel(final int level) {
+        synchronized (LOCK) {
+            if (level == requestedLevel) return; // already applied, avoid resetting AUTO state every message
+
+            requestedLevel = level;
+
+            if (level >= Constants.SMART_TELEMETRY_LEVEL_AUTO) {
+                autoMode = true;
+                effectiveLevel = AUTO_START_LEVEL;
+                autoStallCount = 0;
+                autoLastStallUs = 0;
+                autoLastChangeUs = 0;
+            } else {
+                autoMode = false;
+                effectiveLevel = Math.max(Constants.SMART_TELEMETRY_LEVEL_0, Math.min(level, Constants.SMART_TELEMETRY_LEVEL_3));
+            }
+        }
+    }
+
+    /***
+     * @return {@link Constants#SMART_TELEMETRY_LEVEL_AUTO} when AUTO mode is active, else the effective level.
+     */
+    public static int getOptimizationLevel() {
+        return autoMode ? Constants.SMART_TELEMETRY_LEVEL_AUTO : effectiveLevel;
+    }
+
+    /***
+     * @return the effective level (0-3) actually used to index the per-message duration tables.
+     * Equals the AUTO controller output while AUTO mode is active.
+     */
+    public static int getEffectiveLevel() {
+        return effectiveLevel;
+    }
+
+    /***
+     * Feeds a UDP send() result into the AUTO level controller. No-op unless AUTO mode is active.
+     * @param sendResultUs send() duration in usec, or negative on failure.
+     * @return true when the effective level changed (caller may push a status update).
+     */
+    public static boolean recordSendFeedback(final long sendResultUs) {
+        if (!autoMode) return false;
+
+        synchronized (LOCK) {
+            if (!autoMode) return false;
+
+            final long now = System.nanoTime() / 1000;
+            if (autoLastChangeUs == 0) {
+                autoLastChangeUs = now;
+            }
+
+            if ((sendResultUs < 0) || (sendResultUs >= AUTO_STALL_US)) {
+                // link can't drain fast enough: raise optimization one level per streak.
+                autoStallCount += 1;
+                autoLastStallUs = now;
+                if ((autoStallCount >= AUTO_UP_AFTER_STALLS) && (effectiveLevel < Constants.SMART_TELEMETRY_LEVEL_3)) {
+                    effectiveLevel += 1;
+                    autoStallCount = 0;
+                    autoLastChangeUs = now;
+                    return true;
+                }
+            } else {
+                autoStallCount = 0;
+                if (effectiveLevel > AUTO_MIN_LEVEL) {
+                    final long dwellUs = AUTO_DOWN_AFTER_MS[effectiveLevel] * 1000L;
+                    final long since = Math.max(autoLastChangeUs, autoLastStallUs);
+                    if ((now - since) >= dwellUs) {
+                        effectiveLevel -= 1;
+                        autoLastChangeUs = now;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
 
 
     static long  smarttelemetry_msg_servo_output_raw_sent_time =0;

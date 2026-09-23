@@ -63,6 +63,7 @@ import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
 import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.communication.AndruavWSClient_TooTallNate;
 import ap.andruav_ap.communication.ControlBoardFactory;
+import ap.andruav_ap.communication.controlBoard.mavlink.TrafficOptimizer;
 import ap.andruav_ap.communication.telemetry.IEvent_SocketData;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 
@@ -1360,6 +1361,16 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     @Override
     public int getSmartMavlinkTelemetry() {
         return Preference.getSmartMavlinkTelemetry(null);
+    }
+
+    @Override
+    public boolean recordUdpSendFeedback(final long durationUs) {
+        return TrafficOptimizer.recordSendFeedback(durationUs);
+    }
+
+    @Override
+    public int getEffectiveTelemetryLevel() {
+        return TrafficOptimizer.getEffectiveLevel();
     }
 
     @Override
