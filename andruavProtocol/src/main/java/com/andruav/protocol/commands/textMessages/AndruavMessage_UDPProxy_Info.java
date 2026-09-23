@@ -14,6 +14,8 @@ public class AndruavMessage_UDPProxy_Info extends AndruavMessageBase {
     public String  udp_ip;
     public int     udp_port;
     public int     udp_optimization_level = -1;
+    // Effective level (0-3) actually in use; distinct from udp_optimization_level while that is AUTO (4).
+    public int     udp_effective_level = -1;
     public boolean udp_enabled = false;
 
     public boolean udp_paused  = false;
@@ -23,7 +25,7 @@ public class AndruavMessage_UDPProxy_Info extends AndruavMessageBase {
 
     }
 
-    public AndruavMessage_UDPProxy_Info (final String ip, final int port, final int optimization_level, final boolean enabled, final boolean paused) {
+    public AndruavMessage_UDPProxy_Info (final String ip, final int port, final int optimization_level, final int effective_level, final boolean enabled, final boolean paused) {
         messageTypeID = TYPE_AndruavMessage_UdpProxy_Info;
 
         udp_ip = ip;
@@ -31,6 +33,7 @@ public class AndruavMessage_UDPProxy_Info extends AndruavMessageBase {
         udp_enabled = enabled;
         udp_paused = paused;
         udp_optimization_level = optimization_level;
+        udp_effective_level = effective_level;
     }
 
     @Override
@@ -53,6 +56,10 @@ public class AndruavMessage_UDPProxy_Info extends AndruavMessageBase {
             udp_optimization_level = json_receive_data.getInt("o");
         }
 
+        if (json_receive_data.has("e")) {
+            udp_effective_level = json_receive_data.getInt("e");
+        }
+
         if (json_receive_data.has("p")){
             udp_port = json_receive_data.getInt("p");
         }
@@ -68,6 +75,7 @@ public class AndruavMessage_UDPProxy_Info extends AndruavMessageBase {
         json_data.accumulate("a",udp_ip);
         json_data.accumulate("p",udp_port);
         json_data.accumulate("o", udp_optimization_level);
+        json_data.accumulate("e", udp_effective_level);
         json_data.accumulate("en", udp_enabled);
         json_data.accumulate("z", udp_paused);
 

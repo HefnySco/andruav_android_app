@@ -20,7 +20,7 @@ import ap.andruavmiddlelibrary.preference.Preference;
 
 public class SmartOptimization_Dlg extends DialogFragment {
 
-    private static final CharSequence[] smartTeleOptimizationItems = {"OFF", "Lvl 1 - lots of data", "Lvl 2 - best option", "Lvl 3 - small data"};
+    private static final CharSequence[] smartTeleOptimizationItems = {"OFF", "Lvl 1 - lots of data", "Lvl 2 - best option", "Lvl 3 - small data", "AUTO - adapts to link quality"};
 
     private final SmartOptimization_Dlg Me;
     private Spinner spinOptimizationLevel;

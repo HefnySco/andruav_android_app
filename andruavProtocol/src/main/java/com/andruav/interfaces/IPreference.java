@@ -30,6 +30,18 @@ public interface IPreference {
     boolean getSendBackImages();
 
     int getSmartMavlinkTelemetry();
+
+    /**
+     * Feeds one UDP proxy send() result (duration in usec, negative on failure) into the
+     * AUTO traffic-optimization controller. No-op unless AUTO mode is active.
+     * @return true when the effective optimization level changed.
+     */
+    boolean recordUdpSendFeedback(final long durationUs);
+
+    /**
+     * Current effective traffic-optimization level (0-3), valid whether or not AUTO mode is active.
+     */
+    int getEffectiveTelemetryLevel();
     /***
       * Used to LOG in android Log
       * @return

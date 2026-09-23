@@ -75,10 +75,6 @@
     <string name="toast_auto_connect_fcb">Trying to Auto Connect to FCB</string>
     <string name="toast_ignore_connection">IGNORE For %1$s</string>
     <string name="dialog_delete_all_logs">Delete all error logs?</string>
-    <string name="dialog_select_video_source">Select Video Source</string>
-    <string name="video_source_back_camera">Back Camera</string>
-    <string name="video_source_front_camera">Front Camera</string>
-    <string name="video_source_screen">Screen</string>
     <string name="progress_initialization">Initialization…</string>
     <string name="progress_checking_sensors">Checking Sensors</string>
     <string name="label_me">Me</string>

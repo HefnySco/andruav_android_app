@@ -92,8 +92,11 @@ public abstract class UDPServerBase {
                         return ;
                     }
 
+                    final long sendStartNs = System.nanoTime();
                     socketUDP.send((DatagramPacket) msg.obj);
+                    onSendResult((System.nanoTime() - sendStartNs) / 1000);
                 } catch (IOException e) {
+                    onSendResult(-1);
                     if (exception_udp_counter >0) {
                         AndruavEngine.log().logException("exception-init", e);
                         exception_udp_counter = exception_udp_counter -1;
@@ -112,6 +115,13 @@ public abstract class UDPServerBase {
 
 
     protected abstract void onData(final DatagramPacket packet,final byte[] Buffer, final int len);
+
+    /**
+     * Called after each outbound {@link #send} completes, with the socket send() duration in usec,
+     * or a negative value on failure. Default no-op; overridden by subclasses that need send feedback
+     * (e.g. traffic-optimization AUTO mode).
+     */
+    protected void onSendResult(final long durationUs) {}
 
     private final Runnable mrunnableListener = new Runnable() {
         @Override

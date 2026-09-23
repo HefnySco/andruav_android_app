@@ -73,13 +73,6 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
      */
     private static final int FOREGROUND_ID = 121;
 
-    /**
-     * Start-Intent extra carrying the MediaProjection result-Intent for screen-capture mode.
-     * When present, {@link PeerConnectionManager} captures the device display instead of a camera.
-     * The caller (an Activity) obtains it from a successful createScreenCaptureIntent() flow.
-     */
-    public static final String EXTRA_SCREEN_CAPTURE_INTENT = "screen_capture_intent";
-
     private final Handler mHandle = new Handler(Looper.getMainLooper());
 
     private PeerConnectionManager mPeerConnectionManager;
@@ -90,14 +83,6 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
      * without needing a rebind/new onServiceConnected() callback from the Activity.
      */
     private SurfaceViewRenderer mCurrentRenderer;
-    private Intent mScreenCaptureIntent;
-    /**
-     * The video source the next {@link #initRTC()} should start, or {@code -1} if no specific
-     * source has been requested (use the default: back camera, or screen if a pre-grant exists).
-     * Set by the local source picker or by a web-initiated CameraSwitch that arrives before the
-     * service has a {@link PeerConnectionManager} running.
-     */
-    private int mRequestedSource = -1;
     private CameraRecorder mcameraRecorder;
     private AndruavVideoFileRenderer mVideoFileRenderer;
     private Uri mVideoFileRendererUri; // scoped storage (API 29+) MediaStore entry backing mVideoFileRenderer
@@ -127,7 +112,6 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
     @Override
     public void onCreate() {
         super.onCreate();
-        sInstance = this;
         EventBus.getDefault().register(this);
         // App.iFPVStreamingService is already set by App.startFPVStreamingService() (the caller
         // that started us) by the time onCreate() runs, so subscribers re-querying
@@ -137,43 +121,18 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // A screen-capture start carries the MediaProjection result-Intent as an extra. Read it
-        // before initRTC() so PeerConnectionManager picks the screen capturer instead of camera.
-        if (intent != null && intent.hasExtra(EXTRA_SCREEN_CAPTURE_INTENT)) {
-            mScreenCaptureIntent = intent.getParcelableExtra(EXTRA_SCREEN_CAPTURE_INTENT);
-        }
         // Must promote to foreground with the camera/microphone type before touching the camera -
         // required ordering on API 34.
         promoteToForeground();
         acquireWakeLock();
-        if (mScreenCaptureIntent != null && mPeerConnectionManager != null) {
-            // Capture is already running (camera, or a prior screen-capture session) - swap the
-            // source in place instead of tearing the whole pipeline down. stopStreaming()+init()
-            // would close every existing peer connection and send the browser a hangup signal
-            // (see PeerConnectionClientBase.closeAllConnections()), silently orphaning any
-            // already-joined viewer, who has no way to know a new stream is available to rejoin -
-            // the web client only ever (re)joins from an explicit user click. switchCaptureSource()
-            // keeps the same peer connections alive and the viewer just starts seeing the new
-            // source with no re-signaling needed at all.
-            final Intent switchIntent = mScreenCaptureIntent;
-            mScreenCaptureIntent = null; // consumed by the switch attempt below either way
-            if (mPeerConnectionManager.switchCaptureSource(this, switchIntent)) {
-                App.updateCameraModuleLabel(true);
-            } else {
-                AndruavEngine.log().logException("rtc-switch-source",
-                        new IllegalStateException("switchCaptureSource() failed"));
-            }
-        } else {
-            initRTC();
-        }
+        initRTC();
         return START_STICKY;
     }
 
     private void promoteToForeground() {
-        final boolean screenCapture = (mScreenCaptureIntent != null);
         android.app.Notification notification = new NotificationCompat.Builder(this, ap.andruav_ap.Notification.CHANNEL_ID)
                 .setContentTitle("Andruav")
-                .setContentText(screenCapture ? "Streaming screen" : "Streaming camera")
+                .setContentText("Streaming camera")
                 .setSmallIcon(R.drawable.ic_logo2)
                 .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setOngoing(true)
@@ -196,10 +155,7 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
             // uncaught and crashes the whole process. Since the type is never actually needed,
             // the fix is to simply never request it, not to catch harder.
             int type = 0;
-            if (screenCapture) {
-                // MediaProjection foreground-service type (API 34+ requires it for screen capture).
-                type |= ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION;
-            } else if (checkSelfPermission(android.Manifest.permission.CAMERA) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            if (checkSelfPermission(android.Manifest.permission.CAMERA) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
                 type |= ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA;
             }
             try {
@@ -249,15 +205,6 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
         ContextUtils.initialize(AndruavEngine.AppContext);
 
         mPeerConnectionManager = new PeerConnectionManager();
-        // If a specific source was requested (by the local picker or a web CameraSwitch that
-        // arrived before the service was running), use it; otherwise default to back camera,
-        // or screen if a pre-granted MediaProjection intent is available.
-        final int source = (mRequestedSource >= 0) ? mRequestedSource
-                : (mScreenCaptureIntent != null ? PeerConnectionManager.SOURCE_SCREEN : PeerConnectionManager.SOURCE_BACK);
-        mPeerConnectionManager.setInitialSource(source);
-        if (source == PeerConnectionManager.SOURCE_SCREEN && mScreenCaptureIntent != null) {
-            mPeerConnectionManager.setScreenCaptureIntent(mScreenCaptureIntent);
-        }
         final boolean res = mPeerConnectionManager.init(this, this, this, null, true, AndruavSettings.andruavWe7daBase.PartyID);
         if (!res) {
             PanicFacade.cannotStartCamera();
@@ -265,7 +212,6 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
             stopStreamingAndSelf();
             return;
         }
-        App.updateCameraModuleLabel(mPeerConnectionManager.isScreenCapture());
         // Restore the local preview on this fresh instance if one was attached before this
         // PeerConnectionManager was (re)created - e.g. a capture-source switch that stopped the
         // old instance and started this one without the Activity ever unbinding, so no new
@@ -293,50 +239,6 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
         }
     }
 
-    /**
-     * Returns true if the current streaming session is capturing the device screen (MediaProjection)
-     * rather than a camera. Used by remote-command handlers to avoid auto-stopping on viewer
-     * disconnect — a MediaProjection consent is single-use, so stopping the capturer revokes the
-     * projection and prevents restart without re-granting permission on the phone.
-     */
-    public static boolean isScreenCaptureActive() {
-        try {
-            final FPVStreamingService svc = (App.iFPVStreamingService != null)
-                    ? getServiceInstance() : null;
-            return svc != null && svc.mPeerConnectionManager != null && svc.mPeerConnectionManager.isScreenCapture();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private static FPVStreamingService getServiceInstance() {
-        // App.iFPVStreamingService is an Intent, not the service instance. The service instance
-        // is tracked via the static reference set in onCreate() below.
-        return sInstance;
-    }
-
-    private static FPVStreamingService sInstance;
-
-    /**
-     * Sets the video source to start when {@link #initRTC()} runs next. Called by the local
-     * source picker (FPVDroneRTCWebCamActivity) before starting the service. If the manager is
-     * already running, the source is applied immediately via {@link PeerConnectionManager#switchToSource}.
-     */
-    public void setRequestedSource(final int source) {
-        mRequestedSource = source;
-        if (mPeerConnectionManager != null) {
-            final String sourceId = PeerConnectionManager.sourceIdFor(AndruavSettings.andruavWe7daBase.PartyID, source);
-            final Intent screenIntent = (source == PeerConnectionManager.SOURCE_SCREEN && App.hasScreenCaptureIntent())
-                    ? App.sScreenCaptureIntent : null;
-            if (mPeerConnectionManager.switchToSource(this, AndruavSettings.andruavWe7daBase.PartyID, sourceId, screenIntent)) {
-                if (screenIntent != null && screenIntent == App.sScreenCaptureIntent) {
-                    App.sScreenCaptureIntent = null;
-                }
-                App.updateCameraModuleLabel(mPeerConnectionManager.isScreenCapture());
-            }
-        }
-    }
-
     public boolean isRecording() {
         return mRecordVideo;
     }
@@ -352,28 +254,8 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
                 break;
 
             case Event_FPV_CMD.FPV_CMD_SWITCHCAM:
-            {
-                // The web sends the target source's CAMERA_UNIQUE_NAME in the "SendBackTo"
-                // variable (set by AndruavWSClientBase from AndruavMessage_CameraSwitch). When
-                // screen-streaming is enabled, this is PartyID + "_back"/"_front"/"_screen";
-                // in legacy mode it's just PartyID and falls through to the old blind-toggle.
-                final String targetSourceId = a7adath_FPV_CMD.Variables.get("SendBackTo");
-                if (targetSourceId != null && Preference.isScreenStreamingEnabled(null)) {
-                    // For screen source, use the pre-granted intent if available.
-                    final Intent screenIntent = App.hasScreenCaptureIntent() ? App.sScreenCaptureIntent : null;
-                    if (mPeerConnectionManager.switchToSource(this, AndruavSettings.andruavWe7daBase.PartyID, targetSourceId, screenIntent)) {
-                        // If we consumed the pre-granted screen intent, clear it.
-                        if (screenIntent != null && screenIntent == App.sScreenCaptureIntent) {
-                            App.sScreenCaptureIntent = null;
-                        }
-                        App.updateCameraModuleLabel(mPeerConnectionManager.isScreenCapture());
-                    }
-                } else {
-                    // Legacy mode: blind-toggle front/back as before.
-                    mPeerConnectionManager.switchCamera();
-                }
-            }
-            break;
+                mPeerConnectionManager.switchCamera();
+                break;
 
             case Event_FPV_CMD.FPV_CMD_RECORDVIDEO:
                 if (a7adath_FPV_CMD.ACT) {
@@ -396,7 +278,7 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
 
     private void stopStreamingAndSelf() {
         // Clear the "is streaming" flag FIRST, before any WebRTC teardown that might throw
-        // (e.g. disposing an already-disposed MediaSource after a MediaProjection revocation).
+        // (e.g. disposing an already-disposed MediaSource).
         // If onDestroy() throws, the lines below it never run — leaving App.iFPVStreamingService
         // non-null, which makes startFPVStreamingService() a silent no-op on the next FPV open,
         // trapping the user in a "can't restart streaming" state.
@@ -413,10 +295,6 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
             }
             mPeerConnectionManager = null;
         }
-        // Relabel back to the plain camera name regardless of which mode was active - harmless
-        // no-op if it was already camera, and correct if this teardown followed a failed init
-        // (label was never changed) or a screen-capture session.
-        App.updateCameraModuleLabel(false);
         releaseWakeLock();
         stopForeground(true);
         stopSelf();
@@ -456,7 +334,6 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
             }
             mPeerConnectionManager = null;
         }
-        App.updateCameraModuleLabel(false);
         releaseWakeLock();
         // We can stop via stopSelf() (the _7adath_StopAndroidCamera funnel) as well as by the
         // system, so this is the one place guaranteed to run regardless of how we stop - keep
@@ -464,7 +341,6 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
         // button) know.
         EventBus.getDefault().post(new _7adath_FPVStreamingStatusChanged());
         EventBus.getDefault().unregister(this);
-        sInstance = null;
         super.onDestroy();
     }
 
@@ -506,7 +382,7 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
             // The peer count is the one signal a plain hangup always produces, regardless of which
             // command flow the viewer used to start - stop for real once nobody is left watching.
             //
-            // NOTE: We do NOT auto-stop on viewer disconnect for either camera or screen capture.
+            // NOTE: We do NOT auto-stop on viewer disconnect.
             // Stopping the service kills the PeerConnectionManager, but the FPV Activity is still
             // bound (BIND_AUTO_CREATE), so the service stays alive as a shell with no PCM. When the
             // web reconnects, startFPVStreamingService() is a no-op (iFPVStreamingService was cleared)
@@ -514,7 +390,7 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
             // delivers onStartCommand to the old shell, which SHOULD call initRTC()... but in
             // practice the web's "joinme" doesn't reliably trigger _7adath_InitAndroidCamera after
             // a stop, leaving the user unable to restream. Keeping capture alive across viewer
-            // connect/disconnect (like we do for screen capture) fixes restream for both modes.
+            // connect/disconnect fixes restream.
             // The user controls when streaming stops via the FPV exit button.
         });
     }

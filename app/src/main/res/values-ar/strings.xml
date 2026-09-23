@@ -75,10 +75,6 @@
     <string name="toast_auto_connect_fcb">محاولة الاتصال التلقائي بـ FCB</string>
     <string name="toast_ignore_connection">تجاهل لمدة %1$s</string>
     <string name="dialog_delete_all_logs">حذف جميع سجلات الأخطاء؟</string>
-    <string name="dialog_select_video_source">اختر مصدر الفيديو</string>
-    <string name="video_source_back_camera">الكاميرا الخلفية</string>
-    <string name="video_source_front_camera">الكاميرا الأمامية</string>
-    <string name="video_source_screen">الشاشة</string>
     <string name="progress_initialization">جاري التهيئة…</string>
     <string name="progress_checking_sensors">فحص المستشعرات</string>
     <string name="label_me">أنا</string>

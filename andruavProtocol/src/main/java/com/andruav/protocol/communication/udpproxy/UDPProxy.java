@@ -3,6 +3,7 @@ package com.andruav.protocol.communication.udpproxy;
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_REGISTERED;
 
 import com.andruav.AndruavEngine;
+import com.andruav.AndruavFacade;
 import com.andruav.AndruavSettings;
 import com.andruav.event.fcb_event.Event_SocketData;
 import com.andruav.protocol.communication.udpserver.UDPServerBase;
@@ -33,6 +34,14 @@ public class UDPProxy extends UDPServerBase {
         }
     }
 
+
+    @Override
+    protected void onSendResult(final long durationUs) {
+        if (AndruavEngine.getPreference().recordUdpSendFeedback(durationUs)) {
+            // AUTO changed the effective level: push it to GCS so it reflects it without waiting for a poll.
+            AndruavFacade.sendUdpProxyStatus(null);
+        }
+    }
 
     @Override
     protected void onData(final DatagramPacket packet, final byte[] buffer, final int len) {

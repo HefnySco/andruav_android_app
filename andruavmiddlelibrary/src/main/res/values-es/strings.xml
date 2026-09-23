@@ -94,8 +94,6 @@
     <string name="pref_gr_fpv_streamres_back_summary">Resolución de transmisión usada cuando la cámara trasera está activa. También se usa para imágenes fijas, que se capturan de la transmisión en vivo.</string>
     <string name="pref_gr_fpv_streamres_front">Resolución de Cámara Frontal</string>
     <string name="pref_gr_fpv_streamres_front_summary">Resolución de transmisión usada cuando la cámara frontal está activa. También se usa para imágenes fijas, que se capturan de la transmisión en vivo.</string>
-    <string name="pref_gr_fpv_screen_streaming">Permitir Transmisión de Pantalla</string>
-    <string name="pref_gr_fpv_screen_streaming_summary">Muestra un selector de fuente (Trasera/Frontal/Pantalla) al abrir la pantalla FPV y anuncia tres fuentes de vídeo seleccionables por separado a la web/GCS. Cuando está desactivado, se comporta como antes: cámara única, inicio automático.</string>
     <string name="pref_gr_fpv_imagecapturesize">Tamaño de Imagen Capturada</string>
     <string name="pref_gr_fpv_imagecapturesize_summary">Nota: Debe ser mayor o igual al Tamaño de Imagen de Vídeo.</string>
     <string name="pref_gr_fpv_useInternalCamera">Usar Cámara para GCS</string>
@@ -164,7 +162,6 @@
     <string name="action_cam_img_interval">Intervalos de Disparo</string>
     <string name="action_cam_img_total">Total de Imágenes</string>
     <string name="action_cam_swap">cambiar</string>
-    <string name="action_screen_share">pantalla</string>
     <string name="action_cam_shoot">disparar</string>
     <string name="action_imu_zero">poner a cero</string>
     <string name="action_video_shoot">vídeo</string>

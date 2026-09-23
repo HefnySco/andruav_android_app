@@ -118,7 +118,8 @@ public class DroneKitMavlinkObserver extends MavlinkObserver
             boolean bsend;
             final int isSmartTelemetry = Preference.getSmartMavlinkTelemetry(null);
             if (isSmartTelemetry > Constants.SMART_TELEMETRY_LEVEL_0) {
-                bsend = TrafficOptimizer.shouldSend(mavLinkPacket,isSmartTelemetry);
+                TrafficOptimizer.setOptimizationLevel(isSmartTelemetry); // no-op if unchanged; resolves AUTO
+                bsend = TrafficOptimizer.shouldSend(mavLinkPacket, TrafficOptimizer.getEffectiveLevel());
                 if (!bsend) return ; /// dont sendMessageToModule for optimization purpose
             }
 
