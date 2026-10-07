@@ -8,30 +8,23 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.MAVLink.Messages.MAVLinkMessage;
-import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.action.ConnectionActions;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEventExtra;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
-import com.o3dr.services.android.lib.drone.mission.Mission;
-import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
-import com.o3dr.services.android.lib.drone.mission.item.command.ResetROI;
-import com.o3dr.services.android.lib.drone.mission.item.spatial.RegionOfInterest;
 import com.o3dr.services.android.lib.drone.property.DroneAttribute;
 import com.o3dr.services.android.lib.drone.property.Parameter;
 import com.o3dr.services.android.lib.drone.property.State;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 import com.o3dr.services.android.lib.gcs.link.LinkEvent;
 import com.o3dr.services.android.lib.gcs.link.LinkEventExtra;
-import com.o3dr.android.client.BuildConfig;
 import com.o3dr.services.android.lib.mavlink.MavlinkMessageWrapper;
 import com.o3dr.services.android.lib.model.ICommandListener;
 import com.o3dr.services.android.lib.model.IMavlinkObserver;
 import com.o3dr.services.android.lib.model.IObserver;
 import com.o3dr.services.android.lib.model.action.Action;
-import com.o3dr.services.android.lib.util.version.VersionUtils;
 
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces;
 import org.droidplanner.services.android.impl.core.drone.DroneManager;
@@ -54,9 +47,6 @@ import timber.log.Timber;
  */
 public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInterfaces.AttributeEventListener,
     DroneInterfaces.OnParameterManagerListener {
-
-    //The Reset ROI mission item was introduced in version 2.6.8. Any client library older than this do not support it.
-    private final static int RESET_ROI_LIB_VERSION = 206080;
 
     private final Runnable eventsDispatcher = new Runnable() {
         private final LinkedHashMap<String, Bundle> eventsFilter = new LinkedHashMap<>();
@@ -93,8 +83,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
     private final ConcurrentLinkedQueue<IMavlinkObserver> mavlinkObserversList;
     private DroneManager droneMgr;
 
-    private final ClientInfo clientInfo;
-
     private final DroidPlannerService service;
 
     private final ConcurrentLinkedQueue<EventInfo> eventsBuffer = new ConcurrentLinkedQueue<>();
@@ -109,11 +97,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
 
         observersList = new ConcurrentLinkedQueue<>();
         mavlinkObserversList = new ConcurrentLinkedQueue<>();
-
-        int apiVersionCode = VersionUtils.getCoreLibVersion(this.context);
-        int clientVersionCode = BuildConfig.VERSION_CODE;
-
-        this.clientInfo = new ClientInfo(apiVersionCode, clientVersionCode);
     }
 
     void destroy() {
@@ -121,7 +104,7 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
         this.observersList.clear();
         this.mavlinkObserversList.clear();
 
-        this.service.disconnectDroneManager(this.droneMgr, this.clientInfo);
+        this.service.disconnectDroneManager(this.droneMgr);
     }
 
     public String getOwnerId() {
@@ -148,27 +131,8 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
         Bundle carrier = new Bundle();
 
         if (droneMgr != null) {
-            DroneAttribute attribute = droneMgr.getAttribute(clientInfo, type);
+            DroneAttribute attribute = droneMgr.getAttribute(type);
             if (attribute != null) {
-
-                //Check if the client supports the ResetROI mission item.
-                // Replace it with a RegionOfInterest with coordinate set to 0 if it doesn't.
-                if (clientInfo.clientVersionCode < RESET_ROI_LIB_VERSION && attribute instanceof Mission) {
-                    Mission proxyMission = (Mission) attribute;
-                    List<MissionItem> missionItems = proxyMission.getMissionItems();
-                    int missionItemsCount = missionItems.size();
-                    for (int i = 0; i < missionItemsCount; i++) {
-                        MissionItem missionItem = missionItems.get(i);
-                        if (missionItem instanceof ResetROI) {
-                            missionItems.remove(i);
-
-                            RegionOfInterest replacement = new RegionOfInterest();
-                            replacement.setCoordinate(new LatLongAlt(0, 0, 0));
-                            missionItems.add(i, replacement);
-                        }
-                    }
-                }
-
                 carrier.putParcelable(type, attribute);
             }
         }
@@ -223,7 +187,7 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
     }
 
     public void disconnect() {
-        service.disconnectDroneManager(this.droneMgr, clientInfo);
+        service.disconnectDroneManager(this.droneMgr);
         this.connectionParams = null;
         this.droneMgr = null;
 
@@ -286,7 +250,7 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
 
             default:
                 if (droneMgr != null) {
-                    droneMgr.executeAsyncAction(clientInfo, action, listener);
+                    droneMgr.executeAsyncAction(action, listener);
                 } else {
                     CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
                 }
@@ -364,10 +328,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
         args.putInt(AttributeEventExtra.EXTRA_AUTOPILOT_MESSAGE_LEVEL, logLevel);
         args.putString(AttributeEventExtra.EXTRA_AUTOPILOT_MESSAGE, message);
         notifyAttributeUpdate(AttributeEvent.AUTOPILOT_MESSAGE, args);
-    }
-
-    public ClientInfo getClientInfo() {
-        return clientInfo;
     }
 
     @Override
@@ -564,17 +524,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
         extras.putParcelable(LinkEventExtra.EXTRA_CONNECTION_STATUS, connectionStatus);
         notifyAttributeUpdate(LinkEvent.LINK_STATE_UPDATED, extras);
 
-    }
-
-    public static class ClientInfo {
-
-        public final int apiVersionCode;
-        public final int clientVersionCode;
-
-        public ClientInfo(int apiVersionCode, int clientVersionCode) {
-            this.apiVersionCode = apiVersionCode;
-            this.clientVersionCode = clientVersionCode;
-        }
     }
 
     private static class EventInfo {

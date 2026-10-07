@@ -100,7 +100,7 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
             listener.onDroneEvent(DroneInterfaces.DroneEventsType.DISCONNECTED, drone);
         }
 
-        executeAsyncAction(null, new Action(GimbalActions.ACTION_RESET_GIMBAL_MOUNT_MODE), null);
+        executeAsyncAction(new Action(GimbalActions.ACTION_RESET_GIMBAL_MOUNT_MODE), null);
 
     }
 
@@ -141,11 +141,11 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
         return drone != null && drone.isConnected();
     }
 
-    public DroneAttribute getAttribute(DroneApi.ClientInfo clientInfo, String attributeType) {
+    public DroneAttribute getAttribute(String attributeType) {
         return drone == null ? null : drone.getAttribute(attributeType);
     }
 
-    protected boolean executeAsyncAction(Action action, ICommandListener listener) {
+    public boolean executeAsyncAction(Action action, ICommandListener listener) {
         String type = action.getType();
 
         //***************** CONTROL ACTIONS *****************//
@@ -163,15 +163,6 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
             CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
             return true;
         }
-    }
-
-    public boolean executeAsyncAction(DroneApi.ClientInfo clientInfo, Action action, ICommandListener listener) {
-        String type = action.getType();
-        Bundle data = action.getData();
-
-        if (ControlActions.ACTION_ENABLE_MANUAL_CONTROL.equals(type)) {
-        }
-        return executeAsyncAction(action, listener);
     }
 
     protected void notifyDroneAttributeEvent(String attributeEvent, Bundle eventInfo) {

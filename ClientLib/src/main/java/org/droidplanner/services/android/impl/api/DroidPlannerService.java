@@ -114,11 +114,10 @@ public class DroidPlannerService extends Service {
     /**
      * Disconnect the given client from the vehicle managed by the given drone manager.
      *
-     * @param droneMgr   Handler for the connected vehicle.
-     * @param clientInfo Info of the disconnecting client.
+     * @param droneMgr Handler for the connected vehicle.
      */
-    void disconnectDroneManager(DroneManager droneMgr, DroneApi.ClientInfo clientInfo) {
-        if (droneMgr == null || clientInfo == null )
+    void disconnectDroneManager(DroneManager droneMgr) {
+        if (droneMgr == null)
             return;
 
         Timber.d("Drone manager disconnection for appId");
