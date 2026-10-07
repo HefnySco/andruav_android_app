@@ -42,13 +42,9 @@ import com.MAVLink.enums.MAV_MOUNT_MODE;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.o3dr.android.client.ControlTower;
 import com.o3dr.android.client.Drone;
-import com.o3dr.android.client.apis.ControlApi;
-import com.o3dr.android.client.apis.ExperimentalApi;
-import com.o3dr.android.client.apis.GimbalApi;
-import com.o3dr.android.client.apis.MissionApi;
-import com.o3dr.android.client.apis.VehicleApi;
 import com.o3dr.android.client.interfaces.DroneListener;
 import com.o3dr.android.client.interfaces.LinkListener;
+import com.o3dr.android.client.interfaces.ManualControlStateListener;
 import com.o3dr.android.client.interfaces.TowerListener;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
@@ -97,7 +93,7 @@ import ap.andruavmiddlelibrary.preference.Preference;
 /**
  * Created by mhefny on 1/18/16.
  */
-public class DroneKitServer implements DroneListener, TowerListener , ControlApi.ManualControlStateListener, LinkListener, GimbalApi.GimbalOrientationListener, IEvent_SocketData {
+public class DroneKitServer implements DroneListener, TowerListener , ManualControlStateListener, LinkListener, Drone.GimbalOrientationListener, IEvent_SocketData {
 
     protected final DroneKitServer Me;
 
@@ -188,7 +184,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
                 final MAVLinkMessage mavLinkMessage = tmpMavLinkPacket.unpack();
                 final MavlinkMessageWrapper mavlinkMessageWrapper = new MavlinkMessageWrapper(mavLinkMessage);
 
-                ExperimentalApi.getApi(mDrone).sendMavlinkMessage(mavlinkMessageWrapper);
+                mDrone.sendMavlinkMessage(mavlinkMessageWrapper);
 
             }
         }
@@ -301,7 +297,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         }
         msg.ignore_flags = ignoreFlags;
 
-        ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(msg));
+        mDrone.sendMavlinkMessage(new MavlinkMessageWrapper(msg));
     }
 
     /***
@@ -327,7 +323,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             msg.data[i] = (short) (data[i] & 0xFF);
         }
 
-        ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(msg));
+        mDrone.sendMavlinkMessage(new MavlinkMessageWrapper(msg));
     }
 
     /***
@@ -346,7 +342,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         msg.stab_roll   = (stabilizeRoll)?(short)1:(short)0;
         msg.stab_yaw    = (stabilizeYaw)?(short)1:(short)0;
         msg.mount_mode  = (short)GimbalMode;
-        ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(msg));
+        mDrone.sendMavlinkMessage(new MavlinkMessageWrapper(msg));
     }
 
     private boolean bFirst = true;
@@ -374,9 +370,9 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         }
 
 
-        GimbalApi.getApi(mDrone).updateGimbalOrientation((float)pitch, (float)roll, (float)yaw, new GimbalApi.GimbalOrientationListener() {
+        mDrone.updateGimbalOrientation((float)pitch, (float)roll, (float)yaw, new Drone.GimbalOrientationListener() {
             @Override
-            public void onGimbalOrientationUpdate(GimbalApi.GimbalOrientation orientation) {
+            public void onGimbalOrientationUpdate(Drone.GimbalOrientation orientation) {
 
             }
 
@@ -408,7 +404,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         msg.input_b = (int) (lng);
         msg.input_c = (int) (alt * 100);  // in cm
 
-        ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(msg));
+        mDrone.sendMavlinkMessage(new MavlinkMessageWrapper(msg));
 
     }
 
@@ -608,7 +604,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
 
 
-        com.o3dr.android.client.apis.VehicleApi.getApi(mDrone).refreshParameters();
+        mDrone.refreshParameters();
 
         AndruavSettings.andruavWe7daBase.useFCBIMU(true);
         bFirst = true;
@@ -623,14 +619,14 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
         AndruavFacade.broadcastID();
 
-        GimbalApi.getApi(mDrone).startGimbalControl(this);
+        mDrone.startGimbalControl(this);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (mDrone== null) return ;
                 if (mDrone.isConnected())
                 {
-                    VehicleApi.getApi(mDrone).refreshParameters();
+                    mDrone.refreshParameters();
                 }
             }
         },2000);
@@ -949,7 +945,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
     @Override
     public void onManualControlToggled(boolean isEnabled) {
-//        ControlApi.getApi(mDrone).manualControl(0.2f, 0, 0, new AbstractCommandListener() {
+//        mDrone.manualControl(0.2f, 0, 0, new AbstractCommandListener() {
 //            @Override
 //            public void onSuccess() {
 //                return;
@@ -1039,54 +1035,54 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
     public void sendMavlink (final MavlinkMessageWrapper mavlinkMessageWrapper)
     {
-        ExperimentalApi.getApi(mDrone).sendMavlinkMessage(mavlinkMessageWrapper);
+        mDrone.sendMavlinkMessage(mavlinkMessageWrapper);
     }
 
     public void sendSimulatedPacket (final MavlinkMessageWrapper mavlinkMessageWrapper, boolean byPassBlocked)
     {
         if (byPassBlocked || (!AndruavSettings.andruavWe7daBase.FCBoard.do_RCChannelBlocked())) {
-            ExperimentalApi.getApi(mDrone).sendMavlinkMessage(mavlinkMessageWrapper);
+            mDrone.sendMavlinkMessage(mavlinkMessageWrapper);
         }
     }
 
     public void setMode (VehicleMode newMode)
     {
-        VehicleApi.getApi(mDrone).setVehicleMode(newMode);
+        mDrone.setVehicleMode(newMode);
     }
 
 
 
     public void ctrl_gotoLngLatI (LatLong point, boolean force, AbstractCommandListener listener)
     {
-        ControlApi.getApi(mDrone).goTo(point, force, listener);
+        mDrone.goTo(point, force, listener);
     }
 
 
     public void ctrl_guidedVelocityInLocalFrame(double vx, double vy, double vz, double yawRate, double yaw, short  coordinateFrame, short typeMask, AbstractCommandListener listener)
     {
-        ControlApi.getApi(mDrone).guidedVelocityInLocalFrame(vx, vy, vz, yawRate, yaw, coordinateFrame, typeMask, listener);
+        mDrone.guidedVelocityInLocalFrame(vx, vy, vz, yawRate, yaw, coordinateFrame, typeMask, listener);
     }
 
     public void ctrl_guidedVelocityInGlobalFrame(double vx, double vy, double vz, double yawRate, double yaw, short  coordinateFrame, short typeMask, AbstractCommandListener listener)
     {
-        ControlApi.getApi(mDrone).guidedVelocityInGlobalFrame(vx, vy, vz, yawRate, yaw, coordinateFrame, typeMask, listener);
+        mDrone.guidedVelocityInGlobalFrame(vx, vy, vz, yawRate, yaw, coordinateFrame, typeMask, listener);
     }
 
 
-    public void ctrl_enableManualControl (final boolean enable, final ControlApi.ManualControlStateListener listener)
+    public void ctrl_enableManualControl (final boolean enable, final ManualControlStateListener listener)
     {
-        ControlApi.getApi(mDrone).enableManualControl(enable, listener);
+        mDrone.enableManualControl(enable, listener);
     }
 
 
     public void ctrl_climbTo (double altitude)
     {
-        ControlApi.getApi(mDrone).climbTo(altitude);
+        mDrone.climbTo(altitude);
     }
 
     public void ctrl_changeAltitude(double altitude, AbstractCommandListener listener)
     {
-        ControlApi.getApi(mDrone).takeoff(altitude, listener);
+        mDrone.takeoff(altitude, listener);
     }
 
     /***
@@ -1100,7 +1096,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
         if (targetAngle!=0)
         {
-            ControlApi.getApi(mDrone).turnTo((float) targetAngle, (float) turnRate, isRelative, abstractCommandListener);
+            mDrone.turnTo((float) targetAngle, (float) turnRate, isRelative, abstractCommandListener);
         }
         else
         {
@@ -1110,7 +1106,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
     public void reset_Yaw_reset (AbstractCommandListener abstractCommandListener)
     {
-        ControlApi.getApi(mDrone).reset_roi(abstractCommandListener);
+        mDrone.reset_roi(abstractCommandListener);
     }
 
     /**
@@ -1147,7 +1143,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         }
 
         // set servo to pwm given or updated by previous conditions.
-        ExperimentalApi.getApi(mDrone).setServo(servoNumber, pwm, new AbstractCommandListener() {
+        mDrone.setServo(servoNumber, pwm, new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 if (iControlBoard_callback != null) iControlBoard_callback.OnSuccess();
@@ -1175,7 +1171,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-        VehicleApi.getApi(mDrone).arm(arm,forceDisarm,
+        mDrone.arm(arm,forceDisarm,
 
                 new AbstractCommandListener() {
                     @Override
@@ -1207,7 +1203,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
         Mission mission = new Mission();
         mission.clear();
-        MissionApi.getApi(mDrone).setMission(mission,true);
+        mDrone.setMission(mission,true);
     }
 
     public void doReadMission()
@@ -1220,7 +1216,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         }
 
 
-        MissionApi.getApi(mDrone).loadWaypoints();
+        mDrone.loadWaypoints();
     }
 
 
@@ -1254,7 +1250,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         msg.target_system = (short) getSysID();
         msg.target_component = (short) getCompID();
         msg.seq = i;
-        ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(msg));
+        mDrone.sendMavlinkMessage(new MavlinkMessageWrapper(msg));
     }
 
     public void doSaveMission(Mission mission)
@@ -1266,7 +1262,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-        MissionApi.getApi(mDrone).setMission(mission,true);
+        mDrone.setMission(mission,true);
     }
 
     public void doSetCurrentMission (final int missionItemNumber)
@@ -1311,7 +1307,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
                 Parameter parameter = new Parameter("CRUISE_SPEED", speed, 1);
 
                 parameters.addParameter(parameter);
-                VehicleApi.getApi(mDrone).writeParameters(parameters);
+                mDrone.writeParameters(parameters);
             }
                 break;
 
@@ -1320,7 +1316,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
                 Parameter parameter = new Parameter("WPNAV_SPEED", speed * 100 , 1);
 
                 parameters.addParameter(parameter);
-                VehicleApi.getApi(mDrone).writeParameters(parameters);
+                mDrone.writeParameters(parameters);
             }
                 break;
 
@@ -1336,7 +1332,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         msg.param3 = -1;    // Throttle ( Percent, -1 indicates no change)
         msg.param4 = 0;     // absolute or relative [0,1]
 
-        ExperimentalApi.getApi(mDrone).sendMavlinkMessage(new MavlinkMessageWrapper(msg));
+        mDrone.sendMavlinkMessage(new MavlinkMessageWrapper(msg));
 
     }
 
@@ -1353,14 +1349,14 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         changeMissionSpeed ((float)speed);
 
         /*// this sets auto mode speed.
-        MissionApi.getApi(mDrone).setMissionSpeed((float)speed, abstractCommandListener);
+        mDrone.setMissionSpeed((float)speed, abstractCommandListener);
 
         // this sets guided mode speed.
         speed = speed * 100; // cm/sec
         final Parameters parameters = new Parameters();
         parameters.addParameter(new Parameter("WPNAV_SPEED", speed,9));
 
-        VehicleApi.getApi(mDrone).writeParameters(parameters);*/
+        mDrone.writeParameters(parameters);*/
     }
 
     public void setHome(final LatLongAlt latLongAlt,final AbstractCommandListener abstractCommandListener)
@@ -1371,7 +1367,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-        VehicleApi.getApi(mDrone).setVehicleHome(latLongAlt, abstractCommandListener);
+        mDrone.setVehicleHome(latLongAlt, abstractCommandListener);
     }
 
 
@@ -1383,7 +1379,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnFailue(-1);
             return ;
         }
-        VehicleApi.getApi(mDrone).setVehicleMode(VehicleMode.COPTER_LAND, new AbstractCommandListener() {
+        mDrone.setVehicleMode(VehicleMode.COPTER_LAND, new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnSuccess();
@@ -1407,7 +1403,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
     private void startMission(final IControlBoard_Callback lo7Ta7akom_callback)
     {
-        MissionApi.getApi(mDrone).startMission(true, true, new AbstractCommandListener() {
+        mDrone.startMission(true, true, new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnSuccess();
@@ -1441,7 +1437,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
 
 
 
-            VehicleApi.getApi(mDrone).setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_AUTO), new AbstractCommandListener() {
+            mDrone.setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_AUTO), new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 //startMission(lo7Ta7akom_callback);
@@ -1472,7 +1468,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-        VehicleApi.getApi(mDrone).setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_POSTION_HOLD), new AbstractCommandListener() {
+        mDrone.setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_POSTION_HOLD), new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnSuccess();
@@ -1500,7 +1496,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-        VehicleApi.getApi(mDrone).setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_ALT_HOLD), new AbstractCommandListener() {
+        mDrone.setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_ALT_HOLD), new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnSuccess();
@@ -1530,7 +1526,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         }
 
 
-        VehicleApi.getApi(mDrone).setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_LOITER), new AbstractCommandListener() {
+        mDrone.setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_LOITER), new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnSuccess();
@@ -1560,7 +1556,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         }
 
 
-        VehicleApi.getApi(mDrone).setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_SURFACE), new AbstractCommandListener() {
+        mDrone.setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_SURFACE), new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnSuccess();
@@ -1590,7 +1586,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-        VehicleApi.getApi(mDrone).setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_TAKEOFF), new AbstractCommandListener() {
+        mDrone.setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_TAKEOFF), new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnSuccess();
@@ -1619,7 +1615,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-        VehicleApi.getApi(mDrone).setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_GUIDED), new AbstractCommandListener() {
+        mDrone.setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_GUIDED), new AbstractCommandListener() {
             @Override
             public void onSuccess() {
 
@@ -1652,7 +1648,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-        VehicleApi.getApi(mDrone).setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_FBWA), new AbstractCommandListener() {
+        mDrone.setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_FBWA), new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnSuccess();
@@ -1682,7 +1678,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-        VehicleApi.getApi(mDrone).setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_FBWB), new AbstractCommandListener() {
+        mDrone.setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_FBWB), new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnSuccess();
@@ -1711,7 +1707,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-        VehicleApi.getApi(mDrone).setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_CRUISE), new AbstractCommandListener() {
+        mDrone.setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_CRUISE), new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnSuccess();
@@ -1740,7 +1736,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-        VehicleApi.getApi(mDrone).setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_MANUAL), new AbstractCommandListener() {
+        mDrone.setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_MANUAL), new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnSuccess();
@@ -1770,7 +1766,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-        VehicleApi.getApi(mDrone).setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_ACRO), new AbstractCommandListener() {
+        mDrone.setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_ACRO), new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnSuccess();
@@ -1809,7 +1805,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             mode = FlightMode.CONST_FLIGHT_CONTROL_SMART_RTL;
         }
 
-        VehicleApi.getApi(mDrone).setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, mode), new AbstractCommandListener() {
+        mDrone.setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, mode), new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnSuccess();
@@ -1845,7 +1841,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-        VehicleApi.getApi(mDrone).setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_BRAKE), new AbstractCommandListener() {
+        mDrone.setVehicleMode(MavLink_Helpers.get3DRFlightControl(APM_VehicleType, FlightMode.CONST_FLIGHT_CONTROL_BRAKE), new AbstractCommandListener() {
             @Override
             public void onSuccess() {
                 if (lo7Ta7akom_callback!= null) lo7Ta7akom_callback.OnSuccess();
@@ -1878,7 +1874,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
                 // delete old to Reset
                 clearInternalCommand();
                 mission.clear();
-                MissionApi.getApi(mDrone).setMission(mission, true);
+                mDrone.setMission(mission, true);
                 mInternalCommand = INTERNAL_CMD_CIRCLE;
                 mInternalCommand_Step = 0;
                 mInternalCommand_Runnable = new Runnable() {
@@ -1891,7 +1887,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
                         circle.setCoordinate(new LatLongAlt(lat, lng, altitude));
                         circle.setTurns(turns);
                         mission.addMissionItem(circle);
-                        MissionApi.getApi(mDrone).setMission(mission, true);
+                        mDrone.setMission(mission, true);
                         mInternalCommand = INTERNAL_CMD_CIRCLE;
                         mInternalCommand_Step = 2;
 
@@ -1925,7 +1921,7 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
             return ;
         }
 
-        ExperimentalApi.getApi(mDrone).triggerCamera();
+        mDrone.triggerCamera();
     }
 
     public void do_ChangeSysID (final int sysID)
@@ -1934,12 +1930,12 @@ public class DroneKitServer implements DroneListener, TowerListener , ControlApi
         Parameter parameter = new Parameter("SYSID_THISMAV", sysID , 1);
 
         parameters.addParameter(parameter);
-        VehicleApi.getApi(mDrone).writeParameters(parameters);
+        mDrone.writeParameters(parameters);
     }
 
 
     @Override
-    public void onGimbalOrientationUpdate(GimbalApi.GimbalOrientation orientation) {
+    public void onGimbalOrientationUpdate(Drone.GimbalOrientation orientation) {
         if (AndruavSettings.andruavWe7daBase.FCBoard !=null)   ((ControlBoard_DroneKit)AndruavSettings.andruavWe7daBase.FCBoard).onDroneEvent_OnGimbalOrientationUpdate(orientation.getPitch(),orientation.getRoll(),orientation.getYaw());
     }
 

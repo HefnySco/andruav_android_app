@@ -97,7 +97,7 @@ to act while blocked:
    `byPassBlockedGCS`. This is the gate that stops GCS-sent MAVLink packets
    from reaching the FC.
 2. **`DroneKitServer.sendSimulatedPacket(...)`** — same gate for the DroneKit
-   path; only forwards to `ExperimentalApi.getApi(mDrone).sendMavlinkMessage`
+   path; only forwards to `mDrone.sendMavlinkMessage`
    if `byPassBlocked` is set or the board is not blocked.
 3. **`ControlBoard_DroneKit.onEvent(Event_Remote_ChannelsCMD)`** — drops
    incoming Andruav remote-control channel commands from other units (e.g. a
