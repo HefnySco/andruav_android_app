@@ -117,18 +117,21 @@ public class AndruavMessage_GPS extends AndruavMessageBase {
         json_data.accumulate("SC", SATC);
         json_data.accumulate("GS", GPSFCB);
         if (CurrentLocation != null) {
-            // @see <a href=http://localhost:8080/mantis/view.php?id=25>java.lang.NumberFormatException: Invalid double: "11,021156"  </a>
-            json_data.accumulate("la", String.format(Locale.US, "%4.6f", CurrentLocation.getLatitude()));
-            json_data.accumulate("ln", String.format(Locale.US, "%4.6f", CurrentLocation.getLongitude()));
+            // numeric JSON values (not formatted strings): JSONObject prints
+            // doubles locale-free, and receivers parse via getString/getDouble
+            // which accept numbers as well. String fields break webclient
+            // consumers that require Number.isFinite (e.g. the 3D map).
+            json_data.accumulate("la", CurrentLocation.getLatitude());
+            json_data.accumulate("ln", CurrentLocation.getLongitude());
             json_data.accumulate("p", CurrentLocation.getProvider());
             json_data.accumulate("t", CurrentLocation.getTime());
-            json_data.accumulate("a", String.format(Locale.US, "%5.1f", CurrentLocation.getAltitude()).trim());
-            json_data.accumulate("r", String.format(Locale.US, "%5.1f", CurrentLocation.getAltitudeRelative()).trim());
+            json_data.accumulate("a", CurrentLocation.getAltitude());
+            json_data.accumulate("r", CurrentLocation.getAltitudeRelative());
             if (CurrentLocation.hasSpeed()) {
-                json_data.accumulate("s", String.format(Locale.US, "%.3f", CurrentLocation.getSpeed()).trim());
+                json_data.accumulate("s", CurrentLocation.getSpeed());
             }
             if (CurrentLocation.hasBearing()) {
-                json_data.accumulate("b", String.format(Locale.US, "%.4f", CurrentLocation.getBearing()).trim());
+                json_data.accumulate("b", CurrentLocation.getBearing());
             }
             if (CurrentLocation.getAccuracy() != 0) {
                 json_data.accumulate("c", CurrentLocation.getAccuracy());
