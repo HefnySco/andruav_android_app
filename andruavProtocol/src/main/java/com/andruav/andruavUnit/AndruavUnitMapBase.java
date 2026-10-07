@@ -142,6 +142,7 @@ public class AndruavUnitMapBase extends SimpleArrayMap<String, AndruavUnitBase> 
         andruavUnit.VideoRecording = ((AndruavMessage_ID) andruav2MR.andruavMessageBase).VideoRecording;
 
         andruavUnit.IsArmed(((AndruavMessage_ID) andruav2MR.andruavMessageBase).IsArmed);
+        andruavUnit.isReadyToArm(((AndruavMessage_ID) andruav2MR.andruavMessageBase).IsReadyToArm);
         andruavUnit.IsFlying(((AndruavMessage_ID) andruav2MR.andruavMessageBase).IsFlying);
         andruavUnit.setFlightModeFromBoard(((AndruavMessage_ID) andruav2MR.andruavMessageBase).FlyingMode);
         andruavUnit.setFlyingStartTime(((AndruavMessage_ID) andruav2MR.andruavMessageBase).FlyingLastStartTime);

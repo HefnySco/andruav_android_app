@@ -894,7 +894,13 @@ public class AndruavUnitBase {
 
     public void isReadyToArm (final boolean is_ready_to_arm)
     {
+        final boolean changed = (m_is_ready_to_arm != is_ready_to_arm);
         m_is_ready_to_arm = is_ready_to_arm;
+
+        if (changed && IsMe())
+        {
+            AndruavFacade.broadcastID();
+        }
     }
 
     public boolean isReadyToArm ()

@@ -152,9 +152,19 @@ public class AndruavMessage_ID extends AndruavMessageBase {
         if (json_receive_data.has("GM")) GPSMode = json_receive_data.getInt("GM");
         if (json_receive_data.has("AR"))
         {
-            m_arming_status = json_receive_data.getInt("AR");
-            IsArmed = (m_arming_status & 0x1) != 0;
-            IsReadyToArm = (m_arming_status & 0x2) != 0;
+            final Object arming_status_obj = json_receive_data.get("AR");
+            if (arming_status_obj instanceof Boolean)
+            {
+                //backward compatibility: old senders emit AR as a single armed flag
+                IsArmed = (Boolean) arming_status_obj;
+                IsReadyToArm = IsArmed;
+            }
+            else
+            {
+                m_arming_status = json_receive_data.getInt("AR");
+                IsReadyToArm = (m_arming_status & 0x1) != 0;
+                IsArmed = (m_arming_status & 0x2) != 0;
+            }
         }
         if (json_receive_data.has("FL")) IsFlying = json_receive_data.getBoolean("FL"); //backward compatibility
         if (json_receive_data.has("FM")) FlyingMode = json_receive_data.getInt("FM"); //backward compatibility

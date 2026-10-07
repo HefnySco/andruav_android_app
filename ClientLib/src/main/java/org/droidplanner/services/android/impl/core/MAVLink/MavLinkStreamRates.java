@@ -7,11 +7,13 @@ import org.droidplanner.services.android.impl.communication.model.DataLink.DataL
 
 public class MavLinkStreamRates {
 
+	private static final int MIN_EXTENDED_STATUS_RATE = 4;
+
 	public static void setupStreamRates(DataLinkProvider MAVClient, short sysid, short compid,
 			int extendedStatus, int extra1, int extra2, int extra3, int position, int rcChannels,
 			int rawSensors, int rawControler) {
 		requestMavlinkDataStream(MAVClient, sysid, compid, MAV_DATA_STREAM.MAV_DATA_STREAM_EXTENDED_STATUS,
-				extendedStatus);
+				Math.max(extendedStatus, MIN_EXTENDED_STATUS_RATE));
 		requestMavlinkDataStream(MAVClient, sysid, compid, MAV_DATA_STREAM.MAV_DATA_STREAM_EXTRA1, extra1);
 		requestMavlinkDataStream(MAVClient, sysid, compid, MAV_DATA_STREAM.MAV_DATA_STREAM_EXTRA2, extra2);
 		requestMavlinkDataStream(MAVClient, sysid, compid, MAV_DATA_STREAM.MAV_DATA_STREAM_EXTRA3, extra3);
