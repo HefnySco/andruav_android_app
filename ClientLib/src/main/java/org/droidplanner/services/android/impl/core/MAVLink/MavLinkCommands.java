@@ -3,6 +3,7 @@ package org.droidplanner.services.android.impl.core.MAVLink;
 import com.MAVLink.common.msg_command_long;
 import com.MAVLink.common.msg_manual_control;
 import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.common.msg_set_mode;
 import com.MAVLink.common.msg_set_position_target_global_int;
 import com.MAVLink.common.msg_set_position_target_local_ned;
@@ -39,7 +40,7 @@ public class MavLinkCommands {
     }
 
     public static void setGuidedMode(MavLinkDrone drone, double latitude, double longitude, double d) {
-        msg_mission_item msg = new msg_mission_item();
+        msg_mission_item_int msg = new msg_mission_item_int();
         msg.seq = 0;
         msg.current = 2; // TODO use guided mode enum
         msg.frame = MAV_FRAME.MAV_FRAME_GLOBAL_RELATIVE_ALT;
@@ -48,8 +49,8 @@ public class MavLinkCommands {
         msg.param2 = 0; // TODO use correct parameter
         msg.param3 = 0; // TODO use correct parameter
         msg.param4 = 0; // TODO use correct parameter
-        msg.x = (float) latitude;
-        msg.y = (float) longitude;
+        msg.x = (int) Math.round(latitude * 1E7);
+        msg.y = (int) Math.round(longitude * 1E7);
         msg.z = (float) d;
         msg.autocontinue = 1; // TODO use correct parameter
         msg.target_system = drone.getSysid();
