@@ -1,23 +1,12 @@
 package com.o3dr.android.client.apis;
 
-import android.os.Bundle;
 
 import com.o3dr.android.client.Drone;
 import com.o3dr.services.android.lib.drone.mission.Mission;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
-import com.o3dr.services.android.lib.model.action.Action;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_CHANGE_MISSION_SPEED;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_LOAD_WAYPOINTS;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_SET_MISSION;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.ACTION_START_MISSION;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_FORCE_ARM;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_FORCE_MODE_CHANGE;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_MISSION;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_MISSION_SPEED;
-import static com.o3dr.services.android.lib.drone.mission.action.MissionActions.EXTRA_PUSH_TO_DRONE;
 
 /**
  * Provides access to missions specific functionality.
@@ -55,10 +44,7 @@ public class MissionApi extends Api {
      * @param pushToDrone if true, upload the mission to the connected device.
      */
     public void setMission(Mission mission, boolean pushToDrone) {
-        Bundle params = new Bundle();
-        params.putParcelable(EXTRA_MISSION, mission);
-        params.putBoolean(EXTRA_PUSH_TO_DRONE, pushToDrone);
-        drone.performAsyncAction(new Action(ACTION_SET_MISSION, params));
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.setMission(mission, pushToDrone), null);
     }
 
     /**
@@ -70,17 +56,14 @@ public class MissionApi extends Api {
      * @param listener
      */
     public void startMission(boolean forceModeChange, boolean forceArm, AbstractCommandListener listener){
-        Bundle params = new Bundle();
-        params.putBoolean(EXTRA_FORCE_MODE_CHANGE, forceModeChange);
-        params.putBoolean(EXTRA_FORCE_ARM, forceArm);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_START_MISSION, params), listener);
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.startMission(forceModeChange, forceArm, vehicleListener), listener);
     }
 
     /**
      * Load waypoints from the target vehicle.
      */
     public void loadWaypoints() {
-        drone.performAsyncAction(new Action(ACTION_LOAD_WAYPOINTS));
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.loadWaypoints(), null);
     }
 
     /**
@@ -91,8 +74,6 @@ public class MissionApi extends Api {
      * @since 2.8.0
      */
     public void setMissionSpeed(float speed, AbstractCommandListener listener) {
-        Bundle params = new Bundle();
-        params.putFloat(EXTRA_MISSION_SPEED, speed);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_CHANGE_MISSION_SPEED, params), listener);
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.changeMissionSpeed(speed, vehicleListener), listener);
     }
 }

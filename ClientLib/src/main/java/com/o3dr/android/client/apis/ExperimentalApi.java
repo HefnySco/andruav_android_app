@@ -1,20 +1,12 @@
 package com.o3dr.android.client.apis;
 
-import android.os.Bundle;
 
 import com.o3dr.android.client.Drone;
 import com.o3dr.services.android.lib.mavlink.MavlinkMessageWrapper;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
-import com.o3dr.services.android.lib.model.action.Action;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.ACTION_SEND_MAVLINK_MESSAGE;
-import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.ACTION_SET_SERVO;
-import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.ACTION_TRIGGER_CAMERA;
-import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.EXTRA_MAVLINK_MESSAGE;
-import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.EXTRA_SERVO_CHANNEL;
-import static com.o3dr.services.android.lib.drone.action.ExperimentalActions.EXTRA_SERVO_PWM;
 
 /**
  * Contains drone commands with no defined interaction model yet.
@@ -48,7 +40,7 @@ public class ExperimentalApi extends Api {
      * Triggers the camera.
      */
     public void triggerCamera() {
-        drone.performAsyncAction(new Action(ACTION_TRIGGER_CAMERA));
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.triggerCamera(), null);
     }
 
     /**
@@ -67,9 +59,7 @@ public class ExperimentalApi extends Api {
      *                       sysId/compId/seqNum - the API will take care of that.
      */
     public void sendMavlinkMessage(final MavlinkMessageWrapper messageWrapper) {
-        Bundle params = new Bundle();
-        params.putParcelable(EXTRA_MAVLINK_MESSAGE, messageWrapper);
-        drone.performAsyncAction(new Action(ACTION_SEND_MAVLINK_MESSAGE, params));
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.sendMavlinkMessage(messageWrapper), null);
     }
 
     /**
@@ -90,9 +80,6 @@ public class ExperimentalApi extends Api {
      * @param listener Register a callback to receive update of the command execution state.
      */
     public void setServo(final int channel, final int pwm, final AbstractCommandListener listener) {
-        Bundle params = new Bundle(2);
-        params.putInt(EXTRA_SERVO_CHANNEL, channel);
-        params.putInt(EXTRA_SERVO_PWM, pwm);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_SET_SERVO, params), listener);
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.setServo(channel, pwm, vehicleListener), listener);
     }
 }

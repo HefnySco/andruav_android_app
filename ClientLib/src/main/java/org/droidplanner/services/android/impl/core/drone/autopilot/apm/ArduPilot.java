@@ -32,22 +32,17 @@ import org.droidplanner.services.android.impl.core.mission.MissionImpl;
 import org.droidplanner.services.android.impl.core.model.AutopilotWarningParser;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
-import com.o3dr.services.android.lib.drone.action.ControlActions;
-import com.o3dr.services.android.lib.drone.action.ExperimentalActions;
-import com.o3dr.services.android.lib.drone.action.GimbalActions;
-import com.o3dr.services.android.lib.drone.action.ParameterActions;
-import com.o3dr.services.android.lib.drone.action.StateActions;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEventExtra;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
-import com.o3dr.services.android.lib.drone.mission.action.MissionActions;
+import com.o3dr.services.android.lib.drone.mission.Mission;
 import com.o3dr.services.android.lib.drone.property.DroneAttribute;
 import com.o3dr.services.android.lib.drone.property.Parameter;
+import com.o3dr.services.android.lib.drone.property.Parameters;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
 import com.o3dr.services.android.lib.model.ICommandListener;
-import com.o3dr.services.android.lib.model.action.Action;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
 
 import java.util.regex.Matcher;
@@ -130,187 +125,150 @@ public abstract class ArduPilot extends GenericMavLinkDrone {
         return super.getAttribute(attributeType);
     }
 
+    //************ Commands ************//
+
+    //MISSION COMMANDS
     @Override
-    public boolean executeAsyncAction(Action action, final ICommandListener listener) {
-        String type = action.getType();
-        Bundle data = action.getData();
-        if (data == null) {
-            data = new Bundle();
+    public void loadWaypoints() {
+        CommonApiUtils.loadWaypoints(this);
+    }
+
+    @Override
+    public void setMission(Mission mission, boolean pushToDrone) {
+        CommonApiUtils.setMission(this, mission, pushToDrone);
+    }
+
+    @Override
+    public void startMission(boolean forceModeChange, boolean forceArm, ICommandListener listener) {
+        CommonApiUtils.startMission(this, forceModeChange, forceArm, listener);
+    }
+
+    //EXPERIMENTAL COMMANDS
+    @Override
+    public void triggerCamera() {
+        CommonApiUtils.triggerCamera(this);
+    }
+
+    @Override
+    public void resetROI(ICommandListener listener) {
+        MavLinkDoCmds.resetROI(this, listener);
+    }
+
+    @Override
+    public void setServo(int channel, int pwm, ICommandListener listener) {
+        MavLinkDoCmds.setServo(this, channel, pwm, listener);
+    }
+
+    //CONTROL COMMANDS
+    @Override
+    public void sendGuidedPoint(LatLong point, boolean force, ICommandListener listener) {
+        CommonApiUtils.sendGuidedPoint(this, point, force, listener);
+    }
+
+    @Override
+    public void sendGuidedVelocityInLocalFrame(float vx, float vy, float vz, float yawRate, float yaw,
+                                               short coordinateFrame, short typeMask, ICommandListener listener) {
+        CommonApiUtils.setGuidedVelocityInLocalFrame(this, vx, vy, vz, yawRate, yaw, coordinateFrame, typeMask, listener);
+    }
+
+    @Override
+    public void sendGuidedVelocityInGlobalFrame(float vx, float vy, float vz, float yawRate, float yaw,
+                                                short coordinateFrame, short typeMask, ICommandListener listener) {
+        CommonApiUtils.setGuidedVelocityInGlobalFrame(this, vx, vy, vz, yawRate, yaw, coordinateFrame, typeMask, listener);
+    }
+
+    @Override
+    public void setGuidedAltitude(double altitude) {
+        CommonApiUtils.setGuidedAltitude(this, altitude);
+    }
+
+    //PARAMETER COMMANDS
+    @Override
+    public void refreshParameters() {
+        CommonApiUtils.refreshParameters(this);
+    }
+
+    @Override
+    public void writeParameters(Parameters parameters) {
+        CommonApiUtils.writeParameters(this, parameters);
+    }
+
+    //DRONE STATE COMMANDS
+    @Override
+    public void setVehicleHome(LatLongAlt homeLocation, final ICommandListener listener) {
+        if (homeLocation != null) {
+            MavLinkDoCmds.setVehicleHome(this, homeLocation, new AbstractCommandListener() {
+                @Override
+                public void onSuccess() {
+                    CommonApiUtils.postSuccessEvent(listener);
+                    requestHomeUpdate();
+                }
+
+                @Override
+                public void onError(int executionError) {
+                    CommonApiUtils.postErrorEvent(executionError, listener);
+                    requestHomeUpdate();
+                }
+
+                @Override
+                public void onTimeout() {
+                    CommonApiUtils.postTimeoutEvent(listener);
+                    requestHomeUpdate();
+                }
+            });
+        } else {
+            CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
         }
+    }
 
-        switch (type) {
-            // MISSION ACTIONS
-            case MissionActions.ACTION_LOAD_WAYPOINTS:
-                CommonApiUtils.loadWaypoints(this);
-                return true;
+    //************ Gimbal COMMANDS *************//
+    @Override
+    public void setGimbalOrientation(float pitch, float roll, float yaw, ICommandListener listener) {
+        MavLinkDoCmds.setGimbalOrientation(this, pitch, roll, yaw, listener);
+    }
 
-            case MissionActions.ACTION_SET_MISSION:
-                data.setClassLoader(com.o3dr.services.android.lib.drone.mission.Mission.class.getClassLoader());
-                com.o3dr.services.android.lib.drone.mission.Mission mission = data.getParcelable(MissionActions.EXTRA_MISSION);
-                boolean pushToDrone = data.getBoolean(MissionActions.EXTRA_PUSH_TO_DRONE);
-                CommonApiUtils.setMission(this, mission, pushToDrone);
-                return true;
+    @Override
+    public void setGimbalMountMode(int mountMode, ICommandListener listener) {
+        Timber.i("Setting gimbal mount mode: %d", mountMode);
 
-            case MissionActions.ACTION_START_MISSION:
-                boolean forceModeChange = data.getBoolean(MissionActions.EXTRA_FORCE_MODE_CHANGE);
-                boolean forceArm = data.getBoolean(MissionActions.EXTRA_FORCE_ARM);
-                CommonApiUtils.startMission(this, forceModeChange, forceArm, listener);
-                return true;
-
-            // EXPERIMENTAL ACTIONS
-            case ExperimentalActions.ACTION_TRIGGER_CAMERA:
-                CommonApiUtils.triggerCamera(this);
-                return true;
-
-            case ControlActions.ACTION_RESET_ROI:
-                MavLinkDoCmds.resetROI(this, listener);
-                return true;
-
-            case ExperimentalActions.ACTION_SET_SERVO:
-                int channel = data.getInt(ExperimentalActions.EXTRA_SERVO_CHANNEL);
-                int pwm = data.getInt(ExperimentalActions.EXTRA_SERVO_PWM);
-                MavLinkDoCmds.setServo(this, channel, pwm, listener);
-                return true;
-
-            // CONTROL ACTIONS
-            case ControlActions.ACTION_SEND_GUIDED_POINT: {
-                data.setClassLoader(LatLong.class.getClassLoader());
-                boolean force = data.getBoolean(ControlActions.EXTRA_FORCE_GUIDED_POINT);
-                LatLong guidedPoint = data.getParcelable(ControlActions.EXTRA_GUIDED_POINT);
-                CommonApiUtils.sendGuidedPoint(this, guidedPoint, force, listener);
-                return true;
-            }
-
-            case ControlActions.ACTION_SEND_GUIDED_VELOCITY_LOCAL: {
-                data.setClassLoader(LatLong.class.getClassLoader());
-                double xAxis    = data.getFloat(ControlActions.EXTRA_VELOCITY_X);
-                double yAxis    = data.getFloat(ControlActions.EXTRA_VELOCITY_Y);
-                double zAxis    = data.getFloat(ControlActions.EXTRA_VELOCITY_Z);
-                double yaw      = data.getFloat(ControlActions.EXTRA_YAW_TARGET_ANGLE);
-                double yawRate  = data.getFloat(ControlActions.EXTRA_YAW_CHANGE_RATE);
-                short coordinateFrame = data.getShort(ControlActions.EXTRA_RELATIVE_FRAME);
-                short typeMask = data.getShort(ControlActions.EXTRA_TYPE_MASK);
-                CommonApiUtils.setGuidedVelocityInLocalFrame(this, xAxis, yAxis, zAxis, yawRate, yaw, coordinateFrame, typeMask, listener);
-                return true;
-            }
-
-            case ControlActions.ACTION_SEND_GUIDED_VELOCITY_GLOBAL: {
-                data.setClassLoader(LatLong.class.getClassLoader());
-                double xAxis    = data.getFloat(ControlActions.EXTRA_VELOCITY_X);
-                double yAxis    = data.getFloat(ControlActions.EXTRA_VELOCITY_Y);
-                double zAxis    = data.getFloat(ControlActions.EXTRA_VELOCITY_Z);
-                double yaw      = data.getFloat(ControlActions.EXTRA_YAW_TARGET_ANGLE);
-                double yawRate  = data.getFloat(ControlActions.EXTRA_YAW_CHANGE_RATE);
-                short coordinateFrame = data.getShort(ControlActions.EXTRA_RELATIVE_FRAME);
-                short typeMask = data.getShort(ControlActions.EXTRA_TYPE_MASK);
-                CommonApiUtils.setGuidedVelocityInGlobalFrame(this, xAxis, yAxis, zAxis, yawRate, yaw, coordinateFrame, typeMask, listener);
-                return true;
-            }
-
-            case ControlActions.ACTION_SET_GUIDED_ALTITUDE:
-                double guidedAltitude = data.getDouble(ControlActions.EXTRA_ALTITUDE);
-                CommonApiUtils.setGuidedAltitude(this, guidedAltitude);
-                return true;
-
-            // PARAMETER ACTIONS
-            case ParameterActions.ACTION_REFRESH_PARAMETERS:
-                CommonApiUtils.refreshParameters(this);
-                return true;
-
-            case ParameterActions.ACTION_WRITE_PARAMETERS:
-                data.setClassLoader(com.o3dr.services.android.lib.drone.property.Parameters.class.getClassLoader());
-                com.o3dr.services.android.lib.drone.property.Parameters parameters = data.getParcelable(ParameterActions.EXTRA_PARAMETERS);
-                CommonApiUtils.writeParameters(this, parameters);
-                return true;
-
-            // DRONE STATE ACTIONS
-            case StateActions.ACTION_SET_VEHICLE_HOME:
-                LatLongAlt homeLoc = data.getParcelable(StateActions.EXTRA_VEHICLE_HOME_LOCATION);
-                if (homeLoc != null) {
-                    MavLinkDoCmds.setVehicleHome(this, homeLoc, new AbstractCommandListener() {
-                        @Override
-                        public void onSuccess() {
-                            CommonApiUtils.postSuccessEvent(listener);
-                            requestHomeUpdate();
-                        }
-
-                        @Override
-                        public void onError(int executionError) {
-                            CommonApiUtils.postErrorEvent(executionError, listener);
-                            requestHomeUpdate();
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            CommonApiUtils.postTimeoutEvent(listener);
-                            requestHomeUpdate();
-                        }
-                    });
-                } else {
-                    CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
-                }
-                return true;
-
-            //************ Gimbal ACTIONS *************//
-            case GimbalActions.ACTION_SET_GIMBAL_ORIENTATION:
-                float pitch = data.getFloat(GimbalActions.GIMBAL_PITCH);
-                float roll = data.getFloat(GimbalActions.GIMBAL_ROLL);
-                float yaw = data.getFloat(GimbalActions.GIMBAL_YAW);
-                MavLinkDoCmds.setGimbalOrientation(this, pitch, roll, yaw, listener);
-                return true;
-
-            case GimbalActions.ACTION_RESET_GIMBAL_MOUNT_MODE:
-            case GimbalActions.ACTION_SET_GIMBAL_MOUNT_MODE:
-                int mountMode = data.getInt(GimbalActions.GIMBAL_MOUNT_MODE, MAV_MOUNT_MODE.MAV_MOUNT_MODE_RC_TARGETING);
-                Timber.i("Setting gimbal mount mode: %d", mountMode);
-
-                Parameter mountParam = getParameterManager().getParameter("MNT_MODE");
-                if (mountParam == null) {
-                    msg_mount_configure msg = new msg_mount_configure();
-                    msg.target_system = getSysid();
-                    msg.target_component = getCompid();
-                    msg.mount_mode = (byte) mountMode;
-                    msg.stab_pitch = 0;
-                    msg.stab_roll = 0;
-                    msg.stab_yaw = 0;
-                    getMavClient().sendMessage(msg, listener);
-                } else {
-                    MavLinkParameters.sendParameter(this, "MNT_MODE", 1, mountMode);
-                }
-                return true;
-
-            default:
-                return super.executeAsyncAction(action, listener);
+        Parameter mountParam = getParameterManager().getParameter("MNT_MODE");
+        if (mountParam == null) {
+            msg_mount_configure msg = new msg_mount_configure();
+            msg.target_system = getSysid();
+            msg.target_component = getCompid();
+            msg.mount_mode = (byte) mountMode;
+            msg.stab_pitch = 0;
+            msg.stab_roll = 0;
+            msg.stab_yaw = 0;
+            getMavClient().sendMessage(msg, listener);
+        } else {
+            MavLinkParameters.sendParameter(this, "MNT_MODE", 1, mountMode);
         }
     }
 
     @Override
-    protected boolean enableManualControl(Bundle data, ICommandListener listener) {
+    public void resetGimbalMountMode(ICommandListener listener) {
+        setGimbalMountMode(MAV_MOUNT_MODE.MAV_MOUNT_MODE_RC_TARGETING, listener);
+    }
+
+    @Override
+    public void enableManualControl(boolean enable, ICommandListener listener) {
         CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
-        return true;
     }
 
     @Override
-    protected boolean performArming(Bundle data, ICommandListener listener) {
-        boolean doArm = data.getBoolean(StateActions.EXTRA_ARM);
-        boolean emergencyDisarm = data.getBoolean(StateActions.EXTRA_EMERGENCY_DISARM);
+    public void arm(boolean doArm, boolean emergencyDisarm, ICommandListener listener) {
         CommonApiUtils.arm(this, doArm, emergencyDisarm, listener);
-        return true;
     }
 
     @Override
-    protected boolean setVehicleMode(Bundle data, ICommandListener listener) {
-        data.setClassLoader(VehicleMode.class.getClassLoader());
-        VehicleMode newMode = data.getParcelable(StateActions.EXTRA_VEHICLE_MODE);
+    public void setVehicleMode(VehicleMode newMode, ICommandListener listener) {
         CommonApiUtils.changeVehicleMode(this, newMode, listener);
-        return true;
     }
 
     @Override
-    protected boolean performTakeoff(Bundle data, ICommandListener listener) {
-        double takeoffAltitude = data.getDouble(ControlActions.EXTRA_ALTITUDE);
-        CommonApiUtils.doGuidedTakeoff(this, takeoffAltitude, listener);
-        return true;
+    public void takeoff(double altitude, ICommandListener listener) {
+        CommonApiUtils.doGuidedTakeoff(this, altitude, listener);
     }
 
     @Override

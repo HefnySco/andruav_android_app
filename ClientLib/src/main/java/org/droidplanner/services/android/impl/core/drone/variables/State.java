@@ -10,19 +10,15 @@ import org.droidplanner.services.android.impl.core.MAVLink.MavLinkCommands;
 import org.droidplanner.services.android.impl.core.MAVLink.WaypointManager;
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces.DroneEventsType;
 import org.droidplanner.services.android.impl.core.drone.DroneVariable;
-import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.autopilot.generic.GenericMavLinkDrone;
 import org.droidplanner.services.android.impl.core.model.AutopilotWarningParser;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.model.ICommandListener;
-import com.o3dr.services.android.lib.model.action.Action;
 
 import timber.log.Timber;
 
 public class State extends DroneVariable<GenericMavLinkDrone> {
     private static final long ERROR_TIMEOUT = 5000L;
-
-    private final static Action requestHomeUpdateAction = new Action(MavLinkDrone.ACTION_REQUEST_HOME_UPDATE);
 
     private final AutopilotWarningParser warningParser;
 
@@ -212,7 +208,7 @@ public class State extends DroneVariable<GenericMavLinkDrone> {
             myDrone.notifyDroneEvent(DroneEventsType.EKF_POSITION_STATE_UPDATE);
 
             if(isEkfPositionOk){
-                myDrone.executeAsyncAction(requestHomeUpdateAction, null);
+                myDrone.requestHomeUpdate();
             }
         }
     }

@@ -6,27 +6,22 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.o3dr.services.android.lib.drone.action.ControlActions;
-import com.o3dr.services.android.lib.drone.action.GimbalActions;
-import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.property.DroneAttribute;
 import com.o3dr.services.android.lib.drone.property.Parameter;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
-import com.o3dr.services.android.lib.model.ICommandListener;
-import com.o3dr.services.android.lib.model.action.Action;
 
 import org.droidplanner.services.android.impl.api.DroneApi;
 import org.droidplanner.services.android.impl.communication.model.DataLink;
 import org.droidplanner.services.android.impl.core.drone.autopilot.Drone;
+import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import org.droidplanner.services.android.impl.core.drone.manager.MavLinkDroneManager;
-import org.droidplanner.services.android.impl.utils.CommonApiUtils;
 
 
 /**
  * Bridge between the communication channel, the drone instance(s), and the connected client(s).
  */
-public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListener<D>, DroneInterfaces.OnDroneListener,
+public class DroneManager<T extends MavLinkDrone, D> implements DataLink.DataLinkListener<D>, DroneInterfaces.OnDroneListener,
     DroneInterfaces.OnParameterManagerListener, LogMessageListener, DroneInterfaces.AttributeEventListener {
 
     private static final String TAG = DroneManager.class.getSimpleName();
@@ -100,7 +95,9 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
             listener.onDroneEvent(DroneInterfaces.DroneEventsType.DISCONNECTED, drone);
         }
 
-        executeAsyncAction(new Action(GimbalActions.ACTION_RESET_GIMBAL_MOUNT_MODE), null);
+        if (drone != null) {
+            drone.resetGimbalMountMode(null);
+        }
 
     }
 
@@ -143,26 +140,6 @@ public class DroneManager<T extends Drone, D> implements DataLink.DataLinkListen
 
     public DroneAttribute getAttribute(String attributeType) {
         return drone == null ? null : drone.getAttribute(attributeType);
-    }
-
-    public boolean executeAsyncAction(Action action, ICommandListener listener) {
-        String type = action.getType();
-
-        //***************** CONTROL ACTIONS *****************//
-        if (ControlActions.ACTION_ENABLE_MANUAL_CONTROL.equals(type)) {
-            if (drone != null) {
-                drone.executeAsyncAction(action, listener);
-            } else {
-                CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
-            }
-            return true;
-        }
-        if (drone != null) {
-            return drone.executeAsyncAction(action, listener);
-        } else {
-            CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
-            return true;
-        }
     }
 
     protected void notifyDroneAttributeEvent(String attributeEvent, Bundle eventInfo) {

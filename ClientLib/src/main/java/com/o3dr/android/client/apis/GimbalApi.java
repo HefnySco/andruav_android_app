@@ -12,17 +12,10 @@ import com.o3dr.services.android.lib.drone.attribute.AttributeType;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.drone.property.Type;
 import com.o3dr.services.android.lib.model.SimpleCommandListener;
-import com.o3dr.services.android.lib.model.action.Action;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static com.o3dr.services.android.lib.drone.action.GimbalActions.ACTION_SET_GIMBAL_MOUNT_MODE;
-import static com.o3dr.services.android.lib.drone.action.GimbalActions.ACTION_SET_GIMBAL_ORIENTATION;
-import static com.o3dr.services.android.lib.drone.action.GimbalActions.GIMBAL_MOUNT_MODE;
-import static com.o3dr.services.android.lib.drone.action.GimbalActions.GIMBAL_PITCH;
-import static com.o3dr.services.android.lib.drone.action.GimbalActions.GIMBAL_ROLL;
-import static com.o3dr.services.android.lib.drone.action.GimbalActions.GIMBAL_YAW;
 
 public final class GimbalApi extends Api implements DroneListener {
 
@@ -153,9 +146,7 @@ public final class GimbalApi extends Api implements DroneListener {
     }
 
     private void configureGimbalMountMode(final GimbalOrientationListener listener){
-        Bundle params = new Bundle(1);
-        params.putInt(GIMBAL_MOUNT_MODE, MAV_MOUNT_MODE.MAV_MOUNT_MODE_MAVLINK_TARGETING);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_SET_GIMBAL_MOUNT_MODE, params), new SimpleCommandListener() {
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.setGimbalMountMode(MAV_MOUNT_MODE.MAV_MOUNT_MODE_MAVLINK_TARGETING, vehicleListener), new SimpleCommandListener() {
             @Override
             public void onTimeout() {
                 listener.onGimbalOrientationCommandError(CommandExecutionError.COMMAND_FAILED);
@@ -201,11 +192,7 @@ public final class GimbalApi extends Api implements DroneListener {
             return;
         }
 
-        Bundle params = new Bundle();
-        params.putFloat(GIMBAL_PITCH, pitch);
-        params.putFloat(GIMBAL_ROLL, roll);
-        params.putFloat(GIMBAL_YAW, yaw);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_SET_GIMBAL_ORIENTATION, params), new SimpleCommandListener(){
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.setGimbalOrientation(pitch, roll, yaw, vehicleListener), new SimpleCommandListener(){
             @Override
             public void onTimeout(){
                 listener.onGimbalOrientationCommandError(CommandExecutionError.COMMAND_FAILED);

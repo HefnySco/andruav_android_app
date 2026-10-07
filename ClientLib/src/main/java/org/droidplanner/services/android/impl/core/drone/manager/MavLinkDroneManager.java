@@ -6,10 +6,8 @@ import android.os.Handler;
 import com.MAVLink.MAVLinkPacket;
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_command_ack;
-import com.o3dr.services.android.lib.drone.action.GimbalActions;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
-import com.o3dr.services.android.lib.model.action.Action;
 
 import org.droidplanner.services.android.impl.api.DroneApi;
 import org.droidplanner.services.android.impl.communication.service.MAVLinkClient;
@@ -172,7 +170,9 @@ public class MavLinkDroneManager extends DroneManager<MavLinkDrone, MAVLinkPacke
 
         if (mavClient.isConnected()  && (connectedApp==null)) {
             //Reset the gimbal mount mode
-            executeAsyncAction(new Action(GimbalActions.ACTION_RESET_GIMBAL_MOUNT_MODE), null);
+            if (drone != null) {
+                drone.resetGimbalMountMode(null);
+            }
 
             mavClient.closeConnection();
         }

@@ -1,6 +1,5 @@
 package org.droidplanner.services.android.impl.api;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -8,11 +7,9 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.MAVLink.Messages.MAVLinkMessage;
-import com.o3dr.services.android.lib.drone.action.ConnectionActions;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEventExtra;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
-import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.property.DroneAttribute;
 import com.o3dr.services.android.lib.drone.property.Parameter;
@@ -21,17 +18,14 @@ import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 import com.o3dr.services.android.lib.gcs.link.LinkEvent;
 import com.o3dr.services.android.lib.gcs.link.LinkEventExtra;
 import com.o3dr.services.android.lib.mavlink.MavlinkMessageWrapper;
-import com.o3dr.services.android.lib.model.ICommandListener;
 import com.o3dr.services.android.lib.model.IMavlinkObserver;
 import com.o3dr.services.android.lib.model.IObserver;
-import com.o3dr.services.android.lib.model.action.Action;
 
 import org.droidplanner.services.android.impl.core.drone.DroneInterfaces;
 import org.droidplanner.services.android.impl.core.drone.DroneManager;
 import org.droidplanner.services.android.impl.core.drone.autopilot.Drone;
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import org.droidplanner.services.android.impl.exception.ConnectionException;
-import org.droidplanner.services.android.impl.utils.CommonApiUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -76,7 +70,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
         }
     };
 
-    private final Context context;
     private final Handler handler;
 
     private final ConcurrentLinkedQueue<IObserver> observersList;
@@ -92,7 +85,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
     DroneApi(DroidPlannerService dpService) {
 
         this.service = dpService;
-        this.context = dpService.getApplicationContext();
         handler = new Handler(Looper.getMainLooper());
 
         observersList = new ConcurrentLinkedQueue<>();
@@ -115,28 +107,12 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
         return this.droneMgr;
     }
 
-    private Drone getDrone() {
-        if (this.droneMgr == null) {
-            return null;
-        }
-
-        return this.droneMgr.getDrone();
-    }
-
     private boolean isEventsBufferingEnabled(){
         return connectionParams != null && connectionParams.getEventsDispatchingPeriod() > 0L;
     }
 
-    public Bundle getAttribute(String type) {
-        Bundle carrier = new Bundle();
-
-        if (droneMgr != null) {
-            DroneAttribute attribute = droneMgr.getAttribute(type);
-            if (attribute != null) {
-                carrier.putParcelable(type, attribute);
-            }
-        }
-        return carrier;
+    public DroneAttribute getAttribute(String type) {
+        return droneMgr == null ? null : droneMgr.getAttribute(type);
     }
 
     public boolean isConnected() {
@@ -219,55 +195,6 @@ public final class DroneApi implements DroneInterfaces.OnDroneListener, DroneInt
         if (observer != null) {
             mavlinkObserversList.remove(observer);
         }
-    }
-
-    public void executeAction(Action action, ICommandListener listener) {
-        if (action == null) {
-            return;
-        }
-
-        String type = action.getType();
-        if (type == null) {
-            return;
-        }
-
-        Bundle data = action.getData();
-        if (data != null) {
-            data.setClassLoader(context.getClassLoader());
-        }
-
-        Drone drone = getDrone();
-        switch (type) {
-            // CONNECTION ACTIONS
-            case ConnectionActions.ACTION_CONNECT:
-                ConnectionParameter parameter = data.getParcelable(ConnectionActions.EXTRA_CONNECT_PARAMETER);
-                connect(parameter);
-                break;
-
-            case ConnectionActions.ACTION_DISCONNECT:
-                disconnect();
-                break;
-
-            default:
-                if (droneMgr != null) {
-                    droneMgr.executeAsyncAction(action, listener);
-                } else {
-                    CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, listener);
-                }
-                break;
-        }
-    }
-
-    public void executeAsyncAction(Action action, ICommandListener listener) {
-        executeAction(action, listener);
-    }
-
-    public void performAction(Action action) {
-        executeAction(action, null);
-    }
-
-    public void performAsyncAction(Action action) {
-        performAction(action);
     }
 
     private void notifyAttributeUpdate(List<Pair<String, Bundle>> attributesInfo) {

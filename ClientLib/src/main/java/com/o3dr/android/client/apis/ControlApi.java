@@ -1,40 +1,13 @@
 package com.o3dr.android.client.apis;
 
-import android.os.Bundle;
 
 import com.o3dr.android.client.Drone;
 import com.o3dr.services.android.lib.coordinate.LatLong;
-import com.o3dr.services.android.lib.drone.action.ControlActions;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
-import com.o3dr.services.android.lib.model.action.Action;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_DO_GUIDED_TAKEOFF;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_ENABLE_MANUAL_CONTROL;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_MANUAL_CONTROL;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_RESET_ROI;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_SEND_GUIDED_POINT;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_SEND_GUIDED_VELOCITY_GLOBAL;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_SEND_GUIDED_VELOCITY_LOCAL;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_SET_CONDITION_YAW;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.ACTION_SET_GUIDED_ALTITUDE;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_ALTITUDE;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_AXIS_R;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_AXIS_X;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_AXIS_Y;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_AXIS_Z;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_BUTTONS;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_DO_ENABLE;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_FORCE_GUIDED_POINT;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_GUIDED_POINT;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_VELOCITY_X;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_VELOCITY_Y;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_VELOCITY_Z;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_YAW_CHANGE_RATE;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_YAW_IS_RELATIVE;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_YAW_TARGET_ANGLE;
 
 /**
  * Provides access to the vehicle control functionality.
@@ -76,9 +49,7 @@ public class ControlApi extends Api {
      * @param listener Register a callback to receive update of the command execution state.
      */
     public void takeoff(double altitude, AbstractCommandListener listener) {
-        Bundle params = new Bundle();
-        params.putDouble(EXTRA_ALTITUDE, altitude);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_DO_GUIDED_TAKEOFF, params), listener);
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.takeoff(altitude, vehicleListener), listener);
     }
 
     /**
@@ -91,15 +62,8 @@ public class ControlApi extends Api {
      */
     public void guidedVelocityInLocalFrame(final double vx, final double vy, final double vz, double yawRate, final double yaw, short  coordinateFrame, short typeMask, AbstractCommandListener listener)
     {
-        Bundle params = new Bundle();
-        params.putFloat(ControlActions.EXTRA_VELOCITY_X, (float) vx);
-        params.putFloat(ControlActions.EXTRA_VELOCITY_Y, (float) vy);
-        params.putFloat(ControlActions.EXTRA_VELOCITY_Z, (float) vz);
-        params.putShort(ControlActions.EXTRA_RELATIVE_FRAME, coordinateFrame);
-        params.putFloat(ControlActions.EXTRA_YAW_CHANGE_RATE, (float) yawRate);
-        params.putFloat(ControlActions.EXTRA_YAW_TARGET_ANGLE, (float) yaw);
-        params.putShort(ControlActions.EXTRA_TYPE_MASK, typeMask);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_SEND_GUIDED_VELOCITY_LOCAL, params), listener);
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.sendGuidedVelocityInLocalFrame((float) vx, (float) vy, (float) vz,
+                (float) yawRate, (float) yaw, coordinateFrame, typeMask, vehicleListener), listener);
     }
 
 
@@ -113,15 +77,8 @@ public class ControlApi extends Api {
      */
     public void guidedVelocityInGlobalFrame(final double vx, final double vy, final double vz, double yawRate, final double yaw, short  coordinateFrame, short typeMask, AbstractCommandListener listener)
     {
-        Bundle params = new Bundle();
-        params.putFloat(ControlActions.EXTRA_VELOCITY_X, (float) vx);
-        params.putFloat(ControlActions.EXTRA_VELOCITY_Y, (float) vy);
-        params.putFloat(ControlActions.EXTRA_VELOCITY_Z, (float) vz);
-        params.putShort(ControlActions.EXTRA_RELATIVE_FRAME, coordinateFrame);
-        params.putFloat(ControlActions.EXTRA_YAW_CHANGE_RATE, (float) yawRate);
-        params.putFloat(ControlActions.EXTRA_YAW_TARGET_ANGLE, (float) yaw);
-        params.putShort(ControlActions.EXTRA_TYPE_MASK, typeMask);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_SEND_GUIDED_VELOCITY_GLOBAL, params), listener);
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.sendGuidedVelocityInGlobalFrame((float) vx, (float) vy, (float) vz,
+                (float) yawRate, (float) yaw, coordinateFrame, typeMask, vehicleListener), listener);
     }
 
     /**
@@ -132,10 +89,7 @@ public class ControlApi extends Api {
      * @param listener Register a callback to receive update of the command execution state.
      */
     public void goTo(LatLong point, boolean force, AbstractCommandListener listener) {
-        Bundle params = new Bundle();
-        params.putBoolean(EXTRA_FORCE_GUIDED_POINT, force);
-        params.putParcelable(EXTRA_GUIDED_POINT, point);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_SEND_GUIDED_POINT, params), listener);
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.sendGuidedPoint(point, force, vehicleListener), listener);
     }
 
     /**
@@ -144,9 +98,7 @@ public class ControlApi extends Api {
      * @param altitude altitude in meters
      */
     public void climbTo(double altitude) {
-        Bundle params = new Bundle();
-        params.putDouble(EXTRA_ALTITUDE, altitude);
-        drone.performAsyncAction(new Action(ACTION_SET_GUIDED_ALTITUDE, params));
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.setGuidedAltitude(altitude), null);
     }
 
     /**
@@ -163,22 +115,11 @@ public class ControlApi extends Api {
             return;
         }
 
-        Bundle params = new Bundle();
-        params.putFloat(EXTRA_YAW_TARGET_ANGLE, targetAngle);
-        params.putFloat(EXTRA_YAW_CHANGE_RATE, turnRate);
-        params.putBoolean(EXTRA_YAW_IS_RELATIVE, isRelative);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_SET_CONDITION_YAW, params), listener);
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.setConditionYaw(targetAngle, turnRate, isRelative, vehicleListener), listener);
     }
 
     public void manualControl(final int x, final int y, final int z, final int r, final int buttons, final AbstractCommandListener listener) {
-
-        Bundle params = new Bundle();
-        params.putInt(EXTRA_AXIS_X, x);
-        params.putFloat(EXTRA_AXIS_Y, y);
-        params.putFloat(EXTRA_AXIS_Z, z);
-        params.putFloat(EXTRA_AXIS_R, r);
-        params.putFloat(EXTRA_BUTTONS, buttons);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_MANUAL_CONTROL, params), listener);
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.manualControl(x, y, z, r, buttons, vehicleListener), listener);
     }
 
     /**
@@ -212,9 +153,7 @@ public class ControlApi extends Api {
             }
         };
 
-        Bundle params = new Bundle();
-        params.putBoolean(EXTRA_DO_ENABLE, enable);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_ENABLE_MANUAL_CONTROL, params), listenerWrapper);
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.enableManualControl(enable, vehicleListener), listenerWrapper);
     }
 
 
@@ -222,9 +161,7 @@ public class ControlApi extends Api {
      *   reset region of interest so yaw will follow default mode again
      */
     public void reset_roi (final AbstractCommandListener listener){
-
-        Bundle params = new Bundle();
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_RESET_ROI, params), listener);
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.resetROI(vehicleListener), listener);
     }
 
     private static boolean isWithinBounds(float value, float lowerBound, float upperBound) {

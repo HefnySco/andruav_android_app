@@ -7,11 +7,11 @@ import android.os.Parcelable;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.o3dr.android.client.apis.VehicleApi;
 import com.o3dr.android.client.interfaces.DroneListener;
 import com.o3dr.android.client.interfaces.LinkListener;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
+import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.mission.Mission;
 import com.o3dr.services.android.lib.drone.property.Altitude;
@@ -30,10 +30,13 @@ import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 import com.o3dr.services.android.lib.gcs.link.LinkEvent;
 import com.o3dr.services.android.lib.gcs.link.LinkEventExtra;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
+import com.o3dr.services.android.lib.model.ICommandListener;
 import com.o3dr.services.android.lib.model.IObserver;
-import com.o3dr.services.android.lib.model.action.Action;
 
 import org.droidplanner.services.android.impl.api.DroneApi;
+import org.droidplanner.services.android.impl.core.drone.DroneManager;
+import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
+import org.droidplanner.services.android.impl.utils.CommonApiUtils;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -62,6 +65,13 @@ public class Drone {
         @Override
         public void onRetrievalFailed() {
         }
+    }
+
+    /**
+     * A command to run against the live vehicle.
+     */
+    public interface VehicleCommand {
+        void execute(MavLinkDrone vehicle, ICommandListener listener);
     }
 
     public static final int COLLISION_SECONDS_BEFORE_COLLISION = 2;
@@ -230,17 +240,8 @@ public class Drone {
             return this.getAttributeDefaultValue(type);
         }
 
-        T attribute = null;
-        Bundle carrier = droneApi.getAttribute(type);
-
-        if (carrier != null) {
-            try {
-                carrier.setClassLoader(contextClassLoader);
-                attribute = carrier.getParcelable(type);
-            } catch (Exception e) {
-                Log.e(TAG, e.getMessage(), e);
-            }
-        }
+        @SuppressWarnings("unchecked")
+        T attribute = (T) droneApi.getAttribute(type);
 
         return attribute == null ? this.getAttributeDefaultValue(type) : attribute;
     }
@@ -347,7 +348,10 @@ public class Drone {
      * @param linkListener A callback that will update the caller on the state of the link connection.
      */
     public void connect(ConnectionParameter connParams, LinkListener linkListener) {
-        VehicleApi.getApi(this).connect(connParams);
+        final DroneApi droneApi = droneApiRef.get();
+        if (isStarted(droneApi)) {
+            droneApi.connect(connParams);
+        }
         this.connectionParameter = connParams;
         this.linkListener = linkListener;
     }
@@ -356,7 +360,10 @@ public class Drone {
      * Disconnect from the vehicle.
      */
     public void disconnect() {
-        VehicleApi.getApi(this).disconnect();
+        final DroneApi droneApi = droneApiRef.get();
+        if (isStarted(droneApi)) {
+            droneApi.disconnect();
+        }
         this.connectionParameter = null;
         this.linkListener = null;
     }
@@ -400,40 +407,39 @@ public class Drone {
         return wrapperListener;
     }
 
-    public boolean performAction(Action action) {
-        return performActionOnDroneThread(action, null);
-    }
-
-    public boolean performActionOnDroneThread(Action action, AbstractCommandListener listener) {
-        return performActionOnHandler(action, this.handler, listener);
-    }
-
-    public boolean performActionOnHandler(Action action, final Handler handler, final AbstractCommandListener listener) {
+    /**
+     * Runs a command against the live vehicle. The listener is wrapped so its callbacks are posted
+     * on the drone handler.
+     *
+     * @param command  Command to run.
+     * @param listener Receives the result of the command. Can be null.
+     * @return false if the drone is not started, in which case the command is not run and the
+     * listener is never called.
+     */
+    public boolean executeCommand(VehicleCommand command, AbstractCommandListener listener) {
         final DroneApi droneApi = droneApiRef.get();
-        if (isStarted(droneApi)) {
-            droneApi.executeAction(action, wrapListener(handler, listener));
-            return true;
+        if (!isStarted(droneApi)) {
+            return false;
         }
 
-        return false;
+        final ICommandListener wrappedListener = wrapListener(this.handler, listener);
+        final MavLinkDrone vehicle = getVehicle(droneApi);
+        if (vehicle == null) {
+            CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_FAILED, wrappedListener);
+        } else {
+            command.execute(vehicle, wrappedListener);
+        }
+        return true;
     }
 
-    public boolean performAsyncAction(Action action) {
-        return performAsyncActionOnDroneThread(action, null);
-    }
-
-    public boolean performAsyncActionOnDroneThread(Action action, AbstractCommandListener listener) {
-        return performAsyncActionOnHandler(action, this.handler, listener);
-    }
-
-    public boolean performAsyncActionOnHandler(Action action, Handler handler, AbstractCommandListener listener) {
-        final DroneApi droneApi = droneApiRef.get();
-        if (isStarted(droneApi)) {
-            droneApi.executeAsyncAction(action, wrapListener(handler, listener));
-            return true;
+    private MavLinkDrone getVehicle(DroneApi droneApi) {
+        final DroneManager droneMgr = droneApi.getDroneManager();
+        if (droneMgr == null) {
+            return null;
         }
 
-        return false;
+        final Object vehicle = droneMgr.getDrone();
+        return vehicle instanceof MavLinkDrone ? (MavLinkDrone) vehicle : null;
     }
 
     private boolean isStarted(DroneApi droneApi) {

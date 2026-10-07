@@ -1,6 +1,5 @@
 package com.o3dr.android.client.apis;
 
-import android.os.Bundle;
 
 import com.o3dr.android.client.Drone;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
@@ -8,23 +7,9 @@ import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.property.Parameters;
 import com.o3dr.services.android.lib.drone.property.VehicleMode;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
-import com.o3dr.services.android.lib.model.action.Action;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.o3dr.services.android.lib.drone.action.ConnectionActions.ACTION_CONNECT;
-import static com.o3dr.services.android.lib.drone.action.ConnectionActions.ACTION_DISCONNECT;
-import static com.o3dr.services.android.lib.drone.action.ConnectionActions.EXTRA_CONNECT_PARAMETER;
-import static com.o3dr.services.android.lib.drone.action.ParameterActions.ACTION_REFRESH_PARAMETERS;
-import static com.o3dr.services.android.lib.drone.action.ParameterActions.ACTION_WRITE_PARAMETERS;
-import static com.o3dr.services.android.lib.drone.action.ParameterActions.EXTRA_PARAMETERS;
-import static com.o3dr.services.android.lib.drone.action.StateActions.ACTION_ARM;
-import static com.o3dr.services.android.lib.drone.action.StateActions.ACTION_SET_VEHICLE_HOME;
-import static com.o3dr.services.android.lib.drone.action.StateActions.ACTION_SET_VEHICLE_MODE;
-import static com.o3dr.services.android.lib.drone.action.StateActions.EXTRA_ARM;
-import static com.o3dr.services.android.lib.drone.action.StateActions.EXTRA_EMERGENCY_DISARM;
-import static com.o3dr.services.android.lib.drone.action.StateActions.EXTRA_VEHICLE_HOME_LOCATION;
-import static com.o3dr.services.android.lib.drone.action.StateActions.EXTRA_VEHICLE_MODE;
 
 /**
  * Provides access to the vehicle specific functionality.
@@ -61,17 +46,14 @@ public class VehicleApi extends Api {
      * @param parameter parameter for the connection.
      */
     public void connect(ConnectionParameter parameter) {
-        Bundle params = new Bundle();
-        params.putParcelable(EXTRA_CONNECT_PARAMETER, parameter);
-        Action connectAction = new Action(ACTION_CONNECT, params);
-        drone.performAsyncAction(connectAction);
+        drone.connect(parameter);
     }
 
     /**
      * Break connection with the vehicle.
      */
     public void disconnect() {
-        drone.performAsyncAction(new Action(ACTION_DISCONNECT));
+        drone.disconnect();
     }
 
     /**
@@ -102,10 +84,7 @@ public class VehicleApi extends Api {
      * @param listener        Register a callback to receive update of the command execution state.
      */
     public void arm(boolean arm, boolean emergencyDisarm, AbstractCommandListener listener) {
-        Bundle params = new Bundle();
-        params.putBoolean(EXTRA_ARM, arm);
-        params.putBoolean(EXTRA_EMERGENCY_DISARM, emergencyDisarm);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_ARM, params), listener);
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.arm(arm, emergencyDisarm, vehicleListener), listener);
     }
 
     /**
@@ -124,16 +103,14 @@ public class VehicleApi extends Api {
      * @param listener Register a callback to receive update of the command execution state.
      */
     public void setVehicleMode(VehicleMode newMode, AbstractCommandListener listener) {
-        Bundle params = new Bundle();
-        params.putParcelable(EXTRA_VEHICLE_MODE, newMode);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_SET_VEHICLE_MODE, params), listener);
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.setVehicleMode(newMode, vehicleListener), listener);
     }
 
     /**
      * Generate action used to refresh the parameters for the connected drone.
      */
     public void refreshParameters() {
-        drone.performAsyncAction(new Action(ACTION_REFRESH_PARAMETERS));
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.refreshParameters(), null);
     }
 
     /**
@@ -143,9 +120,7 @@ public class VehicleApi extends Api {
      * @return
      */
     public void writeParameters(Parameters parameters) {
-        Bundle params = new Bundle();
-        params.putParcelable(EXTRA_PARAMETERS, parameters);
-        drone.performAsyncAction(new Action(ACTION_WRITE_PARAMETERS, params));
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.writeParameters(parameters), null);
     }
 
     /**
@@ -155,9 +130,7 @@ public class VehicleApi extends Api {
      * @param listener     Register a callback to receive update of the command execution state.
      */
     public void setVehicleHome(final LatLongAlt homeLocation, final AbstractCommandListener listener) {
-        Bundle params = new Bundle();
-        params.putParcelable(EXTRA_VEHICLE_HOME_LOCATION, homeLocation);
-        drone.performAsyncActionOnDroneThread(new Action(ACTION_SET_VEHICLE_HOME, params), listener);
+        drone.executeCommand((vehicle, vehicleListener) -> vehicle.setVehicleHome(homeLocation, vehicleListener), listener);
     }
 
 }

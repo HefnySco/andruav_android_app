@@ -1,12 +1,10 @@
 package org.droidplanner.services.android.impl.core.drone.autopilot.apm;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Handler;
 
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.github.zafarkhaja.semver.Version;
-import com.o3dr.services.android.lib.drone.action.ControlActions;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
 import com.o3dr.services.android.lib.drone.property.Parameter;
 import com.o3dr.services.android.lib.model.ICommandListener;
@@ -48,9 +46,7 @@ public class ArduCopter extends ArduPilot {
     }
 
     @Override
-    protected boolean enableManualControl(Bundle data, ICommandListener listener){
-        boolean enable = data.getBoolean(ControlActions.EXTRA_DO_ENABLE);
-
+    public void enableManualControl(boolean enable, ICommandListener listener){
         State state = getState();
         ApmModes vehicleMode = state.getMode();
         if(enable){
@@ -75,8 +71,6 @@ public class ArduCopter extends ArduPilot {
                 state.changeFlightMode(ApmModes.ROTOR_LOITER, listener);
             }
         }
-
-        return true;
     }
 
     @Override

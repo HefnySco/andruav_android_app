@@ -22,14 +22,11 @@ import com.MAVLink.enums.MAV_STATE;
 import com.MAVLink.minimal.msg_heartbeat;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
-import com.o3dr.services.android.lib.drone.action.ControlActions;
-import com.o3dr.services.android.lib.drone.action.ExperimentalActions;
-import com.o3dr.services.android.lib.drone.action.StateActions;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEventExtra;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
 import com.o3dr.services.android.lib.drone.attribute.error.CommandExecutionError;
-import com.o3dr.services.android.lib.drone.mission.action.MissionActions;
+import com.o3dr.services.android.lib.drone.mission.Mission;
 import com.o3dr.services.android.lib.drone.property.Altitude;
 import com.o3dr.services.android.lib.drone.property.Attitude;
 import com.o3dr.services.android.lib.drone.property.Battery;
@@ -44,7 +41,6 @@ import com.o3dr.services.android.lib.drone.property.VehicleMode;
 import com.o3dr.services.android.lib.drone.property.Vibration;
 import com.o3dr.services.android.lib.mavlink.MavlinkMessageWrapper;
 import com.o3dr.services.android.lib.model.ICommandListener;
-import com.o3dr.services.android.lib.model.action.Action;
 import com.o3dr.services.android.lib.util.MathUtils;
 
 import org.droidplanner.services.android.impl.communication.model.DataLink;
@@ -69,12 +65,6 @@ import org.droidplanner.services.android.impl.core.firmware.FirmwareType;
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
 import org.droidplanner.services.android.impl.core.model.AutopilotWarningParser;
 import org.droidplanner.services.android.impl.utils.CommonApiUtils;
-
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_AXIS_R;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_AXIS_X;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_AXIS_Y;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_AXIS_Z;
-import static com.o3dr.services.android.lib.drone.action.ControlActions.EXTRA_BUTTONS;
 
 /**
  * Base drone implementation.
@@ -277,109 +267,41 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         return mavClient;
     }
 
+    //************ Commands ************//
+
+    //MISSION COMMANDS
     @Override
-    public boolean executeAsyncAction(Action action, ICommandListener listener) {
-        String type = action.getType();
-        Bundle data = action.getData();
-
-        switch (type) {
-            //MISSION ACTIONS
-            case MissionActions.ACTION_CHANGE_MISSION_SPEED:
-                float missionSpeed = data.getFloat(MissionActions.EXTRA_MISSION_SPEED);
-                MavLinkCommands.changeMissionSpeed(this, missionSpeed, listener);
-                return true;
-
-            // STATE ACTIONS
-            case StateActions.ACTION_ARM:
-                return performArming(data, listener);
-
-            case StateActions.ACTION_SET_VEHICLE_MODE:
-                return setVehicleMode(data, listener);
-
-            // CONTROL ACTIONS
-            case ControlActions.ACTION_DO_GUIDED_TAKEOFF:
-                return performTakeoff(data, listener);
-
-            case ControlActions.ACTION_SET_CONDITION_YAW:
-                // Retrieve the yaw turn speed.
-                float turnSpeed = 2; // Default turn speed.
-
-                ParameterManager parameterManager = getParameterManager();
-                if (parameterManager != null) {
-                    Parameter turnSpeedParam = parameterManager.getParameter("ACRO_YAW_P");
-                    if (turnSpeedParam != null) {
-                        turnSpeed = (float) turnSpeedParam.getValue();
-                    }
-                }
-
-                float targetAngle = data.getFloat(ControlActions.EXTRA_YAW_TARGET_ANGLE);
-                float yawRate = data.getFloat(ControlActions.EXTRA_YAW_CHANGE_RATE);
-                boolean isClockwise = yawRate >= 0;
-                boolean isRelative = data.getBoolean(ControlActions.EXTRA_YAW_IS_RELATIVE);
-
-                MavLinkCommands.setConditionYaw(this, targetAngle, Math.abs(yawRate) * turnSpeed, isClockwise, isRelative, listener);
-                return true;
-
-            case ControlActions.ACTION_ENABLE_MANUAL_CONTROL:
-                return enableManualControl(data, listener);
-
-            case ControlActions.ACTION_MANUAL_CONTROL:
-                return setManualControl(data, listener);
-
-            // EXPERIMENTAL ACTIONS
-            case ExperimentalActions.ACTION_SEND_MAVLINK_MESSAGE:
-                data.setClassLoader(MavlinkMessageWrapper.class.getClassLoader());
-                MavlinkMessageWrapper messageWrapper = data.getParcelable(ExperimentalActions.EXTRA_MAVLINK_MESSAGE);
-                CommonApiUtils.sendMavlinkMessage(this, messageWrapper);
-                return true;
-
-            // INTERNAL DRONE ACTIONS
-            case ACTION_REQUEST_HOME_UPDATE:
-                requestHomeUpdate();
-                return true;
-
-            default:
-                CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
-                return true;
-        }
+    public void changeMissionSpeed(float speed, ICommandListener listener) {
+        MavLinkCommands.changeMissionSpeed(this, speed, listener);
     }
 
-    protected boolean enableManualControl(Bundle data, ICommandListener listener) {
-        boolean enable = data.getBoolean(ControlActions.EXTRA_DO_ENABLE);
-        if (enable) {
-            CommonApiUtils.postSuccessEvent(listener);
-        } else {
-            CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
-        }
-        return true;
+    @Override
+    public void loadWaypoints() {
+        //Unsupported. There is no listener to notify.
     }
 
-    protected boolean setManualControl(Bundle data, ICommandListener listener) {
-        int x = data.getInt(EXTRA_AXIS_X);
-        int y = data.getInt(EXTRA_AXIS_Y);
-        int z = data.getInt(EXTRA_AXIS_Z);
-        int r = data.getInt(EXTRA_AXIS_R);
-        int buttons = data.getInt(EXTRA_BUTTONS);
-
-        MavLinkRC.sendManualControl(this, x, y, z, r, buttons, listener);
-        return true;
+    @Override
+    public void setMission(Mission mission, boolean pushToDrone) {
+        //Unsupported. There is no listener to notify.
     }
 
-    protected boolean performArming(Bundle data, ICommandListener listener) {
-        boolean doArm = data.getBoolean(StateActions.EXTRA_ARM);
-        boolean emergencyDisarm = data.getBoolean(StateActions.EXTRA_EMERGENCY_DISARM);
+    @Override
+    public void startMission(boolean forceModeChange, boolean forceArm, ICommandListener listener) {
+        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
+    }
 
+    //STATE COMMANDS
+    @Override
+    public void arm(boolean doArm, boolean emergencyDisarm, ICommandListener listener) {
         if (!doArm && emergencyDisarm) {
             MavLinkCommands.sendFlightTermination(this, listener);
         } else {
             MavLinkCommands.sendArmMessage(this, doArm, false, listener);
         }
-        return true;
     }
 
-    protected boolean setVehicleMode(Bundle data, ICommandListener listener) {
-        data.setClassLoader(VehicleMode.class.getClassLoader());
-        VehicleMode newMode = data.getParcelable(StateActions.EXTRA_VEHICLE_MODE);
+    @Override
+    public void setVehicleMode(VehicleMode newMode, ICommandListener listener) {
         if (newMode != null) {
             switch (newMode) {
                 case COPTER_LAND:
@@ -399,13 +321,119 @@ public class GenericMavLinkDrone implements MavLinkDrone {
                     break;
             }
         }
-        return true;
     }
 
-    protected boolean performTakeoff(Bundle data, ICommandListener listener) {
-        double takeoffAltitude = data.getDouble(ControlActions.EXTRA_ALTITUDE);
-        MavLinkCommands.sendTakeoff(this, takeoffAltitude, listener);
-        return true;
+    @Override
+    public void setVehicleHome(LatLongAlt homeLocation, ICommandListener listener) {
+        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
+    }
+
+    //PARAMETER COMMANDS
+    @Override
+    public void refreshParameters() {
+        //Unsupported. There is no listener to notify.
+    }
+
+    @Override
+    public void writeParameters(Parameters parameters) {
+        //Unsupported. There is no listener to notify.
+    }
+
+    //CONTROL COMMANDS
+    @Override
+    public void takeoff(double altitude, ICommandListener listener) {
+        MavLinkCommands.sendTakeoff(this, altitude, listener);
+    }
+
+    @Override
+    public void setConditionYaw(float targetAngle, float yawRate, boolean isRelative, ICommandListener listener) {
+        // Retrieve the yaw turn speed.
+        float turnSpeed = 2; // Default turn speed.
+
+        ParameterManager parameterManager = getParameterManager();
+        if (parameterManager != null) {
+            Parameter turnSpeedParam = parameterManager.getParameter("ACRO_YAW_P");
+            if (turnSpeedParam != null) {
+                turnSpeed = (float) turnSpeedParam.getValue();
+            }
+        }
+
+        boolean isClockwise = yawRate >= 0;
+
+        MavLinkCommands.setConditionYaw(this, targetAngle, Math.abs(yawRate) * turnSpeed, isClockwise, isRelative, listener);
+    }
+
+    @Override
+    public void enableManualControl(boolean enable, ICommandListener listener) {
+        if (enable) {
+            CommonApiUtils.postSuccessEvent(listener);
+        } else {
+            CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
+        }
+    }
+
+    @Override
+    public void manualControl(int x, int y, int z, int r, int buttons, ICommandListener listener) {
+        MavLinkRC.sendManualControl(this, x, y, z, r, buttons, listener);
+    }
+
+    @Override
+    public void resetROI(ICommandListener listener) {
+        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
+    }
+
+    @Override
+    public void sendGuidedPoint(LatLong point, boolean force, ICommandListener listener) {
+        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
+    }
+
+    @Override
+    public void sendGuidedVelocityInLocalFrame(float vx, float vy, float vz, float yawRate, float yaw,
+                                               short coordinateFrame, short typeMask, ICommandListener listener) {
+        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
+    }
+
+    @Override
+    public void sendGuidedVelocityInGlobalFrame(float vx, float vy, float vz, float yawRate, float yaw,
+                                                short coordinateFrame, short typeMask, ICommandListener listener) {
+        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
+    }
+
+    @Override
+    public void setGuidedAltitude(double altitude) {
+        //Unsupported. There is no listener to notify.
+    }
+
+    //GIMBAL COMMANDS
+    @Override
+    public void setGimbalOrientation(float pitch, float roll, float yaw, ICommandListener listener) {
+        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
+    }
+
+    @Override
+    public void setGimbalMountMode(int mountMode, ICommandListener listener) {
+        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
+    }
+
+    @Override
+    public void resetGimbalMountMode(ICommandListener listener) {
+        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
+    }
+
+    //EXPERIMENTAL COMMANDS
+    @Override
+    public void triggerCamera() {
+        //Unsupported. There is no listener to notify.
+    }
+
+    @Override
+    public void setServo(int channel, int pwm, ICommandListener listener) {
+        CommonApiUtils.postErrorEvent(CommandExecutionError.COMMAND_UNSUPPORTED, listener);
+    }
+
+    @Override
+    public void sendMavlinkMessage(MavlinkMessageWrapper messageWrapper) {
+        CommonApiUtils.sendMavlinkMessage(this, messageWrapper);
     }
 
     @Override
@@ -773,7 +801,7 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         }
     }
 
-    protected void requestHomeUpdate() {
+    public void requestHomeUpdate() {
         requestHomeUpdate(this);
     }
 
