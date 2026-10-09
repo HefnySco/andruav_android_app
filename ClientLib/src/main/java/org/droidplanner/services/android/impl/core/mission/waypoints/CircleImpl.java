@@ -1,6 +1,7 @@
 package org.droidplanner.services.android.impl.core.mission.waypoints;
 
-import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
+import org.droidplanner.services.android.impl.core.MAVLink.MavLinkMissionItemInt;
 import com.MAVLink.enums.MAV_CMD;
 import com.MAVLink.enums.MAV_FRAME;
 
@@ -25,7 +26,7 @@ public class CircleImpl extends SpatialCoordItem {
         super(missionImpl, coord);
     }
 
-    public CircleImpl(msg_mission_item msg, MissionImpl missionImpl) {
+    public CircleImpl(msg_mission_item_int msg, MissionImpl missionImpl) {
         super(missionImpl, null);
         unpackMAVMessage(msg);
     }
@@ -47,19 +48,19 @@ public class CircleImpl extends SpatialCoordItem {
     }
 
     @Override
-    public List<msg_mission_item> packMissionItem() {
-        List<msg_mission_item> list = new ArrayList<msg_mission_item>();
+    public List<msg_mission_item_int> packMissionItem() {
+        List<msg_mission_item_int> list = new ArrayList<msg_mission_item_int>();
         packSingleCircle(list);
         return list;
     }
 
-    private void packSingleCircle(List<msg_mission_item> list) {
-        msg_mission_item mavMsg = new msg_mission_item();
+    private void packSingleCircle(List<msg_mission_item_int> list) {
+        msg_mission_item_int mavMsg = new msg_mission_item_int();
         list.add(mavMsg);
         mavMsg.autocontinue = 1;
         mavMsg.frame = MAV_FRAME.MAV_FRAME_GLOBAL_RELATIVE_ALT;
-        mavMsg.x = (float) coordinate.getLatitude();
-        mavMsg.y = (float) coordinate.getLongitude();
+        mavMsg.x = MavLinkMissionItemInt.toDegE7(coordinate.getLatitude());
+        mavMsg.y = MavLinkMissionItemInt.toDegE7(coordinate.getLongitude());
         mavMsg.z = (float) (coordinate.getAltitude());
         mavMsg.command = MAV_CMD.MAV_CMD_NAV_LOITER_TURNS;
         mavMsg.param1 = Math.abs(turns);
@@ -67,7 +68,7 @@ public class CircleImpl extends SpatialCoordItem {
     }
 
     @Override
-    public void unpackMAVMessage(msg_mission_item mavMsg) {
+    public void unpackMAVMessage(msg_mission_item_int mavMsg) {
         super.unpackMAVMessage(mavMsg);
         setTurns((int) mavMsg.param1);
         setRadius(mavMsg.param3);

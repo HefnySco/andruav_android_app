@@ -4,6 +4,7 @@ import android.os.Handler;
 
 import com.MAVLink.Messages.MAVLinkMessage;
 import com.MAVLink.common.msg_command_ack;
+import com.MAVLink.common.msg_command_int;
 import com.MAVLink.common.msg_command_long;
 import com.MAVLink.common.msg_set_mode;
 
@@ -35,14 +36,15 @@ public class DroneCommandTracker {
             return;
 
         if (command instanceof msg_command_long) {
-            onCommandSubmittedImpl((msg_command_long) command, listener);
+            onCommandSubmittedImpl(((msg_command_long) command).command, listener);
+        } else if (command instanceof msg_command_int) {
+            onCommandSubmittedImpl(((msg_command_int) command).command, listener);
         } else if (command instanceof msg_set_mode) {
             onCommandSubmittedImpl((msg_set_mode) command, listener);
         }
     }
 
-    private void onCommandSubmittedImpl(msg_command_long command, ICommandListener listener) {
-        final int commandId = command.command;
+    private void onCommandSubmittedImpl(final int commandId, ICommandListener listener) {
         final CallbackKey<msg_command_ack> key = new CallbackKey<msg_command_ack>(commandId) {
 
             @Override

@@ -1,6 +1,6 @@
 package org.droidplanner.services.android.impl.core.mission.commands;
 
-import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.enums.MAV_CMD;
 
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
@@ -18,7 +18,7 @@ public class SetServoImpl extends MissionCMD {
 		super(item);
 	}
 
-	public SetServoImpl(msg_mission_item msg, MissionImpl missionImpl) {
+	public SetServoImpl(msg_mission_item_int msg, MissionImpl missionImpl) {
 		super(missionImpl);
 		unpackMAVMessage(msg);
 	}
@@ -31,7 +31,7 @@ public class SetServoImpl extends MissionCMD {
 	
 
 	@Override
-	public void unpackMAVMessage(msg_mission_item mavMsg) {
+	public void unpackMAVMessage(msg_mission_item_int mavMsg) {
 		channel = (int) mavMsg.param1;
 		pwm = (int) mavMsg.param2;
 
@@ -43,9 +43,9 @@ public class SetServoImpl extends MissionCMD {
 	}
 
 	@Override
-	public List<msg_mission_item> packMissionItem() {
-		List<msg_mission_item> list = super.packMissionItem();
-		msg_mission_item mavMsg = list.get(0);
+	public List<msg_mission_item_int> packMissionItem() {
+		List<msg_mission_item_int> list = super.packMissionItem();
+		msg_mission_item_int mavMsg = list.get(0);
 		mavMsg.command = MAV_CMD.MAV_CMD_DO_SET_SERVO;
 		mavMsg.param1 = channel;
 		mavMsg.param2 = pwm;

@@ -7,8 +7,10 @@ import com.MAVLink.common.msg_mission_ack;
 import com.MAVLink.common.msg_mission_count;
 import com.MAVLink.common.msg_mission_current;
 import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.common.msg_mission_item_reached;
 import com.MAVLink.common.msg_mission_request;
+import com.MAVLink.common.msg_mission_request_int;
 
 import org.droidplanner.services.android.impl.core.drone.DroneVariable;
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
@@ -99,7 +101,7 @@ public class WaypointManager extends DroneVariable {
      * @param data waypoints to be written
      */
 
-    public void writeWaypoints(List<msg_mission_item> data) {
+    public void writeWaypoints(List<msg_mission_item_int> data) {
         // ensure that WPManager is not doing anything else
         if (state != WaypointStates.IDLE)
             return;
@@ -150,7 +152,7 @@ public class WaypointManager extends DroneVariable {
     /**
      * list of waypoints used when writing or receiving
      */
-    private final List<msg_mission_item> mission = new ArrayList<msg_mission_item>();
+    private final List<msg_mission_item_int> mission = new ArrayList<msg_mission_item_int>();
 
     /**
      * Try to process a Mavlink message if it is a mission related message
@@ -176,9 +178,15 @@ public class WaypointManager extends DroneVariable {
                 break;
 
             case READING_WP:
-                if (msg.msgid == msg_mission_item.MAVLINK_MSG_ID_MISSION_ITEM) {
+                if (msg.msgid == msg_mission_item_int.MAVLINK_MSG_ID_MISSION_ITEM_INT
+                        || msg.msgid == msg_mission_item.MAVLINK_MSG_ID_MISSION_ITEM) {
                     startWatchdog();
-                    processReceivedWaypoint((msg_mission_item) msg);
+                    if (msg.msgid == msg_mission_item_int.MAVLINK_MSG_ID_MISSION_ITEM_INT) {
+                        processReceivedWaypoint((msg_mission_item_int) msg);
+                    } else {
+                        // Deprecated float32 variant - only sent by old autopilots.
+                        processReceivedWaypoint(MavLinkMissionItemInt.fromMissionItem((msg_mission_item) msg));
+                    }
                     doWaypointEvent(WaypointEvent_Type.WP_DOWNLOAD, readIndex + 1, waypointCount);
                     if (mission.size() < waypointCount) {
                         MavLinkWaypoint.requestWayPoint(myDrone, mission.size());
@@ -196,9 +204,15 @@ public class WaypointManager extends DroneVariable {
             case WRITING_WP_COUNT:
                 state = WaypointStates.WRITING_WP;
             case WRITING_WP:
-                if (msg.msgid == msg_mission_request.MAVLINK_MSG_ID_MISSION_REQUEST) {
+                // Autopilots request items with MISSION_REQUEST_INT; MISSION_REQUEST is
+                // deprecated but still sent by old firmware. Both are answered with MISSION_ITEM_INT.
+                if (msg.msgid == msg_mission_request_int.MAVLINK_MSG_ID_MISSION_REQUEST_INT
+                        || msg.msgid == msg_mission_request.MAVLINK_MSG_ID_MISSION_REQUEST) {
                     startWatchdog();
-                    processWaypointToSend((msg_mission_request) msg);
+                    final int seq = (msg.msgid == msg_mission_request_int.MAVLINK_MSG_ID_MISSION_REQUEST_INT)
+                            ? ((msg_mission_request_int) msg).seq
+                            : ((msg_mission_request) msg).seq;
+                    processWaypointToSend(seq);
                     doWaypointEvent(WaypointEvent_Type.WP_UPLOAD, writeIndex + 1, mission.size());
                     return true;
                 }
@@ -271,12 +285,15 @@ public class WaypointManager extends DroneVariable {
         return true;
     }
 
-    private void processWaypointToSend(msg_mission_request msg) {
+    private void processWaypointToSend(int seq) {
         /*
-         * Log.d("TIMEOUT", "Write Msg: " + String.valueOf(msg.seq));
+         * Log.d("TIMEOUT", "Write Msg: " + String.valueOf(seq));
 		 */
-        writeIndex = msg.seq;
-        msg_mission_item item = mission.get(writeIndex);
+        if (seq < 0 || seq >= mission.size())
+            return;
+
+        writeIndex = seq;
+        msg_mission_item_int item = mission.get(writeIndex);
         item.target_system = myDrone.getSysid();
         item.target_component = myDrone.getCompid();
         myDrone.getMavClient().sendMessage(item, null);
@@ -286,7 +303,7 @@ public class WaypointManager extends DroneVariable {
         }
     }
 
-    private void processReceivedWaypoint(msg_mission_item msg) {
+    private void processReceivedWaypoint(msg_mission_item_int msg) {
 		/*
 		 * Log.d("TIMEOUT", "Read Last/Curr: " + String.valueOf(readIndex) + "/"
 		 * + String.valueOf(msg.seq));

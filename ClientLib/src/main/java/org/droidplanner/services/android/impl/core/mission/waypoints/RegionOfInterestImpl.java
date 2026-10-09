@@ -1,6 +1,6 @@
 package org.droidplanner.services.android.impl.core.mission.waypoints;
 
-import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.enums.MAV_CMD;
 
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
@@ -20,7 +20,7 @@ public class RegionOfInterestImpl extends SpatialCoordItem {
 		super(missionImpl,coord);
 	}
 
-	public RegionOfInterestImpl(msg_mission_item msg, MissionImpl missionImpl) {
+	public RegionOfInterestImpl(msg_mission_item_int msg, MissionImpl missionImpl) {
 		super(missionImpl, null);
 		unpackMAVMessage(msg);
 	}
@@ -33,15 +33,15 @@ public class RegionOfInterestImpl extends SpatialCoordItem {
 	}
 
 	@Override
-	public List<msg_mission_item> packMissionItem() {
-		List<msg_mission_item> list = super.packMissionItem();
-		msg_mission_item mavMsg = list.get(0);
+	public List<msg_mission_item_int> packMissionItem() {
+		List<msg_mission_item_int> list = super.packMissionItem();
+		msg_mission_item_int mavMsg = list.get(0);
 		mavMsg.command = MAV_CMD.MAV_CMD_DO_SET_ROI;
 		return list;
 	}
 
 	@Override
-	public void unpackMAVMessage(msg_mission_item mavMsg) {
+	public void unpackMAVMessage(msg_mission_item_int mavMsg) {
 		super.unpackMAVMessage(mavMsg);
 	}
 

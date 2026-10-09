@@ -1,6 +1,6 @@
 package org.droidplanner.services.android.impl.core.mission.commands;
 
-import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.enums.MAV_CMD;
 
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
@@ -22,7 +22,7 @@ public class SetRelayImpl extends MissionCMD {
         super(item);
     }
 
-    public SetRelayImpl(msg_mission_item msg, MissionImpl missionImpl){
+    public SetRelayImpl(msg_mission_item_int msg, MissionImpl missionImpl){
         super(missionImpl);
         unpackMAVMessage(msg);
     }
@@ -39,15 +39,15 @@ public class SetRelayImpl extends MissionCMD {
     }
 
     @Override
-    public void unpackMAVMessage(msg_mission_item mavMsg){
+    public void unpackMAVMessage(msg_mission_item_int mavMsg){
         relayNumber = (int) mavMsg.param1;
         enabled = mavMsg.param2 != 0;
     }
 
     @Override
-    public List<msg_mission_item> packMissionItem(){
-        List<msg_mission_item> list = super.packMissionItem();
-        msg_mission_item mavMsg = list.get(0);
+    public List<msg_mission_item_int> packMissionItem(){
+        List<msg_mission_item_int> list = super.packMissionItem();
+        msg_mission_item_int mavMsg = list.get(0);
         mavMsg.command = MAV_CMD.MAV_CMD_DO_SET_RELAY;
         mavMsg.param1 = relayNumber;
         mavMsg.param2 = enabled ? 1 : 0;

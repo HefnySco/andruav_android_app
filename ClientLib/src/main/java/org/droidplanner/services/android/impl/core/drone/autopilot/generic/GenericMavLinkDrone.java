@@ -12,6 +12,7 @@ import com.MAVLink.standard.msg_global_position_int;
 import com.MAVLink.common.msg_gps_raw_int;
 import com.MAVLink.common.msg_mission_current;
 import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.common.msg_mission_item_reached;
 import com.MAVLink.common.msg_nav_controller_output;
 import com.MAVLink.common.msg_radio_status;
@@ -46,6 +47,7 @@ import com.o3dr.services.android.lib.util.MathUtils;
 import org.droidplanner.services.android.impl.communication.model.DataLink;
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkCommands;
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkRC;
+import org.droidplanner.services.android.impl.core.MAVLink.MavLinkMissionItemInt;
 import org.droidplanner.services.android.impl.core.MAVLink.MavLinkWaypoint;
 import org.droidplanner.services.android.impl.core.MAVLink.WaypointManager;
 import org.droidplanner.services.android.impl.core.drone.DroneEvents;
@@ -543,8 +545,13 @@ public class GenericMavLinkDrone implements MavLinkDrone {
                 processGpsState((msg_gps_raw_int) message);
                 break;
 
+            case msg_mission_item_int.MAVLINK_MSG_ID_MISSION_ITEM_INT:
+                processHomeUpdate((msg_mission_item_int) message);
+                break;
+
             case msg_mission_item.MAVLINK_MSG_ID_MISSION_ITEM:
-                processHomeUpdate((msg_mission_item) message);
+                // Deprecated float32 variant - only sent by old autopilots.
+                processHomeUpdate(MavLinkMissionItemInt.fromMissionItem((msg_mission_item) message));
                 break;
 
             case msg_mission_current.MAVLINK_MSG_ID_MISSION_CURRENT:
@@ -617,14 +624,14 @@ public class GenericMavLinkDrone implements MavLinkDrone {
         notifyDroneEvent(DroneInterfaces.DroneEventsType.ORIENTATION);
     }
 
-    public void processHomeUpdate(msg_mission_item missionItem) {
+    public void processHomeUpdate(msg_mission_item_int missionItem) {
         if (missionItem.seq != APMConstants.HOME_WAYPOINT_INDEX) {
             return;
         }
 
-        float latitude = missionItem.x;
-        float longitude = missionItem.y;
-        float altitude = missionItem.z;
+        double latitude = MavLinkMissionItemInt.fromDegE7(missionItem.x);
+        double longitude = MavLinkMissionItemInt.fromDegE7(missionItem.y);
+        double altitude = missionItem.z;
         boolean homeUpdated = false;
 
         LatLongAlt homeCoord = vehicleHome.getCoordinate();

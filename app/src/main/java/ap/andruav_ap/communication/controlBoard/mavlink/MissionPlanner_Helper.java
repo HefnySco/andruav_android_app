@@ -1,10 +1,11 @@
 package ap.andruav_ap.communication.controlBoard.mavlink;
 
-import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.enums.MAV_CMD;
 import com.o3dr.services.android.lib.drone.mission.Mission;
 import com.o3dr.services.android.lib.drone.mission.item.MissionItem;
 
+import org.droidplanner.services.android.impl.core.MAVLink.MavLinkMissionItemInt;
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
 import org.droidplanner.services.android.impl.core.mission.MissionItemImpl;
 import org.droidplanner.services.android.impl.core.mission.commands.CameraControlImpl;
@@ -91,14 +92,14 @@ public class MissionPlanner_Helper {
                 return null;
             }
 
-            List<msg_mission_item> rawMissionItems = new LinkedList<>();
+            List<msg_mission_item_int> rawMissionItems = new LinkedList<>();
 
             JSONObject jsonMission = jsonObject.getJSONObject("mission");
             JSONArray jsonItems = jsonMission.getJSONArray("items");
             final int itemLength = jsonItems.length();
             for (int i=1;i<itemLength; ++i)
             {
-                final msg_mission_item msg = new msg_mission_item();
+                final msg_mission_item_int msg = new msg_mission_item_int();
                 final JSONObject item = (JSONObject) jsonItems.get(i);
                 final JSONArray params = item.getJSONArray("params");
 
@@ -124,11 +125,11 @@ public class MissionPlanner_Helper {
                 }
                 if (!params.isNull(4))
                 {
-                    msg.x= Float.parseFloat(params.get(4).toString());
+                    msg.x = MavLinkMissionItemInt.encodeXY(msg.command, Double.parseDouble(params.get(4).toString()));
                 }
                 if (!params.isNull(5))
                 {
-                    msg.y= Float.parseFloat(params.get(5).toString());
+                    msg.y = MavLinkMissionItemInt.encodeXY(msg.command, Double.parseDouble(params.get(5).toString()));
                 }
                 if (!params.isNull(6))
                 {
@@ -177,12 +178,12 @@ public class MissionPlanner_Helper {
             return null;
         }
 
-        List<msg_mission_item> rawMissionItems = new LinkedList<>();
+        List<msg_mission_item_int> rawMissionItems = new LinkedList<>();
 
         for (int i=2,len = lines.length;i<len;++i)
         {
             final String[] rowData = lines[i].split("\t");
-            final msg_mission_item msg = new msg_mission_item();
+            final msg_mission_item_int msg = new msg_mission_item_int();
 
             msg.seq = (Short.parseShort(rowData[0]));
             msg.current = (Byte.parseByte(rowData[1]));
@@ -194,8 +195,8 @@ public class MissionPlanner_Helper {
             msg.param3 = (Float.parseFloat(rowData[6]));
             msg.param4 = (Float.parseFloat(rowData[7]));
 
-            msg.x = (Float.parseFloat(rowData[8]));
-            msg.y = (Float.parseFloat(rowData[9]));
+            msg.x = MavLinkMissionItemInt.encodeXY(msg.command, Double.parseDouble(rowData[8]));
+            msg.y = MavLinkMissionItemInt.encodeXY(msg.command, Double.parseDouble(rowData[9]));
             msg.z = (Float.parseFloat(rowData[10]));
 
             msg.autocontinue = (Byte.parseByte(rowData[11].trim()));
@@ -209,7 +210,7 @@ public class MissionPlanner_Helper {
 
 
 
-    private static Mission fromRawMissionItems(List<msg_mission_item> rawMissionItems){
+    private static Mission fromRawMissionItems(List<msg_mission_item_int> rawMissionItems){
         Mission mission = new Mission();
         if(rawMissionItems == null || rawMissionItems.isEmpty())
             return mission;
@@ -226,9 +227,9 @@ public class MissionPlanner_Helper {
         return mission;
     }
 
-    public static List<MissionItemImpl> processMavLinkMessages(MissionImpl missionImpl, List<msg_mission_item> msgs) {
+    public static List<MissionItemImpl> processMavLinkMessages(MissionImpl missionImpl, List<msg_mission_item_int> msgs) {
         List<MissionItemImpl> received = new ArrayList<MissionItemImpl>();
-        for (msg_mission_item msg : msgs) {
+        for (msg_mission_item_int msg : msgs) {
             switch (msg.command) {
                 case MAV_CMD.MAV_CMD_DO_SET_SERVO:
                     received.add(new SetServoImpl(msg, missionImpl));

@@ -2,7 +2,7 @@ package org.droidplanner.services.android.impl.core.MAVLink;
 
 import com.MAVLink.common.msg_mission_ack;
 import com.MAVLink.common.msg_mission_count;
-import com.MAVLink.common.msg_mission_request;
+import com.MAVLink.common.msg_mission_request_int;
 import com.MAVLink.common.msg_mission_request_list;
 import com.MAVLink.common.msg_mission_set_current;
 import com.MAVLink.enums.MAV_MISSION_RESULT;
@@ -21,7 +21,9 @@ public class MavLinkWaypoint {
 	}
 
 	public static void requestWayPoint(MavLinkDrone drone, int index) {
-		msg_mission_request msg = new msg_mission_request();
+		// MISSION_REQUEST_INT: the autopilot answers with MISSION_ITEM_INT (degE7),
+		// replacing the deprecated MISSION_REQUEST / float32 MISSION_ITEM pair.
+		msg_mission_request_int msg = new msg_mission_request_int();
 		msg.target_system = drone.getSysid();
 		msg.target_component = drone.getCompid();
 		msg.seq = index;

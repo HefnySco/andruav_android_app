@@ -1,6 +1,6 @@
 package org.droidplanner.services.android.impl.core.mission;
 
-import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.enums.MAV_FRAME;
 
 import java.util.ArrayList;
@@ -19,14 +19,14 @@ public abstract class MissionItemImpl implements Comparable<MissionItemImpl> {
 	}
 
 	/**
-	 * Return a new list (one or more) of MAVLinkMessage msg_mission_item that
+	 * Return a new list (one or more) of MAVLinkMessage msg_mission_item_int that
 	 * represent this MissionItem
 	 * 
 	 * @return
 	 */
-	public List<msg_mission_item> packMissionItem() {
-		List<msg_mission_item> list = new ArrayList<msg_mission_item>();
-		msg_mission_item mavMsg = new msg_mission_item();
+	public List<msg_mission_item_int> packMissionItem() {
+		List<msg_mission_item_int> list = new ArrayList<msg_mission_item_int>();
+		msg_mission_item_int mavMsg = new msg_mission_item_int();
 		list.add(mavMsg);
 		mavMsg.autocontinue = 1;
 		mavMsg.frame = MAV_FRAME.MAV_FRAME_GLOBAL_RELATIVE_ALT;
@@ -34,11 +34,11 @@ public abstract class MissionItemImpl implements Comparable<MissionItemImpl> {
 	}
 
 	/**
-	 * Gets data from MAVLinkMessage msg_mission_item for this MissionItem
+	 * Gets data from MAVLinkMessage msg_mission_item_int for this MissionItem
 	 * 
 	 * @return
 	 */
-	public abstract void unpackMAVMessage(msg_mission_item mavMsg);
+	public abstract void unpackMAVMessage(msg_mission_item_int mavMsg);
 
 	public abstract MissionItemType getType();
 

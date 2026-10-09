@@ -1,6 +1,6 @@
 package org.droidplanner.services.android.impl.core.mission.commands;
 
-import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.enums.MAV_CMD;
 
 import org.droidplanner.services.android.impl.core.helpers.geoTools.GeoTools;
@@ -19,7 +19,7 @@ public class ConditionYawImpl extends MissionCMD {
 		super(item);
 	}
 
-	public ConditionYawImpl(msg_mission_item msg, MissionImpl missionImpl) {
+	public ConditionYawImpl(msg_mission_item_int msg, MissionImpl missionImpl) {
 		super(missionImpl);
 		unpackMAVMessage(msg);
 	}
@@ -31,9 +31,9 @@ public class ConditionYawImpl extends MissionCMD {
 	}
 	
 	@Override
-	public List<msg_mission_item> packMissionItem() {
-		List<msg_mission_item> list = super.packMissionItem();
-		msg_mission_item mavMsg = list.get(0);
+	public List<msg_mission_item_int> packMissionItem() {
+		List<msg_mission_item_int> list = super.packMissionItem();
+		msg_mission_item_int mavMsg = list.get(0);
 		mavMsg.command = MAV_CMD.MAV_CMD_CONDITION_YAW;
 		mavMsg.param1 = (float) GeoTools.warpToPositiveAngle(angle);
 		mavMsg.param2 = (float) Math.abs(angularSpeed);
@@ -43,7 +43,7 @@ public class ConditionYawImpl extends MissionCMD {
 	}
 
 	@Override
-	public void unpackMAVMessage(msg_mission_item mavMsg) {
+	public void unpackMAVMessage(msg_mission_item_int mavMsg) {
 		isRelative = mavMsg.param4 != 0;
 		angle = mavMsg.param1;
 		angularSpeed = mavMsg.param2 * (mavMsg.param3>0 ? -1: +1);

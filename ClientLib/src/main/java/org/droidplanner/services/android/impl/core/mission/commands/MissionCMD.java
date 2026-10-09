@@ -1,6 +1,6 @@
 package org.droidplanner.services.android.impl.core.mission.commands;
 
-import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
 
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
 import org.droidplanner.services.android.impl.core.mission.MissionItemImpl;
@@ -18,7 +18,7 @@ public abstract class MissionCMD extends MissionItemImpl {
 	}
 
 	@Override
-	public List<msg_mission_item> packMissionItem() {
+	public List<msg_mission_item_int> packMissionItem() {
 		return super.packMissionItem();
 	}
 

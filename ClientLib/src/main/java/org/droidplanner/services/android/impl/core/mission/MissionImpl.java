@@ -3,7 +3,8 @@ package org.droidplanner.services.android.impl.core.mission;
 import android.util.Pair;
 
 import com.MAVLink.common.msg_mission_ack;
-import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
+import org.droidplanner.services.android.impl.core.MAVLink.MavLinkMissionItemInt;
 import com.MAVLink.enums.MAV_CMD;
 import com.MAVLink.enums.MAV_FRAME;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
@@ -194,7 +195,7 @@ public class MissionImpl extends DroneVariable<GenericMavLinkDrone> {
         return items.contains(item);
     }
 
-    public void onMissionReceived(List<msg_mission_item> msgs) {
+    public void onMissionReceived(List<msg_mission_item_int> msgs) {
         if (msgs != null) {
             myDrone.processHomeUpdate(msgs.get(0));
             msgs.remove(0); // Remove Home waypoint
@@ -205,7 +206,7 @@ public class MissionImpl extends DroneVariable<GenericMavLinkDrone> {
         }
     }
 
-    public void onMissionLoaded(List<msg_mission_item> msgs) {
+    public void onMissionLoaded(List<msg_mission_item_int> msgs) {
         if (msgs != null) {
             myDrone.processHomeUpdate(msgs.get(0));
             msgs.remove(0); // Remove Home waypoint
@@ -220,33 +221,33 @@ public class MissionImpl extends DroneVariable<GenericMavLinkDrone> {
      * Sends the mission to the drone using the mavlink protocol.
      */
     public void sendMissionToAPM() {
-        List<msg_mission_item> msgMissionItems = getMsgMissionItems();
+        List<msg_mission_item_int> msgMissionItems = getMsgMissionItems();
         myDrone.getWaypointManager().writeWaypoints(msgMissionItems);
         updateComponentItems(msgMissionItems);
     }
 
     private void updateComponentItems(){
-        List<msg_mission_item> msgMissionItems = getMsgMissionItems();
+        List<msg_mission_item_int> msgMissionItems = getMsgMissionItems();
         updateComponentItems(msgMissionItems);
     }
 
-    private void updateComponentItems(List<msg_mission_item> msgMissionItems) {
+    private void updateComponentItems(List<msg_mission_item_int> msgMissionItems) {
         componentItems.clear();
         if(msgMissionItems == null || msgMissionItems.isEmpty()) {
             return;
         }
-        msg_mission_item firstItem = msgMissionItems.get(0);
+        msg_mission_item_int firstItem = msgMissionItems.get(0);
         if(firstItem.seq == APMConstants.HOME_WAYPOINT_INDEX) {
             msgMissionItems.remove(0); // Remove Home waypoint
         }
         componentItems.addAll(MissionUtils.processMavLinkMessages(this, msgMissionItems));
     }
 
-    public msg_mission_item packHomeMavlink() {
+    public msg_mission_item_int packHomeMavlink() {
         Home home = (Home) myDrone.getAttribute(AttributeType.HOME);
         LatLongAlt coordinate = home.getCoordinate();
 
-        msg_mission_item mavMsg = new msg_mission_item();
+        msg_mission_item_int mavMsg = new msg_mission_item_int();
         mavMsg.autocontinue = 1;
         mavMsg.command = MAV_CMD.MAV_CMD_NAV_WAYPOINT;
         mavMsg.current = 0;
@@ -254,25 +255,25 @@ public class MissionImpl extends DroneVariable<GenericMavLinkDrone> {
         mavMsg.target_system = myDrone.getSysid();
         mavMsg.target_component = myDrone.getCompid();
         if (home.isValid()) {
-            mavMsg.x = (float) coordinate.getLatitude();
-            mavMsg.y = (float) coordinate.getLongitude();
+            mavMsg.x = MavLinkMissionItemInt.toDegE7(coordinate.getLatitude());
+            mavMsg.y = MavLinkMissionItemInt.toDegE7(coordinate.getLongitude());
             mavMsg.z = (float) coordinate.getAltitude();
         }
 
         return mavMsg;
     }
 
-    public List<msg_mission_item> getMsgMissionItems() {
-        List<msg_mission_item> data = new ArrayList<msg_mission_item>();
+    public List<msg_mission_item_int> getMsgMissionItems() {
+        List<msg_mission_item_int> data = new ArrayList<msg_mission_item_int>();
         int waypointCount = 0;
-        msg_mission_item home = packHomeMavlink();
+        msg_mission_item_int home = packHomeMavlink();
         home.seq = waypointCount++;
         data.add(home);
 
         int size = items.size();
         for (int i = 0; i < size; i++) {
             MissionItemImpl item = items.get(i);
-            for(msg_mission_item msg_item: item.packMissionItem()){
+            for(msg_mission_item_int msg_item: item.packMissionItem()){
                 msg_item.seq = waypointCount++;
                 data.add(msg_item);
             }

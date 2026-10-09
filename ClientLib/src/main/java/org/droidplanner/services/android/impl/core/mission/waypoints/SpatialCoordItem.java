@@ -1,6 +1,7 @@
 package org.droidplanner.services.android.impl.core.mission.waypoints;
 
-import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
+import org.droidplanner.services.android.impl.core.MAVLink.MavLinkMissionItemInt;
 
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
 import org.droidplanner.services.android.impl.core.mission.MissionItemImpl;
@@ -36,18 +37,19 @@ public abstract class SpatialCoordItem extends MissionItemImpl {
     }
 
     @Override
-    public List<msg_mission_item> packMissionItem() {
-        List<msg_mission_item> list = super.packMissionItem();
-        msg_mission_item mavMsg = list.get(0);
-        mavMsg.x = (float) coordinate.getLatitude();
-        mavMsg.y = (float) coordinate.getLongitude();
+    public List<msg_mission_item_int> packMissionItem() {
+        List<msg_mission_item_int> list = super.packMissionItem();
+        msg_mission_item_int mavMsg = list.get(0);
+        mavMsg.x = MavLinkMissionItemInt.toDegE7(coordinate.getLatitude());
+        mavMsg.y = MavLinkMissionItemInt.toDegE7(coordinate.getLongitude());
         mavMsg.z = (float) coordinate.getAltitude();
         return list;
     }
 
     @Override
-    public void unpackMAVMessage(msg_mission_item mavMsg) {
-        setCoordinate(new LatLongAlt(mavMsg.x, mavMsg.y, mavMsg.z));
+    public void unpackMAVMessage(msg_mission_item_int mavMsg) {
+        setCoordinate(new LatLongAlt(MavLinkMissionItemInt.fromDegE7(mavMsg.x),
+                MavLinkMissionItemInt.fromDegE7(mavMsg.y), mavMsg.z));
     }
 
     public void setAltitude(double altitude) {

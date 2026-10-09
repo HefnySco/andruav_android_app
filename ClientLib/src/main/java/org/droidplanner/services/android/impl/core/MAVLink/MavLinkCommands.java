@@ -2,7 +2,6 @@ package org.droidplanner.services.android.impl.core.MAVLink;
 
 import com.MAVLink.common.msg_command_long;
 import com.MAVLink.common.msg_manual_control;
-import com.MAVLink.common.msg_mission_item;
 import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.common.msg_set_mode;
 import com.MAVLink.common.msg_set_position_target_global_int;

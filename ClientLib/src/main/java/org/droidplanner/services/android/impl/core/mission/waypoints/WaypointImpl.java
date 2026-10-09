@@ -1,6 +1,6 @@
 package org.droidplanner.services.android.impl.core.mission.waypoints;
 
-import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.enums.MAV_CMD;
 
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
@@ -26,15 +26,15 @@ public class WaypointImpl extends SpatialCoordItem {
 		super(missionImpl, coord);
 	}
 
-	public WaypointImpl(msg_mission_item msg, MissionImpl missionImpl) {
+	public WaypointImpl(msg_mission_item_int msg, MissionImpl missionImpl) {
 		super(missionImpl, null);
 		unpackMAVMessage(msg);
 	}
 
 	@Override
-	public List<msg_mission_item> packMissionItem() {
-		List<msg_mission_item> list = super.packMissionItem();
-		msg_mission_item mavMsg = list.get(0);
+	public List<msg_mission_item_int> packMissionItem() {
+		List<msg_mission_item_int> list = super.packMissionItem();
+		msg_mission_item_int mavMsg = list.get(0);
 		mavMsg.command = MAV_CMD.MAV_CMD_NAV_WAYPOINT;
 		mavMsg.param1 = (float) getDelay();
 		mavMsg.param2 = (float) getAcceptanceRadius();
@@ -44,7 +44,7 @@ public class WaypointImpl extends SpatialCoordItem {
 	}
 
 	@Override
-	public void unpackMAVMessage(msg_mission_item mavMsg) {
+	public void unpackMAVMessage(msg_mission_item_int mavMsg) {
 		super.unpackMAVMessage(mavMsg);
 		setDelay(mavMsg.param1);
 		setAcceptanceRadius(mavMsg.param2);

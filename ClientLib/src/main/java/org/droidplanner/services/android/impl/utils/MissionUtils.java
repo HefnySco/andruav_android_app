@@ -1,6 +1,6 @@
 package org.droidplanner.services.android.impl.utils;
 
-import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.enums.MAV_CMD;
 
 import org.droidplanner.services.android.impl.core.mission.MissionImpl;
@@ -32,9 +32,9 @@ public class MissionUtils {
 
     private MissionUtils(){}
 
-    public static List<MissionItemImpl> processMavLinkMessages(MissionImpl missionImpl, List<msg_mission_item> msgs) {
+    public static List<MissionItemImpl> processMavLinkMessages(MissionImpl missionImpl, List<msg_mission_item_int> msgs) {
         List<MissionItemImpl> received = new ArrayList<MissionItemImpl>();
-        for (msg_mission_item msg : msgs) {
+        for (msg_mission_item_int msg : msgs) {
             switch (msg.command) {
                 case MAV_CMD.MAV_CMD_DO_SET_SERVO:
                     received.add(new SetServoImpl(msg, missionImpl));

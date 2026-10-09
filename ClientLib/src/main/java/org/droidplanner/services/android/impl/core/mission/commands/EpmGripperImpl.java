@@ -1,6 +1,6 @@
 package org.droidplanner.services.android.impl.core.mission.commands;
 
-import com.MAVLink.common.msg_mission_item;
+import com.MAVLink.common.msg_mission_item_int;
 import com.MAVLink.enums.GRIPPER_ACTIONS;
 import com.MAVLink.enums.MAV_CMD;
 
@@ -18,7 +18,7 @@ public class EpmGripperImpl extends MissionCMD {
 		super(item);
 	}
 
-	public EpmGripperImpl(msg_mission_item msg, MissionImpl missionImpl) {
+	public EpmGripperImpl(msg_mission_item_int msg, MissionImpl missionImpl) {
 		super(missionImpl);
 		unpackMAVMessage(msg);
 	}
@@ -29,16 +29,16 @@ public class EpmGripperImpl extends MissionCMD {
 	}
 
 	@Override
-	public List<msg_mission_item> packMissionItem() {
-		List<msg_mission_item> list = super.packMissionItem();
-		msg_mission_item mavMsg = list.get(0);
+	public List<msg_mission_item_int> packMissionItem() {
+		List<msg_mission_item_int> list = super.packMissionItem();
+		msg_mission_item_int mavMsg = list.get(0);
 		mavMsg.command = MAV_CMD.MAV_CMD_DO_GRIPPER;
 		mavMsg.param2 = release ? GRIPPER_ACTIONS.GRIPPER_ACTION_RELEASE : GRIPPER_ACTIONS.GRIPPER_ACTION_GRAB;
 		return list;
 	}
 
 	@Override
-	public void unpackMAVMessage(msg_mission_item mavMsg) {
+	public void unpackMAVMessage(msg_mission_item_int mavMsg) {
 		if (mavMsg.param2 == GRIPPER_ACTIONS.GRIPPER_ACTION_GRAB) {
 			release = false;
 		} else if (mavMsg.param2 == GRIPPER_ACTIONS.GRIPPER_ACTION_RELEASE) {

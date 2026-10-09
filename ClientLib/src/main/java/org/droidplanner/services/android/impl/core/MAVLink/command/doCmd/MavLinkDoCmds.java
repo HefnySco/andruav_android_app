@@ -2,10 +2,14 @@ package org.droidplanner.services.android.impl.core.MAVLink.command.doCmd;
 
 import com.MAVLink.ardupilotmega.msg_digicam_control;
 import com.MAVLink.ardupilotmega.msg_mount_control;
+import com.MAVLink.common.msg_command_int;
 import com.MAVLink.common.msg_command_long;
 import com.MAVLink.common.msg_mission_set_current;
 import com.MAVLink.enums.GRIPPER_ACTIONS;
 import com.MAVLink.enums.MAV_CMD;
+import com.MAVLink.enums.MAV_FRAME;
+
+import org.droidplanner.services.android.impl.core.MAVLink.MavLinkMissionItemInt;
 
 import org.droidplanner.services.android.impl.core.drone.autopilot.MavLinkDrone;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
@@ -17,27 +21,38 @@ public class MavLinkDoCmds {
         if(drone == null || location == null)
             return;
 
-        msg_command_long msg = new msg_command_long();
+        // COMMAND_INT carries lat/lon as degE7 int32 in x/y; COMMAND_LONG would
+        // truncate them to float32 param5/6 (~1 m error).
+        msg_command_int msg = new msg_command_int();
         msg.target_system = drone.getSysid();
         msg.target_component = drone.getCompid();
         msg.command = MAV_CMD.MAV_CMD_DO_SET_HOME;
+        msg.frame = MAV_FRAME.MAV_FRAME_GLOBAL;
 
-        msg.param5 = (float) location.getLatitude();
-        msg.param6 = (float) location.getLongitude();
-        msg.param7 = (float) location.getAltitude();
+        msg.param1 = 0; // use specified location. if 1 then use current location.
+        msg.x = MavLinkMissionItemInt.toDegE7(location.getLatitude());
+        msg.y = MavLinkMissionItemInt.toDegE7(location.getLongitude());
+        msg.z = (float) location.getAltitude();
 
         drone.getMavClient().sendMessage(msg, listener);
     }
 
     private static void setROI(MavLinkDrone drone, LatLongAlt coord, ICommandListener listener) {
-        msg_command_long msg = new msg_command_long();
+        if (drone == null || coord == null)
+            return;
+
+        // COMMAND_INT carries lat/lon as degE7 int32 in x/y; COMMAND_LONG would
+        // truncate them to float32 param5/6 (~1 m error). MAV_CMD_DO_SET_ROI_LOCATION
+        // is the command_int variant of the deprecated MAV_CMD_DO_SET_ROI.
+        msg_command_int msg = new msg_command_int();
         msg.target_system = drone.getSysid();
         msg.target_component = drone.getCompid();
-        msg.command = MAV_CMD.MAV_CMD_DO_SET_ROI;
+        msg.command = MAV_CMD.MAV_CMD_DO_SET_ROI_LOCATION;
+        msg.frame = MAV_FRAME.MAV_FRAME_GLOBAL;
 
-        msg.param5 = (float) coord.getLatitude();
-        msg.param6 = (float) coord.getLongitude();
-        msg.param7 = (float) coord.getAltitude();
+        msg.x = MavLinkMissionItemInt.toDegE7(coord.getLatitude());
+        msg.y = MavLinkMissionItemInt.toDegE7(coord.getLongitude());
+        msg.z = (float) coord.getAltitude();
 
         drone.getMavClient().sendMessage(msg, listener);
     }
@@ -46,7 +61,12 @@ public class MavLinkDoCmds {
         if (drone == null)
             return;
 
-        setROI(drone, new LatLongAlt(0, 0, 0), listener);
+        msg_command_long msg = new msg_command_long();
+        msg.target_system = drone.getSysid();
+        msg.target_component = drone.getCompid();
+        msg.command = MAV_CMD.MAV_CMD_DO_SET_ROI_NONE;
+
+        drone.getMavClient().sendMessage(msg, listener);
     }
 
     public static void triggerCamera(MavLinkDrone drone) {
