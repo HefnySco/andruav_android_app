@@ -7,6 +7,7 @@ import com.MAVLink.common.msg_command_ack;
 import com.MAVLink.common.msg_command_int;
 import com.MAVLink.common.msg_command_long;
 import com.MAVLink.common.msg_set_mode;
+import com.MAVLink.enums.MAV_RESULT;
 
 import com.o3dr.services.android.lib.model.ICommandListener;
 
@@ -22,13 +23,41 @@ public class DroneCommandTracker {
 
     private static final long COMMAND_TIMEOUT_PERIOD = 2000L; //2 seconds
 
-    private final Handler handler;
+    /** Posts and cancels the command callbacks; a seam over {@link Handler} for unit tests. */
+    interface Scheduler {
+        void post(Runnable r);
+
+        void postDelayed(Runnable r, long delayMillis);
+
+        void removeCallbacks(Runnable r);
+    }
+
+    private final Scheduler handler;
 
     private final ConcurrentHashMap<Integer, CallbackKey> keyStore = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<CallbackKey, AckCallback> callbackStore = new ConcurrentHashMap<>();
 
-    DroneCommandTracker(Handler handler) {
-        this.handler = handler;
+    DroneCommandTracker(final Handler handler) {
+        this(new Scheduler() {
+            @Override
+            public void post(Runnable r) {
+                handler.post(r);
+            }
+
+            @Override
+            public void postDelayed(Runnable r, long delayMillis) {
+                handler.postDelayed(r, delayMillis);
+            }
+
+            @Override
+            public void removeCallbacks(Runnable r) {
+                handler.removeCallbacks(r);
+            }
+        });
+    }
+
+    DroneCommandTracker(Scheduler scheduler) {
+        this.handler = scheduler;
     }
 
     public void onCommandSubmitted(MAVLinkMessage command, ICommandListener listener) {
@@ -87,6 +116,17 @@ public class DroneCommandTracker {
         final CallbackKey<msg_command_ack> key = keyStore.get(ack.command);
         if (key == null)
             return;
+
+        if (ack.result == MAV_RESULT.MAV_RESULT_IN_PROGRESS) {
+            // Not a terminal result: keep the command pending and restart its timeout.
+            final AckCallback callback = callbackStore.get(key);
+            if (callback != null) {
+                Timber.d("Command %d in progress (%d)", ack.command, ack.progress);
+                handler.removeCallbacks(callback);
+                handler.postDelayed(callback, COMMAND_TIMEOUT_PERIOD);
+            }
+            return;
+        }
 
         final AckCallback callback = callbackStore.remove(key);
         if (callback != null) {
