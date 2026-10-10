@@ -1112,8 +1112,9 @@ public abstract class AndruavWSClientBase {
                     // The safest way here is to sendMessageToModule individual message asking the unit to sendMessageToModule its ID
                     break;
                 }
-                (AndruavEngine.getAndruavWe7daMapBase()).refreshWayPoints(andruavWe7da, ((AndruavMessage_WayPoints) andruav_2MR.andruavMessageBase));
-                AndruavEngine.getEventBus().post(new Event_WayPointsRecieved(andruavWe7da));
+                if ((AndruavEngine.getAndruavWe7daMapBase()).refreshWayPoints(andruavWe7da, ((AndruavMessage_WayPoints) andruav_2MR.andruavMessageBase))) {
+                    AndruavEngine.getEventBus().post(new Event_WayPointsRecieved(andruavWe7da));
+                }
             }
             break;
 

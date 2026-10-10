@@ -31,6 +31,11 @@ import com.andruav.interfaces.INotification;
  */
 public class AndruavUnitMapBase extends SimpleArrayMap<String, AndruavUnitBase> {
 
+    // a chunked 1027 mission being assembled, per partyID
+    private static final long PENDING_WAYPOINTS_TIMEOUT_MS = 10000;
+    private final SimpleArrayMap<String, MohemmaMapBase> mPendingWayPoints = new SimpleArrayMap<>();
+    private final SimpleArrayMap<String, Long> mPendingWayPointsTime = new SimpleArrayMap<>();
+
     @Override
     public AndruavUnitBase put(final String key, final AndruavUnitBase value) {
 
@@ -84,6 +89,10 @@ public class AndruavUnitMapBase extends SimpleArrayMap<String, AndruavUnitBase> 
     public void remove(final Andruav_2MR andruav2MR) {
 
         super.remove(andruav2MR.partyID);
+        synchronized (mPendingWayPoints) {
+            mPendingWayPoints.remove(andruav2MR.partyID);
+            mPendingWayPointsTime.remove(andruav2MR.partyID);
+        }
         AndruavEngine.notification().displayNotification(INotification.NOTIFICATION_TYPE_WARNING, "Andruav", andruav2MR.partyID + AndruavEngine.AppContext.getString(R.string.andruav_noti_disconnect), true, INotification.INFO_TYPE_PROTOCOL, false);
 
     }
@@ -231,13 +240,59 @@ public class AndruavUnitMapBase extends SimpleArrayMap<String, AndruavUnitBase> 
 
     }
 
-    public void refreshWayPoints(AndruavUnitBase andruavWe7da, AndruavMessage_WayPoints andruavMessage_wayPoints)
+    /***
+     * Applies a 1027 waypoints message. Chunked missions are assembled per unit
+     * and applied on the last chunk; read-progress frames carry no waypoints.
+     * @return true when the unit's mission was replaced.
+     */
+    public boolean refreshWayPoints(AndruavUnitBase andruavWe7da, AndruavMessage_WayPoints andruavMessage_wayPoints)
     {
 
-        MohemmaMapBase mohemmaMapBase = andruavMessage_wayPoints.getWayPoints();
+        final MohemmaMapBase mohemmaMapBase = andruavMessage_wayPoints.getWayPoints();
+        final String partyID = andruavWe7da.PartyID;
 
-        andruavWe7da.refreshWayPoints(mohemmaMapBase);
+        switch (andruavMessage_wayPoints.getChunkIndex())
+        {
+            case AndruavMessage_WayPoints.WAYPOINT_PROGRESS:
+                return false;
 
+            case AndruavMessage_WayPoints.WAYPOINT_CHUNK:
+            case AndruavMessage_WayPoints.WAYPOINT_LAST_CHUNK:
+            {
+                final long now = System.currentTimeMillis();
+                MohemmaMapBase pending;
+                synchronized (mPendingWayPoints) {
+                    pending = mPendingWayPoints.get(partyID);
+                    final Long last_chunk_time = mPendingWayPointsTime.get(partyID);
+                    if ((pending == null) || (last_chunk_time == null) || (now - last_chunk_time > PENDING_WAYPOINTS_TIMEOUT_MS)) {
+                        // first chunk, or a stale partial from an interrupted transfer
+                        pending = new MohemmaMapBase();
+                        mPendingWayPoints.put(partyID, pending);
+                    }
+                    mPendingWayPointsTime.put(partyID, now);
+
+                    for (int i = 0, limit = mohemmaMapBase.size(); i < limit; ++i) {
+                        pending.Put(mohemmaMapBase.keyAt(i), mohemmaMapBase.valueAt(i));
+                    }
+
+                    if (andruavMessage_wayPoints.getChunkIndex() == AndruavMessage_WayPoints.WAYPOINT_CHUNK) return false;
+
+                    mPendingWayPoints.remove(partyID);
+                    mPendingWayPointsTime.remove(partyID);
+                }
+
+                andruavWe7da.refreshWayPoints(pending);
+                return true;
+            }
+
+            default:
+                synchronized (mPendingWayPoints) {
+                    mPendingWayPoints.remove(partyID);
+                    mPendingWayPointsTime.remove(partyID);
+                }
+                andruavWe7da.refreshWayPoints(mohemmaMapBase);
+                return true;
+        }
 
     }
 

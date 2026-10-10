@@ -25,7 +25,15 @@ public class AndruavMessage_WayPoints extends AndruavMessageBase {
 
     public final static int TYPE_AndruavMessage_WayPoints = 1027;
 
+    // "i" chunk marker (de_common messages.hpp)
+    public final static int WAYPOINT_NO_CHUNK   = 0;
+    public final static int WAYPOINT_CHUNK      = 1;
+    public final static int WAYPOINT_PROGRESS   = 2;
+    public final static int WAYPOINT_LAST_CHUNK = 999;
+
     protected MohemmaMapBase mMohemmaMapBase;
+
+    protected int mChunkIndex = WAYPOINT_NO_CHUNK;
 
     public AndruavMessage_WayPoints() {
         messageTypeID = TYPE_AndruavMessage_WayPoints;
@@ -41,6 +49,11 @@ public class AndruavMessage_WayPoints extends AndruavMessageBase {
     }
 
 
+    public int getChunkIndex() {
+        return mChunkIndex;
+    }
+
+
     @Override
     public void setMessageText(String messageText) throws  JSONException, ParseException {
 
@@ -51,6 +64,8 @@ public class AndruavMessage_WayPoints extends AndruavMessageBase {
         MissionBase missionBase;
 
         final NumberFormat nf = NumberFormat.getInstance(Locale.US);
+
+        mChunkIndex = json_receive_data.optInt("i", WAYPOINT_NO_CHUNK);
 
         final int numberOfRecords = json_receive_data.getInt("n");
 
