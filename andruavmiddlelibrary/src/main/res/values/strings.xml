@@ -70,8 +70,8 @@
     <string name="pref_gr_general_settings">General Settings</string>
     <string name="pref_gr_advanced_settings">Advanced &amp;  Settings</string>
     <string name="pref_gr_fpv_settings">FPV &amp;  Settings</string>
-    <string name="pref_gr_fpv_stunserver">STUN Server</string>
-    <string name="pref_gr_fpv_stunserver_summary">e.g. stun:192.168.1.42:3478</string>
+    <string name="pref_gr_fpv_stunserver">STUN / TURN Servers</string>
+    <string name="pref_gr_fpv_stunserver_summary">Empty = built-in servers. Single stun:host:port, or a JSON list: { "urls": "turn:host:3478", "username": "u", "password": "p" }, ...</string>
     <string name="pref_gr_fpv_videoframerate">Video Frames Rate</string>
     <string name="pref_gr_fpv_videoframerate_summary">(Drone Mode) video frame rate per MINUTE default is 200</string>
     <string name="pref_gr_fpv_videocameraselect">Front/Back Camera</string>

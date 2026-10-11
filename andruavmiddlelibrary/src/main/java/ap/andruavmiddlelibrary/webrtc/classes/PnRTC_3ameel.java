@@ -2,6 +2,7 @@ package ap.andruavmiddlelibrary.webrtc.classes;
 
 import com.andruav.andruavUnit.AndruavUnitBase;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.webrtc.MediaConstraints;
@@ -58,35 +59,59 @@ public class PnRTC_3ameel {
 
 
 
-        // Add Stun & Turn Servers [ICE SERVERS]
-
-        List<PeerConnection.IceServer> servers = new ArrayList<PeerConnection.IceServer>(); //XirSysRequest.getXirSysIceServers();
-        // Add a local STUN anyway
-        String stunIP = Preference.getSTUNServer(null);
-        if (!stunIP.isEmpty() && !stunIP.equals("")) {
-
-            if (stunIP.indexOf("stun:") == -1) {
-                stunIP = "stun:" + stunIP; // correct Human error if forget to add stun:
+        // ICE servers: built-in defaults unless the "STUN Server" preference holds either
+        //  - a JSON list (same entries as "iceServers" in de_camera.config.module.json), which replaces the defaults, or
+        //  - a single plain "stun:host:port", which is added in front of the defaults.
+        final String custom = Preference.getSTUNServer(null).trim();
+        if (!custom.isEmpty()) {
+            if (custom.startsWith("[") || custom.startsWith("{")) {
+                final List<PeerConnection.IceServer> parsed = parseIceServers(custom);
+                if (!parsed.isEmpty()) {
+                    params.iceServers = parsed;
+                }
+            } else {
+                params.addIceServers(new PeerConnection.IceServer(
+                        custom.contains("stun:") || custom.contains("turn:") ? custom : "stun:" + custom, "", ""));
             }
-            //params.iceServers.clear();
-            // params.iceServers.add(params.iceServers.size(), new PeerConnection.IceServer(stunIP, "", ""));
-            servers.add(servers.size(), new PeerConnection.IceServer(stunIP, "", ""));
         }
-
-        if (!servers.isEmpty()) {
-            //////  remove default ICE Servers params.iceServers.clear();
-            for (int i =0, j = servers.size(); i<j; i = i +1)
-            {
-                params.iceServers.add(i,servers.get(i));
-
-            }
-
-        }
-
 
         return params;
 
 
+    }
+
+    /**
+     * Parse <code>{ "urls": "...", "username": "...", "password": "..." }, ...</code> entries.
+     * Surrounding [ ] are optional so the list can be pasted straight from the config file.
+     * Returns an empty list if the text is invalid.
+     */
+    static List<PeerConnection.IceServer> parseIceServers(final String text) {
+        final List<PeerConnection.IceServer> servers = new ArrayList<>();
+        try {
+            String json = text.trim();
+            if (json.startsWith("{")) {
+                json = "[" + json.replaceAll(",\\s*$", "") + "]";
+            }
+            final JSONArray array = new JSONArray(json);
+            for (int i = 0; i < array.length(); i++) {
+                final JSONObject o = array.getJSONObject(i);
+                final List<String> urls = new ArrayList<>();
+                final Object u = o.get("urls");
+                if (u instanceof JSONArray) {
+                    for (int k = 0; k < ((JSONArray) u).length(); k++) urls.add(((JSONArray) u).getString(k));
+                } else {
+                    urls.add(u.toString());
+                }
+                servers.add(PeerConnection.IceServer.builder(urls)
+                        .setUsername(o.optString("username", ""))
+                        .setPassword(o.optString("password", ""))
+                        .createIceServer());
+            }
+        } catch (JSONException | IllegalArgumentException e) {
+            android.util.Log.e("PnRTC", "Invalid ICE servers list in preferences, using defaults: " + e.getMessage());
+            servers.clear();
+        }
+        return servers;
     }
 
     /**

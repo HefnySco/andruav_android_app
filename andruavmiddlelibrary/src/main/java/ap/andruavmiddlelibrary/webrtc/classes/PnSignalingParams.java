@@ -138,12 +138,14 @@ import java.util.regex.Pattern;
     }
 
     public static List<PeerConnection.IceServer> defaultIceServers(){
-       final  List<PeerConnection.IceServer> iceServers = new ArrayList<PeerConnection.IceServer>(25);
+       final  List<PeerConnection.IceServer> iceServers = new ArrayList<PeerConnection.IceServer>(8);
 
-        // Extra Defaults - 19 STUN servers + 4 initial = 23 severs (+2 padding) = Array cap 25
-        iceServers.add(new PeerConnection.IceServer("turn:airgap.droneengage.com:3478","airgap","1234"));
-        iceServers.add(new PeerConnection.IceServer("turn:104.131.188.164:3478","andruav_ap","1234"));
-        iceServers.add(new PeerConnection.IceServer("stun:stun3.l.google.com:19302"));
+        // Keep in sync with iceServers in de_camera.config.module.json (DroneEngage Linux side).
+        iceServers.add(new PeerConnection.IceServer("stun:stun1.l.google.com:19302"));
+        iceServers.add(new PeerConnection.IceServer("turn:cloud.ardupilot.org:3478", "andruav_ap", "1234"));
+        iceServers.add(new PeerConnection.IceServer("turn:cloud.ardupilot.org:3478?transport=tcp", "andruav_ap", "1234"));
+        iceServers.add(new PeerConnection.IceServer("turns:cloud.ardupilot.org:5349", "andruav_ap", "1234"));
+        iceServers.add(new PeerConnection.IceServer("stun:airgap:3478", "airgap", "1234"));
         return iceServers;
     }
 
