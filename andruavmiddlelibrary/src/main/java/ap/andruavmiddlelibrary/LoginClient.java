@@ -10,6 +10,7 @@ import androidx.collection.SimpleArrayMap;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.FeatureSwitch;
+import com.andruav.protocol.communication.tls.TlsTrustPolicy;
 
 import org.json.JSONObject;
 
@@ -18,13 +19,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.security.cert.X509Certificate;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -63,35 +61,15 @@ public class LoginClient {
                 .dispatcher(new Dispatcher(Executors.newSingleThreadExecutor()));
 
         try {
-            boolean allowUntrusted = true;
-
-            if (allowUntrusted) {
-                final TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-                    @Override
-                    public X509Certificate[] getAcceptedIssuers() {
-                        X509Certificate[] cArrr = new X509Certificate[0];
-                        return cArrr;
-                    }
-
-                    @Override
-                    public void checkServerTrusted(final X509Certificate[] chain,
-                                                   final String authType) {
-                    }
-
-                    @Override
-                    public void checkClientTrusted(final X509Certificate[] chain,
-                                                   final String authType) {
-                    }
-                }};
-
-                SSLContext sslContext = SSLContext.getInstance("SSL");
-
-                sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-                clientBuilder.sslSocketFactory(sslContext.getSocketFactory());
-
-                HostnameVerifier hostnameVerifier = (hostname, session) -> true;
-                clientBuilder.hostnameVerifier(hostnameVerifier);
+            // AN-0018: verification policy lives in TlsTrustPolicy - strict for
+            // public endpoints, pinned self-signed for private ones, trust-all
+            // only when the "Require SSL" preference is OFF.
+            final X509TrustManager trustManager = TlsTrustPolicy.newTrustManager();
+            final SSLSocketFactory sslSocketFactory = TlsTrustPolicy.createSocketFactory(trustManager);
+            if (sslSocketFactory != null) {
+                clientBuilder.sslSocketFactory(sslSocketFactory, trustManager);
             }
+            clientBuilder.hostnameVerifier(TlsTrustPolicy.hostnameVerifier());
         } catch (Exception error) {
             AndruavEngine.log().logException("loginclient", "exception_log", error);
         }

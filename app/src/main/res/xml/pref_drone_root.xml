@@ -14,6 +14,18 @@
         android:summary="@string/pref_gr_unitmetric_summary" />
 
 
+    <!-- Connection & Security -->
+    <PreferenceCategory android:title="@string/pref_gr_connection">
+
+        <CheckBoxPreference
+            android:title="@string/pref_gr_conn_require_ssl"
+            android:key="req_ssl"
+            android:summary="@string/pref_gr_conn_require_ssl_summary"
+            android:defaultValue="true" />
+
+    </PreferenceCategory>
+
+
     <!-- FCB & Telemetry -->
     <PreferenceCategory android:title="@string/pref_gr_fcb">
 

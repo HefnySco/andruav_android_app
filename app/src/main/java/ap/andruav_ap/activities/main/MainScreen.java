@@ -92,6 +92,7 @@ import com.andruav.interfaces.INotification;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_ConnectedCommServer;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_EnteredChatRoom;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_Ping;
+import com.andruav.protocol.communication.tls.TlsTrustPolicy;
 import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
 
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETACTION_CONNECTING;
@@ -415,6 +416,7 @@ public class MainScreen extends BaseAndruavShasha {
                             break;
                         case LoginClient.ERR_SERVER_UNREACHABLE:
                             mRetryCount++;
+                            maybeShowUntrustedCertDialog();
                             progressDialogSetMessage(getString(ap.andruavmiddlelibrary.R.string.gen_retrying) + " (" + mRetryCount + ")");
                             mhandle.postDelayed(new Runnable() {
                                 @Override
@@ -457,6 +459,7 @@ public class MainScreen extends BaseAndruavShasha {
 
 
                     } else if (eventSocketState.SocketState == EventSocketState.ENUM_SOCKETSTATE.onError) {
+                        maybeShowUntrustedCertDialog();
                         if (isDisconnect || (mprogressDialog == null) || (!mprogressDialog.isShowing())) {
                             exitProgressDialog();
                         } else {
@@ -951,7 +954,13 @@ public class MainScreen extends BaseAndruavShasha {
         mCardServer.setBackgroundResource(connected ? R.drawable.bg_home_card : R.drawable.bg_home_card_warning);
         setViewColor(mDotServer, connected ? R.color.home_green_icon : R.color.home_red_dot);
 
-        mTxtServerStatus.setText(connected ? R.string.home_server_status_connected : R.string.home_server_status_disconnected);
+        if (connected) {
+            mTxtServerStatus.setText(TlsTrustPolicy.isLastConnectionSecure()
+                    ? R.string.home_server_status_connected_secure
+                    : R.string.home_server_status_connected_nonsecure);
+        } else {
+            mTxtServerStatus.setText(R.string.home_server_status_disconnected);
+        }
         mTxtServerStatus.setTextColor(ContextCompat.getColor(this,
                 connected ? R.color.home_green_icon : R.color.home_red_text));
 
@@ -965,6 +974,43 @@ public class MainScreen extends BaseAndruavShasha {
         if (bg instanceof GradientDrawable) {
             ((GradientDrawable) bg.mutate()).setColor(ContextCompat.getColor(this, colorRes));
         }
+    }
+
+    /***
+     * AN-0018 TOFU prompt: when TLS verification rejects a certificate on a public
+     * endpoint, TlsTrustPolicy holds it as pending-untrusted. Offer the user a
+     * trust-on-first-use choice; accepting pins the cert so the next auto-retry
+     * connects. Shows once per pending cert - declined certs are not re-asked
+     * this session.
+     */
+    private boolean mTlsDialogShowing = false;
+
+    private void maybeShowUntrustedCertDialog() {
+        if (mTlsDialogShowing || isFinishing() || !TlsTrustPolicy.hasPendingUntrusted()) return;
+
+        final TlsTrustPolicy.PendingUntrusted pending = TlsTrustPolicy.getPendingUntrusted();
+        mTlsDialogShowing = true;
+        final int messageRes = pending.certChanged ? R.string.tls_untrusted_msg_changed : R.string.tls_untrusted_msg;
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.tls_untrusted_title)
+                .setMessage(getString(messageRes, pending.host, pending.subject, pending.fingerprint))
+                .setCancelable(false)
+                .setPositiveButton(R.string.tls_trust, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        TlsTrustPolicy.trustPending();
+                        mTlsDialogShowing = false;
+                        // login/WS auto-retry loops keep re-attempting and now pass the pin check
+                    }
+                })
+                .setNegativeButton(R.string.tls_reject, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        TlsTrustPolicy.declinePending();
+                        mTlsDialogShowing = false;
+                    }
+                })
+                .show();
     }
 
     /***

@@ -9,15 +9,17 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.framing.CloseFrame;
 import org.java_websocket.handshake.ServerHandshake;
 
+import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
-import java.security.cert.X509Certificate;
 
-import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
+import com.andruav.protocol.communication.tls.TlsTrustPolicy;
 
 public abstract class AndruavWSClientBase_TooTallNate extends AndruavWSClientBase {
     public int getSocketAction  ()
@@ -225,30 +227,23 @@ public abstract class AndruavWSClientBase_TooTallNate extends AndruavWSClientBas
 
 
             /////// SSL SECURE SERVICE LAYER
-            final TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-                @Override
-                public X509Certificate[] getAcceptedIssuers() {
-                    X509Certificate[] cArrr = new X509Certificate[0];
-                    return cArrr;
-                }
-
-                @Override
-                public void checkServerTrusted(final X509Certificate[] chain,
-                                               final String authType) {
-                }
-
-                @Override
-                public void checkClientTrusted(final X509Certificate[] chain,
-                                               final String authType) {
-                }
-            }};
-
-            final SSLContext sslContext;
-            sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-
-            SSLSocketFactory factory = sslContext.getSocketFactory();
-            mWebSocketClient.setSocket( factory.createSocket() );
+            // AN-0018: verification policy lives in TlsTrustPolicy - strict for
+            // public endpoints, pinned self-signed for private ones, trust-all
+            // only when the "Require SSL" preference is OFF.
+            final String tlsHost = mURI.getHost();
+            final X509TrustManager trustManager = TlsTrustPolicy.newTrustManager();
+            final SSLSocketFactory factory = TlsTrustPolicy.createSocketFactory(trustManager);
+            if (factory == null) {
+                // never fall back to a plaintext socket for a wss:// endpoint
+                throw new IllegalStateException("cannot create TLS socket factory");
+            }
+            final Socket socket = factory.createSocket();
+            if ((socket instanceof SSLSocket) && TlsTrustPolicy.requiresHostnameVerification(tlsHost)) {
+                final SSLParameters sslParameters = ((SSLSocket) socket).getSSLParameters();
+                sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
+                ((SSLSocket) socket).setSSLParameters(sslParameters);
+            }
+            mWebSocketClient.setSocket(socket);
 
             //////////////////////////////////////////////////
 

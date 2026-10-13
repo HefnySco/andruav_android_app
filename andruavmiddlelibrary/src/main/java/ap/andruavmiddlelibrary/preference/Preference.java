@@ -262,6 +262,20 @@ public class Preference {
         return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "CPKIdU1vmIOA", false);
     }
 
+    /***
+     * "Require SSL" setting (AN-0018). Default ON: strict certificate verification
+     * for public endpoints, pinned self-signed for private ones - see
+     * {@link com.andruav.protocol.communication.tls.TlsTrustPolicy}.
+     * OFF restores the legacy trust-all behaviour as an explicit opt-out.
+     */
+    public static boolean isRequireSSL(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, com.andruav.protocol.communication.tls.TlsTrustPolicy.PREF_REQUIRE_SSL, true);
+    }
+
+    public static void isRequireSSL(final android.content.ContextWrapper contextWrapper, final boolean requireSSL) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, com.andruav.protocol.communication.tls.TlsTrustPolicy.PREF_REQUIRE_SSL, requireSSL);
+    }
+
     public static void isLocalServer(final android.content.ContextWrapper contextWrapper, final boolean bCalibrated) {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "CPKIdU1vmIOA", bCalibrated);
     }

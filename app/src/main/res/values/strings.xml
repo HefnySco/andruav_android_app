@@ -7,10 +7,21 @@
     <!-- Home screen redesign -->
     <string name="home_server_title">Mission Server</string>
     <string name="home_server_status_connected">CONNECTED</string>
+    <string name="home_server_status_connected_secure">CONNECTED · SECURE</string>
+    <string name="home_server_status_connected_nonsecure">CONNECTED · NON SECURE</string>
     <string name="home_server_status_disconnected">DISCONNECTED</string>
     <string name="home_btn_connect">CONNECT</string>
     <string name="home_btn_disconnect">DISCONNECT</string>
     <string name="home_btn_signin">SIGN-IN</string>
+
+    <string name="pref_gr_connection">Connection &amp; Security</string>
+    <string name="pref_gr_conn_require_ssl">Require SSL verification</string>
+    <string name="pref_gr_conn_require_ssl_summary">Verify server TLS certificates. Keep ON — turn off only if your private server uses a certificate the phone cannot verify.</string>
+    <string name="tls_untrusted_title">Untrusted server certificate</string>
+    <string name="tls_untrusted_msg">Server %1$s presented a certificate that is not trusted.\n\nSubject: %2$s\nSHA-256 fingerprint:\n%3$s\n\nTrust it only if you are sure this is your server.</string>
+    <string name="tls_untrusted_msg_changed">WARNING: server %1$s presented a DIFFERENT certificate than the one previously trusted.\n\nSubject: %2$s\nSHA-256 fingerprint:\n%3$s\n\nThis may indicate an attack. Trust it only if the server certificate was intentionally replaced.</string>
+    <string name="tls_trust">Trust this server</string>
+    <string name="tls_reject">Reject</string>
 
     <string name="home_telemetry_title">FLIGHT TELEMETRY</string>
     <string name="home_telemetry_linked">LINKED</string>
