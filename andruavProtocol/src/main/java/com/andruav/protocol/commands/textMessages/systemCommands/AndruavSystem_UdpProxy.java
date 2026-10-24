@@ -1,7 +1,10 @@
 package com.andruav.protocol.commands.textMessages.systemCommands;
 
+import com.andruav.AndruavEngine;
 import com.andruav.protocol.commands.textMessages.AndruavMessageBase;
+import com.andruav.protocol.communication.udpproxy.UDPProxy;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,6 +20,8 @@ public class AndruavSystem_UdpProxy extends AndruavMessageBase {
     public int  port1;
     public int  port2;
     public boolean enabled = false;
+    // relay-issued unit token (base64url); absent on the built-in proxy
+    public String  token;
 
 
     public AndruavSystem_UdpProxy () {
@@ -44,6 +49,13 @@ public class AndruavSystem_UdpProxy extends AndruavMessageBase {
         port2 = server2.getInt("port");
 
         enabled = json_receive_data.getBoolean("en");
+
+        token = json_receive_data.has("tk") ? json_receive_data.getString("tk") : null;
+
+        final UDPProxy udpProxy = AndruavEngine.getUDPProxy();
+        if (udpProxy != null) {
+            udpProxy.setToken(token);
+        }
     }
 
 
@@ -62,6 +74,7 @@ public class AndruavSystem_UdpProxy extends AndruavMessageBase {
         json_data.accumulate("socket1",json_socket1);
         json_data.accumulate("socket2",json_socket2);
         json_data.accumulate("en", enabled);
+        json_data.accumulate("cap", new JSONArray().put("tk"));
         return json_data.toString();
     }
 }
