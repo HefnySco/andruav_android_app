@@ -45,10 +45,10 @@ public class AndruavMessage_Sound_TextToSpeech extends AndruavMessageBase {
         }
 
         if (volume!=-1) {
-            json_data.accumulate("p", volume);
+            json_data.accumulate("v", volume);
         }
 
-        if (language!= "") {
+        if ((language != null) && !language.isEmpty()) {
             json_data.accumulate("l", language);
         }
 

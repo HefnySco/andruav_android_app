@@ -291,6 +291,11 @@ public  class Notification implements INotification{
         TTS.getInstance().SpeakNow(message);
     }
 
+    @Override
+    public void SpeakNow(final String message, final String lang, final int pitch, final int volume) {
+        TTS.getInstance().SpeakNow(message, lang, pitch, volume);
+    }
+
     /***
      * cancel all notifications in toolbar.
      */

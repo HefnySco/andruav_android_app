@@ -3,11 +3,13 @@ package ap.andruavmiddlelibrary.factory.tts;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
 import com.andruav.AndruavEngine;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -185,6 +187,21 @@ public class TTS implements TextToSpeech.OnInitListener {
      */
     public boolean SpeakNow(final String text) {
 
+        return SpeakNow(text, null, -1, -1);
+    }
+
+
+    /***
+     * Speaks a message immediately with optional voice parameters.
+     * <br>{@code lang} is a BCP-47 tag (e.g. "en", "de"); when its locale is not
+     * available on the device the current voice is kept. {@code pitch} is 0..99
+     * where 50 is the normal pitch; {@code volume} is 0..100. Pass {@code null} /
+     * {@code -1} for any parameter that was not given.
+     * @return true if the message was actually handed to the TTS engine.
+     */
+    @SuppressWarnings("deprecation")
+    public boolean SpeakNow(final String text, final String lang, final int pitch, final int volume) {
+
         try {
             if (muteTTS) return false;
             if (text == null) return false;
@@ -192,10 +209,26 @@ public class TTS implements TextToSpeech.OnInitListener {
             Log.d(AndruavEngine.getPreference().TAG(), "Speak:" + text);
             if (TTSinit) {
 
+                final Locale previousLocale = tts.getLanguage();
+                boolean localeChanged = false;
+                if ((lang != null) && !lang.isEmpty()) {
+                    final Locale requested = Locale.forLanguageTag(lang);
+                    if (tts.isLanguageAvailable(requested) >= TextToSpeech.LANG_AVAILABLE) {
+                        tts.setLanguage(requested);
+                        localeChanged = true;
+                    }
+                }
+
+                tts.setPitch((pitch != -1) ? pitch / 50f : 1.0f);
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ttsGreater21(text);
+                    ttsGreater21(text, volume);
                 } else {
-                    ttsUnder20(text);
+                    ttsUnder20(text, volume);
+                }
+
+                if (localeChanged) {
+                    tts.setLanguage(previousLocale);
                 }
                 return true;
             }
@@ -253,13 +286,33 @@ public class TTS implements TextToSpeech.OnInitListener {
 
     @SuppressWarnings("deprecation")
     private void ttsUnder20(final String text) {
-       tts.speak(text, TextToSpeech.QUEUE_ADD, null);
+        ttsUnder20(text, -1);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void ttsUnder20(final String text, final int volume) {
+        HashMap<String, String> params = null;
+        if (volume != -1) {
+            params = new HashMap<String, String>();
+            params.put(TextToSpeech.Engine.KEY_PARAM_VOLUME, String.valueOf(volume / 100f));
+        }
+        tts.speak(text, TextToSpeech.QUEUE_ADD, params);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void ttsGreater21(final String text) {
-        String utteranceId=this.hashCode() + "";
-        tts.speak(text, TextToSpeech.QUEUE_ADD, null, utteranceId);
+        ttsGreater21(text, -1);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void ttsGreater21(final String text, final int volume) {
+        final String utteranceId=this.hashCode() + "";
+        Bundle params = null;
+        if (volume != -1) {
+            params = new Bundle();
+            params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, volume / 100f);
+        }
+        tts.speak(text, TextToSpeech.QUEUE_ADD, params, utteranceId);
     }
 
 

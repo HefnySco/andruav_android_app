@@ -361,7 +361,10 @@ public class MessageDispatcher {
             case AndruavMessage_Sound_TextToSpeech.TYPE_AndruavMessage_Sound_TextToSpeech:
                 andruav2MR.processed = true;
                 AndruavMessage_Sound_TextToSpeech andruavMessage_textToSpeech = (AndruavMessage_Sound_TextToSpeech) andruav2MR.andruavMessageBase;
-                AndruavEngine.notification().SpeakNow(andruavMessage_textToSpeech.text);
+                AndruavEngine.notification().SpeakNow(andruavMessage_textToSpeech.text,
+                        andruavMessage_textToSpeech.language,
+                        andruavMessage_textToSpeech.pitch,
+                        andruavMessage_textToSpeech.volume);
                 break;
 
             default:
