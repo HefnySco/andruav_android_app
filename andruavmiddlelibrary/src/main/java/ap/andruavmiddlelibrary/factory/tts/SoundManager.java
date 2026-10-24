@@ -1,11 +1,16 @@
 package ap.andruavmiddlelibrary.factory.tts;
 
 import android.content.Context;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.util.Log;
 
+import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 
+import java.io.File;
 import java.util.HashMap;
 
 import ap.andruavmiddlelibrary.preference.Preference;
@@ -124,6 +129,54 @@ public class SoundManager {
         AndruavSettings.andruavWe7daBase.setIsWhisling(false);
 
         mSirenIndex=-1;
+    }
+
+
+    /***
+     * Plays a sound file by NAME from the app's external files dir ("sounds").
+     * <br>The name is resolved inside that directory only: the canonical path must stay
+     * under it, so path traversal ("../") and absolute paths are rejected.
+     */
+    public void playFile (final String fileName)
+    {
+        if (!mEnabled) return;
+        if ((fileName == null) || fileName.isEmpty()) return;
+
+        try {
+            final File dir = mContext.getExternalFilesDir("sounds");
+            if (dir == null) return;
+
+            final File dirCanonical = dir.getCanonicalFile();
+            final File file = new File(dirCanonical, fileName).getCanonicalFile();
+            if (!file.getPath().startsWith(dirCanonical.getPath() + File.separator)) {
+                Log.w(AndruavEngine.getPreference().TAG(), "Sound_PlayFile rejected path: " + fileName);
+                return;
+            }
+
+            final MediaPlayer mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+                    .setLegacyStreamType(AudioManager.STREAM_MUSIC).build());
+            mediaPlayer.setDataSource(file.getAbsolutePath());
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(final MediaPlayer mp) {
+                    mp.release();
+                }
+            });
+            mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(final MediaPlayer mp, final int what, final int extra) {
+                    mp.release();
+                    return true;
+                }
+            });
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        }
+        catch (Exception ex)
+        {
+            AndruavEngine.log().logException("SoundManager", ex);
+        }
     }
 
 }
