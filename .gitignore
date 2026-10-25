@@ -18,6 +18,7 @@ deNative/third_party/downloads/
 deNative/third_party/src/
 deNative/third_party/out/
 deNative/third_party/smoke/build-*/
+deNative/external/
 
 local.properties
 keystore.properties

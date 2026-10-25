@@ -43,3 +43,32 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
 }
+
+// Verifies the pinned upstream sources and the third-party deps are in place
+// before the native build runs (see deNative/sources.lock).
+def deLocalProps = new Properties()
+rootProject.file('local.properties').withInputStream { deLocalProps.load(it) }
+def deAndroidHome = System.getenv('ANDROID_HOME') ?: deLocalProps.getProperty('sdk.dir')
+def deThirdPartyOut = new File(projectDir, 'third_party/out')
+
+// Fails the build (non-zero exit) when external/ is out of sync; the script
+// prints 'run deNative/sync_sources.sh' as the actionable message.
+tasks.register('deNativeCheckSync', Exec) {
+    workingDir projectDir
+    commandLine 'bash', 'sync_sources.sh', '--check'
+}
+
+tasks.register('deNativeDeps', Exec) {
+    onlyIf { !deThirdPartyOut.isDirectory() }
+    workingDir projectDir
+    environment 'ANDROID_HOME', deAndroidHome
+    commandLine 'bash', 'third_party/build_deps.sh'
+}
+
+tasks.register('deNativePrepare') {
+    dependsOn 'deNativeCheckSync', 'deNativeDeps'
+}
+
+tasks.named('preBuild') {
+    dependsOn 'deNativePrepare'
+}

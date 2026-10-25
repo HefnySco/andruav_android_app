@@ -55,6 +55,27 @@ Output APKs land in `app/build/outputs/apk/<variant>/`.
 "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose <apk>
 ```
 
+## Native modules
+
+The `:deNative` module builds the upstream DroneEngage modules (`de_comm`,
+`de_mavlink`) as `.so` files inside the APK. Two one-time setup commands,
+run from the repo root:
+
+```bash
+# 1) Build OpenSSL/curl/Boost into deNative/third_party/out/<abi> (needs ANDROID_HOME)
+deNative/third_party/build_deps.sh
+
+# 2) Copy the pinned upstream sources into deNative/external/
+deNative/sync_sources.sh
+```
+
+`deNative/sources.lock` pins one commit per upstream repo;
+`deNative/external/` and `deNative/third_party/out/` are gitignored. Gradle
+runs `sync_sources.sh --check` in `preBuild` — if the lock changes, re-run
+`deNative/sync_sources.sh`. `DE_WORKSPACE` overrides where the upstream
+checkouts live (default `../../drone_engage`, falls back to the repo's
+parent dir).
+
 ## Notes
 
 - `gradle.properties` enables `org.gradle.configuration-cache=true`.
