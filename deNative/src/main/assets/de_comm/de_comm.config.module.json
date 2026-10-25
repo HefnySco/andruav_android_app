@@ -1,0 +1,238 @@
+{
+    /*
+        This is a JSON file with ability to add c-like comments.
+    */
+    
+    // A name and GUID for this module
+    "module_id"                 : "MT_1",
+    "unit_type"                 : "control_unit",
+    // IP & Port Communication Module is listening to.
+    "s2s_udp_listening_ip"      : "0.0.0.0",
+    "s2s_udp_listening_port"    : "60000",  
+    "s2s_udp_packet_size"       : "8192",
+
+    // Unix domain socket support for same-board communication
+    "use_unix_socket"           : false,
+
+    
+    // Drone-Engage Communication Server Connection
+    "auth_ip"                       : "cloud.ardupilot.org",
+    "auth_port"                     : 19408,
+    "auth_verify_ssl"               : false,
+    "use_local_comm_server"        : false,   // use local comm server instead of main server
+    //this is optional if [auth_verify_ssl] == true and ssl-certificate is internal.
+    "root_certificate_path"     : "./root.crt",
+
+    "userName"                  :"USERNAME_EMAIL", 
+    "accessCode"                :"PASSWORD_HERE",
+    "unitID"                    :"drone_cairo",
+    "groupID"                   :"1",
+    "unitDescription"           :"de_unit 1",
+
+    
+    // Logger Section
+    "logger_enabled"            : false,
+    "logger_debug"              : false,
+
+    // sometimes you need to reconnect the app when connection is silent and not timedout yet:
+    "ping_server_rate_in_ms": 1500,
+    "max_allowed_ping_delay_in_ms": 5000,
+    // max failed reconnection attempts before app exits (for systemd restart)
+    "max_offline_count": 5,
+
+    // "led_pins_enabled" is optional and default value is true                           
+    "led_pins_enabled" : false,
+   
+    
+    // "buzzer_pins_enabled" is optional and default value is true                           
+    "buzzer_pins_enabled" : false,
+    
+    // "de_plan_file" is optional; path where the uploaded DE plan is persisted.
+    // Default: "de_plan.json" in the process working directory.
+    "de_plan_file"             : "de_plan.json",
+
+    // "de_package_file" is optional; path where the uploaded de.package/2
+    // is persisted. Default: "de_package.json" next to de_plan_file.
+    "de_package_file"          : "de_package.json",
+
+    // "sv_force_paged" is optional and default value is false.
+    // When true the mission supervisor always runs in paged mode: the FC
+    // holds only the active mission's segment (rebased to seq 1) and each
+    // activation uploads the target segment (upload_start). When false,
+    // paged mode is still selected automatically if the full layout does
+    // not fit in the FC (MISSION_ACK MAV_MISSION_NO_SPACE).
+    // "sv_force_paged"           : false,
+
+    // "v1_missions" is optional and default value is true. When false,
+    // v1 mission uploads (UploadWayPoints / Upload_DE_Mission) are
+    // rejected with a GCS error - a v1 wait on another unit's event can
+    // never release now that Sync_EventFire stays unit-local (GF-02).
+    "v1_missions"              : true,
+
+    // "de_run_file" is optional; path where the supervisor persists the
+    // live run state (engine, active activation + fired rows, latches,
+    // preemption stack, loaded page). Rewritten atomically (tmp+rename)
+    // on every state change, <= 5 writes/s. Default: "de_run.json" next
+    // to de_package_file. Deleted on clear/new package/COMPLETED/STOPPED
+    // (the terminal snapshot is kept as de_run.last.json).
+    "de_run_file"              : "de_run.json",
+
+    // "sv_comm_lost_s" is optional, default 20. Seconds the comm link may
+    // stay offline before the package's "comm_lost" handler fires.
+    // "sv_comm_lost_s"           : 20,
+
+    // "sv_battery_low_pct" is optional, default 25. Battery percent at or
+    // below which the "battery_low" handler fires (must hold for 5 s).
+    // "sv_battery_low_pct"       : 25,
+
+    // "sv_roster_hz" is optional, default 0.2 (one roster per 5 s - DE
+    // links are thin). Fleet roster (1092) send rate while READY/RUNNING/
+    // PAUSED; the rate rides each roster ("hz") and receivers mark a peer
+    // "stale" after 3/hz s (15 s at 0.2 Hz).
+    // "sv_roster_hz"             : 0.2,
+
+    // "sv_roster_congestion_scale" is optional, default [1,1,0.5,0.5] -
+    // TASK-07.1 (P4A rule 7): 4 numbers in (0,1] indexed by the outbound
+    // congestion level; the effective roster rate is sv_roster_hz x
+    // scale[level] (floor 0.05 Hz) and rides the roster "hz" field, so
+    // peers widen their stale/lost thresholds before the longer gap.
+    // [1,1,1,1] disables the scaling.
+    // "sv_roster_congestion_scale" : [1, 1, 0.5, 0.5],
+
+    // "sv_peer_lost_s" is optional, default 15. Seconds without a roster
+    // message before a fleet peer is "lost" (sys.peer_lost fires; a
+    // later roster flips it back with sys.peer_back). Never below 2x the
+    // peer's stale time (30 s at 0.2 Hz).
+    // "sv_peer_lost_s"           : 15,
+
+    // "sv_allow_auto_launch" is optional, default false - the SITE
+    // switch for controlled ground launches (P4B-09). When false (the
+    // default) a start:"ground"+auto_launch role that triggers while
+    // disarmed is refused like any other flight mission. When true the
+    // supervisor still requires a granted "launch" approval before the
+    // controlled launch runs (upload disarmed -> preflight -> non-forced
+    // arm -> goto); arming is never automatic.
+    // "sv_allow_auto_launch"     : false,
+
+    // "sv_standby_preflight_s" is optional, default 60, 0 disables -
+    // P4F-05: while a launch grant is valid and the unit sits disarmed,
+    // re-run the read-only preflight on this cadence. The result
+    // surfaces as launch.ready/reasons/age_s on the 1094 status + 1087
+    // push so the GCS sees "standby vehicle is actually launchable"
+    // before it spends the grant.
+    // "sv_standby_preflight_s"   : 60,
+
+    // "outbound_queue" is optional - TASK-07: the bounded class-aware
+    // send queue on each comm-server session. Classes: critical
+    // (system ty:"s", errors, the 1090/1091/1092/1093/1094 fleet bus)
+    // pops first from its own lane; latest_wins (telemetry, copied
+    // from the comm server's server.config list) shares the FIFO with
+    // must_deliver and drops first under cap pressure; a subset
+    // coalesces in place by (mt,target,binary). enabled:false restores
+    // the old unbounded FIFO. All keys default to the values below;
+    // invalid entries fall back per key with a console error.
+    // "outbound_queue"           : {
+    //     "enabled"              : true,
+    //     "max_bytes"            : 1048576,
+    //     "max_messages"         : 4096,
+    //     "critical_max_messages": 512,
+    //     "critical_message_types"  : [1008, 1084, 1090, 1091, 1093, 1094],
+    //     "latest_wins_message_types" : [1002, 1003, 1036, 1043, 1053,
+    //         1059, 1078, 1083, 2022, 6001, 6502, 6503, 6506, 6507, 6508,
+    //         6510, 6516, 6520, 6529, 6535, 1092],
+    //     "coalesce_message_types"  : [1002, 1003, 1036, 1053, 1059,
+    //         6510, 6520, 6529, 6535],
+    //     // congestion level inputs (0-3): fill% + standing sojourn ms
+    //     "window_ms"            : 1000,
+    //     "level_fill_pct"       : [0, 10, 40, 80],
+    //     "level_sojourn_ms"     : [0, 500, 2000, 5000],
+    //     "down_after_ms"        : [0, 5000, 10000, 20000]
+    // },
+
+    // "de_journal_dir" is optional; directory where the supervisor keeps
+    // one append-only journal file per run (<run_id>.log, or
+    // <pkg-hash-prefix>.pre.log before the first run). Lines are
+    // "<unix_ms> <engine> <mission|-> <seq|-> <KIND> <message>"; fsync at
+    // most once a second. Default: ./journal/
+    // Relative paths in de_plan_file, de_package_file, de_run_file and
+    // de_journal_dir resolve against de_comm's working directory.
+    "de_journal_dir"           : "./journal/",
+
+    // "de_journal_keep" is optional, default 20. How many journal files
+    // the rotation retains in de_journal_dir - a retained run stays
+    // collectable over {a:"journal", run} (TASK-SG-10).
+    // "de_journal_keep"          : 20,
+
+    // Static location configuration. For a STATIC unit only (a fixed
+    // camera pole, a control unit) - never a fallback for a flyable
+    // unit's position. Requires "static": true; without it the block is
+    // parsed but unused (a boot banner + journal line warn once). When
+    // declared: seeds the unit position at startup and publishes it as
+    // the unit position (9102 to modules + GPS to GCS) once a second
+    // whenever no module has reported a 9102 for 3 s. A module-reported
+    // position (e.g. de_mavlink) always wins while it is fresh; on a
+    // non-declared unit a stale module position is held as-is (the GCS
+    // marks it by its age) instead of jumping to this site.
+    // lat/lng are in E7 (degrees * 1e7), alt_abs/alt_rel in mm (AMSL /
+    // above home). Optional extras: "heading" in degrees (0 = north,
+    // reported as yaw in cdeg) and "acc_mm" position uncertainty in mm.
+    // The legacy key "baselocation" {lat,lng,alt,heading,acc_mm} is still
+    // accepted when "location" is absent (same declaration rule).
+    // "location": {
+    //     "static": true,
+    //     "lng": 1491659260,
+    //     "lat": -353538460,
+    //     "alt_abs": 120000,
+    //     "alt_rel": 120000
+    //     // ,"heading": 90
+    //     // ,"acc_mm": 0
+    // }
+
+    // Static geo-projection (TASK-SU-04): on a unit WITHOUT de_mavlink,
+    // de_comm projects AI best-object boxes (1078) to the ground using the
+    // fixed pose above and owns the "detect" namespace (detect.detected).
+    // mount_height_m = camera height above the ground at the mount base;
+    // REQUIRED when enabled. mount_*_deg is the camera mount relative to
+    // the unit heading (pitch -90 = straight down); a gimbal module's
+    // live state (ns "gimbal", pitch_deg/yaw_deg) overrides it.
+    "geo_projection": {
+        "enabled": false
+        // ,"camera_registry": "camera_registry.json"  // per-unit cam_id table; when set it is
+        //                                            // authoritative - unknown cam_id obs are dropped
+        // ,"mount_height_m": 10
+        // ,"hfov_deg": 62.2
+        // ,"vfov_deg": 48.8
+        // ,"mount_pitch_deg": -30
+        // ,"mount_yaw_deg": 0
+        // ,"mount_roll_deg": 0
+        // ,"min_conf": 0.6
+        // ,"rate_hz": 1
+        // ,"sigma_att_deg": 2.0
+        // ,"sigma_alt_m": 2.0
+    }
+
+    // "cpu_monitor" is optional - TASK-33 (GL-0040): every module samples
+    // its own board's CPU at 1 Hz and reports it to de_comm on the
+    // intermodule-only 6547 (MODULE_CPU_STATUS); de_comm aggregates all
+    // boards into the virtual unit state and sends one 1008 with
+    // MI=MESSAGE_ID_CPU_SUPER_BUSY (WARNING) when ANY board stays >=
+    // super_busy_percent for sustain_s, MI=MESSAGE_ID_CPU_FREE (NOTICE)
+    // when every board is free again, plus a periodic MI=MESSAGE_ID_CPU_SUMMARY
+    // (INFO) every summary_s while connected (summaries are never queued
+    // offline). The band between the thresholds holds the current state
+    // (no flapping). enabled:false disables the watch entirely.
+    // free_percent >= super_busy_percent falls back to all defaults with
+    // a console warning.
+    // "cpu_monitor"             : {
+    //     "enabled"             : true,
+    //     "super_busy_percent"  : 90,
+    //     "free_percent"        : 70,
+    //     "sustain_s"           : 5,
+    //     "report_s"            : 10,
+    //     "summary_s"           : 60
+    // }
+
+    //"allow_temp":               cat /sys/class/thermal/thermal_zone0
+ 
+   
+}

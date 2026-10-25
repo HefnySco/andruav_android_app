@@ -50,6 +50,8 @@ import ap.andruav_ap.activities.drone.IMUShasha;
 import ap.andruav_ap.activities.fpv.FPVActivityFactory;
 
 import ap.andruav_ap.App;
+import ap.andruav_ap.BuildConfig;
+import ap.andruav.denative.DeNativeDebugActivity;
 
 
 import com.andruav.AndruavInternalCommands;
@@ -1361,6 +1363,15 @@ public class MainScreen extends BaseAndruavShasha {
             dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
         }
         btnOk.setOnClickListener(v -> dialog.dismiss());
+        if (BuildConfig.DEBUG) {
+            Button btnNative = new Button(Me);
+            btnNative.setText("Native modules");
+            btnNative.setOnClickListener(v -> {
+                dialog.dismiss();
+                startActivity(new Intent(Me, DeNativeDebugActivity.class));
+            });
+            ((ViewGroup) view).addView(btnNative);
+        }
         dialog.show();
     }
 

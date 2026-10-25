@@ -1,0 +1,962 @@
+{
+    "default_optimization_level": 2,
+    // AUTO level (4) tuning: a send() taking longer than stall_us counts as a
+    // stall; up_after_stalls consecutive stalls raise the effective level by 1;
+    // down_after_ms[level] is the dwell time of clean sends before stepping
+    // down one level (same style as message_timeouts). AUTO starts at
+    // start_level and never dwells below min_level.
+    "auto_optimization": {
+        "stall_us": 20000,
+        "up_after_stalls": 4,
+        "down_after_ms": [
+            0,
+            5000,
+            10000,
+            20000
+        ],
+        "min_level": 1,
+        "start_level": 2
+    },
+    "event_fire_channel": 16,
+    "event_wait_channel": 15,
+    // "fcb_connection_uri": {
+    //     "ip": "0.0.0.0",
+    //     "port": 5760,
+    //     "type": "tcp"
+    // },
+    "fcb_connection_uri": {
+        "ip": "127.0.0.1",
+        "port": 5760,
+        "type": "tcp"
+    },
+    "logger_debug": false,
+    "logger_enabled": true,
+    "tlog_enabled": false,
+    // Read the FC mission as a file over MAVLink FTP (@MISSION/mission.dat)
+    // instead of item-by-item MISSION_REQUEST_INT; falls back automatically
+    "use_mavlink_ftp_mission": true,
+    "mavlink_ids": {
+        "de_mavlink_gcs_id": 255,
+        "only_allow_ardupilot_compid": 0,
+        "only_allow_ardupilot_sysid": 0
+    },
+    "message_timeouts": {
+        "0": [
+            0,
+            1000,
+            2000,
+            3000
+        ],
+        "1": [
+            0,
+            250,
+            800,
+            1000
+        ],
+        "100": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "101": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "102": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "103": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "104": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "105": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "106": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "108": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "109": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "11011": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "11020": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "11030": [
+            0,
+            500,
+            1000,
+            5000
+        ],
+        "11031": [
+            0,
+            1000,
+            2000,
+            5000
+        ],
+        "11032": [
+            0,
+            1000,
+            2000,
+            5000
+        ],
+        "11037": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "11039": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "11040": [
+            0,
+            1000,
+            2000,
+            5000
+        ],
+        "11041": [
+            0,
+            1000,
+            2000,
+            5000
+        ],
+        "11042": [
+            0,
+            1000,
+            2000,
+            5000
+        ],
+        "11043": [
+            0,
+            1000,
+            2000,
+            5000
+        ],
+        "11044": [
+            0,
+            1000,
+            2000,
+            5000
+        ],
+        "116": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "124": [
+            0,
+            800,
+            1000,
+            2000
+        ],
+        "125": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "129": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "12901": [
+            0,
+            1000,
+            1000,
+            2000
+        ],
+        "12915": [
+            0,
+            1000,
+            1000,
+            2000
+        ],
+        "12919": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "12920": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "132": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "136": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "137": [
+            0,
+            500,
+            2000,
+            4000
+        ],
+        "138": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "140": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "141": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "143": [
+            0,
+            500,
+            2000,
+            4000
+        ],
+        "144": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "146": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "147": [
+            0,
+            500,
+            2000,
+            4000
+        ],
+        "152": [
+            0,
+            4000,
+            8000,
+            12000
+        ],
+        "163": [
+            0,
+            250,
+            500,
+            1000
+        ],
+        "164": [
+            0,
+            2000,
+            4000,
+            12000
+        ],
+        "165": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "168": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "178": [
+            0,
+            250,
+            500,
+            1000
+        ],
+        "181": [
+            0,
+            250,
+            500,
+            1000
+        ],
+        "182": [
+            0,
+            250,
+            500,
+            1000
+        ],
+        "193": [
+            0,
+            250,
+            500,
+            1000
+        ],
+        "194": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "2": [
+            0,
+            250,
+            800,
+            1000
+        ],
+        "200": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "225": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "226": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "230": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "231": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "234": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "235": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "24": [
+            0,
+            800,
+            1000,
+            2000
+        ],
+        "241": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "242": [
+            0,
+            2000,
+            4000,
+            8000
+        ],
+        "245": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "246": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "250": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "251": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "254": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "264": [
+            0,
+            1000,
+            3000,
+            4000
+        ],
+        "265": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "27": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "275": [
+            0,
+            250,
+            500,
+            1000
+        ],
+        "276": [
+            0,
+            250,
+            500,
+            1000
+        ],
+        "277": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "28": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "281": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "285": [
+            0,
+            1000,
+            1000,
+            2000
+        ],
+        "286": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "29": [
+            0,
+            500,
+            2000,
+            4000
+        ],
+        "295": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "30": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "301": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "31": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "32": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "33": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "330": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "331": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "34": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "340": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "35": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "350": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "36": [
+            0,
+            1000,
+            2000,
+            2000
+        ],
+        "360": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "375": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "390": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "42": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "420": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "61": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "62": [
+            0,
+            250,
+            500,
+            1000
+        ],
+        "63": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "64": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "65": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "74": [
+            0,
+            500,
+            1000,
+            2000
+        ],
+        "83": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "85": [
+            0,
+            250,
+            1000,
+            2000
+        ],
+        "87": [
+            0,
+            500,
+            1000,
+            1000
+        ],
+        "89": [
+            0,
+            1000,
+            2000,
+            4000
+        ],
+        "9005": [
+            0,
+            250,
+            1000,
+            2000
+        ]
+    },
+    "module_id": "FCB_CTRL",
+    "de_pilot": {
+        "stabilization": {
+            "stabilize_time_ms": 2000,
+            "default_yaw_rate": 30.0,
+            "yaw_p": 6.0,
+            "yaw_i": 1.2,
+            "yaw_d": 0.5,
+            "yaw_deadband": 0.15,
+            "yaw_integral_limit": 50.0,
+            "yaw_max_accel": 180.0,
+            "yaw_ff_scale": 120.0
+        },
+        "change_altitude": {
+            "max_climb_rate": 5.0,
+            "stabilize_time_ms": 2000,
+            "timeout_ms": 10000,
+            "pid_p": 1.0,
+            "pid_i": 0.5,
+            "pid_d": 0.0,
+            "ff_scale": 150.0,
+            "deadband": 0.5,
+            "max_accel": 5.0
+        },
+        "tracking": {
+            "auto_enable_on_detection":false,
+            "tracking_timeout_us": 5000000,
+            "quad": {
+                "loose_altitude": false,
+                // NOTE: forward.* values are seeded from the old (pre-refactor) quad tracking
+                // PID gains but were never validated under the new sqrt-controller
+                // + feedforward math -- needs bench/SITL re-tuning.
+                "forward": {
+                    "x_axis": {
+                        "pid_p": 0.2,
+                        "pid_i": 0.0,
+                        "pid_d": 0.01,
+                        "ff_scale": 200.0,
+                        "max_accel": 3.0,
+                        "max_rate": 1.5,
+                        "deadband": 0.001,
+                        "integral_limit": 100.0,
+                        "output_limit": 500.0
+                    },
+                    "yz_axis": {
+                        "pid_p": 3.6,
+                        "pid_i": 0.0,
+                        "pid_d": 0.05,
+                        "ff_scale": 200.0,
+                        "max_accel": 2.5,
+                        "max_rate": 1.2,
+                        "deadband": 0.025,
+                        "integral_limit": 100.0,
+                        "output_limit": 500.0
+                    }
+                },
+                "standing": {
+                    "x_axis": {
+                        "pid_p": 10.0,
+                        "pid_i": 1.5,
+                        "pid_d": 0.05,
+                        "ff_scale": 400.0,
+                        "max_accel": 0.8,
+                        "max_rate": 0.15,
+                        "deadband": 0.001,
+                        "integral_limit": 200.0,
+                        "output_limit": 500.0
+                    },
+                    "yz_axis": {
+                        "pid_p": 10.0,
+                        "pid_i": 1.5,
+                        "pid_d": 0.05,
+                        "ff_scale": 400.0,
+                        "max_accel": 0.8,
+                        "max_rate": 0.15,
+                        "deadband": 0.001,
+                        "integral_limit": 200.0,
+                        "output_limit": 500.0
+                    },
+                    "throttle": {
+                        "throttle_max": 1000,
+                        "throttle_min": 500,
+                        "throttle_boundary_threshold": 0.35,
+                        "throttle_boundary_reduction": 0.6
+                    }
+                }
+            },
+            // NOTE: plane.forward.* values are seeded from the old (pre-refactor) plane tracking
+            // PID gains, but plane tracking never actually loaded them before this
+            // refactor (the code read the wrong config key while every shipped file
+            // used "plan") -- these need bench/SITL re-tuning, not a carry-over.
+            "plane": {
+                "forward": {
+                    "x_axis": {
+                        "pid_p": 0.8,
+                        "pid_i": 0.0,
+                        "pid_d": 0.1,
+                        "ff_scale": 200.0,
+                        "max_accel": 3.0,
+                        "max_rate": 1.5,
+                        "deadband": 0.001,
+                        "integral_limit": 100.0,
+                        "output_limit": 500.0
+                    },
+                    "yz_axis": {
+                        "pid_p": 0.6,
+                        "pid_i": 0.1,
+                        "pid_d": 0.5,
+                        "ff_scale": 200.0,
+                        "max_accel": 2.5,
+                        "max_rate": 1.2,
+                        "deadband": 0.001,
+                        "integral_limit": 100.0,
+                        "output_limit": 500.0
+                    }
+                }
+            }
+        }
+    },
+    "rc_block_channel": -1,
+    "rc_channels": {
+        "rc_channel_enabled": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        "rc_channel_limits_max": [
+            2000,
+            2000,
+            2000,
+            2000,
+            2000,
+            2000,
+            2000,
+            2000,
+            2000,
+            2000,
+            2000,
+            2000,
+            2000,
+            2000,
+            2000,
+            2000,
+            2000,
+            2000
+        ],
+        "rc_channel_limits_min": [
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000
+        ],
+        "rc_channel_reverse": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        "rc_smart_channels": {
+            "active": true,
+            "rc_channel_enabled": [
+                1,
+                1,
+                1,
+                1
+            ],
+            "rc_channel_limits_max": [
+                2000,
+                2000,
+                2000,
+                2000
+            ],
+            "rc_channel_limits_min": [
+                1000,
+                1000,
+                1000,
+                1000
+            ]
+        }
+    },
+    "read_only_mode": false,
+    // Saved cloud tasks (geofences, missions) are reloaded only on the first
+    // comm-server registration after boot; a link flap in flight must not
+    // replay a stale cloud mission. Set true to restore the old
+    // reload-on-every-reconnect behaviour.
+    "reload_tasks_on_every_reconnect": false,
+    // Precision-landing safety gate: de_mavlink converts de_precland's semantic
+    // PRECLAND_TARGET (6537) into MAVLink LANDING_TARGET only when armed, in an
+    // allowed mode, target is fresh, and the tracker is not controlling.
+    "precland": {
+        "enabled": false,
+        "allowed_modes": [12, 2],       // VEHICLE_MODE_LAND, VEHICLE_MODE_RTL
+        "allow_auto_land": true,        // missions fly nav steps in AUTO(5): also emit while the FC's current mission item is a MAV_CMD_NAV_LAND - waypoint legs never feed the FC
+        "max_target_age_ms": 300,
+        "max_send_hz": 10,
+        "min_tags": 1,
+        "frame": 12                     // MAV_FRAME_BODY_FRD - the only frame ArduPilot accepts for this vector; other values are ignored
+    },
+    // P3-05: "payload.release" through the FC gripper (MAV_CMD_DO_GRIPPER).
+    // Off unless set. ArduPilot needs GRIP_ENABLE=1 and GRIP_TYPE (1 servo,
+    // 2 EPM); the release result is ok only on MAV_RESULT_ACCEPTED (3 s ack).
+    // droneengage_rpi_gpio can provide "payload" from a pin pulse instead
+    // ("payload_release") - configure only one: when both advertise, the
+    // communicator keeps the first and warns.
+    // EV-PAY: "payload_bays" names several grippers - each entry adds a
+    // payload.<key> action on its gripper instance; a missing "instance"
+    // inherits gripper_instance. Absent = the single bay "main".
+    // "payload_provider": "fc_gripper",
+    // "gripper_instance": 1,
+    // "payload_bays": [ { "key": "left", "instance": 1 }, { "key": "right", "instance": 2 } ],
+    "geo_projection": {
+        "enabled": false,               // project AI best-object boxes (1078) to the ground; fire detect.detected
+        // "camera_registry": "camera_registry.json",  // per-unit cam_id table; when set it is
+        //                                            // authoritative - unknown cam_id obs are dropped
+        "hfov_deg": 62.2,
+        "vfov_deg": 48.8,
+        "mount_pitch_deg": -90,         // -90 = camera looking straight down
+        "mount_yaw_deg": 0,
+        "mount_roll_deg": 0,
+        "latency_ms": 150,              // pose lag between video frame and this bus
+        "min_conf": 0.6,
+        "rate_hz": 1,                   // max detect.detected events per class per second
+        "sigma_att_deg": 2.0,           // 1-sigma attitude error used for unc_m
+        "sigma_alt_m": 2.0              // 1-sigma altitude error used for unc_m
+    },
+    "s2s_udp_listening_ip": "127.0.0.1",
+    "s2s_udp_listening_port": "61003",
+    "s2s_udp_packet_size": "8192",
+    "s2s_udp_target_ip": "127.0.0.1",
+    "s2s_udp_target_port": "60000",
+    "udp_proxy_enabled": true,
+    "use_unix_socket": true   // SHOULD BE FALSE when Multiple DE_COMM modules are running on the same board.
+}
