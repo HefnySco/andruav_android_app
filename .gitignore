@@ -14,6 +14,10 @@ gen/
 out/
 build/
 .gradle
+deNative/third_party/downloads/
+deNative/third_party/src/
+deNative/third_party/out/
+deNative/third_party/smoke/build-*/
 
 local.properties
 keystore.properties
