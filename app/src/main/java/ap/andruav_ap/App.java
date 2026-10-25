@@ -40,6 +40,7 @@ import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Surface;
 
 import com.andruav.AndruavDroneFacade;
@@ -102,6 +103,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import ap.andruav.denative.DeNative;
 import ap.andruavmiddlelibrary.log.ExceptionDaoLogger;
 import ap.andruavmiddlelibrary.log.ExceptionHandler;
 import ap.sensors.SensorService;
@@ -851,6 +853,11 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 //            e.printStackTrace();
 //        }
 
+
+        if (BuildConfig.DEBUG)
+        {
+            Log.i("DeNative", DeNative.version());
+        }
 
         App.context = getApplicationContext();
         AndruavEngine.AppContext = App.context;

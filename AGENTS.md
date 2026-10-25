@@ -14,6 +14,8 @@ to set `JAVA_HOME` before building.
   - `platform-tools`
   - `build-tools;34.0.0`
   - `platforms;android-34`
+  - `ndk;26.3.11579264`
+  - `cmake;3.22.1`
 - **Gradle 8.14**: auto-downloaded by the wrapper to `~/.gradle/wrapper/dists/`
 - **Android Gradle Plugin**: 8.4.2
 
