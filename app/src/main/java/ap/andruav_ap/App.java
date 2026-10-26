@@ -48,6 +48,7 @@ import com.andruav.AndruavEngine;
 import com.andruav.AndruavFacade;
 import com.andruav.AndruavSettings;
 import com.andruav.event.fcb_event._7adath_FCB_2AMR;
+import com.andruav.event.fpv7adath.Event_FPV_CMD;
 import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
 import com.andruav.event.networkEvent._7adath_ConnectionQuality;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
@@ -107,6 +108,7 @@ import ap.andruav.denative.DeNative;
 import ap.andruavmiddlelibrary.log.ExceptionDaoLogger;
 import ap.andruavmiddlelibrary.log.ExceptionHandler;
 import ap.sensors.SensorService;
+import ap.andruav_ap.services.fpv.CameraController;
 import ap.andruav_ap.services.fpv.FPVStreamingService;
 import ap.andruav_ap.services.link.AndruavLinkService;
 import ap.andruavmiddlelibrary.database.DaoManager;
@@ -224,6 +226,19 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         if (mhandle != null) mhandle.sendMessageDelayed(msg, 0);
     }
 
+
+    @Subscribe
+    public void onEvent (final Event_FPV_CMD a7adath_fpv_CMD)
+    {
+        // Headless still capture (B6): FPV_CMD_TAKEIMAGE is owned by
+        // CameraController, which picks the live stream frame when WebRTC
+        // owns the camera and a Camera2 headless still otherwise - so a
+        // capture works with the screen off and no FPV screen open. This
+        // Application subscriber, unlike the FPV activities', is always
+        // registered, so the command is never lost.
+        if (a7adath_fpv_CMD.CMD_ID != Event_FPV_CMD.FPV_CMD_TAKEIMAGE) return;
+        CameraController.getInstance().onGcsTakeImage(a7adath_fpv_CMD);
+    }
 
     @Subscribe
     public void onEvent (final _7adath_InitAndroidCamera adath_initAndroidCamera)

@@ -56,6 +56,10 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     private int mCaptureWidth = 1280;
     private int mCaptureHeight = 720;
     private int mCaptureFps = 15;
+    /** Enumerator device name + facing of the camera currently captured -
+     *  tracked so the camera channel surface can name the active channel. */
+    private String mCaptureDeviceName;
+    private boolean mCaptureFrontFacing;
 
     private VideoSink mExternalVideoSink;
     /**
@@ -292,6 +296,8 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
         }
 
         resolveCaptureFormat(enumerator, deviceName);
+        mCaptureDeviceName = deviceName;
+        mCaptureFrontFacing = enumerator.isFrontFacing(deviceName);
 
         return enumerator.createCapturer(deviceName, this);
     }
@@ -344,8 +350,35 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
         if (deviceCount <= 1) return;
 
         Preference.setCameraNumber(null,(Preference.getCameraNumber(null) + 1) % deviceCount);
-        ((CameraVideoCapturer) capturer).switchCamera(null);
+        ((CameraVideoCapturer) capturer).switchCamera(new CameraVideoCapturer.CameraSwitchHandler() {
+            @Override
+            public void onCameraSwitchDone(boolean isFrontCamera) {
+                mCaptureFrontFacing = isFrontCamera;
+                // The switch handler only reports facing; re-read the camera
+                // index preference (already advanced by the caller above) to
+                // recover the new enumerator device name.
+                final String[] names = createCameraEnumerator().getDeviceNames();
+                final int camNum = Preference.getCameraNumber(null);
+                mCaptureDeviceName = (camNum >= 0 && camNum < names.length) ? names[camNum] : null;
+            }
 
+            @Override
+            public void onCameraSwitchError(String errorDescription) {
+            }
+        });
+
+    }
+
+    /** Device name of the camera being captured (null once a blind switch
+     *  invalidated it), for the camera channel surface. */
+    public String getCaptureDeviceName ()
+    {
+        return mCaptureDeviceName;
+    }
+
+    public boolean isCaptureFrontFacing ()
+    {
+        return mCaptureFrontFacing;
     }
 
 

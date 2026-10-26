@@ -243,12 +243,16 @@
         </service>
 
         <!-- Main process (no android:process): hosts the deDatabus module
-             'andruav_phone' over UDP loopback to the on-device de_comm. -->
+             'andruav_phone' over UDP loopback to the on-device de_comm.
+             The 'camera' type is declared alongside specialUse so the app
+             keeps camera eligibility while this service runs - a
+             databus-invoked still capture can then run headless (screen
+             off / app backgrounded) without any FPV screen. -->
         <service
             android:name="ap.andruav_ap.services.DeAndroidModuleService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="specialUse">
+            android:foregroundServiceType="specialUse|camera">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="Hosts the DroneEngage 'andruav_phone' databus module in the app process, bridging the app to the on-device de_comm over UDP loopback" />

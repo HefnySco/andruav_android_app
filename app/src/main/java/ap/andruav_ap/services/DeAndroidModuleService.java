@@ -262,8 +262,22 @@ public class DeAndroidModuleService extends Service {
         final Notification notification = buildNotification(mStatusText);
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                startForeground(FOREGROUND_ID, notification,
-                        ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+                // The camera type is additive and permission-gated: while it
+                // is set, the app can still open the camera with the screen
+                // off / in background, which is what makes databus-invoked
+                // headless still capture work. Fall back to the plain type
+                // when CAMERA is not granted.
+                int type = ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE;
+                if (checkSelfPermission(android.Manifest.permission.CAMERA)
+                        == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    type |= ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA;
+                }
+                try {
+                    startForeground(FOREGROUND_ID, notification, type);
+                } catch (SecurityException e) {
+                    startForeground(FOREGROUND_ID, notification,
+                            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+                }
             } else {
                 startForeground(FOREGROUND_ID, notification);
             }

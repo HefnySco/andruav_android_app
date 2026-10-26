@@ -66,7 +66,8 @@ import ap.andruavmiddlelibrary.webrtc.classes.VideoByteRenderer;
  * Streaming stops only through the {@link _7adath_StopAndroidCamera} event (UI stop button, or the
  * remote RemoteCommand_STREAMVIDEO Act:false command once no consumer remains).
  */
-public class FPVStreamingService extends Service implements IRTCListener, VideoSink, VSink {
+public class FPVStreamingService extends Service implements IRTCListener, VideoSink, VSink,
+        CameraController.StreamingLink {
 
     /**
      * Distinct from {@code SensorService}'s 120 - both foreground services can run concurrently.
@@ -219,6 +220,7 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
         if (mCurrentRenderer != null) {
             mPeerConnectionManager.attachLocalRenderer(mCurrentRenderer);
         }
+        CameraController.getInstance().attachStreamingLink(this);
     }
 
     public PeerConnectionManager getPeerConnectionManager() {
@@ -258,11 +260,12 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
                 break;
 
             case Event_FPV_CMD.FPV_CMD_RECORDVIDEO:
-                if (a7adath_FPV_CMD.ACT) {
-                    startRecording();
-                } else {
-                    stopRecording();
-                }
+                // Route through the single recording choke point so a GCS
+                // record toggle emits the same went_recording/went_idle
+                // {src:'gcs'} facts as an invoke or event command.
+                CameraController.getInstance().queueSetRecording(null,
+                        a7adath_FPV_CMD.ACT != null && a7adath_FPV_CMD.ACT,
+                        CameraController.SRC_GCS);
                 break;
         }
     }
@@ -283,6 +286,10 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
         // non-null, which makes startFPVStreamingService() a silent no-op on the next FPV open,
         // trapping the user in a "can't restart streaming" state.
         App.iFPVStreamingService = null;
+        // Choke-point stop: a still-on recording is finalized through
+        // CameraController (went_idle {src:'shutdown'}) before the capturer
+        // is torn down; also detaches this service's streaming link.
+        CameraController.getInstance().onStreamingStopping(this);
         if (mRecordVideo) {
             stopRecording();
         }
@@ -325,6 +332,7 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
     @Override
     public void onDestroy() {
         App.iFPVStreamingService = null;
+        CameraController.getInstance().onStreamingStopping(this);
         if (mPeerConnectionManager != null) {
             try {
                 mPeerConnectionManager.stopStreaming();
@@ -401,15 +409,25 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
 
     ///////////////////////  Recording
 
-    private void startRecording() {
+    /** Last MP4 label produced by startRecording, surfaced in went_* facts. */
+    private String mLastRecordingFile;
+
+    /**
+     * Recorder implementation behind the CameraController.setRecording choke
+     * point. Returns the MP4 file label on success, null when no recorder
+     * could be started (never leaves mRecordVideo true after a failed start).
+     */
+    private String startRecording() {
         mRecordVideo = false;
+        mLastRecordingFile = null;
         final int[] recordDimensions = Preference.getActiveCameraDimensions(null);
         final int width = recordDimensions[0];
         final int height = recordDimensions[1];
+        String videoName = null;
         try {
             try {
                 if (MediaVideoEncoder.VIDEO_FORMAT == MediaVideoEncoder.MOBILE_WORK_FOR_ALL) {
-                    final String videoName = "v_" + Time_Helper.getDateTimeString() + ".mp4";
+                    videoName = "v_" + Time_Helper.getDateTimeString() + ".mp4";
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         // Scoped storage: write to a MediaStore Downloads entry so the video
                         // survives uninstall and is browsable in a File Manager.
@@ -437,8 +455,16 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
                 mRecordVideo = false;
             }
 
+            // a recorder must actually exist - a failed setup above must not
+            // be reported as recording to the choke point
+            if (mVideoFileRenderer == null && mcameraRecorder == null) {
+                mRecordVideo = false;
+                return null;
+            }
+
             // must be last
             mRecordVideo = true;
+            mLastRecordingFile = videoName;
 
             AndruavSettings.andruavWe7daBase.VideoRecording = AndruavUnitBase.VIDEORECORDING_ON;
             try {
@@ -451,14 +477,18 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
             }
             AndruavEngine.getEventBus().post(new Event_RecordVideoStatus(Event_RecordVideoStatus.CONST_IS_RECORDING));
             AndruavFacade.broadcastID();
+            return videoName;
         } catch (Exception e) {
             e.printStackTrace();
             mRecordVideo = false;
+            return null;
         }
     }
 
-    private void stopRecording() {
+    private String stopRecording() {
         mRecordVideo = false;
+        final String file = mLastRecordingFile;
+        mLastRecordingFile = null;
         if (mVideoFileRenderer != null) {
             mVideoFileRenderer.release();
             mVideoFileRenderer = null;
@@ -485,6 +515,51 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
             // failed to update camera module.
         }
         AndruavFacade.broadcastID();
+        return file;
+    }
+
+    ///////////////////////  CameraController.StreamingLink
+
+    @Override
+    public boolean isCapturing() {
+        return mPeerConnectionManager != null;
+    }
+
+    @Override
+    public String captureDeviceName() {
+        return mPeerConnectionManager != null ? mPeerConnectionManager.getCaptureDeviceName() : null;
+    }
+
+    @Override
+    public boolean isCaptureFrontFacing() {
+        return mPeerConnectionManager != null && mPeerConnectionManager.isCaptureFrontFacing();
+    }
+
+    @Override
+    public String startVideoRecording() {
+        return startRecording();
+    }
+
+    @Override
+    public String stopVideoRecording() {
+        return stopRecording();
+    }
+
+    @Override
+    public boolean isVideoRecording() {
+        return mRecordVideo;
+    }
+
+    @Override
+    public void setZoomFraction(final float fraction) {
+        if (mPeerConnectionManager != null) {
+            mPeerConnectionManager.setZoom(fraction);
+        }
+    }
+
+    @Override
+    public float getZoomFraction() {
+        return mPeerConnectionManager != null ? mPeerConnectionManager.getZoom() : 0f;
     }
 
     ///////////////////////  VSink / VideoSink (recording feed)
@@ -503,6 +578,9 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
 
     @Override
     public void onFrame(VideoFrame videoFrame) {
+        // Headless still capture: hand the frame to the camera controller,
+        // which consumes it only while a still burst is waiting.
+        CameraController.getInstance().onVideoFrame(videoFrame);
         if (mRecordVideo) {
             if (MediaVideoEncoder.VIDEO_FORMAT == MediaVideoEncoder.MOBILE_WORK_FOR_ALL) {
                 if (mVideoFileRenderer != null) {

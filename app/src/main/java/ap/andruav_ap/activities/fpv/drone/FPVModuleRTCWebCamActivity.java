@@ -17,16 +17,13 @@ import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Icon;
 import android.media.AudioManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.ParcelFileDescriptor;
 import android.util.Rational;
 import android.view.Surface;
 import android.view.View;
@@ -40,7 +37,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.andruav.AndruavFacade;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.FeatureSwitch;
@@ -53,18 +49,10 @@ import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
 import com.andruav.event.fpv7adath._7adath_StopAndroidCamera;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitSystem;
-import com.andruav.interfaces.INotification;
 import com.andruav.controlBoard.shared.common.FlightMode;
-import com.andruav.notification.PanicFacade;
-import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 
-import org.webrtc.EglRenderer;
 import org.webrtc.SurfaceViewRenderer;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -73,14 +61,12 @@ import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 import ap.andruav_ap.DeviceManagerFacade;
 import ap.andruav_ap.R;
+import ap.andruav_ap.services.fpv.CameraController;
 import ap.andruav_ap.services.fpv.FPVStreamingService;
 import ap.andruav_ap.guiEvent.GUIEvent_EnableFlashing;
 import ap.andruav_ap.widgets.AlarmWidget;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_IMU_CMD;
-import ap.andruavmiddlelibrary.eventClasses.fpvEvent.Event_FPV_Image;
-import ap.andruavmiddlelibrary.factory.io.FileHelper;
 import ap.andruavmiddlelibrary.factory.util.ActivityMosa3ed;
-import ap.andruavmiddlelibrary.factory.util.Image_Helper;
 import ap.andruavmiddlelibrary.preference.Preference;
 import ap.andruavmiddlelibrary.webrtc.events.Event_WebRTC;
 
@@ -93,13 +79,6 @@ import ap.andruavmiddlelibrary.webrtc.events.Event_WebRTC;
 public class FPVModuleRTCWebCamActivity extends Activity {
 
     private static final String ACTION_PIP_STOP = "ap.andruav_ap.fpv.ACTION_STOP_STREAM_PIP";
-
-    private final Object stateLock = new Object();
-
-    // Runs the still-image JPEG/EXIF/save work triggered by fl.onFrame() below, off the WebRTC
-    // renderer thread that callback runs on - that thread also drives the live FPV preview, so
-    // blocking it with compress/rotate/file-I/O caused visible jank while taking a photo.
-    private final ExecutorService mImageProcessingExecutor = Executors.newSingleThreadExecutor();
 
     private FPVModuleRTCWebCamActivity Me;
     private static Handler mHandle;
@@ -124,14 +103,6 @@ public class FPVModuleRTCWebCamActivity extends Activity {
             }
         }
     };
-
-    private boolean mTakeImage = false;
-    private int mTakeImageCount = 0;
-    private boolean mSaveImageLocally = true;
-    private long mTimeBetweenShots = 0;
-    private double mDistanceBetweenShotes = 0; // ignored
-    private boolean mSendBackImages = false;
-    private AndruavUnitBase mSendBackTo = null; // name of Image requester
 
 
     ////// ActivityMosa3ed Variables
@@ -369,24 +340,10 @@ public class FPVModuleRTCWebCamActivity extends Activity {
                     Event_FPV_CMD a7adath_FPV_CMD = (Event_FPV_CMD) msg.obj;
                     switch (a7adath_FPV_CMD.CMD_ID) {
 
-                        case Event_FPV_CMD.FPV_CMD_TAKEIMAGE:
-                            mTakeImageCount = a7adath_FPV_CMD.NumberOfImages;
-                            mSaveImageLocally = a7adath_FPV_CMD.SaveImageLocally;
-                            if (a7adath_FPV_CMD.TimeBetweenShotes ==0)
-                            {  // in case the interval is Zero then make it one second by default.
-                                a7adath_FPV_CMD.TimeBetweenShotes = 1;
-                            }
-                            mTimeBetweenShots = a7adath_FPV_CMD.TimeBetweenShotes * 1000 ; // convert to milliseconds
-                            mDistanceBetweenShotes = a7adath_FPV_CMD.DistanceBetweenShotes;
-                            mSendBackImages = a7adath_FPV_CMD.SendBackImages;
-
-                            mSendBackTo = a7adath_FPV_CMD.Requester;
-
-                            mTakeImage = true;
-                            takeImage();
-                           // PanicFacade.cannotStartCamera(INotification.NOTIFICATION_TYPE_ERROR,INotification.NOTIFICATION_TYPE_ERROR,"Take Image is not supported in this video mode yet",null);
-                            break;
-
+                        // FPV_CMD_TAKEIMAGE is not handled here anymore:
+                        // CameraController owns still capture end to end
+                        // (headless - works with the screen off and no FPV
+                        // screen open). This Activity only adds UI.
 
                         case Event_FPV_CMD.FPV_CMD_ROTATECAM:
 
@@ -704,7 +661,6 @@ public class FPVModuleRTCWebCamActivity extends Activity {
             // which calls finish() directly with no other hook to intercept it.
             EventBus.getDefault().post(new _7adath_StopAndroidCamera());
         }
-        mImageProcessingExecutor.shutdown();
         super.onDestroy();
 
     }
@@ -733,152 +689,7 @@ public class FPVModuleRTCWebCamActivity extends Activity {
         final long now = System.currentTimeMillis();
         if ((now - lastSSImage) < 20000) return; // dont take too close images.
         lastSSImage = now;
-        mTakeImageCount = 1;
-        mSaveImageLocally = false;
-        mTimeBetweenShots = 0; // convert to milliseconds
-        mDistanceBetweenShotes = 0;
-        mSendBackImages = true;
-        mSendBackTo = andruavUnitBase;
-        mTakeImage = true;
-        takeImage();
+        CameraController.getInstance().captureSilent(andruavUnitBase);
     }
-
-    private void takeImage()
-    {
-        if (mSurfaceViewRenderer ==null) return;
-        mSurfaceViewRenderer.addFrameListener(fl ,1);
-    }
-
-
-    private final EglRenderer.FrameListener fl = new EglRenderer.FrameListener() {
-
-        private final int exception_cam_mux_counter = 3;
-        private long lastTime = 0;
-        private final long mTimeBetweenBoof = 300;
-
-        @Override
-        public void onFrame(Bitmap bitmap) {
-            final boolean takeImageNow;
-            final AndruavUnitBase sendBackTo;
-            final boolean saveImageLocally;
-            final int imageCountForDescription;
-
-            synchronized (stateLock) {
-                if (mTakeImageCount > 0) {
-                    final long now = System.currentTimeMillis();
-                    if (mTimeBetweenShots > 0) {  // dont take multiple images if time is equal to zero ... no burst images
-
-                        if ((now - lastTime) >= mTimeBetweenShots) {
-                            mTakeImageCount = mTakeImageCount - 1;
-                            mTakeImage = true;
-                            lastTime = now;
-                        } else {
-                            mTakeImage = false;
-                        }
-
-                        if (mTakeImageCount > 0) {
-                            mHandle.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (mTakeImageCount == 0) return;
-                                    takeImage();
-                                }
-                            }, mTimeBetweenShots);
-                        }
-
-                    } else {
-                        // only a single image
-                        mTakeImageCount = 0; // reset counter
-                        mTakeImage = true;
-                    }
-
-                } else {
-                    mTakeImage = false;
-                }
-
-                // Snapshot everything the (now off-thread) heavy work below reads - these fields
-                // keep mutating for the next callback as soon as this synchronized block exits.
-                takeImageNow = mTakeImage;
-                sendBackTo = mSendBackTo;
-                saveImageLocally = mSaveImageLocally;
-                imageCountForDescription = mTakeImageCount;
-
-                mSurfaceViewRenderer.clearImage();
-            }
-
-            if (!takeImageNow) {
-                return;
-            }
-
-            // JPEG compress/rotate/EXIF/MediaStore-save is heavyweight - do it off this callback's
-            // thread (WebRTC's renderer thread, which also drives the live preview) so taking a
-            // still image doesn't stall FPV video.
-            mImageProcessingExecutor.execute(() -> {
-                try {
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byte[] pout = stream.toByteArray();
-                    stream.flush();
-
-
-                    AndruavFacade.sendImage(pout, AndruavSettings.andruavWe7daBase.getAvailableLocation(), sendBackTo);
-                    if (saveImageLocally) {
-                        final Bitmap bitmap2 = Image_Helper.createBMPfromJPG(pout);
-                        Bitmap rotatedBmp = Image_Helper.rotateImage(bitmap2, bitmap2.getWidth(), bitmap2.getHeight(), Preference.getFPVActivityRotation(null));
-
-                        File savedImageFile;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            // Scoped storage: save under MediaStore Downloads instead of a File so
-                            // the image survives uninstall and is browsable in a File Manager.
-                            final String imgName = FileHelper.buildTimestampedJpgName(null);
-                            final Uri savedImageUri = FileHelper.savePicToMediaStore(rotatedBmp, imgName, App.KMLFile.getImageRelativePath());
-                            if (savedImageUri == null) {
-                                bitmap.recycle();
-                                rotatedBmp.recycle();
-                                return;
-                            }
-                            try (ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(savedImageUri, "rw")) {
-                                if (pfd != null) {
-                                    Image_Helper.AddGPStoJpg(pfd.getFileDescriptor(), AndruavSettings.andruavWe7daBase.getAvailableLocation());
-                                }
-                            } catch (IOException ex) {
-                                AndruavEngine.log().logException("exception_img", ex);
-                            }
-                            // MediaStore items have no real filesystem path - this File only ever
-                            // needs to yield its name (KMLFileHandler.addImages() uses getName()).
-                            savedImageFile = new File(imgName);
-                        } else {
-                            savedImageFile = FileHelper.savePic(rotatedBmp, null, App.KMLFile.getImageFolder());
-                            if (savedImageFile == null) {
-                                // sendMessageToModule error messages to GCS Please
-                                bitmap.recycle();
-                                rotatedBmp.recycle();
-                                return;
-                            }
-
-                            Image_Helper.AddGPStoJpg(savedImageFile.getAbsolutePath(), AndruavSettings.andruavWe7daBase.getAvailableLocation());
-                        }
-
-
-                        Event_FPV_Image event_fpv_image = new Event_FPV_Image();
-                        event_fpv_image.isLocalImage = true;
-                        event_fpv_image.isVideo = false;
-                        event_fpv_image.ImageFile = savedImageFile;
-                        event_fpv_image.ImageLocation = AndruavSettings.andruavWe7daBase.getAvailableLocation();
-                        event_fpv_image.Description = "Image No#" + imageCountForDescription;
-                        EventBus.getDefault().post(event_fpv_image);
-
-                        bitmap.recycle();
-                        rotatedBmp.recycle();
-
-                    }
-                } catch (Exception ex) {
-                    AndruavEngine.log().logException(AndruavSettings.AccessCode, "exception_fpv2", ex);
-                    PanicFacade.cannotStartCamera(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_CAMERA, App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_camertakeimage), null);
-                }
-            });
-        }
-
-    };
 
 }
