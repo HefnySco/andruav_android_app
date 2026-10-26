@@ -18,6 +18,7 @@ import java.util.List;
 import ap.andruav_ap.BuildConfig;
 import ap.andruav_ap.R;
 import ap.andruav_ap.denative.position.PhonePositionSource;
+import ap.andruav_ap.denative.providers.camera.CameraProvider;
 import ap.andruav_ap.denative.providers.phone.PhoneDevices;
 import ap.andruav_ap.denative.providers.phone.PhoneHealthConfig;
 import ap.andruav_ap.denative.providers.phone.PhoneHealthMonitor;
@@ -25,6 +26,7 @@ import ap.andruav_ap.denative.providers.phone.PhoneProvider;
 import ap.andruav_ap.denative.providers.sound.AndroidSoundBackend;
 import ap.andruav_ap.denative.providers.sound.SoundProvider;
 import ap.andruav_ap.denative.providers.sound.SoundProviderConfig;
+import ap.andruav_ap.services.fpv.CameraController;
 import ap.andruavmiddlelibrary.preference.Preference;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import de.databus.CModule;
@@ -150,17 +152,29 @@ public class DeAndroidModuleService extends Service {
                 AndroidSoundBackend.deviceTtsLanguages(),
                 () -> !Preference.isSoundEnabled(this));
         providers.add(soundProvider);
+        // "camera" namespace: capture/record/zoom + the camera.<ch>.*
+        // command/fact surface - TO-BE section 5.4. Shares the app-wide
+        // CameraController, so capability invokes and the legacy GCS path
+        // reach the same headless still-capture and recording choke point.
+        final CameraProvider cameraProvider =
+                new CameraProvider(CameraController.getInstance(), BuildConfig.VERSION_NAME);
+        providers.add(cameraProvider);
         final CapabilityHost host = new CapabilityHost(module, providers);
         // Registers adverts + takes over invoke/event routing before the
         // socket exists; the advert goes out on the first ID reply.
         host.start();
         phoneProvider.attach(host);
         soundProvider.attach(host);
+        cameraProvider.attach(host);
         soundProvider.setSirenHook(whistling -> {
             if (com.andruav.AndruavSettings.andruavWe7daBase != null) {
                 com.andruav.AndruavSettings.andruavWe7daBase.setIsWhisling(whistling);
             }
         });
+
+        // Broadcast + poll driven sampler feeding the phone health tracker.
+        final PhoneHealthMonitor monitor = new PhoneHealthMonitor(this, phoneProvider.tracker());
+        monitor.start();
 
         // B8: phone GPS as the unit position (9102) when no FC position is
         // being reported. The source watches other modules' 9102s through
@@ -179,10 +193,6 @@ public class DeAndroidModuleService extends Service {
             host.onReceive(message, len, jMsg);
             positionSource.onModuleMessage(jMsg);
         });
-
-        // Broadcast + poll driven sampler feeding the phone health tracker.
-        final PhoneHealthMonitor monitor = new PhoneHealthMonitor(this, phoneProvider.tracker());
-        monitor.start();
 
         // Socket bind + receiver threads off the main thread, mirroring
         // DeModuleService's moduleThread pattern.
@@ -237,11 +247,11 @@ public class DeAndroidModuleService extends Service {
             mPositionSource = null;
             mModuleRunning = false;
         }
-        if (monitor != null) {
-            monitor.stop();
-        }
         if (positionSource != null) {
             positionSource.stop();
+        }
+        if (monitor != null) {
+            monitor.stop();
         }
         if (phoneProvider != null) {
             phoneProvider.stop();
