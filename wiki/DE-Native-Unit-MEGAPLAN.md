@@ -200,3 +200,49 @@ that no real flight controller is needed for the USB and Bluetooth checks.
 Limit: Android's USB-host serial stack cannot be faked in software on a phone
 or emulator, so the USB path needs two cheap USB-serial adapters and a crossed
 cable (SL-0104); everything else is virtual.
+
+## Gate results (emulator-5554, 2026-10-26, AN-0038)
+
+Target under test: `ardupilot.andruav:de_comm` + `:de_mavlink` headless
+foreground services on the `de_test` AVD (x86_64, API 34); SITL, de_server
+and GCS bridge on the host; unit 1's modules remote via
+`SIM_ANDROID_MODULES=de_comm,de_mavlink`. Guest reached host LAN IP via
+in-guest DNAT (emulator NAT cannot route guest→host-LAN directly).
+
+**Suite verdicts — phone as unit 1 vs same test with all-Linux units:**
+
+| Area | Result on device | Same-day Linux baseline | Verdict |
+|---|---|---|---|
+| smoke copters | 5/0 | — | pass |
+| udp_relay (4 suites) | all pass | — | pass |
+| static/payload (su_camera_mast, gpio_pin_guard, su_op_end_sensors, su_sdr_mast, payload_emit_ignored, payload_two_bays_approval) | all pass | — | pass |
+| missions p2_gate, p2_gate_timeout, p2_switch, p2_paged, p2_reboot_resync, v1_reference | all pass post-fix | — | pass |
+| missions p2_guided | 0/6 | 0/6 | baseline-equivalent (pre-existing Linux failure, not Android) |
+| missions p2_handlers | 3/4 | 3/4 | baseline-equivalent |
+| fleet_bus p4a04/p4a05/p4a08/p4a09/p4a10_arrive/p4a10_barrier(_lost)/p4a11/server_restart | all pass | — | pass |
+| fleet_bus p4a07_roster_clock | 15/1 — `clock_spread` 746 ms | 16/0 — spread 2 ms | **divergence**: emulator RTC drifts ~0.75 s behind host; the phone's de_comm timestamps roster beats on device clock. Roster stale/lost detection itself passed. Expected tighter on a real NTP-synced phone. |
+| fleet_bus p4a10_barrier_hold | 2/3 | 2/3 | baseline-equivalent (peers never journal cut unit `timed out -> rtl` on Linux either — test expectation does not hold on this build) |
+| static_units su_hybrid_listen | 4/2 | 4/2 | baseline-equivalent |
+
+Zero `de_*` module bugs surfaced: every device failure either reproduces
+identically with all-Linux units or is the emulator clock drift above.
+
+**Resilience:** `kill -9` on each module process ×3 — supervisor restarts
+the process in ~1.8–2.1 s every time (6/6); the unit's comm line goes
+offline and re-onlines, and the unit is online again on the server.
+Wi-Fi disable/enable ×5 — comm line re-onlines in ~4.1 s after each
+toggle (well inside the 30 s budget).
+
+**Fixes landed during the gate (in sim repo, not product):**
+- `ctl.wait_ready` (AN-0058): remote-Android units now gate `up` on a
+  `nav adapter hello` journaled after the device-side `de_comm` process
+  start (was: stale pulled-journal line could satisfy readiness → early
+  deploys hit "vehicle type not known yet"). Validated on a mid-run
+  device `de_comm` restart.
+- Emulator `redir` list trimmed to unit-1's de_comm port only (extra
+  hostfwd entries collided with local units' s2s ports).
+
+**Deferred:** the written acceptance asks for a 24 h soak on a **real
+phone** — that is deferred to follow-up task **DE-0021** (and a related
+RPi soak, DE-0022). This gate ran on the emulator; the soak evidence
+item is intentionally not claimed here.
