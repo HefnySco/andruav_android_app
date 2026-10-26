@@ -36,6 +36,8 @@ import org.greenrobot.eventbus.EventBus;
 
 import ap.andruav_ap.App;
 import ap.andruav_ap.Emergency;
+import ap.andruav_ap.denative.providers.phone.PhoneDevices;
+import ap.andruav_ap.denative.providers.phone.PhoneOutput;
 import ap.andruavmiddlelibrary.eventClasses.fpvEvent.Event_FPV_Image;
 import ap.andruavmiddlelibrary.eventClasses.fpvEvent.Event_FPV_VideoURL;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_RemoteServo;
@@ -415,7 +417,13 @@ public class MessageDispatcher {
                             if ((andruavUnit != null) && (!andruavUnit.canControl())) break;
                             final Emergency emergency = (Emergency) AndruavEngine.getEmergency();
                             if (emergency != null) {
-                                emergency.triggerSirenByGCS(!emergency.getIsSirenActive());
+                                final boolean sirenOn = !emergency.getIsSirenActive();
+                                emergency.triggerSirenByGCS(sirenOn);
+                                // vibrate follows the siren: on with it, cancelled when toggled off
+                                final PhoneOutput vibrate = PhoneDevices.output("vibrate");
+                                if (vibrate != null) {
+                                    vibrate.write(sirenOn, PhoneOutput.SRC_LEGACY);
+                                }
                             }
                         }
                         break;
