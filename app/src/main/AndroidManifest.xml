@@ -240,6 +240,18 @@
                 android:value="Maintains the persistent WebSocket command/telemetry link to the Andruav server so the vehicle stays reachable while the app is backgrounded during flight" />
         </service>
 
+        <!-- Main process (no android:process): hosts the deDatabus module
+             'andruav_phone' over UDP loopback to the on-device de_comm. -->
+        <service
+            android:name="ap.andruav_ap.services.DeAndroidModuleService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Hosts the DroneEngage 'andruav_phone' databus module in the app process, bridging the app to the on-device de_comm over UDP loopback" />
+        </service>
+
         <receiver
             android:name="ap.andruav_ap.broadcastReceiver.BOOT_Receiver"
             android:enabled="true"

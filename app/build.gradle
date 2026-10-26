@@ -105,6 +105,7 @@ dependencies {
     implementation project(':andruavmiddlelibrary')
     implementation project(':ClientLib')
     implementation project(':deNative')
+    implementation project(':deDatabus')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.multidex:multidex:2.0.1'
     testImplementation 'junit:junit:4.12'
