@@ -11,12 +11,17 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.EnumMap;
 
 /** Debug-only control screen for the native DE modules (Plan A6). */
 public class DeNativeDebugActivity extends Activity {
 
     private final Handler handler = new Handler(Looper.getMainLooper());
+    private TextView fcLinkStatsView;
+
     private final EnumMap<DeUnitSupervisor.Module, TextView> stateViews =
             new EnumMap<>(DeUnitSupervisor.Module.class);
     private final Runnable refresher = new Runnable() {
@@ -45,6 +50,11 @@ public class DeNativeDebugActivity extends Activity {
 
         addModuleRow(root, DeUnitSupervisor.Module.DE_COMM, "de_comm");
         addModuleRow(root, DeUnitSupervisor.Module.DE_MAVLINK, "de_mavlink");
+
+        fcLinkStatsView = new TextView(this);
+        fcLinkStatsView.setTextSize(12);
+        fcLinkStatsView.setTextColor(Color.DKGRAY);
+        root.addView(fcLinkStatsView);
 
         ScrollView scroll = new ScrollView(this);
         scroll.addView(root);
@@ -104,6 +114,17 @@ public class DeNativeDebugActivity extends Activity {
             view.setText("state: " + supervisor.getState(module)
                     + "   pid: " + pidText
                     + "   restarts: " + supervisor.getRestartCount(module));
+        }
+        File stats = new File(getFilesDir(), "fc_link_stats.txt");
+        StringBuilder text = new StringBuilder("fc link: ");
+        try (BufferedReader reader = new BufferedReader(new FileReader(stats))) {
+            String line = reader.readLine();
+            text.append(line == null ? "idle" : line);
+        } catch (Exception e) {
+            text.append("idle");
+        }
+        if (fcLinkStatsView != null) {
+            fcLinkStatsView.setText(text);
         }
     }
 

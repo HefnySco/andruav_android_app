@@ -45,6 +45,14 @@ public abstract class DeModuleService extends Service {
 
     protected abstract String[] getModuleArgv();
 
+    /**
+     * Runs after configs are prepared and before the native thread starts.
+     * Modules that need a Java-side companion (e.g. the FC link bridge)
+     * start it here.
+     */
+    protected void onModuleStarting(File workDir) {
+    }
+
     private native int nativeRun(String libName, String workDir, String[] argv);
 
     private native void nativeRequestStop();
@@ -86,6 +94,7 @@ public abstract class DeModuleService extends Service {
         workDir.mkdirs();
         copyAssetsIfMissing(workDir);
         applyOverrides(workDir);
+        onModuleStarting(workDir);
         moduleThread = new Thread(() -> {
             int rc = nativeRun(getModuleName(), workDir.getAbsolutePath(), getModuleArgv());
             Log.i(TAG, getModuleName() + " nativeRun returned " + rc);

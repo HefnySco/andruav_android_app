@@ -1,5 +1,9 @@
 package ap.andruav.denative;
 
+import java.io.File;
+
+import ap.andruav.denative.fclink.FcLinkBridge;
+
 public class DeMavlinkService extends DeModuleService {
 
     @Override
@@ -14,5 +18,10 @@ public class DeMavlinkService extends DeModuleService {
                 "-c", "de_mavlink.config.module.json",
                 "-b", "de_mavlink.local"
         };
+    }
+
+    @Override
+    protected void onModuleStarting(File workDir) {
+        FcLinkBridge.start(this);
     }
 }
