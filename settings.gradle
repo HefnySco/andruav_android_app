@@ -1,1 +1,1 @@
-include ':app', ':andruavProtocol', ':andruavmiddlelibrary', ':ClientLib', ':Mavlink', ':rangebar-release', ':webrtc', ':deNative'
+include ':app', ':andruavProtocol', ':andruavmiddlelibrary', ':ClientLib', ':Mavlink', ':rangebar-release', ':webrtc', ':deNative', ':deDatabus'

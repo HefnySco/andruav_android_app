@@ -1,0 +1,30 @@
+apply plugin: 'java-library'
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release.set(11)
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ['src']
+    }
+
+    test {
+        java.srcDirs = ['test']
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+dependencies {
+    api 'org.json:json:20250517'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+}
