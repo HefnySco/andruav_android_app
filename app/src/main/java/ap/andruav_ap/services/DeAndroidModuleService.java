@@ -17,10 +17,13 @@ import java.util.List;
 
 import ap.andruav_ap.BuildConfig;
 import ap.andruav_ap.R;
+import ap.andruav_ap.denative.position.PhonePositionSource;
 import ap.andruav_ap.denative.providers.phone.PhoneHealthConfig;
 import ap.andruav_ap.denative.providers.phone.PhoneHealthMonitor;
 import ap.andruav_ap.denative.providers.phone.PhoneProvider;
+import com.andruav.andruavUnit.AndruavUnitBase;
 import de.databus.CModule;
+import de.databus.Messages;
 import de.databus.caps.CapabilityHost;
 import de.databus.caps.DeCapabilityProvider;
 import de.databus.caps.TestEchoProvider;
@@ -64,6 +67,7 @@ public class DeAndroidModuleService extends Service {
     private CapabilityHost mCapabilityHost;
     private PhoneProvider mPhoneProvider;
     private PhoneHealthMonitor mHealthMonitor;
+    private PhonePositionSource mPositionSource;
     private volatile boolean mModuleRunning;
     private String mStatusText = "starting";
 
@@ -113,7 +117,10 @@ public class DeAndroidModuleService extends Service {
                 MODULE_ID,
                 MODULE_KEY,
                 BuildConfig.VERSION_NAME,
-                new JSONArray());
+                // Subscribed to 9102 so de_comm fans other modules'
+                // position reports out to us - the "FC position present"
+                // signal for the phone-GPS gate (B8).
+                new JSONArray().put(Messages.TYPE_AndruavModule_Location_Info));
 
         final List<DeCapabilityProvider> providers = new ArrayList<>();
         if (BuildConfig.DEBUG) {
@@ -128,6 +135,24 @@ public class DeAndroidModuleService extends Service {
         // socket exists; the advert goes out on the first ID reply.
         host.start();
         phoneProvider.attach(host);
+
+        // B8: phone GPS as the unit position (9102) when no FC position is
+        // being reported. The source watches other modules' 9102s through
+        // the composite receive callback below and emits at 1 Hz when the
+        // gate opens (AUTO: after 5 s of silence; MOBILE: always; FCB:
+        // never). GPS mode comes from the app-side unit setting.
+        final PhonePositionSource positionSource = new PhonePositionSource(
+                this, module, MODULE_KEY,
+                () -> (com.andruav.AndruavSettings.andruavWe7daBase != null)
+                        ? com.andruav.AndruavSettings.andruavWe7daBase.getGPSMode()
+                        : AndruavUnitBase.GPS_MODE_AUTO);
+        // host.start() claimed the module's single OnReceive callback -
+        // replace it with a composite that still serves the capability
+        // host and also feeds the position gate.
+        module.setOnReceive((message, len, jMsg) -> {
+            host.onReceive(message, len, jMsg);
+            positionSource.onModuleMessage(jMsg);
+        });
 
         // Broadcast + poll driven sampler feeding the phone health tracker.
         final PhoneHealthMonitor monitor = new PhoneHealthMonitor(this, phoneProvider.tracker());
@@ -146,6 +171,8 @@ public class DeAndroidModuleService extends Service {
                     }
                     mModuleRunning = true;
                 }
+                // Socket is up: start the location feed + 1 Hz emitter.
+                positionSource.start();
                 mStatusText = MODULE_ID + " on 127.0.0.1:" + port;
                 Log.i(TAG, mStatusText);
                 updateNotificationText(mStatusText);
@@ -160,24 +187,31 @@ public class DeAndroidModuleService extends Service {
         mCapabilityHost = host;
         mPhoneProvider = phoneProvider;
         mHealthMonitor = monitor;
+        mPositionSource = positionSource;
     }
 
     private void stopModule() {
         final CModule module;
         final PhoneProvider phoneProvider;
         final PhoneHealthMonitor monitor;
+        final PhonePositionSource positionSource;
         synchronized (this) {
             module = mModule;
             phoneProvider = mPhoneProvider;
             monitor = mHealthMonitor;
+            positionSource = mPositionSource;
             mModule = null;
             mCapabilityHost = null;
             mPhoneProvider = null;
             mHealthMonitor = null;
+            mPositionSource = null;
             mModuleRunning = false;
         }
         if (monitor != null) {
             monitor.stop();
+        }
+        if (positionSource != null) {
+            positionSource.stop();
         }
         if (phoneProvider != null) {
             phoneProvider.stop();
