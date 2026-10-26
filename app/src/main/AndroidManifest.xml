@@ -194,6 +194,8 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_data_activity_flash"
             android:launchMode="singleTask"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="ap.andruav_ap.activities.main.FirstScreen"

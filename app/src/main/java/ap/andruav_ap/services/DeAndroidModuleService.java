@@ -18,6 +18,7 @@ import java.util.List;
 import ap.andruav_ap.BuildConfig;
 import ap.andruav_ap.R;
 import ap.andruav_ap.denative.position.PhonePositionSource;
+import ap.andruav_ap.denative.providers.phone.PhoneDevices;
 import ap.andruav_ap.denative.providers.phone.PhoneHealthConfig;
 import ap.andruav_ap.denative.providers.phone.PhoneHealthMonitor;
 import ap.andruav_ap.denative.providers.phone.PhoneProvider;
@@ -126,9 +127,13 @@ public class DeAndroidModuleService extends Service {
         if (BuildConfig.DEBUG) {
             providers.add(new TestEchoProvider());
         }
-        // "phone" namespace: health state (battery/net/gps) + edge facts
-        // (battery_low, overheat, net_lost, net_back) - TO-BE section 5.6.
-        final PhoneProvider phoneProvider = new PhoneProvider(PhoneHealthConfig.defaults());
+        // "phone" namespace: output resources (screen strobe / torch /
+        // vibrate - TO-BE section 5.2) + health state and edge facts
+        // (battery_low, overheat, net_lost, net_back - section 5.6). The
+        // outputs bank is process-wide so Emergency drives the same
+        // choke points the bus sees.
+        final PhoneProvider phoneProvider = new PhoneProvider(
+                PhoneHealthConfig.defaults(), PhoneDevices.shared(this));
         providers.add(phoneProvider);
         final CapabilityHost host = new CapabilityHost(module, providers);
         // Registers adverts + takes over invoke/event routing before the

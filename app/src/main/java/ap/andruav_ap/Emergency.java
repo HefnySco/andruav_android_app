@@ -16,6 +16,8 @@ import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_RemoteExecuteResult;
 
 import ap.andruav_ap.guiEvent.GUIEvent_EnableFlashing;
+import ap.andruav_ap.denative.providers.phone.PhoneDevices;
+import ap.andruav_ap.denative.providers.phone.PhoneOutput;
 import com.andruav.FeatureSwitch;
 import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
 
@@ -30,8 +32,34 @@ import ap.andruavmiddlelibrary.factory.communication.SMS;
 public class Emergency extends EmergencyBase {
 
 
+    /**
+     * Which surface the in-flight flash request came from — reported as the
+     * {@code src} of the {@code phone.screen.went_on|went_off} facts:
+     * a GCS MAKEFLASH is {@code "legacy"}, battery/connection emergencies
+     * and the emergency reset are {@code "emergency"}.
+     */
+    private String mFlashSrc = PhoneOutput.SRC_LEGACY;
+
+    @Override
+    public void triggerConnectionEmergency(final boolean bOnOff) {
+        mFlashSrc = PhoneOutput.SRC_EMERGENCY;
+        super.triggerConnectionEmergency(bOnOff);
+    }
+
+    @Override
+    public void triggerFlashByGCS(final boolean onOff) {
+        mFlashSrc = PhoneOutput.SRC_LEGACY;
+        super.triggerFlashByGCS(onOff);
+    }
+
+    @Override
+    public void resetEmergency() {
+        mFlashSrc = PhoneOutput.SRC_EMERGENCY;
+        super.resetEmergency();
+    }
 
     public void triggerBatteryEmergency(final boolean bOnOff) {
+        mFlashSrc = PhoneOutput.SRC_EMERGENCY;
        if ((mBatteryEmergency != bOnOff )&& (bOnOff))
         {
             PanicFacade.telemetryPanic(INotification.NOTIFICATION_TYPE_ERROR, AndruavMessage_Error.ERROR_POWER, App.getAppContext().getString(com.andruav.protocol.R.string.andruav_error_lowbattery), null);
@@ -133,6 +161,13 @@ public class Emergency extends EmergencyBase {
 
     public  boolean getIsFlashing ()
     {
+        final PhoneOutput screen = PhoneDevices.output("screen");
+        if (screen != null)
+        {
+            // the phone.screen choke point owns the truth: GCS MAKEFLASH,
+            // missions and emergencies share it
+            return screen.isOn();
+        }
         return AndruavSettings.andruavWe7daBase.getIsFlashing();
     }
 
@@ -198,7 +233,11 @@ public class Emergency extends EmergencyBase {
             return ;
         }
 
-        if (AndruavSettings.andruavWe7daBase.getIsFlashing() == enable)
+        final PhoneOutput screen = PhoneDevices.output("screen");
+        final boolean flashing = (screen != null)
+                ? screen.isOn()
+                : AndruavSettings.andruavWe7daBase.getIsFlashing();
+        if (flashing == enable)
         {
             return; // do nothing
         }
@@ -234,7 +273,17 @@ public class Emergency extends EmergencyBase {
 //        }
 
 
-        AndruavEngine.getEventBus().post(new GUIEvent_EnableFlashing (enable));
+        if (screen != null)
+        {
+            // the phone.screen choke point (strobe Activity) — shared with
+            // missions and bus events, emitting went_on/went_off {src}
+            screen.write(enable, mFlashSrc);
+        }
+        else
+        {
+            // fallback for the window before the phone outputs exist
+            AndruavEngine.getEventBus().post(new GUIEvent_EnableFlashing (enable));
+        }
 
     }
     /***
