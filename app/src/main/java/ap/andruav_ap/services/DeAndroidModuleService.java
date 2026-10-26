@@ -22,6 +22,10 @@ import ap.andruav_ap.denative.providers.phone.PhoneDevices;
 import ap.andruav_ap.denative.providers.phone.PhoneHealthConfig;
 import ap.andruav_ap.denative.providers.phone.PhoneHealthMonitor;
 import ap.andruav_ap.denative.providers.phone.PhoneProvider;
+import ap.andruav_ap.denative.providers.sound.AndroidSoundBackend;
+import ap.andruav_ap.denative.providers.sound.SoundProvider;
+import ap.andruav_ap.denative.providers.sound.SoundProviderConfig;
+import ap.andruavmiddlelibrary.preference.Preference;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import de.databus.CModule;
 import de.databus.Messages;
@@ -68,6 +72,7 @@ public class DeAndroidModuleService extends Service {
     private CapabilityHost mCapabilityHost;
     private PhoneProvider mPhoneProvider;
     private PhoneHealthMonitor mHealthMonitor;
+    private SoundProvider mSoundProvider;
     private PhonePositionSource mPositionSource;
     private volatile boolean mModuleRunning;
     private String mStatusText = "starting";
@@ -135,11 +140,27 @@ public class DeAndroidModuleService extends Service {
         final PhoneProvider phoneProvider = new PhoneProvider(
                 PhoneHealthConfig.defaults(), PhoneDevices.shared(this));
         providers.add(phoneProvider);
+        // "sound" namespace: say/play/stop + per-clip actions and the
+        // sound.<clip>.* event surface - TO-BE section 5.1. Registered
+        // always (a real capability, unlike debug-only test_echo).
+        final SoundProvider soundProvider = new SoundProvider(
+                SoundProviderConfig.load(this),
+                BuildConfig.VERSION_NAME,
+                new AndroidSoundBackend(this, getExternalFilesDir("sounds")),
+                AndroidSoundBackend.deviceTtsLanguages(),
+                () -> !Preference.isSoundEnabled(this));
+        providers.add(soundProvider);
         final CapabilityHost host = new CapabilityHost(module, providers);
         // Registers adverts + takes over invoke/event routing before the
         // socket exists; the advert goes out on the first ID reply.
         host.start();
         phoneProvider.attach(host);
+        soundProvider.attach(host);
+        soundProvider.setSirenHook(whistling -> {
+            if (com.andruav.AndruavSettings.andruavWe7daBase != null) {
+                com.andruav.AndruavSettings.andruavWe7daBase.setIsWhisling(whistling);
+            }
+        });
 
         // B8: phone GPS as the unit position (9102) when no FC position is
         // being reported. The source watches other modules' 9102s through
@@ -192,6 +213,7 @@ public class DeAndroidModuleService extends Service {
         mCapabilityHost = host;
         mPhoneProvider = phoneProvider;
         mHealthMonitor = monitor;
+        mSoundProvider = soundProvider;
         mPositionSource = positionSource;
     }
 
@@ -199,16 +221,19 @@ public class DeAndroidModuleService extends Service {
         final CModule module;
         final PhoneProvider phoneProvider;
         final PhoneHealthMonitor monitor;
+        final SoundProvider soundProvider;
         final PhonePositionSource positionSource;
         synchronized (this) {
             module = mModule;
             phoneProvider = mPhoneProvider;
             monitor = mHealthMonitor;
+            soundProvider = mSoundProvider;
             positionSource = mPositionSource;
             mModule = null;
             mCapabilityHost = null;
             mPhoneProvider = null;
             mHealthMonitor = null;
+            mSoundProvider = null;
             mPositionSource = null;
             mModuleRunning = false;
         }
@@ -220,6 +245,9 @@ public class DeAndroidModuleService extends Service {
         }
         if (phoneProvider != null) {
             phoneProvider.stop();
+        }
+        if (soundProvider != null) {
+            soundProvider.stop();
         }
         if (module != null) {
             try {

@@ -3,7 +3,9 @@ package ap.andruavmiddlelibrary.factory.tts;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 
 import com.andruav.AndruavEngine;
@@ -47,6 +49,16 @@ public class TTS implements TextToSpeech.OnInitListener {
     // Persistent, user-controlled mute (home screen speaker toggle) - distinct from muteTTS,
     // which is only ever flipped transiently around programmatic UI updates.
     private boolean mSoundEnabled = true;
+
+    /** Completion callback for {@link #speakNowDirect} utterances — the
+     *  DE sound worker's Playback handle blocks on it. */
+    public interface UtteranceDoneListener {
+        void onDone(final String utteranceId, final boolean failed);
+    }
+
+    private volatile UtteranceDoneListener mUtteranceDoneListener;
+    /** Locale chosen in onInit — restored after a one-off language utterance. */
+    private Locale mDefaultLocale = Locale.ENGLISH;
 
     /***
      * Repeated-message throttling: minimum gap before the same text is spoken again,
@@ -135,6 +147,34 @@ public class TTS implements TextToSpeech.OnInitListener {
 
                 //Log.e(AndruavMo7arek.getPreference().TAG(), "This Language is not supported");
 
+                mDefaultLocale = tts.getLanguage() != null ? tts.getLanguage() : Locale.ENGLISH;
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                        @Override
+                        public void onStart(final String utteranceId) {
+                        }
+
+                        @Override
+                        public void onDone(final String utteranceId) {
+                            final UtteranceDoneListener listener = mUtteranceDoneListener;
+                            if (listener != null) listener.onDone(utteranceId, false);
+                        }
+
+                        @Override
+                        public void onError(final String utteranceId) {
+                            final UtteranceDoneListener listener = mUtteranceDoneListener;
+                            if (listener != null) listener.onDone(utteranceId, true);
+                        }
+
+                        @Override
+                        public void onError(final String utteranceId, final int errorCode) {
+                            final UtteranceDoneListener listener = mUtteranceDoneListener;
+                            if (listener != null) listener.onDone(utteranceId, true);
+                        }
+                    });
+                }
+
                 TTSinit = true;
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -188,6 +228,16 @@ public class TTS implements TextToSpeech.OnInitListener {
         try {
             if (muteTTS) return false;
             if (text == null) return false;
+
+            // AN-0042: when the DE sound provider runs, every speech request
+            // goes onto its bounded FIFO (the single choke point) so it gets
+            // the sound.say.started/finished facts with src "gcs".
+            final SoundDispatch.Worker worker = SoundDispatch.get();
+            if (worker != null) {
+                if (!mSoundEnabled) return false;
+                worker.onSay(text, null, -1, -1, SoundDispatch.SRC_GCS);
+                return true;
+            }
 
             Log.d(AndruavEngine.getPreference().TAG(), "Speak:" + text);
             if (TTSinit) {
@@ -247,6 +297,99 @@ public class TTS implements TextToSpeech.OnInitListener {
     private synchronized void forgetSpoken (final String text)
     {
         mRepeatStates.remove(text);
+    }
+
+
+    public void setUtteranceDoneListener(final UtteranceDoneListener listener) {
+        mUtteranceDoneListener = listener;
+    }
+
+    /*** BCP-47 tags the installed TTS engine can speak (advert enum for
+     *  say lang/language); empty when the engine is not up yet. */
+    public java.util.List<String> getAvailableLanguageTags() {
+        final java.util.List<String> tags = new java.util.ArrayList<>();
+        try {
+            if (TTSinit && tts != null
+                    && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                final java.util.Set<Locale> locales = tts.getAvailableLanguages();
+                if (locales != null) {
+                    for (Locale locale : locales) {
+                        final String tag = locale.toLanguageTag();
+                        if (tag != null && !tag.isEmpty() && !tags.contains(tag)) {
+                            tags.add(tag);
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            AndruavEngine.log().logException("TTS", ex);
+        }
+        return tags;
+    }
+
+    /***
+     * Speaks one text with explicit per-utterance options — the entry the
+     * DE sound worker's backend uses. Bypasses the SoundDispatch bridge
+     * (the caller IS the bridge endpoint), the repeated-message throttle
+     * and the home-screen mute (both already applied upstream).
+     * @param language  BCP-47 tag or "en_US"-style code, null keeps the current locale.
+     * @param pitch     0..99 (50 = normal), -1 keeps the default.
+     * @param volume    0..100, -1 leaves the stream volume alone.
+     * @param utteranceId reported back through {@link UtteranceDoneListener}.
+     * @return true when the engine accepted the utterance.
+     */
+    public boolean speakNowDirect(final String text, final String language, final int pitch,
+                                  final int volume, final String utteranceId) {
+        try {
+            if (text == null || !TTSinit) return false;
+
+            tts.setLanguage(language != null && !language.isEmpty()
+                    ? _localeFor(language) : mDefaultLocale);
+            // espeak-ng-style 0..99 pitch (50 = normal) -> Android factor ~1.0
+            tts.setPitch(pitch >= 0 ? Math.max(0.5f, Math.min(2.0f, pitch / 50.0f)) : 1.0f);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                final Bundle params = new Bundle();
+                if (volume >= 0) {
+                    params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME,
+                            Math.max(0f, Math.min(1f, volume / 100.0f)));
+                }
+                tts.speak(text, TextToSpeech.QUEUE_ADD, params,
+                        utteranceId != null ? utteranceId : "de_sound");
+            } else {
+                ttsUnder20(text);
+            }
+            return true;
+        }
+        catch (Exception ex)
+        {
+            AndruavEngine.log().logException("TTS", ex);
+        }
+        return false;
+    }
+
+    /*** Stops the current utterance (worker requestStop path). */
+    public void stopSpeaking() {
+        try {
+            if (TTSinit && tts != null) {
+                tts.stop();
+            }
+        }
+        catch (Exception ex)
+        {
+            AndruavEngine.log().logException("TTS", ex);
+        }
+    }
+
+    /*** "en", "en-US", "en_US" -> Locale. */
+    private static Locale _localeFor(final String language) {
+        final String[] parts = language.replace('-', '_').split("_");
+        if (parts.length >= 2) {
+            return new Locale(parts[0], parts[1]);
+        }
+        return new Locale(parts[0]);
     }
 
 
