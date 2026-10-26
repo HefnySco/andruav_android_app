@@ -246,3 +246,155 @@ toggle (well inside the 30 s budget).
 phone** — that is deferred to follow-up task **DE-0021** (and a related
 RPi soak, DE-0022). This gate ran on the emulator; the soak evidence
 item is intentionally not claimed here.
+
+## Native-mode UI and video (C1 spike, AN-0049, 2026-10-27)
+
+Question: with the Java comm client off, where do the UI (home screen, FCB
+screens, telemetry widgets), the WebRTC video signaling and the Emergency
+logic get their data and send their commands? Findings are from reading
+code only; nothing was run on a device.
+
+### What the code does today (facts, with pointers)
+
+- **Everything the UI knows comes through one class.** `AndruavWSClientBase`
+  (`andruavProtocol/.../websocket/AndruavWSClientBase.java`) receives text
+  in `onTextMessage(String)` (~line 760), parses it with
+  `Andruav_Parser.parseText`, updates the unit map (`AndruavUnitMapBase`) in
+  its `Execute()` switch (ID at ~810, NAV_INFO ~819, GPS ~889, Signaling
+  ~1043, CommSignalsStatus ~1359 ...) and posts events on the EventBus.
+  Everything outbound goes through `sendMessageToIndividual` and friends
+  (~1808) and ends in the two abstract hooks `socketSendTextMessage` /
+  `socketSendBinaryMessage` (lines 221-222). The other 50-odd call sites use
+  `AndruavEngine.getAndruavWS()` / `AndruavFacade.sendMessage`, so that class
+  is the single seam.
+- **Wire format is the same on the databus.** `ProtocolHeaders` (`ty`, `mt`,
+  `ms`, `sd`, `tg`, `gr`) are the same JSON keys the Java module already
+  uses (`deDatabus/.../Messages.java`, `CModule.onReceive`). A datagram a
+  module receives from de_comm is a message `Andruav_Parser.parseText` can
+  read.
+- **de_comm forwards to a module exactly the message types the module lists
+  in its registration** (`JSON_INTERMODULE_MODULE_MESSAGES_LIST`,
+  `de_modules_manager.cpp` `updateModuleSubscribedMessages` ~641 and the
+  fan-out loop in `processIncommingServerMessage` ~2080-2236). Two inbound
+  paths feed it: messages from the server (`andruav_comm_server.cpp` ~361 and
+  ~516) and messages another module sent (the `default:` branch of
+  `parseIntermoduleMessage`, which calls `processIncommingServerMessage` with
+  the sender's module key and then also relays to the server unless the
+  message is marked intermodule). So a subscribed Java module sees both GCS
+  commands and de_mavlink's own telemetry (ID, GPS, NAV_INFO, IMU, ...). A
+  module never gets its own messages back (sender key is skipped).
+  Today the app's module `andruav_phone` subscribes only to
+  `TYPE_AndruavModule_Location_Info` (`DeAndroidModuleService.java` ~131).
+- **WebRTC today.** `AndruavPeerConnectionClientClient` (middlelibrary,
+  lines ~197 and ~218) sends offers/ICE/hangup with
+  `AndruavFacade.sendWebRTCSignalingJSONMessage` (`AndruavFacade.java` ~465),
+  i.e. message 1021 to the GCS through the WS client. Inbound 1021 is handled
+  in `AndruavWSClientBase` ~1043: it looks up the sender in the unit map and
+  the camera module by channel, then `postSticky(Event_Signalling)` for the
+  peer-connection client. On Linux the same 1021 flow is handled by de_camera
+  (`droneengage_camera/src/main.cpp` MESSAGE_FILTER lists 1021;
+  `webrtc/webrtc_message_parser.cpp` ~128; replies via
+  `m_module.sendJMSG(sender, w, TYPE_AndruavMessage_Signaling)` in
+  `webrtc_facade.cpp` ~17/~48). **de_camera is not built for Android** (only
+  de_comm and de_mavlink are, plan A), so on the phone the WebRTC endpoint
+  stays the existing Java `PeerConnectionManager`; only its signaling
+  transport changes.
+- **de_mavlink has no local MAVLink output.** Its `udp_proxy_enabled`
+  (`fcb_main.cpp` ~218, ~2194) is a client to the comm server's UDP relay
+  (target comes from the server, `udp_proxy/udpProxy.cpp init`), not a local
+  listener. Config has only `s2s_*` ports (`de_mavlink.config.module.json`
+  ~968) and `fcb_connection_uri` for the FC side.
+- **State not on the message stream.** Comm line up/down is the
+  `Sync_EventFire` (1061) events `d_cl_on` / `d_cl_off_r` / `d_cl_off_e`
+  (`de_common/.../sync_fire_events.hpp`, fired from
+  `handleOnAndruavServerConnection` ~2402); de_camera already subscribes to
+  1061 the same way. Module health/capabilities arrive as 6542/6545.
+- **Emergency** (`app/.../Emergency.java`, `EmergencyBase`) has four inputs:
+  comm connection lost, battery low, GCS trigger, and a flight-mode failsafe
+  executed through `AndruavSettings.andruavWe7daBase.FCBoard.do_Mode(...)`;
+  its outputs are siren, flash (and, since B4/DE-0024, vibrate).
+  `FCBoard` is `ControlBoard_DroneKit` created by
+  `ControlBoardFactory` and talks to the FC through the in-process Mavlink
+  module (`:Mavlink`), which in native mode must NOT open the FC (the FC
+  belongs to de_mavlink, N4/N8).
+
+### Options evaluated
+
+| | (a) Java module on the databus | (b) de_mavlink forwards MAVLink to a local UDP port, UI parses it | (c) JNI state query |
+|---|---|---|---|
+| Idea | `andruav_phone` subscribes to the needed message types and feeds them to the existing parser; outbound goes back through the module | A new local MAVLink UDP output; the UI's Mavlink/DroneKit stack reads it | UI calls into the module `.so` for state |
+| Fits the plan | yes: module, port and wire format exist (B1/B2 done) | needs a new upstream feature in de_mavlink (Linux repo) plus a second reader of the FC stream | N1 puts each module in its own process; a JNI query would need cross-process IPC and a new C API upstream in both repos |
+| Covers | everything de_comm routes: unit ID, GPS, NAV_INFO, IMU, missions, geofence, signaling 1021, GCS commands | FC telemetry only; no unit identity, no GCS link state, no signaling, no commands to de_comm | whatever a hand-written C API exposes |
+| Commands | back through the bus, same path GCSs use | MAVLink back-channel would bypass de_mavlink's mission/supervisor logic | same, plus IPC |
+| Verdict | **recommended** | reject (also conflicts with the single-FC-owner rule) | reject |
+
+### Recommendation per need
+
+1. **UI state: (a), implemented as a new `AndruavWSClientBase` subclass
+   (working name `AndruavDeBusClient`).** It overrides the two
+   `socketSend*` hooks to call `CModule.sendJMSG/sendBMSG`, and the module's
+   `OnReceiveCallback` calls the inherited `onTextMessage(String)`. All
+   `getAndruavWS()` callers and the whole unit-map / EventBus layer stay
+   unchanged. The UI shows its own unit like any remote drone (a
+   `AndruavUnitShadow` entry keyed by the unit's own party id, the way the app
+   already shows other drones when it acts as a GCS), fed by de_mavlink's
+   telemetry. The module's subscription list is the set of types the
+   `Execute()` switch handles for a unit view (ID, NAV_INFO, GPS, IMU/binary
+   IMU, home/destination, waypoints and mission status, geofence, POW,
+   CommSignalsStatus, 1061 events, errors). Commands from screens (arm, mode,
+   goto, missions) are sent as the same messages a GCS sends, addressed to the
+   own unit. `ControlBoard_DroneKit` is replaced by a thin bus-backed board
+   (or the commands are routed in `AndruavFacade`), and the `:Mavlink`
+   module's FC connection is disabled in native mode.
+2. **Video signaling: (a), same client.** 1021 is added to the module's
+   subscription; the new client's `Execute()` case for 1021 already posts
+   `Event_Signalling` for the local `PeerConnectionManager`; outbound
+   offers/ICE/hangup already go through `sendWebRTCSignalingJSONMessage`, which
+   now lands on the bus. Needs the camera list to be known to the Java side
+   (the `UAVOSModuleCamera` lookup by channel) from the B7 camera advert
+   instead of the old Java ID message. No C++ change.
+3. **Emergency triggers: keep the Java `Emergency` class, change its
+   inputs.** Battery stays the phone's own receiver. Connection-lost comes
+   from the `d_cl_off_*` / `d_cl_on` events (1061) and 1059. GCS trigger
+   arrives as the normal GCS command through (a). Failsafe flight mode is sent
+   to de_mavlink over the bus instead of `FCBoard.do_Mode`. Siren/flash/vibrate
+   stay local (B4). Open point for the owner: whether the connection-lost
+   flight-mode failsafe should instead live in de_mavlink/the supervisor so it
+   still works when the app process is dead (see decision question below).
+
+### Follow-up tasks (sizes: S under a day, M 1-3 days, L about a week)
+
+These are proposals only; AN-0052 (C4) already covers the wiring and should
+be split or re-scoped by the owner using this list.
+
+| # | Task | Size | Depends on |
+|---|---|---|---|
+| F1 | `AndruavDeBusClient`: WS-base subclass over `CModule` (send hooks, receive into `onTextMessage`), unit tests with a fake `CModule` | M | B1/B2 (done), AN-0051 |
+| F2 | Subscription list + native-mode unit view: own unit shown as a shadow unit from de_mavlink telemetry; check ID/NAV_INFO/GPS/IMU/mission screens | L | F1 |
+| F3 | Bus-backed control board for FCB screens (arm, mode, goto, missions, params); disable the `:Mavlink` FC connection in native mode | L | F2 |
+| F4 | WebRTC signaling over the bus: 1021 subscription, camera list from the B7 advert, loopback test with a GCS | M | F1, AN-0046 |
+| F5 | Emergency rewiring: inputs from 1061/1059, failsafe mode via bus | S | F1, F3 |
+| F6 | (only if the owner picks it) move the connection-lost failsafe into de_mavlink/supervisor | M | owner decision |
+| F7 | UI/video acceptance on emulator then phone (extends C5 parity checklist: home screen, FCB screens, video from a web GCS) | M | F2-F5 |
+
+### Risks and checks to do in F1/F2
+
+- Message volume: subscribing to IMU/NAV_INFO on loopback is cheap, but the
+  Java parser runs on the module's receive thread; hand off to the existing
+  handler thread, do not parse on the UDP thread.
+- A module is never sent its own messages and de_comm relays a module's
+  non-intermodule messages to the server; commands the UI sends to its own
+  unit must be marked so de_comm hands them to de_mavlink without a server
+  round trip (check `ty`/`tg` handling in `parseIntermoduleMessage` when
+  writing F3).
+- Unverified (no device, no compile run in this task): that a message
+  received on the module deserializes through `Andruav_Parser.parseText`
+  unchanged (key names match by reading both sides; the "sd" party id and the
+  timestamp key need a unit test in F1).
+
+### Decision requested from the owner
+
+Record on AN-0049 (decision or note): (1) approve option (a) with the
+`AndruavWSClientBase` subclass as the seam; (2) own unit is rendered as a
+shadow unit fed by telemetry; (3) Emergency failsafe stays in Java (F5) or
+moves into de_mavlink (F6).
