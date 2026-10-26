@@ -148,6 +148,30 @@ public final class FcLinkBridge {
         }
     }
 
+    private static final class TcpClientLink implements FcLink {
+        private final Socket socket;
+        private final String name;
+
+        TcpClientLink(Socket socket, String name) {
+            this.socket = socket;
+            this.name = name;
+        }
+
+        @Override
+        public String name() { return name; }
+
+        @Override
+        public InputStream input() throws IOException { return socket.getInputStream(); }
+
+        @Override
+        public OutputStream output() throws IOException { return socket.getOutputStream(); }
+
+        @Override
+        public void close() {
+            try { socket.close(); } catch (IOException ignored) { }
+        }
+    }
+
     private static final class BluetoothLink implements FcLink {
         private final BluetoothSocket socket;
 
@@ -221,14 +245,16 @@ public final class FcLinkBridge {
     private void linkLoop() {
         while (true) {
             int commType = Preference.getFCBTargetComm(null);
-            if (commType != Preference.FCB_COM_USB && commType != Preference.FCB_COM_BT) {
-                // 'none': the FC is reached over UDP/TCP by de_mavlink itself.
-                sleepQuiet(RETRY_MS);
-                continue;
-            }
             FcLink link = null;
             try {
-                link = (commType == Preference.FCB_COM_USB) ? openUsbLink() : openBluetoothLink();
+                if (commType == Preference.FCB_COM_USB) {
+                    link = openUsbLink();
+                } else if (commType == Preference.FCB_COM_BT) {
+                    link = openBluetoothLink();
+                } else if (commType == Preference.FCB_COM_TCP) {
+                    link = openTcpLink();
+                }
+                // else 'none': the FC is reached over UDP by de_mavlink itself.
             } catch (IOException e) {
                 lastError = e.getMessage();
             }
@@ -376,6 +402,21 @@ public final class FcLinkBridge {
             return 57600;
         }
         return values[selector];
+    }
+
+    private FcLink openTcpLink() throws IOException {
+        String address = Preference.getFCBDroneTCPServerIP(null);
+        String portText = Preference.getFCBDroneTCPServerPort(null);
+        int port;
+        try {
+            port = Integer.parseInt(portText);
+        } catch (NumberFormatException e) {
+            throw new IOException("bad tcp server port");
+        }
+        Socket socket = new Socket();
+        socket.connect(new java.net.InetSocketAddress(address, port), RETRY_MS);
+        socket.setTcpNoDelay(true);
+        return new TcpClientLink(socket, "tcp:" + address + ":" + port);
     }
 
     private FcLink openBluetoothLink() throws IOException {
