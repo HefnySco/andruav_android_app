@@ -17,6 +17,9 @@ import java.util.List;
 
 import ap.andruav_ap.BuildConfig;
 import ap.andruav_ap.R;
+import ap.andruav_ap.denative.providers.phone.PhoneHealthConfig;
+import ap.andruav_ap.denative.providers.phone.PhoneHealthMonitor;
+import ap.andruav_ap.denative.providers.phone.PhoneProvider;
 import de.databus.CModule;
 import de.databus.caps.CapabilityHost;
 import de.databus.caps.DeCapabilityProvider;
@@ -59,6 +62,8 @@ public class DeAndroidModuleService extends Service {
 
     private CModule mModule;
     private CapabilityHost mCapabilityHost;
+    private PhoneProvider mPhoneProvider;
+    private PhoneHealthMonitor mHealthMonitor;
     private volatile boolean mModuleRunning;
     private String mStatusText = "starting";
 
@@ -114,10 +119,19 @@ public class DeAndroidModuleService extends Service {
         if (BuildConfig.DEBUG) {
             providers.add(new TestEchoProvider());
         }
+        // "phone" namespace: health state (battery/net/gps) + edge facts
+        // (battery_low, overheat, net_lost, net_back) - TO-BE section 5.6.
+        final PhoneProvider phoneProvider = new PhoneProvider(PhoneHealthConfig.defaults());
+        providers.add(phoneProvider);
         final CapabilityHost host = new CapabilityHost(module, providers);
         // Registers adverts + takes over invoke/event routing before the
         // socket exists; the advert goes out on the first ID reply.
         host.start();
+        phoneProvider.attach(host);
+
+        // Broadcast + poll driven sampler feeding the phone health tracker.
+        final PhoneHealthMonitor monitor = new PhoneHealthMonitor(this, phoneProvider.tracker());
+        monitor.start();
 
         // Socket bind + receiver threads off the main thread, mirroring
         // DeModuleService's moduleThread pattern.
@@ -144,15 +158,29 @@ public class DeAndroidModuleService extends Service {
 
         mModule = module;
         mCapabilityHost = host;
+        mPhoneProvider = phoneProvider;
+        mHealthMonitor = monitor;
     }
 
     private void stopModule() {
         final CModule module;
+        final PhoneProvider phoneProvider;
+        final PhoneHealthMonitor monitor;
         synchronized (this) {
             module = mModule;
+            phoneProvider = mPhoneProvider;
+            monitor = mHealthMonitor;
             mModule = null;
             mCapabilityHost = null;
+            mPhoneProvider = null;
+            mHealthMonitor = null;
             mModuleRunning = false;
+        }
+        if (monitor != null) {
+            monitor.stop();
+        }
+        if (phoneProvider != null) {
+            phoneProvider.stop();
         }
         if (module != null) {
             try {
