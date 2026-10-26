@@ -48,9 +48,12 @@ public class CModule {
         void onReceive(byte[] message, int len, JSONObject jMsg);
     }
 
-    /** Capability action handler: returns {data, err} — err null/empty on success. */
+    /** Capability action handler: returns {data, err} — err null/empty on success.
+     *  deadlineMs is the wall-clock time (epoch millis) the invoke must be
+     *  answered by - the same budget _handle_invoke enforces. */
     public interface InvokeHandler {
-        InvokeResult onInvoke(String ns, String act, Map<String, Object> params);
+        InvokeResult onInvoke(String id, String ns, String act,
+                              Map<String, Object> params, long deadlineMs);
     }
 
     public static final class InvokeResult {
@@ -78,6 +81,7 @@ public class CModule {
     private final double m_instance_time_stamp = System.currentTimeMillis() / 1000.0;
     private final Object m_lock = new Object();
     // Phase-3 capability helper state
+    private static final int MAX_INVOKE_RESULTS = 256;
     private List<String> m_capability_adverts = new ArrayList<>();
     private List<JSONObject> m_capability_parsed = new ArrayList<>();
     private String m_capability_hash = "";
@@ -390,9 +394,10 @@ public class CModule {
         return true;
     }
 
-    /** Register the action handler: handler(ns, act, params) ->
-     *  InvokeResult. Params arrive validated (defaults filled). Results are
-     *  idempotent: a repeated invoke id replays the cached result. */
+    /** Register the action handler: handler(id, ns, act, params,
+     *  deadlineMs) -> InvokeResult. Params arrive validated (defaults
+     *  filled). Results are idempotent: a repeated invoke id replays the
+     *  cached result. */
     public void on_invoke(InvokeHandler handler) {
         synchronized (m_cap_lock) {
             this.m_on_invoke = handler;
@@ -419,6 +424,13 @@ public class CModule {
         return nonce;
     }
 
+    /** Re-broadcast the registered advert set on MODULE_CAPABILITIES
+     *  (6542) - for hosts that refresh their adverts after the initial
+     *  registration publish. No-op when no adverts are registered. */
+    public void send_capabilities() {
+        if (!this.m_capability_adverts.isEmpty()) _send_capabilities();
+    }
+
     private void _send_capabilities() {
         JSONObject msg = new JSONObject()
                 .put("caps", new JSONArray(this.m_capability_adverts))
@@ -434,7 +446,7 @@ public class CModule {
         synchronized (m_cap_lock) {
             this.m_invoke_results.remove(id_);
             this.m_invoke_results.put(id_, result);
-            while (this.m_invoke_results.size() > 64) {
+            while (this.m_invoke_results.size() > MAX_INVOKE_RESULTS) {
                 String oldest = this.m_invoke_results.keySet().iterator().next();
                 this.m_invoke_results.remove(oldest);
             }
@@ -466,6 +478,7 @@ public class CModule {
 
         final String fid = id_;
         final double fdl = dl;
+        final long fdeadline = System.currentTimeMillis() + (long) (fdl * 1000);
 
         java.util.function.Consumer<String> fail = (err) -> {
             this.m_invoke_inflight.remove(fid);
@@ -515,7 +528,7 @@ public class CModule {
             Thread worker = new Thread(() -> {
                 JSONObject res;
                 try {
-                    InvokeResult ir = handler.onInvoke(fns, fact, filled);
+                    InvokeResult ir = handler.onInvoke(fid, fns, fact, filled, fdeadline);
                     res = new JSONObject().put("ok", ir.err == null || ir.err.isEmpty());
                     if (ir.err != null && !ir.err.isEmpty()) {
                         res.put("err", ir.err);
