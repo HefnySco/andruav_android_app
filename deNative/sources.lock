@@ -4,4 +4,4 @@
 #   droneengage_communication_pro = A3/DE-0012 + DE-0017 compat fixes (de_comm)
 #   droneengage_mavlink           = A4/MV-0019 (de_mavlink)
 droneengage_communication_pro b0051dafbf09d9ad44adf78080d79d8ba8a5f57c
-droneengage_mavlink 3bdd6bb2d19061b52ffcbe661cd71dc5747a50a1
+droneengage_mavlink be9dc8c5deb402e8f0d18bed9201d66cb474e0f9
