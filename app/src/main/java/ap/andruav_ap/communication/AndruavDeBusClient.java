@@ -1,6 +1,7 @@
 package ap.andruav_ap.communication;
 
 import com.andruav.AndruavEngine;
+import com.andruav.EmergencyBase;
 import com.andruav.event.networkEvent.EventSocketState;
 import com.andruav.protocol.commands.ProtocolHeaders;
 import com.andruav.protocol.commands.binaryMessages.AndruavBinary_2MR;
@@ -74,6 +75,21 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
     // NOTE: serialized as an unsigned 32-bit value - de_* readers validate
     // "p" as number_unsigned, so it must leave as 4294967295, not -1.
     private static final long LOCAL_PERMISSION_FULL_CONTROL = 0xffffffffL;
+
+    /*** F5 (C4e, AN-0072): comm-line event names - de_common sync_fire_events.hpp. */
+    private static final String EVENT_COMM_LINE_ONLINE          = "d_cl_on";
+    private static final String EVENT_COMM_LINE_OFFLINE_REQUEST = "d_cl_off_r";
+    private static final String EVENT_COMM_LINE_OFFLINE_ERROR   = "d_cl_off_e";
+
+    /***
+     * F5 (C4e, AN-0072): last definite comm-line state seen on the bus.
+     * de_comm reports it two ways: {@code ms.g} on the 9100 module-ID
+     * broadcast (refreshed on every server-status change) and a 1061
+     * Sync_EventFire carrying {@code ms.d} = "d_cl_on" / "d_cl_off_*".
+     * {@code null} = not yet reported; only definite edges fire the
+     * emergency input, so repeated broadcasts do not retrigger alarms.
+     */
+    private Boolean mCommLineOnline;
 
 
     public AndruavDeBusClient(final CModule module) {
@@ -374,14 +390,28 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
             TotalBytesRecieved += len;
 
             if (Messages.CMD_TYPE_INTERMODULE.equals(jMsg.optString(Messages.INTERMODULE_ROUTING_TYPE))) {
-                if (jMsg.optInt(Messages.ANDRUAV_PROTOCOL_MESSAGE_TYPE)
-                        == Messages.TYPE_AndruavModule_ID) {
+                final int messageType = jMsg.optInt(Messages.ANDRUAV_PROTOCOL_MESSAGE_TYPE);
+                if (messageType == Messages.TYPE_AndruavModule_ID) {
+                    // F5 (C4e, AN-0072): ms.g reports the comm-server link
+                    // status on every change - the registration ack is
+                    // only the first broadcast.
+                    applyServerLinkStatus(jMsg);
                     if (getSocketState() != SOCKETSTATE_REGISTERED) {
                         setSocketState(SOCKETSTATE_REGISTERED);
                         setSocketAction(SOCKETACTION_NONE);
                     }
+                } else if (messageType == Messages.TYPE_AndruavMessage_Sync_EventFire) {
+                    applyCommLineEvent(jMsg);
                 }
                 return;
+            }
+
+            if (jMsg.optInt(Messages.ANDRUAV_PROTOCOL_MESSAGE_TYPE)
+                    == Messages.TYPE_AndruavMessage_Sync_EventFire) {
+                // a Sync_EventFire can also ride the non-intermodule
+                // path; the d_cl_* check runs here and the message still
+                // falls through to the parser below.
+                applyCommLineEvent(jMsg);
             }
 
             stampBusSender(jMsg);
@@ -415,6 +445,82 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
             }
         } catch (Exception e) {
             AndruavEngine.log().logException("debus_receive", e);
+        }
+    }
+
+
+    /***
+     * F5 (C4e, AN-0072): the de_comm module-ID broadcast carries
+     * {@code ms.g} - the comm-server socket status - refreshed on every
+     * status change (the "link status in id-ack" of DE-0009). Only
+     * definite edges count: {@code SOCKET_STATUS_REGISTERED} is online,
+     * {@code SOCKET_STATUS_ERROR}/{@code SOCKET_STATUS_DISCONNECTED} is
+     * offline; the transient states (CONNECTING, DISCONNECTING, ...) do
+     * not flap the alarm. Mirrors de_mavlink's
+     * OnConnectionStatusChangedWithAndruavServer mapping.
+     */
+    private void applyServerLinkStatus(final JSONObject jMsg) {
+        final Object cmdObj = jMsg.opt(Messages.ANDRUAV_PROTOCOL_MESSAGE_CMD);
+        if (!(cmdObj instanceof JSONObject)) return;
+
+        final int status = ((JSONObject) cmdObj)
+                .optInt(Messages.JSON_INTERMODULE_SOCKET_STATUS, -1);
+        switch (status) {
+            case Messages.SOCKET_STATUS_REGISTERED:
+                applyCommLineState(true);
+                break;
+            case Messages.SOCKET_STATUS_ERROR:
+            case Messages.SOCKET_STATUS_DISCONNECTED:
+                applyCommLineState(false);
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    /***
+     * F5 (C4e, AN-0072): a 1061 Sync_EventFire carrying a comm-line
+     * event ({@code ms.d} = "d_cl_off_r" / "d_cl_off_e" / "d_cl_on" -
+     * de_common sync_fire_events.hpp) maps onto the same emergency input
+     * as the {@code ms.g} link status.
+     */
+    private void applyCommLineEvent(final JSONObject jMsg) {
+        final Object cmdObj = jMsg.opt(Messages.ANDRUAV_PROTOCOL_MESSAGE_CMD);
+        if (!(cmdObj instanceof JSONObject)) return;
+
+        final String eventName = ((JSONObject) cmdObj).optString("d", "");
+        if (EVENT_COMM_LINE_ONLINE.equals(eventName)) {
+            applyCommLineState(true);
+        } else if (EVENT_COMM_LINE_OFFLINE_REQUEST.equals(eventName)
+                || EVENT_COMM_LINE_OFFLINE_ERROR.equals(eventName)) {
+            applyCommLineState(false);
+        }
+    }
+
+
+    /***
+     * F5 (C4e, AN-0072): edge-only delivery of the comm-line state into
+     * the Java {@link EmergencyBase} connection trigger - siren / flash /
+     * vibrate stay local through the B4 choke points.
+     * <p>
+     * The comm-loss FLIGHT-MODE failsafe is deliberately NOT fired here:
+     * in native mode de_mavlink owns it (config
+     * {@code failsafe_on_comm_lost}, C4g/F6) so it still fires with the
+     * app process dead. No mode change is sent from Java for comm-loss.
+     */
+    private void applyCommLineState(final boolean online) {
+        if ((mCommLineOnline != null) && (mCommLineOnline == online)) return;
+        mCommLineOnline = online;
+
+        final EmergencyBase emergency = AndruavEngine.getEmergency();
+        if (emergency == null) return;
+
+        if (online) {
+            emergency.triggerConnectionEmergency(false);
+        } else {
+            emergency.sendSMS(false); // recovery SMS - its own gates apply
+            emergency.triggerConnectionEmergency(true);
         }
     }
 

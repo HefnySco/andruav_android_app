@@ -16,6 +16,7 @@ import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_RemoteExecuteResult;
 
 import ap.andruav_ap.guiEvent.GUIEvent_EnableFlashing;
+import ap.andruav_ap.denative.NativeUnitController;
 import ap.andruav_ap.denative.providers.phone.PhoneDevices;
 import ap.andruav_ap.denative.providers.phone.PhoneOutput;
 import com.andruav.FeatureSwitch;
@@ -69,11 +70,22 @@ public class Emergency extends EmergencyBase {
     }
 
     /***
-     * Change Flight mode to predefined when emergency
+     * Change Flight mode to predefined when emergency.
+     * <p>
+     * C4e/F5 (AN-0072): in native mode the comm-loss flight-mode failsafe
+     * moved into de_mavlink (config {@code failsafe_on_comm_lost}, C4g/F6)
+     * so it still fires with the app process dead - Java no longer owns
+     * the trigger and sends no mode change for comm-loss. The legacy
+     * {@code FCBoard.do_Mode} path below stays for the Java stack.
      * @param ignoreTiming
      */
     public  void triggerEmergencyFlightModeFaileSafe(final boolean ignoreTiming)
     {
+        if (NativeUnitController.isNativeMode())
+        {
+            // de_mavlink fires the configured failsafe on comm-off itself.
+            return ;
+        }
 
         final int flightMode =  Preference.isEmergencyFlightModeFailSafeEnabled(null);
 
@@ -218,7 +230,13 @@ public class Emergency extends EmergencyBase {
             App.soundManager.stopSiren();
         }
 
-
+        // vibrate follows the siren (B4): the phone.vibrate choke point is
+        // shared with the bus provider; src "emergency" marks the surface.
+        final PhoneOutput vibrate = PhoneDevices.output("vibrate");
+        if (vibrate != null)
+        {
+            vibrate.write(active, PhoneOutput.SRC_EMERGENCY);
+        }
 
     }
 
