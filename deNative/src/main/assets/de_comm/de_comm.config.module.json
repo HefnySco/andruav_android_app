@@ -20,8 +20,8 @@
     "auth_port"                     : 19408,
     "auth_verify_ssl"               : false,
     "use_local_comm_server"        : false,   // use local comm server instead of main server
-    "local_comm_server_ip"         : "192.168.0.30",   // direct-connect server ip when use_local_comm_server is on
-    "local_comm_server_port"       : 60008,             // direct-connect server port when use_local_comm_server is on
+    "local_comm_server_ip"         : "192.168.0.30",   // mesh/local comm server ip used when use_local_comm_server is on
+    "local_comm_server_port"       : 60008,             // mesh/local comm server port used when use_local_comm_server is on
     //this is optional if [auth_verify_ssl] == true and ssl-certificate is internal.
     "root_certificate_path"     : "./root.crt",
 
