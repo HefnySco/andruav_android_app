@@ -64,6 +64,7 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
     private TextView btnBtScan;
     private LinearLayout listBt;
     private View listBtScroll;
+    private static final int BT_LIST_MAX_DP = 240;
     private Adapter_BluetoothList btAdapter;
     private View selectedBtRow;
     private Spinner spinnerBaud;
@@ -240,6 +241,18 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
         }
 
         btAdapter = new Adapter_BluetoothList(requireActivity(), this);
+        // Paired devices (a telemetry radio is normally paired once) are listed
+        // straight away; a scan only finds devices that are discoverable now.
+        try {
+            final BluetoothAdapter sys = BluetoothAdapter.getDefaultAdapter();
+            if (usable && sys != null && sys.isEnabled()) {
+                for (BluetoothDevice d : sys.getBondedDevices()) {
+                    btAdapter.add(d);
+                }
+            }
+        } catch (SecurityException e) {
+            // no BLUETOOTH_CONNECT yet - the scan path still works once granted
+        }
         refreshBtList();
 
         btnBtToggle.setOnClickListener(v -> {
@@ -304,6 +317,21 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
             final View child = btAdapter.getView(i, null, listBt);
             listBt.addView(child);
         }
+        capBtListHeight();
+    }
+
+    /***
+     * NestedScrollView ignores android:maxHeight, so with many devices the list
+     * grew to full height and never scrolled. Cap it to BT_LIST_MAX_DP here.
+     */
+    private void capBtListHeight() {
+        final int maxPx = (int) (BT_LIST_MAX_DP * getResources().getDisplayMetrics().density);
+        listBt.measure(View.MeasureSpec.makeMeasureSpec(listBtScroll.getWidth() > 0 ? listBtScroll.getWidth()
+                        : getResources().getDisplayMetrics().widthPixels, View.MeasureSpec.AT_MOST),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        final android.view.ViewGroup.LayoutParams lp = listBtScroll.getLayoutParams();
+        lp.height = listBt.getMeasuredHeight() > maxPx ? maxPx : android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+        listBtScroll.setLayoutParams(lp);
     }
 
     @Override
