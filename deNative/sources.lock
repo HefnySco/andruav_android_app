@@ -3,5 +3,5 @@
 # Synced into deNative/external/ by deNative/sync_sources.sh (decision N5).
 #   droneengage_communication_pro = A3/DE-0012 + DE-0017 compat fixes (de_comm)
 #   droneengage_mavlink           = A4/MV-0019 (de_mavlink)
-droneengage_communication_pro a9476ceae6e3bd2e3ad83b1529652c20f5bf8d98
-droneengage_mavlink 31f83478db4a4b6188e5139c2894fe5e51978544
+droneengage_communication_pro b0051dafbf09d9ad44adf78080d79d8ba8a5f57c
+droneengage_mavlink 3bdd6bb2d19061b52ffcbe661cd71dc5747a50a1
