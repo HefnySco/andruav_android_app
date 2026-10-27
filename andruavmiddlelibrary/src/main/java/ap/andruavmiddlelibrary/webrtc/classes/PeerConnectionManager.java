@@ -48,7 +48,12 @@ import com.andruav.AndruavSettings;
 public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHandler, CapturerObserver {
 
     protected PeerConnectionManager Me;
-    // Camera ID for Android
+    /**
+     * Wire channel of this unit's video stream - the camera entry's "id"
+     * the GCS dials (the B7 camera channel key in native mode, the PartyID
+     * on the legacy Java list). NOT the peer identity: outbound signaling
+     * keeps PartyID in the "number" field.
+     */
     public static String CameraID;
     private PeerConnectionFactory pcFactory;
     private PnRTC_3ameel pnRTC3ameel;
@@ -199,7 +204,10 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
             {
                 // Now we can add our tracks.
-                localVideoTrack = pcFactory.createVideoTrack(AndruavSettings.andruavWe7daBase.PartyID, localVideoSource);
+                // The track id must equal the published camera entry's "id" -
+                // the channel the GCS dials (webclient drops received tracks
+                // whose id differs from the dialed one on Chrome).
+                localVideoTrack = pcFactory.createVideoTrack(channelName, localVideoSource);
                 mediaStream.addTrack(localVideoTrack);
                 // Added exactly once for the life of the track: local preview attach/detach only
                 // ever changes mLocalPreviewSink, it never touches this sink registration, so
@@ -665,12 +673,14 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
     @Override
     public void onCameraFlashChanged(int flashOn) {
-        AndruavDroneFacade.sendCameraFlashStatus (AndruavSettings.andruavWe7daBase.PartyID, flashOn, null);
+        // CameraID is the stream's wire channel = the camera entry's "id"
+        // the GCS tracks status against (was PartyID before F4).
+        AndruavDroneFacade.sendCameraFlashStatus (CameraID, flashOn, null);
     }
 
     @Override
     public void onCameraZoomChanged(float zoom) {
-        AndruavDroneFacade.sendCameraZoomStatus(AndruavSettings.andruavWe7daBase.PartyID, zoom, null);
+        AndruavDroneFacade.sendCameraZoomStatus(CameraID, zoom, null);
 
     }
 

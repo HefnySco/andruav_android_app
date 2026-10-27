@@ -109,6 +109,7 @@ import ap.andruav_ap.denative.NativeUnitController;
 import ap.andruavmiddlelibrary.log.ExceptionDaoLogger;
 import ap.andruavmiddlelibrary.log.ExceptionHandler;
 import ap.sensors.SensorService;
+import ap.andruav_ap.denative.providers.camera.CameraBackend;
 import ap.andruav_ap.services.fpv.CameraController;
 import ap.andruav_ap.services.fpv.FPVStreamingService;
 import ap.andruav_ap.services.link.AndruavLinkService;
@@ -651,17 +652,29 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                 // single capture pipeline/video track and CameraSwitch still just blind-toggles
                 // (see PeerConnectionManager.switchCamera()), so it must stay a single entry -
                 // reporting one per physical lens breaks both switching and video signaling.
+                //
+                // F4 (C4d, AN-0071): the entry is sourced from the B7 camera channel surface
+                // (CameraController - the same table the de.cap camera advert publishes) instead
+                // of the hard-coded PartyID. Its "id" is the channel of the camera the stream
+                // will capture; the WebRTC track id is created with the same value
+                // (PeerConnectionManager.init via FPVStreamingService), so the channel the GCS
+                // dials always matches the stream's track id.
                 final int[] captureDimensions = Preference.getActiveCameraDimensions(null);
                 final int captureWidth = captureDimensions[0];
                 final int captureHeight = captureDimensions[1];
                 final int captureFps = captureDimensions[2];
+
+                final CameraBackend.CameraChannel streamChannel =
+                        CameraController.getInstance().streamChannel();
 
                 // Define Camera
                 JSONObject camera = new JSONObject();
                 camera.put(UAVOSConstants.CAMERA_SUPPORT_VIDEO, true);
                 camera.put(UAVOSConstants.CAMERA_SUPPORT_ZOOM, true);
                 camera.put(UAVOSConstants.CAMERA_SUPPORT_FLASH, supportFlash);
-                camera.put(UAVOSConstants.CAMERA_UNIQUE_NAME, AndruavSettings.andruavWe7daBase.PartyID);
+                camera.put(UAVOSConstants.CAMERA_UNIQUE_NAME, (streamChannel != null)
+                        ? streamChannel.key
+                        : AndruavSettings.andruavWe7daBase.PartyID);
                 camera.put(UAVOSConstants.CAMERA_TYPE, AndruavMessage_CameraList.EXTERNAL_CAMERA_TYPE_RTCWEBCAM);
                 //camera.put(UAVOSConstants.CAMERA_ANDROID_DUAL_CAM, true);
                 camera.put(UAVOSConstants.CAMERA_SPECIFICATION, UAVOSConstants.CAMERA_SPECIFICATION_SUPPORT_ZOOMING | UAVOSConstants.CAMERA_SPECIFICATION_SUPPORT_PHOTO
@@ -672,7 +685,10 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                 camera.put(UAVOSConstants.CAMERA_ACTUAL_FPS, captureFps);
                 camera.put(UAVOSConstants.CAMERA_WIDTH, captureWidth);
                 camera.put(UAVOSConstants.CAMERA_HEIGHT, captureHeight);
-                if (AndruavEngine.getPreference().getModuleType().contains(ProtocolHeaders.UAVOS_CAMERA_MODULE_CLASS)) {
+                if (streamChannel != null) {
+                    camera.put(UAVOSConstants.CAMERA_LOCAL_NAME, streamChannel.name);
+                }
+                else if (AndruavEngine.getPreference().getModuleType().contains(ProtocolHeaders.UAVOS_CAMERA_MODULE_CLASS)) {
                     camera.put(UAVOSConstants.CAMERA_LOCAL_NAME, AndruavSettings.andruavWe7daBase.UnitID);
                 }
                 else

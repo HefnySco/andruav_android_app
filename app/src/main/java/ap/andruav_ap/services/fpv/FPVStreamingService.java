@@ -206,7 +206,14 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
         ContextUtils.initialize(AndruavEngine.AppContext);
 
         mPeerConnectionManager = new PeerConnectionManager();
-        final boolean res = mPeerConnectionManager.init(this, this, this, null, true, AndruavSettings.andruavWe7daBase.PartyID);
+        // The stream's wire channel: the B7 camera channel key of the camera
+        // about to be captured (same value the CameraList entry publishes as
+        // "id"), so the channel the GCS dials equals the video track id.
+        // Falls back to the PartyID - the pre-F4 published id - when the
+        // camera surface has no channels.
+        final String streamChannel = CameraController.getInstance().streamChannelKey();
+        final boolean res = mPeerConnectionManager.init(this, this, this, null, true,
+                (streamChannel != null) ? streamChannel : AndruavSettings.andruavWe7daBase.PartyID);
         if (!res) {
             PanicFacade.cannotStartCamera();
             Voting.onCameraIssue();

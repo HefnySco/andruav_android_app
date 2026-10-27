@@ -42,6 +42,7 @@ import ap.andruav_ap.denative.providers.camera.CameraBackend;
 import ap.andruavmiddlelibrary.eventClasses.fpvEvent.Event_FPV_Image;
 import ap.andruavmiddlelibrary.factory.io.FileHelper;
 import ap.andruavmiddlelibrary.factory.util.Image_Helper;
+import ap.andruavmiddlelibrary.preference.Preference;
 
 /**
  * Single owner of the phone-camera still/record/zoom surface, reachable
@@ -127,17 +128,25 @@ public class CameraController implements CameraBackend {
     // ---- channels ------------------------------------------------------------
 
     private volatile List<Channel> mChannels;      // null = not enumerated yet
+    /**
+     * CameraManager.getCameraIdList() order captured at enumeration - the
+     * same order the WebRTC Camera2Enumerator (and therefore the camera
+     * number preference) indexes. Empty when enumeration failed.
+     */
+    private volatile List<String> mOrderedCameraIds;
     private final Object mChannelsLock = new Object();
 
     private void ensureChannels() {
         if (mChannels != null) return;
         synchronized (mChannelsLock) {
             if (mChannels != null) return;
-            mChannels = enumerateChannels();
+            final List<String> orderedCameraIds = new ArrayList<>();
+            mChannels = enumerateChannels(orderedCameraIds);
+            mOrderedCameraIds = orderedCameraIds;
         }
     }
 
-    private static List<Channel> enumerateChannels() {
+    private static List<Channel> enumerateChannels(final List<String> orderedCameraIds) {
         final List<Channel> channels = new ArrayList<>();
         try {
             final Context context = App.getAppContext();
@@ -147,6 +156,8 @@ public class CameraController implements CameraBackend {
             final CameraManager manager =
                     (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
             if (manager == null) return channels;
+
+            orderedCameraIds.addAll(java.util.Arrays.asList(manager.getCameraIdList()));
 
             int backIndex = 0, frontIndex = 0, usbIndex = 0;
             for (final String cameraId : manager.getCameraIdList()) {
@@ -226,6 +237,45 @@ public class CameraController implements CameraBackend {
             if (c.name.equals(channel)) return c.key;
         }
         return null;
+    }
+
+    /**
+     * The channel the WebRTC stream will capture: the camera-number
+     * preference indexes the WebRTC enumerator's device list, which is
+     * CameraManager.getCameraIdList() order on Camera2Enumerator devices -
+     * the same order {@link #mOrderedCameraIds} keeps. Falls back to the
+     * default channel when the preference is out of range; null when no
+     * channel exists.
+     */
+    public CameraBackend.CameraChannel streamChannel() {
+        ensureChannels();
+        if (mChannels.isEmpty()) return null;
+        final List<String> orderedCameraIds = mOrderedCameraIds;
+        if (orderedCameraIds != null) {
+            int cameraIndex = -1;
+            try {
+                cameraIndex = Preference.getCameraNumber(null);
+            } catch (Exception ignored) {
+            }
+            if (cameraIndex >= 0 && cameraIndex < orderedCameraIds.size()) {
+                final String cameraId = orderedCameraIds.get(cameraIndex);
+                for (final Channel channel : mChannels) {
+                    if (channel.id.equals(cameraId)) return channel;
+                }
+            }
+        }
+        final String defaultKey = defaultChannelKey();
+        return (defaultKey != null) ? channelByKey(defaultKey) : null;
+    }
+
+    /**
+     * Key of {@link #streamChannel()} - the wire name of the video track:
+     * the camera entry's "id" the GCS dials and the WebRTC track id, all
+     * the same value. null when no channel exists.
+     */
+    public String streamChannelKey() {
+        final CameraBackend.CameraChannel channel = streamChannel();
+        return (channel != null) ? channel.key : null;
     }
 
     /** Key of the channel the WebRTC capturer is on, or null when idle. */

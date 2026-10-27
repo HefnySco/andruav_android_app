@@ -191,7 +191,10 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
             message.put(PnRTCResala.JSON_PACKET, packet);
             //message.put(PnRTCResala.JSON_PACKET, packet);
             message.put(PnRTCResala.JSON_ID, AndruavSettings.andruavWe7daBase.PartyID); //Todo: session id, unused in js SDK?
-            message.put(PnRTCResala.JSON_NUMBER, PeerConnectionManager.CameraID);
+            // "number" is the id the peer replies to (its 1021 target), so it
+            // must stay the PartyID - not the stream channel (CameraID), which
+            // is the channel key the camera advert publishes.
+            message.put(PnRTCResala.JSON_NUMBER, AndruavSettings.andruavWe7daBase.PartyID);
             message.put(PnRTCResala.JSON_CHANNEL, channel); // this is a single video track
 
             AndruavFacade.sendWebRTCSignalingJSONMessage(message,toID,true);
@@ -213,7 +216,8 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
     public static void sendHangUpTo (final String userID)
     {
         try {
-            final JSONObject packet =  AndruavPeerConnectionClientClient.generateHangupPacket(PeerConnectionManager.CameraID) ;
+            final JSONObject packet =  AndruavPeerConnectionClientClient.generateHangupPacket(
+                    AndruavSettings.andruavWe7daBase.PartyID, PeerConnectionManager.CameraID) ;
 
             AndruavFacade.sendWebRTCSignalingJSONMessage(packet,userID,true);
 
@@ -223,18 +227,20 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
         }
     }
     /**
-     * @param userId Your id. Used to tag the message before publishing it to another user.
+     * @param number  Your id (PartyID). Used to tag the message before publishing it to another user.
+     * @param channel The stream channel the hangup refers to - the camera
+     *                entry's "id" the peer dialed (PeerConnectionManager.CameraID).
      * @return
      */
-    public static JSONObject generateHangupPacket(final String userId){
+    public static JSONObject generateHangupPacket(final String number, final String channel){
         JSONObject json = new JSONObject();
         try {
             JSONObject packet = new JSONObject();
             packet.put(PnRTCResala.JSON_HANGUP, true);
             json.put(PnRTCResala.JSON_PACKET, packet);
             json.put(PnRTCResala.JSON_ID, AndruavSettings.andruavWe7daBase.PartyID); //Todo: session id, unused in js SDK?
-            json.put(PnRTCResala.JSON_NUMBER, userId);
-            packet.put(PnRTCResala.JSON_CHANNEL, userId); // this is a single video track
+            json.put(PnRTCResala.JSON_NUMBER, number);
+            packet.put(PnRTCResala.JSON_CHANNEL, channel); // this is a single video track
 
         } catch (JSONException e){
             e.printStackTrace();
