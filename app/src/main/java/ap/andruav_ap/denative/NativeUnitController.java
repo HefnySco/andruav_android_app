@@ -64,6 +64,13 @@ public final class NativeUnitController {
      */
     private static boolean sResumeJavaLink;
 
+    /**
+     * True when the Java FC link (DroneKitServer) was open at the moment
+     * native was switched on. Tracked apart from {@link #sResumeJavaLink}:
+     * a unit can have its FC up without a server link.
+     */
+    private static boolean sResumeFcLink;
+
     /*** Bumped per switch so a stale pending wait cannot fire after a newer toggle. */
     private static int sSwitchGeneration;
 
@@ -79,8 +86,13 @@ public final class NativeUnitController {
      */
     public static synchronized void applyMode(final Context context, final boolean nativeOn) {
         final Context app = context.getApplicationContext();
-        sResumeJavaLink = nativeOn
-                && (Preference.isLinkServiceDesired(null) || App.isAndruavWSConnected());
+        // Snapshot what the Java stack had up only on the ON switch - the OFF
+        // switch must read these, never overwrite them. A repeated ON while
+        // already native keeps the first snapshot (the Java stack is down by then).
+        if (nativeOn && !Preference.isNativeUnitEnabled(null)) {
+            sResumeJavaLink = Preference.isLinkServiceDesired(null) || App.isAndruavWSConnected();
+            sResumeFcLink = App.droneKitServer != null;
+        }
         Preference.isNativeUnitEnabled(null, nativeOn);
         final int generation = ++sSwitchGeneration;
         if (nativeOn) {
@@ -216,14 +228,14 @@ public final class NativeUnitController {
         if (proxy != null) {
             proxy.setPause(false);
         }
-        if (!sResumeJavaLink) {
-            return;
-        }
-        sResumeJavaLink = false;
-        if (Preference.isAutoFCBConnect(null)) {
+        if (sResumeFcLink) {
+            sResumeFcLink = false;
             TelemetryModeer.connectToPreferredConnection(app, true);
         }
-        App.startAndruavWS();
+        if (sResumeJavaLink) {
+            sResumeJavaLink = false;
+            App.startAndruavWS();
+        }
     }
 
     private static boolean isJavaStackDown() {
