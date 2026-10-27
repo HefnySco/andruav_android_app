@@ -823,6 +823,13 @@ public class MainScreen extends BaseAndruavShasha {
         final int effectiveStatus = nativeMode ? NativeUnitController.effectiveSocketState() : status;
         final int effectiveAction = nativeMode ? SOCKETACTION_NONE : action;
         updateButtonsStatus(effectiveStatus, effectiveAction);
+        if (nativeMode && effectiveStatus == SOCKETSTATE_CONNECTED) {
+            // CONNECTED in native mode means module procs are still
+            // settling to STOPPED - re-gate once they land so a DISCONNECT
+            // does not leave the menu/tiles stuck in CONNECTED.
+            mhandle.postDelayed(() -> updateConnectionIconsStatus(
+                    AndruavEngine.getAndruavWSStatus(), AndruavEngine.getAndruavWSAction()), 1500);
+        }
         updateServerCard();
         updateModuleTiles(); // Com tile (and dependents) track server link too - keep in sync.
         switch (effectiveStatus) {
@@ -1029,6 +1036,21 @@ public class MainScreen extends BaseAndruavShasha {
         return "";
     }
 
+    /**
+     * AN-0065: the WS socket events that normally refresh this card never fire
+     * in native mode, so the subtitle would freeze on a stale state. While
+     * native mode is on, re-arm a short poll so module state stays live.
+     */
+    private final Runnable mNativeCardRefresh = new Runnable() {
+        @Override
+        public void run() {
+            if (!NativeUnitController.isNativeMode() || isFinishing() || isDestroyed()) {
+                return;
+            }
+            updateServerCard();
+        }
+    };
+
     private void updateServerCard() {
         // C3 (AN-0051): the card must say which stack is active. In native mode
         // the WS socket never connects, so the "connected" state and label come
@@ -1061,6 +1083,14 @@ public class MainScreen extends BaseAndruavShasha {
         mBtnServerSignIn.setVisibility(connected ? View.GONE : View.VISIBLE);
         mBtnServerConnect.setVisibility(connected ? View.GONE : View.VISIBLE);
         mBtnServerDisconnect.setVisibility(connected ? View.VISIBLE : View.GONE);
+
+        // AN-0065: no socket events fire in native mode, so re-arm a poll to
+        // keep the module state live. onPause's removeCallbacksAndMessages
+        // stops it while the screen is not visible.
+        mhandle.removeCallbacks(mNativeCardRefresh);
+        if (nativeMode) {
+            mhandle.postDelayed(mNativeCardRefresh, 1500);
+        }
     }
 
     private void setViewColor(View view, @ColorRes int colorRes) {
@@ -1126,7 +1156,7 @@ public class MainScreen extends BaseAndruavShasha {
             if (NativeUnitController.isNativeStackActive()) {
                 NativeUnitController.stopNativeStack(this);
             } else {
-                NativeUnitController.startNativeStack(this);
+                NativeUnitController.connectNative(this);
             }
             updateServerCard();
             // AN-0052: re-gate the Com tile + menu items now; the
@@ -1161,6 +1191,16 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
     private void showOverflowMenu(View anchor) {
+        // Menu rows bind the cached enable flags - recompute from the live
+        // state first so a stale flag (e.g. a re-gate that ran before the
+        // native stack finished stopping) never shows a greyed-out row.
+        if (NativeUnitController.isNativeMode()) {
+            final int status = NativeUnitController.effectiveSocketState();
+            final boolean enabled = status != SOCKETSTATE_REGISTERED
+                    && status != SOCKETSTATE_CONNECTED;
+            mMenuActionsEnabled = enabled;
+            mSettingsEnabled = enabled;
+        }
         final View content = LayoutInflater.from(this).inflate(R.layout.popup_home_overflow, null);
 
         final PopupWindow popup = new PopupWindow(content, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
@@ -1607,6 +1647,8 @@ public class MainScreen extends BaseAndruavShasha {
         // (e.g. login screen opened by doLogin).
         if (mBtnServerConnect != null) mBtnServerConnect.setEnabled(true);
         if (mBtnServerDisconnect != null) mBtnServerDisconnect.setEnabled(true);
+        // Re-arms the native-mode card poll that onPause cancelled.
+        updateServerCard();
 
         EventBus.getDefault().register(this);
         //SMS.sendSMS("01029000028","HI that is me ANdroid");
