@@ -428,8 +428,10 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
                         message, splitIndex + 1, len - splitIndex - 1);
                 return;
             }
-            if (splitIndex < 0) {
-                // pure JSON text frame
+            if ((splitIndex < 0) || (splitIndex == len - 1)) {
+                // pure JSON text frame - CUDPClient NUL-terminates EVERY
+                // inbound datagram, so a text frame still shows a split at
+                // len-1; only a split with bytes after it means binary.
                 onTextMessage(jMsg.toString());
             } else {
                 // JSON header + 0x00 + binary payload: re-serialize the

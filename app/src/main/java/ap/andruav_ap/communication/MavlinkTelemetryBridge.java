@@ -183,9 +183,16 @@ public class MavlinkTelemetryBridge {
                     break;
                 }
 
-                case msg_mission_current.MAVLINK_MSG_ID_MISSION_CURRENT:
-                    unit.missionItemReached(((msg_mission_current) message).seq);
+                case msg_mission_current.MAVLINK_MSG_ID_MISSION_CURRENT: {
+                    // the FC reports MISSION_CURRENT before any mission is
+                    // uploaded - missionItemReached indexes into the mission
+                    // map and crashes when it is empty
+                    try {
+                        unit.missionItemReached(((msg_mission_current) message).seq);
+                    } catch (IndexOutOfBoundsException ignored) {
+                    }
                     break;
+                }
 
                 case msg_statustext.MAVLINK_MSG_ID_STATUSTEXT:
                     DroneMavlinkHandler.execute_StatusMessage((msg_statustext) message);
