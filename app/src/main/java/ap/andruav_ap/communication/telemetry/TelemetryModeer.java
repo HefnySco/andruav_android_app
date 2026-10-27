@@ -115,6 +115,15 @@ public class TelemetryModeer {
      */
     public static void connectToPreferredConnection (final Context context, final boolean autoconnect)
     {
+        // C3 (AN-0051): in native mode the FC belongs to de_mavlink (N4/N8) -
+        // the Java DroneKitServer must never open the link beside it.
+        if (Preference.isNativeUnitEnabled(null)) {
+            if (!autoconnect) {
+                Toast.makeText(context, "FC link is owned by the native unit (native mode is on)", Toast.LENGTH_LONG).show();
+            }
+            return;
+        }
+
         mContext = context;
         mContextWrapper = new ContextWrapper(mContext);
         closeAllConnections();

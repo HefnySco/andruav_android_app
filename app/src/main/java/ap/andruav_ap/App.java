@@ -105,6 +105,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import ap.andruav.denative.DeNative;
+import ap.andruav_ap.denative.NativeUnitController;
 import ap.andruavmiddlelibrary.log.ExceptionDaoLogger;
 import ap.andruavmiddlelibrary.log.ExceptionHandler;
 import ap.sensors.SensorService;
@@ -742,6 +743,15 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
      */
     public static void startAndruavWS ()
     {
+        // C3 (AN-0051): with 'Native unit' on, the comm link is de_comm's job -
+        // the Java client must never come online beside it. Assert the native
+        // stack instead so every connect call site stays valid.
+        if (Preference.isNativeUnitEnabled(null))
+        {
+            NativeUnitController.startNativeStack(getAppContext());
+            return;
+        }
+
         // The guardian must be up before the socket connects so it is already watching when
         // the link comes alive.
         startAndruavLinkService();
@@ -778,6 +788,13 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         // return below so a not-yet-created WS client still clears the desired-flag.
         stopAndruavLinkService();
 
+        // C3 (AN-0051): every logout/exit path funnels here - in native mode the
+        // unit lives in de_comm, so "disconnect" must bring that stack down too.
+        if (Preference.isNativeUnitEnabled(null))
+        {
+            NativeUnitController.stopNativeStack(getAppContext());
+        }
+
         if (AndruavEngine.getAndruavWS()== null)
         {
             return ;
@@ -811,6 +828,14 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
      */
     public static void resumeLink ()
     {
+        // C3 (AN-0051): a surviving link-guardian or BOOT receiver must not
+        // resurrect the Java client while 'Native unit' is on.
+        if (Preference.isNativeUnitEnabled(null))
+        {
+            NativeUnitController.startNativeStack(getAppContext());
+            return;
+        }
+
         if (AndruavEngine.getAndruavWS() == null)
         {
             AndruavEngine.setAndruavWS(new AndruavWSClient_TooTallNate("wss://" + LoginClient.getWSURL(), null));
@@ -970,6 +995,13 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         }
 
         defineBuiltIntModules();
+
+        // C3 (AN-0051): 'Native unit' persists across (re)launches. Application
+        // onCreate also runs inside the :de_* module processes - only the main
+        // process may own the supervisor.
+        if (NativeUnitController.isMainProcess(this) && Preference.isNativeUnitEnabled(null)) {
+            NativeUnitController.startNativeStack(this);
+        }
 
     }
 

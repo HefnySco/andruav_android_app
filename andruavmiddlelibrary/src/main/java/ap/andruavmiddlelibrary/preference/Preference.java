@@ -890,6 +890,22 @@ public class Preference {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "home_sound_enabled", enabled);
     }
 
+    /***
+     * 'Native unit' switch (Plan C / decision N8): when on, the native
+     * DroneEngage modules (de_comm + de_mavlink) are the unit and the Java
+     * comm stack stays idle. Persisted so the mode survives restarts.
+     *
+     * @param contextWrapper
+     * @return
+     */
+    public static boolean isNativeUnitEnabled(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "pref_native_unit", false);
+    }
+
+    public static void isNativeUnitEnabled(final android.content.ContextWrapper contextWrapper, final boolean bEnabled) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "pref_native_unit", bEnabled);
+    }
+
 
 
 

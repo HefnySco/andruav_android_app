@@ -52,6 +52,7 @@ import ap.andruav_ap.activities.fpv.FPVActivityFactory;
 import ap.andruav_ap.App;
 import ap.andruav_ap.BuildConfig;
 import ap.andruav.denative.DeNativeDebugActivity;
+import ap.andruav_ap.denative.NativeUnitController;
 
 
 import com.andruav.AndruavInternalCommands;
@@ -949,14 +950,25 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
     private void updateServerCard() {
-        final boolean connected = AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED);
+        // C3 (AN-0051): the card must say which stack is active. In native mode
+        // the WS socket never connects, so the "connected" state and label come
+        // from the module supervisor instead of the Java client.
+        final boolean nativeMode = NativeUnitController.isNativeMode();
+        final boolean connected = nativeMode
+                ? NativeUnitController.isNativeStackActive()
+                : AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED);
 
-        mTxtServerSubtitle.setText(Preference.getAuthServerURL(null));
+        final String subtitle = Preference.getAuthServerURL(null);
+        mTxtServerSubtitle.setText(nativeMode
+                ? subtitle + "  ·  " + NativeUnitController.describeNativeState()
+                : subtitle);
 
         mCardServer.setBackgroundResource(connected ? R.drawable.bg_home_card : R.drawable.bg_home_card_warning);
         setViewColor(mDotServer, connected ? R.color.home_green_icon : R.color.home_red_dot);
 
-        if (connected) {
+        if (nativeMode) {
+            mTxtServerStatus.setText(connected ? "Native unit online" : "Native unit offline");
+        } else if (connected) {
             mTxtServerStatus.setText(TlsTrustPolicy.isLastConnectionSecure()
                     ? R.string.home_server_status_connected_secure
                     : R.string.home_server_status_connected_nonsecure);
@@ -1027,6 +1039,18 @@ public class MainScreen extends BaseAndruavShasha {
             mBtnServerConnect.setEnabled(true);
             mBtnServerDisconnect.setEnabled(true);
         }, 1500);
+
+        // C3 (AN-0051): in native mode the connect toggle drives the module
+        // stack directly - de_comm authenticates itself, no Java login round.
+        if (NativeUnitController.isNativeMode()) {
+            if (NativeUnitController.isNativeStackActive()) {
+                NativeUnitController.stopNativeStack(this);
+            } else {
+                NativeUnitController.startNativeStack(this);
+            }
+            updateServerCard();
+            return;
+        }
 
         final int status = AndruavEngine.getAndruavWSStatus();
         final int action = AndruavEngine.getAndruavWSAction();

@@ -1,0 +1,277 @@
+package ap.andruav_ap.denative;
+
+import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.SystemClock;
+import android.util.Log;
+
+import androidx.core.content.ContextCompat;
+
+import com.andruav.AndruavEngine;
+import com.andruav.AndruavFacade;
+import com.andruav.protocol.communication.udpproxy.UDPProxy;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+import java.util.function.BooleanSupplier;
+
+import ap.andruav.denative.DeUnitSupervisor;
+import ap.andruav_ap.App;
+import ap.andruav_ap.communication.telemetry.TelemetryModeer;
+import ap.andruav_ap.denative.config.DeConfigGenerator;
+import ap.andruav_ap.denative.config.DeConfigSync;
+import ap.andruav_ap.services.DeAndroidModuleService;
+import ap.andruavmiddlelibrary.preference.Preference;
+
+/**
+ * C3 (AN-0051): the "Native unit" switch and the mutual-exclusion engine
+ * between the Java stack (AndruavWSClient + DroneKitServer/ControlBoard +
+ * Java UDP proxy) and the native stack (DeUnitSupervisor modules +
+ * DeAndroidModuleService), per decision N8.
+ * <p>
+ * The one rule: never both stacks online with the same unit id. Every
+ * switch first stops the active stack and waits for its logout (WS socket
+ * closed / module processes gone, with a timeout fallback) before the
+ * other stack is started.
+ * <p>
+ * All methods must be called from the app's main process; the
+ * {@code :de_*} module processes are gated out via {@link #isMainProcess}.
+ */
+public final class NativeUnitController {
+
+    private static final String TAG = "NativeUnitCtrl";
+
+    /** Poll cadence while waiting for the outgoing stack to go offline. */
+    private static final long POLL_MS = 250;
+    /**
+     * Max wait for a clean logout before starting the other stack anyway -
+     * a socket that never finishes closing is already not an online party.
+     */
+    private static final long WAIT_TIMEOUT_MS = 8000;
+
+    private static final Handler handler = new Handler(Looper.getMainLooper());
+
+    /**
+     * True when the Java link was up at the moment native was switched on;
+     * switching back off then re-connects the session instead of leaving
+     * the unit offline.
+     */
+    private static boolean sResumeJavaLink;
+
+    /*** Bumped per switch so a stale pending wait cannot fire after a newer toggle. */
+    private static int sSwitchGeneration;
+
+    private NativeUnitController() {
+    }
+
+    public static boolean isNativeMode() {
+        return Preference.isNativeUnitEnabled(null);
+    }
+
+    /**
+     * The setting changed: persist it, then run the mutual-exclusion switch.
+     */
+    public static synchronized void applyMode(final Context context, final boolean nativeOn) {
+        final Context app = context.getApplicationContext();
+        sResumeJavaLink = nativeOn
+                && (Preference.isLinkServiceDesired(null) || App.isAndruavWSConnected());
+        Preference.isNativeUnitEnabled(null, nativeOn);
+        final int generation = ++sSwitchGeneration;
+        if (nativeOn) {
+            Log.i(TAG, "switching to native stack");
+            stopJavaStack(app);
+            waitFor("java stack down", generation, NativeUnitController::isJavaStackDown,
+                    () -> startNativeStack(app));
+        } else {
+            Log.i(TAG, "switching to java stack");
+            stopNativeStack(app);
+            waitFor("native stack down", generation, NativeUnitController::isNativeStackDown,
+                    () -> restoreJavaStack(app));
+        }
+    }
+
+    /**
+     * Idempotent native-stack bring-up: regenerate module configs (catches
+     * up edits made while the stack was off), arm the config sync listener,
+     * start the supervised modules and the app module service.
+     */
+    public static void startNativeStack(final Context context) {
+        final Context app = context.getApplicationContext();
+        final DeUnitSupervisor supervisor = DeUnitSupervisor.get();
+        supervisor.init(app);
+
+        List<String> changed = regenerateQuietly(app);
+        DeConfigSync.start(app);
+
+        final boolean commWasUp = supervisor.getState(DeUnitSupervisor.Module.DE_COMM)
+                == DeUnitSupervisor.State.RUNNING;
+        final boolean mavWasUp = supervisor.getState(DeUnitSupervisor.Module.DE_MAVLINK)
+                == DeUnitSupervisor.State.RUNNING;
+
+        supervisor.start(DeUnitSupervisor.Module.DE_COMM);
+        supervisor.start(DeUnitSupervisor.Module.DE_MAVLINK);
+
+        // A config that changed while a module was already running only
+        // takes effect on process restart - bounce that module.
+        if (commWasUp && changed.contains(DeConfigGenerator.COMM)) {
+            bounceModule(supervisor, DeUnitSupervisor.Module.DE_COMM);
+        }
+        if (mavWasUp && changed.contains(DeConfigGenerator.MAVLINK)) {
+            bounceModule(supervisor, DeUnitSupervisor.Module.DE_MAVLINK);
+        }
+
+        // B2: the app-side databus module (capability surface) joins the unit.
+        final Intent moduleIntent = new Intent(app, DeAndroidModuleService.class)
+                .setAction(DeAndroidModuleService.ACTION_START);
+        try {
+            ContextCompat.startForegroundService(app, moduleIntent);
+        } catch (Exception e) {
+            Log.e(TAG, "cannot start DeAndroidModuleService", e);
+        }
+        Log.i(TAG, "native stack start requested");
+    }
+
+    /**
+     * Idempotent native-stack teardown: app module first (it leaves
+     * de_comm's registry cleanly), then the supervised module processes.
+     */
+    public static void stopNativeStack(final Context context) {
+        final Context app = context.getApplicationContext();
+        app.startService(new Intent(app, DeAndroidModuleService.class)
+                .setAction(DeAndroidModuleService.ACTION_STOP));
+        final DeUnitSupervisor supervisor = DeUnitSupervisor.get();
+        supervisor.init(app);
+        supervisor.stop(DeUnitSupervisor.Module.DE_COMM);
+        supervisor.stop(DeUnitSupervisor.Module.DE_MAVLINK);
+        Log.i(TAG, "native stack stop requested");
+    }
+
+    /**
+     * True while the native stack is wanted up - drives the home-screen
+     * connect toggle in native mode.
+     */
+    public static boolean isNativeStackActive() {
+        final DeUnitSupervisor supervisor = DeUnitSupervisor.get();
+        return supervisor.getState(DeUnitSupervisor.Module.DE_COMM)
+                != DeUnitSupervisor.State.STOPPED
+                || supervisor.getState(DeUnitSupervisor.Module.DE_MAVLINK)
+                != DeUnitSupervisor.State.STOPPED;
+    }
+
+    /** One-line stack state for the home screen, e.g. appended to the server subtitle. */
+    public static String describeNativeState() {
+        final DeUnitSupervisor supervisor = DeUnitSupervisor.get();
+        return "native unit · de_comm " + supervisor.getState(DeUnitSupervisor.Module.DE_COMM)
+                + " · de_mavlink " + supervisor.getState(DeUnitSupervisor.Module.DE_MAVLINK);
+    }
+
+    /**
+     * Application.onCreate also runs inside the {@code :de_*} module
+     * processes; only the main process may own the supervisor.
+     */
+    public static boolean isMainProcess(final Context context) {
+        final String packageName = context.getPackageName();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            final String proc = Application.getProcessName();
+            return proc == null || packageName.equals(proc);
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader("/proc/self/cmdline"))) {
+            String name = reader.readLine();
+            if (name == null) {
+                return false;
+            }
+            final int nul = name.indexOf('\0');
+            if (nul > 0) {
+                name = name.substring(0, nul);
+            }
+            return packageName.equals(name.trim());
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private static void stopJavaStack(final Context app) {
+        // FC link: DroneKitServer / ControlBoard_DroneKit connections.
+        TelemetryModeer.closeAllConnections();
+        // Java UDP proxy: stop the server-side feed, drop the relay token
+        // hello loop and pause the forwarder.
+        AndruavFacade.StopUdpProxyTelemetry();
+        final UDPProxy proxy = AndruavEngine.getUDPProxy();
+        if (proxy != null) {
+            proxy.setToken(null);
+            proxy.setPause(true);
+        }
+        // Java comm client + its link guardian.
+        App.stopAndruavWS(true);
+    }
+
+    private static void restoreJavaStack(final Context app) {
+        final UDPProxy proxy = AndruavEngine.getUDPProxy();
+        if (proxy != null) {
+            proxy.setPause(false);
+        }
+        if (!sResumeJavaLink) {
+            return;
+        }
+        sResumeJavaLink = false;
+        if (Preference.isAutoFCBConnect(null)) {
+            TelemetryModeer.connectToPreferredConnection(app, true);
+        }
+        App.startAndruavWS();
+    }
+
+    private static boolean isJavaStackDown() {
+        return AndruavEngine.getAndruavWS() == null
+                || !AndruavEngine.getAndruavWS().isConnected();
+    }
+
+    private static boolean isNativeStackDown() {
+        final DeUnitSupervisor supervisor = DeUnitSupervisor.get();
+        return supervisor.getPid(DeUnitSupervisor.Module.DE_COMM) <= 0
+                && supervisor.getPid(DeUnitSupervisor.Module.DE_MAVLINK) <= 0;
+    }
+
+    private static void waitFor(final String what, final int generation, final BooleanSupplier down,
+                                final Runnable then) {
+        final long deadline = SystemClock.elapsedRealtime() + WAIT_TIMEOUT_MS;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (generation != sSwitchGeneration) {
+                    return;
+                }
+                if (down.getAsBoolean()) {
+                    then.run();
+                } else if (SystemClock.elapsedRealtime() >= deadline) {
+                    Log.w(TAG, "timeout waiting for " + what + " - starting anyway");
+                    then.run();
+                } else {
+                    handler.postDelayed(this, POLL_MS);
+                }
+            }
+        });
+    }
+
+    private static void bounceModule(final DeUnitSupervisor supervisor,
+                                     final DeUnitSupervisor.Module module) {
+        // STOP then START reach the service in order, so the module comes
+        // back on the regenerated config without a manual delay.
+        supervisor.stop(module);
+        supervisor.start(module);
+    }
+
+    private static List<String> regenerateQuietly(final Context app) {
+        try {
+            return DeConfigGenerator.regenerate(app);
+        } catch (Exception e) {
+            Log.e(TAG, "config regeneration failed", e);
+            return java.util.Collections.emptyList();
+        }
+    }
+}

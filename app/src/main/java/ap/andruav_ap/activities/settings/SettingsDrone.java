@@ -233,6 +233,31 @@ public class SettingsDrone extends AppCompatActivity {
                     }
                 }
             });
+
+            // C3 (AN-0051): 'Native unit' switch. Built in code rather than the
+            // XML so the toggle can run the mutual-exclusion stack switch
+            // through NativeUnitController.
+            final androidx.preference.PreferenceCategory nativeCategory =
+                    new androidx.preference.PreferenceCategory(requireContext());
+            nativeCategory.setTitle("DroneEngage native");
+            getPreferenceScreen().addPreference(nativeCategory);
+
+            final CheckBoxPreference chkNativeUnit = new CheckBoxPreference(requireContext());
+            chkNativeUnit.setKey("pref_native_unit");
+            chkNativeUnit.setTitle("Native unit (experimental)");
+            chkNativeUnit.setSummary("Run this unit on the native DroneEngage modules (de_comm + de_mavlink) instead of the Java stack. "
+                    + "The Java comm client, the DroneKit FC link and the Java UDP proxy stay off while this is on. "
+                    + "Never run both stacks at once - leave this off unless you are testing the native stack.");
+            chkNativeUnit.setDefaultValue(false);
+            nativeCategory.addPreference(chkNativeUnit);
+            chkNativeUnit.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    ap.andruav_ap.denative.NativeUnitController.applyMode(
+                            requireContext(), Boolean.TRUE.equals(newValue));
+                    return true;
+                }
+            });
         }
 
         @Override
