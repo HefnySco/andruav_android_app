@@ -25,9 +25,15 @@ public final class DeConfigSettings {
     public String authHost = "";
     public int authPort = 0;
     public boolean requireSsl = true;
+    public boolean isLocalServer = false;
+    public String localServerHost = "";
+    public int localServerPort = 0;
     public int fcType = FC_NONE;
     public int fcBaud = 57600;
     public int fcUdpPort = 14550;
+    public String fcTcpIp = "";
+    public int fcTcpPort = 5760;
+    public String fcBtMac = "";
 
     public DeConfigSettings() {
     }

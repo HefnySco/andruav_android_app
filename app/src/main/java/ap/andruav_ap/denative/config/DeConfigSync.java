@@ -12,6 +12,7 @@ import java.util.List;
 import ap.andruav.denative.DeCommService;
 import ap.andruav.denative.DeMavlinkService;
 import ap.andruav.denative.DeModuleService;
+import ap.andruav.denative.DeUnitSupervisor;
 
 /**
  * Regenerates the module configs on any preference change and restarts the
@@ -45,6 +46,23 @@ public final class DeConfigSync implements SharedPreferences.OnSharedPreferenceC
                 .registerOnSharedPreferenceChangeListener(instance);
     }
 
+    /**
+     * AN-0064: disarm while the user has the stack disconnected - restart()
+     * sends ACTION_START straight to the module services, bypassing the
+     * supervisor's wanted flag, so a pref change would resurrect modules.
+     */
+    public static synchronized void stop(Context context) {
+        if (instance == null) {
+            return;
+        }
+        instance.handler.removeCallbacksAndMessages(null);
+        PreferenceManager.getDefaultSharedPreferences(instance.app)
+                .unregisterOnSharedPreferenceChangeListener(instance);
+        instance.app.getSharedPreferences(ap.andruavmiddlelibrary.preference.Preference.PREFS_COUNT, 0)
+                .unregisterOnSharedPreferenceChangeListener(instance);
+        instance = null;
+    }
+
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         // Debounce bursts of changes (a settings screen saves several keys).
@@ -70,7 +88,9 @@ public final class DeConfigSync implements SharedPreferences.OnSharedPreferenceC
                 ? DeCommService.class : DeMavlinkService.class;
         app.startService(new Intent(app, cls).setAction(DeModuleService.ACTION_STOP));
         handler.postDelayed(() -> {
-            Intent start = new Intent(app, cls).setAction(DeModuleService.ACTION_START);
+            Intent start = DeUnitSupervisor.get().startIntent(app,
+                    cls == DeCommService.class ? DeUnitSupervisor.Module.DE_COMM
+                            : DeUnitSupervisor.Module.DE_MAVLINK);
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 app.startForegroundService(start);
             } else {

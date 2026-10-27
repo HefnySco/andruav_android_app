@@ -16,20 +16,23 @@
 
     
     // Drone-Engage Communication Server Connection
-    "auth_ip"                       : "cloud.ardupilot.org",
+    // On Android the connection fields below are left empty on purpose: the
+    // Andruav app passes them on de_comm's command line (--auth_ip, --userName,
+    // --accessCode, ...) from its own settings, and those win over this file.
+    "auth_ip"                       : "",
     "auth_port"                     : 19408,
     "auth_verify_ssl"               : false,
     "use_local_comm_server"        : false,   // use local comm server instead of main server
-    "local_comm_server_ip"         : "192.168.0.30",   // mesh/local comm server ip used when use_local_comm_server is on
+    "local_comm_server_ip"         : "",               // mesh/local comm server ip used when use_local_comm_server is on
     "local_comm_server_port"       : 60008,             // mesh/local comm server port used when use_local_comm_server is on
     //this is optional if [auth_verify_ssl] == true and ssl-certificate is internal.
     "root_certificate_path"     : "./root.crt",
 
-    "userName"                  :"USERNAME_EMAIL", 
-    "accessCode"                :"PASSWORD_HERE",
-    "unitID"                    :"drone_cairo",
-    "groupID"                   :"1",
-    "unitDescription"           :"de_unit 1",
+    "userName"                  :"", 
+    "accessCode"                :"",
+    "unitID"                    :"",
+    "groupID"                   :"",
+    "unitDescription"           :"",
 
     
     // Logger Section

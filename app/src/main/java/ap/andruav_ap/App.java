@@ -1018,8 +1018,11 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         // C3 (AN-0051): 'Native unit' persists across (re)launches. Application
         // onCreate also runs inside the :de_* module processes - only the main
-        // process may own the supervisor.
-        if (NativeUnitController.isMainProcess(this) && Preference.isNativeUnitEnabled(null)) {
+        // process may own the supervisor. Like the Java stack, the unit only
+        // comes up by itself when 'Auto connect' is on; otherwise the user
+        // presses Connect.
+        if (NativeUnitController.isMainProcess(this) && Preference.isNativeUnitEnabled(null)
+                && Preference.isAutoStart(null)) {
             NativeUnitController.startNativeStack(this);
         }
 

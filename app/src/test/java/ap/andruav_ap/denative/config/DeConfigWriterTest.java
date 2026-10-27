@@ -36,96 +36,91 @@ public class DeConfigWriterTest {
         return s;
     }
 
-    /** Applies the expected edits with plain string replacement on the template. */
-    private static String expectedComm(String t) {
-        return t
-                .replace("\"auth_ip\"                       : \"cloud.ardupilot.org\"",
-                        "\"auth_ip\"                       : \"auth.example.com\"")
-                .replace("\"auth_port\"                     : 19408", "\"auth_port\"                     : 19999")
-                .replace("\"auth_verify_ssl\"               : false", "\"auth_verify_ssl\"               : true")
-                .replace("\"userName\"                  :\"USERNAME_EMAIL\"", "\"userName\"                  :\"pilot@example.com\"")
-                .replace("\"accessCode\"                :\"PASSWORD_HERE\"", "\"accessCode\"                :\"\"")
-                .replace("\"unitID\"                    :\"drone_cairo\"", "\"unitID\"                    :\"phone_unit_7\"")
-                .replace("\"groupID\"                   :\"1\"", "\"groupID\"                   :\"alpha\"")
-                .replace("\"unitDescription\"           :\"de_unit 1\"", "\"unitDescription\"           :\"Test phone\"");
+    private static String arg(String[] args, String name) {
+        for (int i = 0; i < args.length - 1; i++) {
+            if (args[i].equals(name)) {
+                return args[i + 1];
+            }
+        }
+        fail("no " + name + " in argv");
+        return null;
     }
 
     @Test
-    public void commConfigGolden() throws IOException {
-        String t = template("de_comm");
-        String expected = expectedComm(t);
-        assertFalse("template drifted: expected edits did not apply", expected.equals(t));
-        assertEquals(expected, DeConfigWriter.commConfig(t, settings()));
-    }
-
-    @Test
-    public void accessCodeOnlyInLocalFile() throws IOException {
+    public void commArgsCarryTheConnection() {
         DeConfigSettings s = settings();
-        String comm = DeConfigWriter.commConfig(template("de_comm"), s);
-        String mav = DeConfigWriter.mavlinkConfig(template("de_mavlink"), s);
-        assertFalse(comm.contains("s3cr3t"));
-        assertFalse(mav.contains("s3cr3t"));
-        assertFalse(DeConfigWriter.mavlinkLocal(s).contains("s3cr3t"));
-        assertEquals("{\n    \"accessCode\": \"s3cr3t\\\"code\"\n}\n", DeConfigWriter.commLocal(s));
-        assertEquals("{\n}\n", DeConfigWriter.mavlinkLocal(s));
+        String[] a = DeConfigWriter.commArgs(s);
+        assertEquals("auth.example.com", arg(a, "--auth_ip"));
+        assertEquals("19999", arg(a, "--auth_port"));
+        assertEquals("true", arg(a, "--auth_verify_ssl"));
+        assertEquals("pilot@example.com", arg(a, "--userName"));
+        assertEquals("s3cr3t\"code", arg(a, "--accessCode"));
+        assertEquals("phone_unit_7", arg(a, "--unitID"));
+        assertEquals("alpha", arg(a, "--groupID"));
+        assertEquals("Test phone", arg(a, "--unitDescription"));
+        assertEquals(18, a.length);
     }
 
     @Test
-    public void commentsAreKept() throws IOException {
+    public void commArgsNeverNull() {
+        DeConfigSettings s = new DeConfigSettings();
+        s.email = null;
+        s.accessCode = null;
+        for (String v : DeConfigWriter.commArgs(s)) {
+            assertTrue(v != null);
+        }
+    }
+
+    @Test
+    public void commTemplateHasNoConnectionInfo() throws IOException {
         String t = template("de_comm");
-        String out = DeConfigWriter.commConfig(t, settings());
-        assertTrue(out.contains("// Drone-Engage Communication Server Connection"));
-        assertEquals(t.split("\n", -1).length, out.split("\n", -1).length);
+        assertFalse(t.contains("cloud.ardupilot.org"));
+        assertFalse(t.contains("USERNAME_EMAIL"));
+        assertFalse(t.contains("PASSWORD_HERE"));
     }
 
     @Test
-    public void mavlinkUsbGoesThroughBridge() throws IOException {
-        String t = template("de_mavlink");
-        String out = DeConfigWriter.mavlinkConfig(t, settings());
-        String expected = t.replace("    \"fcb_connection_uri\": {\n        \"ip\": \"127.0.0.1\"",
-                "    // FC source (generated from app settings): usb @115200 via the FC link bridge\n"
-                        + "    \"fcb_connection_uri\": {\n        \"ip\": \"127.0.0.1\"");
-        assertFalse(expected.equals(t));
-        assertEquals(expected, out);
+    public void commNeverUsesMeshDirectMode() {
+        DeConfigSettings s = settings();
+        s.isLocalServer = true;
+        s.authHost = "10.52.224.109";
+        String[] a = DeConfigWriter.commArgs(s);
+        assertEquals("false", arg(a, "--use_local_comm_server"));
+        assertEquals("10.52.224.109", arg(a, "--auth_ip"));
     }
 
     @Test
-    public void mavlinkUdpListensItself() throws IOException {
+    public void mavlinkTcpGoesStraightToFcbScreenTarget() {
+        DeConfigSettings s = settings();
+        s.fcType = DeConfigSettings.FC_TCP;
+        s.fcTcpIp = "10.52.224.100";
+        s.fcTcpPort = 6000;
+        String[] a = DeConfigWriter.mavlinkArgs(s);
+        assertEquals("tcp", arg(a, "--fcb_type"));
+        assertEquals("10.52.224.100", arg(a, "--fcb_ip"));
+        assertEquals("6000", arg(a, "--fcb_port"));
+    }
+
+    @Test
+    public void mavlinkUdpListensOnFcbScreenPort() {
         DeConfigSettings s = settings();
         s.fcType = DeConfigSettings.FC_UDP;
         s.fcUdpPort = 14551;
-        String out = DeConfigWriter.mavlinkConfig(template("de_mavlink"), s);
-        assertTrue(out.contains("        \"ip\": \"0.0.0.0\",\n        \"port\": 14551,\n        \"type\": \"udp\""));
-        // the commented example block is untouched
-        assertTrue(out.contains("    //     \"port\": 5760,"));
+        String[] a = DeConfigWriter.mavlinkArgs(s);
+        assertEquals("udp", arg(a, "--fcb_type"));
+        assertEquals("0.0.0.0", arg(a, "--fcb_ip"));
+        assertEquals("14551", arg(a, "--fcb_port"));
     }
 
     @Test
-    public void unitNameChangeRenamesUnit() throws IOException {
-        DeConfigSettings s = settings();
-        String a = DeConfigWriter.commConfig(template("de_comm"), s);
-        s.unitName = "renamed";
-        String b = DeConfigWriter.commConfig(template("de_comm"), s);
-        assertTrue(a.contains("\"phone_unit_7\""));
-        assertTrue(b.contains("\"renamed\""));
-        assertFalse(b.contains("phone_unit_7"));
-    }
-
-    @Test
-    public void escapesSpecialCharacters() throws IOException {
-        DeConfigSettings s = settings();
-        s.unitName = "a\\b\"c\nd";
-        String out = DeConfigWriter.commConfig(template("de_comm"), s);
-        assertTrue(out.contains("\"a\\\\b\\\"c\\nd\""));
-    }
-
-    @Test
-    public void missingKeyThrows() {
-        try {
-            DeConfigWriter.commConfig("{ \"auth_ip\": \"x\" }", settings());
-            fail("expected IllegalStateException");
-        } catch (IllegalStateException expected) {
-            // ok
+    public void mavlinkUsbAndBluetoothUseTheBridge() {
+        for (int t : new int[]{DeConfigSettings.FC_USB, DeConfigSettings.FC_BLUETOOTH, DeConfigSettings.FC_NONE}) {
+            DeConfigSettings s = settings();
+            s.fcType = t;
+            String[] a = DeConfigWriter.mavlinkArgs(s);
+            assertEquals("tcp", arg(a, "--fcb_type"));
+            assertEquals(DeConfigSettings.BRIDGE_IP, arg(a, "--fcb_ip"));
+            assertEquals(Integer.toString(DeConfigSettings.BRIDGE_PORT), arg(a, "--fcb_port"));
         }
     }
 }

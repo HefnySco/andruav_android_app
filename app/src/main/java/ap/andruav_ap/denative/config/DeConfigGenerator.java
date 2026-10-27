@@ -19,9 +19,10 @@ import java.util.List;
 import ap.andruavmiddlelibrary.preference.Preference;
 
 /**
- * Reads the app preferences, builds the module config files from the asset
- * templates and writes them to filesDir/de_comm and filesDir/de_mavlink
- * (AN-0050). Run it in the main app process (the preferences live there),
+ * Reads the app preferences, builds the de_mavlink config files from the
+ * asset templates (filesDir/de_mavlink) and the de_comm connection argv
+ * (AN-0050). de_comm's config files carry no connection info: the stock
+ * template is used as-is and the settings arrive on its command line. Run it in the main app process (the preferences live there),
  * before the module service starts.
  */
 public final class DeConfigGenerator {
@@ -45,6 +46,9 @@ public final class DeConfigGenerator {
         s.authHost = Preference.getAuthServerURL(null);
         s.authPort = Preference.getAuthServerPort(null);
         s.requireSsl = Preference.isRequireSSL(null);
+        s.isLocalServer = Preference.isLocalServer(null);
+        s.localServerHost = Preference.getLocalServerURL(null);
+        s.localServerPort = Preference.getLocalServerPort(null);
         s.fcType = Preference.getFCBTargetComm(null);
         int sel = Preference.getFCBUSBBaudRateSelector(null);
         int[] bauds = Constants.baudRateItemsValue;
@@ -54,6 +58,13 @@ public final class DeConfigGenerator {
         } catch (RuntimeException e) {
             // keep the default
         }
+        s.fcTcpIp = Preference.getFCBDroneTCPServerIP(null);
+        try {
+            s.fcTcpPort = Integer.parseInt(Preference.getFCBDroneTCPServerPort(null).trim());
+        } catch (RuntimeException e) {
+            // keep the default
+        }
+        s.fcBtMac = Preference.getFCBBlueToothMAC(null);
         return s;
     }
 
@@ -67,10 +78,21 @@ public final class DeConfigGenerator {
         DeConfigSettings s = readSettings();
         List<String> changed = new ArrayList<>();
         try {
-            boolean comm = writeModule(context, COMM,
-                    DeConfigWriter.commConfig(asset(context, COMM), s), DeConfigWriter.commLocal(s));
-            boolean mav = writeModule(context, MAVLINK,
-                    DeConfigWriter.mavlinkConfig(asset(context, MAVLINK), s), DeConfigWriter.mavlinkLocal(s));
+            // de_comm's .local belongs to de_comm (party_id, module_key);
+            // only reset the module json to the stock template, which also
+            // drops connection info an older build wrote there.
+            boolean comm = writePrivate(new File(moduleDir(context, COMM), COMM + ".config.module.json"),
+                    asset(context, COMM));
+            comm |= writePrivate(new File(moduleDir(context, COMM), ARGS_DIGEST),
+                    digest(DeConfigWriter.commArgs(s)));
+            // Same for de_mavlink: stock template, FC link from the FCB
+            // screen on the command line. The digest also covers what the
+            // FC link bridge reads (link kind, baud, BT MAC) so any FCB
+            // screen change restarts the module and the bridge with it.
+            boolean mav = writePrivate(new File(moduleDir(context, MAVLINK), MAVLINK + ".config.module.json"),
+                    asset(context, MAVLINK));
+            mav |= writePrivate(new File(moduleDir(context, MAVLINK), ARGS_DIGEST),
+                    digest(DeConfigWriter.mavlinkArgs(s), s.fcType + "", s.fcBaud + "", s.fcBtMac));
             if (comm) {
                 changed.add(COMM);
             }
@@ -83,6 +105,48 @@ public final class DeConfigGenerator {
         return changed;
     }
 
+    /** de_comm's connection argv from the current preferences. */
+    public static String[] commArgs() {
+        return DeConfigWriter.commArgs(readSettings());
+    }
+
+    /** de_mavlink's FC link argv from the current FCB screen settings. */
+    public static String[] mavlinkArgs() {
+        return DeConfigWriter.mavlinkArgs(readSettings());
+    }
+
+    // Only a digest of the argv is kept on disk, to notice a settings change
+    // that needs a de_comm restart - never the values (access code).
+    private static final String ARGS_DIGEST = ".conn_args.sha256";
+
+    private static String digest(String[] args, String... extra) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            for (String a : args) {
+                md.update(a.getBytes(StandardCharsets.UTF_8));
+                md.update((byte) 0);
+            }
+            for (String a : extra) {
+                md.update(String.valueOf(a).getBytes(StandardCharsets.UTF_8));
+                md.update((byte) 0);
+            }
+            StringBuilder b = new StringBuilder();
+            for (byte x : md.digest()) {
+                b.append(String.format("%02x", x));
+            }
+            return b.toString();
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static File moduleDir(Context context, String module) {
+        File dir = new File(context.getFilesDir(), module);
+        //noinspection ResultOfMethodCallIgnored
+        dir.mkdirs();
+        return dir;
+    }
+
     private static String asset(Context context, String module) throws IOException {
         try (InputStream in = context.getAssets().open(module + "/" + module + ".config.module.json")) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -93,16 +157,6 @@ public final class DeConfigGenerator {
             }
             return new String(out.toByteArray(), StandardCharsets.UTF_8);
         }
-    }
-
-    private static boolean writeModule(Context context, String module, String config, String local)
-            throws IOException {
-        File dir = new File(context.getFilesDir(), module);
-        //noinspection ResultOfMethodCallIgnored
-        dir.mkdirs();
-        boolean a = writePrivate(new File(dir, module + ".config.module.json"), config);
-        boolean b = writePrivate(new File(dir, module + ".local"), local);
-        return a || b;
     }
 
     /** Writes owner-only (0600); returns false when the content is already there. */

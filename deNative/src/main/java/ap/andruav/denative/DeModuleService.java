@@ -28,6 +28,12 @@ public abstract class DeModuleService extends Service {
 
     public static final String ACTION_START = "ap.andruav.denative.START";
     public static final String ACTION_STOP = "ap.andruav.denative.STOP";
+    /**
+     * String[] appended to the module argv on START. The host app passes the
+     * connection settings this way so they never have to live in the
+     * module's config file.
+     */
+    public static final String EXTRA_ARGS = "ap.andruav.denative.ARGS";
 
     private static final String TAG = "DeModuleService";
     private static final String CHANNEL_ID = "de_modules";
@@ -68,10 +74,15 @@ public abstract class DeModuleService extends Service {
         startForegroundNotification();
         if (intent != null && ACTION_STOP.equals(intent.getAction())) {
             stopModule();
-        } else {
-            startModule();
+        } else if (intent != null && ACTION_START.equals(intent.getAction())) {
+            startModule(intent.getStringArrayExtra(EXTRA_ARGS));
         }
-        return START_STICKY;
+        // AN-0064: START_STICKY resurrected killed services with a null
+        // intent and restarted the module behind the supervisor's back
+        // (explicit disconnects and the stopService path came back alive).
+        // Restart policy belongs to DeUnitSupervisor - it tracks wanted
+        // state and applies the backoff.
+        return START_NOT_STICKY;
     }
 
     @Override
@@ -85,7 +96,7 @@ public abstract class DeModuleService extends Service {
         super.onDestroy();
     }
 
-    private void startModule() {
+    private void startModule(final String[] extraArgs) {
         if (moduleThread != null && moduleThread.isAlive()) {
             return;
         }
@@ -96,10 +107,21 @@ public abstract class DeModuleService extends Service {
         applyOverrides(workDir);
         onModuleStarting(workDir);
         moduleThread = new Thread(() -> {
-            int rc = nativeRun(getModuleName(), workDir.getAbsolutePath(), getModuleArgv());
+            int rc = nativeRun(getModuleName(), workDir.getAbsolutePath(), argv(extraArgs));
             Log.i(TAG, getModuleName() + " nativeRun returned " + rc);
         }, "de_" + getModuleName());
         moduleThread.start();
+    }
+
+    private String[] argv(String[] extraArgs) {
+        final String[] base = getModuleArgv();
+        if (extraArgs == null || extraArgs.length == 0) {
+            return base;
+        }
+        final String[] all = new String[base.length + extraArgs.length];
+        System.arraycopy(base, 0, all, 0, base.length);
+        System.arraycopy(extraArgs, 0, all, base.length, extraArgs.length);
+        return all;
     }
 
     private void stopModule() {

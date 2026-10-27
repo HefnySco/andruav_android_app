@@ -373,6 +373,30 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
 
+    /***
+     * Blocks the home page with a spinner while the native module processes
+     * shut down after Disconnect, so the user does not tap into a half-stopped
+     * stack. Dismissed once de_comm and de_mavlink are gone.
+     */
+    private void showStoppingDialog() {
+        final View view = LayoutInflater.from(this).inflate(R.layout.dialog_connect_progress, null);
+        ((TextView) view.findViewById(R.id.dialogconnect_txtTitle)).setText(R.string.home_native_disconnecting);
+        ((TextView) view.findViewById(R.id.dialogconnect_txtMessage)).setText(R.string.home_native_stopping);
+        view.findViewById(R.id.dialogconnect_btnStop).setVisibility(View.GONE);
+        final AlertDialog dialog = new AlertDialog.Builder(Me).setView(view).setCancelable(false).create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+        dialog.show();
+        NativeUnitController.whenNativeStackDown(() -> {
+            if (!isFinishing() && !isDestroyed() && dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            updateServerCard();
+            updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(), AndruavEngine.getAndruavWSAction());
+        });
+    }
+
     private void exitProgressDialog() {
         //Update UI here if needed
         if (mprogressDialog != null) {
@@ -1155,6 +1179,7 @@ public class MainScreen extends BaseAndruavShasha {
         if (NativeUnitController.isNativeMode()) {
             if (NativeUnitController.isNativeStackActive()) {
                 NativeUnitController.stopNativeStack(this);
+                showStoppingDialog();
             } else {
                 NativeUnitController.connectNative(this);
             }

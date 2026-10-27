@@ -76,6 +76,16 @@ public final class NativeUnitController {
     /*** Bumped per switch so a stale pending wait cannot fire after a newer toggle. */
     private static int sSwitchGeneration;
 
+    /**
+     * True while the user wants the native stack up (AN-0064). Explicit
+     * disconnects clear it so auto-resume paths (the link guardian via
+     * {@link App#resumeLink} and {@link App#startAndruavWS}) cannot
+     * resurrect the stack; an explicit connect or the setting's ON switch
+     * sets it again. In-memory only: a process restart defaults it true so
+     * a pref-on unit still auto-starts on boot.
+     */
+    private static volatile boolean sNativeWanted = true;
+
     private NativeUnitController() {
     }
 
@@ -100,6 +110,10 @@ public final class NativeUnitController {
         if (nativeOn) {
             Log.i(TAG, "switching to native stack");
             stopJavaStack(app);
+            // AN-0064: stopJavaStack transitively calls stopNativeStack via
+            // the stopAndruavWS guard, which clears the wanted flag - arm it
+            // only after that teardown so the pending start is not dropped.
+            sNativeWanted = true;
             waitFor("java stack down", generation, NativeUnitController::isJavaStackDown,
                     () -> startNativeStack(app));
         } else {
@@ -116,9 +130,18 @@ public final class NativeUnitController {
      * start the supervised modules and the app module service.
      */
     public static void startNativeStack(final Context context) {
+        if (!sNativeWanted) {
+            // User disconnected; only an explicit connect re-arms it.
+            return;
+        }
         final Context app = context.getApplicationContext();
         final DeUnitSupervisor supervisor = DeUnitSupervisor.get();
         supervisor.init(app);
+        // de_comm gets its connection settings and de_mavlink its FC link
+        // (FCB screen) on the command line, read
+        // fresh from the preferences on every (re)start.
+        supervisor.setArgsProvider(module -> module == DeUnitSupervisor.Module.DE_COMM
+                ? DeConfigGenerator.commArgs() : DeConfigGenerator.mavlinkArgs());
 
         List<String> changed = regenerateQuietly(app);
         DeConfigSync.start(app);
@@ -152,11 +175,26 @@ public final class NativeUnitController {
     }
 
     /**
+     * User-initiated connect (AN-0064): re-arms {@link #sNativeWanted}, then
+     * brings the stack up. Auto-resume paths call {@link #startNativeStack}
+     * directly and stay gated by the flag.
+     */
+    public static void connectNative(final Context context) {
+        sNativeWanted = true;
+        startNativeStack(context);
+    }
+
+    /**
      * Idempotent native-stack teardown: app module first (it leaves
      * de_comm's registry cleanly), then the supervised module processes.
      */
     public static void stopNativeStack(final Context context) {
+        sNativeWanted = false;
         final Context app = context.getApplicationContext();
+        // AN-0064: the config sync fires ACTION_START straight at the module
+        // services on a config change, bypassing the supervisor and the
+        // wanted flag - disarm it while the user has the stack off.
+        DeConfigSync.stop(app);
         app.startService(new Intent(app, DeAndroidModuleService.class)
                 .setAction(DeAndroidModuleService.ACTION_STOP));
         final DeUnitSupervisor supervisor = DeUnitSupervisor.get();
@@ -278,6 +316,14 @@ public final class NativeUnitController {
         final DeUnitSupervisor supervisor = DeUnitSupervisor.get();
         return supervisor.getPid(DeUnitSupervisor.Module.DE_COMM) <= 0
                 && supervisor.getPid(DeUnitSupervisor.Module.DE_MAVLINK) <= 0;
+    }
+
+    /**
+     * Runs {@code then} on the main thread once de_comm and de_mavlink are
+     * both gone (or after the usual timeout), e.g. to drop a "stopping" UI.
+     */
+    public static void whenNativeStackDown(final Runnable then) {
+        waitFor("native stack down (ui)", sSwitchGeneration, NativeUnitController::isNativeStackDown, then);
     }
 
     private static void waitFor(final String what, final int generation, final BooleanSupplier down,

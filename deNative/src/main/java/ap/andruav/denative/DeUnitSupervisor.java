@@ -32,6 +32,11 @@ public class DeUnitSupervisor {
 
     private static final DeUnitSupervisor instance = new DeUnitSupervisor();
 
+    /** Supplies the extra argv a module gets on every START (may return null). */
+    public interface ArgsProvider {
+        String[] argsFor(Module module);
+    }
+
     public static DeUnitSupervisor get() {
         return instance;
     }
@@ -49,6 +54,7 @@ public class DeUnitSupervisor {
     private final EnumMap<Module, ModuleState> states = new EnumMap<>(Module.class);
     private final Handler handler = new Handler(Looper.getMainLooper());
     private Context appContext;
+    private volatile ArgsProvider argsProvider;
 
     private DeUnitSupervisor() {
         for (Module m : Module.values()) {
@@ -58,6 +64,21 @@ public class DeUnitSupervisor {
 
     public synchronized void init(Context context) {
         appContext = context.getApplicationContext();
+    }
+
+    public void setArgsProvider(ArgsProvider provider) {
+        argsProvider = provider;
+    }
+
+    /** The intent that starts a module, carrying the provider's argv. */
+    public Intent startIntent(Context context, Module module) {
+        Intent intent = new Intent(context, serviceClass(module)).setAction(DeModuleService.ACTION_START);
+        final ArgsProvider p = argsProvider;
+        final String[] args = p == null ? null : p.argsFor(module);
+        if (args != null) {
+            intent.putExtra(DeModuleService.EXTRA_ARGS, args);
+        }
+        return intent;
     }
 
     public synchronized void start(Module module) {
@@ -73,6 +94,13 @@ public class DeUnitSupervisor {
         cancelPending(state);
         startServiceProcess(module, state, DeModuleService.ACTION_STOP);
         unbindDeathWatch(state);
+        // AN-0064: MIUI's AutoStartManager drops background startService
+        // intents, so the ACTION_STOP above may never arrive. stopService
+        // is not autostart-gated and reaches onDestroy directly, which runs
+        // the same nativeRequestStop teardown.
+        if (appContext != null) {
+            appContext.stopService(new Intent(appContext, serviceClass(module)));
+        }
         state.connected = false;
     }
 
@@ -125,8 +153,9 @@ public class DeUnitSupervisor {
         if (appContext == null) {
             return;
         }
-        Intent intent = new Intent(appContext, serviceClass(module));
-        intent.setAction(action);
+        Intent intent = DeModuleService.ACTION_START.equals(action)
+                ? startIntent(appContext, module)
+                : new Intent(appContext, serviceClass(module)).setAction(action);
         try {
             if (DeModuleService.ACTION_START.equals(action)) {
                 appContext.startForegroundService(intent);
