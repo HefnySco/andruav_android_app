@@ -53,10 +53,12 @@ import ap.andruav_ap.App;
 import ap.andruav_ap.BuildConfig;
 import ap.andruav.denative.DeNativeDebugActivity;
 import ap.andruav_ap.denative.NativeUnitController;
+import ap.andruav_ap.communication.MavlinkTelemetryBridge;
 
 
 import com.andruav.AndruavInternalCommands;
 import com.andruav.AndruavFacade;
+import com.andruav.controlBoard.shared.common.FlightMode;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
 
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_ProtocolChanged;
@@ -87,7 +89,10 @@ import ap.andruavmiddlelibrary.log.ExceptionDaoLogger;
 
 import com.andruav.AndruavEngine;
 import com.andruav.andruavUnit.AndruavUnitBase;
+import com.andruav.event.droneReport_Event.Event_Battery_Ready;
 import com.andruav.event.droneReport_Event.Event_GCSBlockedChanged;
+import com.andruav.event.droneReport_Event.Event_GPS_Ready;
+import com.andruav.event.droneReport_Event.Event_IMU_Ready;
 import com.andruav.protocol.commands.textMessages.Andruav_2MR;
 
 import com.andruav.AndruavSettings;
@@ -273,6 +278,34 @@ public class MainScreen extends BaseAndruavShasha {
         Message msg = new Message();
         msg.obj = event;
         mhandle.sendMessageDelayed(msg, 100);
+    }
+
+    /***
+     * AN-0069: in native mode de_mavlink telemetry arrives over the
+     * databus and lands as the same *Ready events the WS path posts;
+     * kick the FCB tile + Flight Telemetry card refresh on each beat.
+     * In Java mode the DroneKit path already drives the refresh, so this
+     * is gated to native mode to avoid double work at telemetry rates.
+     */
+    @Subscribe
+    public void onEvent(final Event_IMU_Ready event) {
+        if (NativeUnitController.isNativeMode()) {
+            EventBus.getDefault().post(new GUIEvent_UpdateConnection(event.mAndruavWe7da));
+        }
+    }
+
+    @Subscribe
+    public void onEvent(final Event_GPS_Ready event) {
+        if (NativeUnitController.isNativeMode()) {
+            EventBus.getDefault().post(new GUIEvent_UpdateConnection(event.mAndruavWe7da));
+        }
+    }
+
+    @Subscribe
+    public void onEvent(final Event_Battery_Ready event) {
+        if (NativeUnitController.isNativeMode()) {
+            EventBus.getDefault().post(new GUIEvent_UpdateConnection(event.mAndruavWe7da));
+        }
     }
 
     ///////////////////
@@ -859,8 +892,15 @@ public class MainScreen extends BaseAndruavShasha {
      * otherwise).
      */
     private void updateModuleTiles() {
-        final boolean serverConnected = AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED);
-        final boolean fcbConnected = TelemetryModeer.getConnectionInfo() != TelemetryModeer.CURRENTCONNECTION_NON;
+        final boolean nativeMode = NativeUnitController.isNativeMode();
+        final boolean serverConnected = nativeMode
+                ? NativeUnitController.isNativeStackActive()
+                : AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED);
+        // AN-0069: in native mode "FC linked" means de_mavlink telemetry
+        // (the 6502 packed-MAVLink stream) is arriving for this unit.
+        final boolean fcbConnected = nativeMode
+                ? MavlinkTelemetryBridge.isOwnTelemetryLive()
+                : TelemetryModeer.getConnectionInfo() != TelemetryModeer.CURRENTCONNECTION_NON;
 
         setTileState(mTileImu, mIconImu, mStateImu,
                 fcbConnected ? TileState.BLUE : TileState.GRAY,
@@ -927,7 +967,17 @@ public class MainScreen extends BaseAndruavShasha {
         final int vehicleType = unit.getVehicleType();
         final String vehicleLabel = (vehicleType >= 0 && vehicleType < VehicleTypes.vechicleTypes.length)
                 ? VehicleTypes.vechicleTypes[vehicleType] : "";
-        mTxtDroneSubtitle.setText(getString(R.string.home_telemetry_subtitle_format, vehicleLabel, linkTypeLabel(Preference.getFCBTargetComm(null))));
+        if (NativeUnitController.isNativeMode()) {
+            // AN-0069: FC link is de_mavlink's; the me-unit's mirrored
+            // fields carry live mode/arm from the 6502/1004 stream.
+            final String state = FlightMode.getFlightModeText(unit.getFlightModeFromBoard())
+                    + " · " + (unit.IsArmed() ? "ARMED" : "DISARMED");
+            mTxtDroneSubtitle.setText(getString(R.string.home_telemetry_subtitle_format,
+                    vehicleLabel, "native · " + state));
+        } else {
+            mTxtDroneSubtitle.setText(getString(R.string.home_telemetry_subtitle_format,
+                    vehicleLabel, linkTypeLabel(Preference.getFCBTargetComm(null))));
+        }
 
         mTxtGps.setText(getString(R.string.home_sats_format, unit.getActiveIMU().SATC));
         mTxtBattery.setText(getString(R.string.home_battery_format, (int) unit.LastEvent_Battery.FCB_BatteryRemaining));

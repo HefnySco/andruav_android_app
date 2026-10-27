@@ -57,6 +57,9 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
     private String mUnitPartyId;
     private String mUnitGroupName;
 
+    /*** F2 (AN-0069): decodes de_mavlink's 6502 packed-MAVLink telemetry. */
+    private final MavlinkTelemetryBridge mMavlinkTelemetryBridge = new MavlinkTelemetryBridge();
+
 
     public AndruavDeBusClient(final CModule module) {
         this(module, null);
@@ -89,6 +92,7 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
     public void setUnitIdentity(final String partyId, final String groupName) {
         mUnitPartyId = partyId;
         mUnitGroupName = groupName;
+        mMavlinkTelemetryBridge.setUnitIdentity(partyId);
     }
 
 
@@ -186,7 +190,13 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
                 .put(com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_RemoteControlSettings
                         .TYPE_AndruavMessage_RemoteControlSettings)
                 .put(Messages.TYPE_AndruavMessage_LightTelemetry)
-                .put(Messages.TYPE_AndruavMessage_ServoChannel);
+                .put(Messages.TYPE_AndruavMessage_ServoChannel)
+                // F2 (AN-0069): the packed-MAVLink carrier - the ONLY
+                // telemetry channel de_mavlink emits (GPS/attitude/
+                // battery/nav ride it; the legacy JSON GPS/NAV/POW types
+                // above are dead on the DroneEngage side but stay
+                // subscribed so a mixed Andruav fleet still resolves).
+                .put(Messages.TYPE_AndruavMessage_MAVLINK);
     }
 
 
@@ -339,6 +349,17 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
             stampBusSender(jMsg);
 
             final int splitIndex = splitIndexOf(message, len);
+            if (splitIndex >= 0
+                    && jMsg.optInt(Messages.ANDRUAV_PROTOCOL_MESSAGE_TYPE)
+                        == Messages.TYPE_AndruavMessage_MAVLINK) {
+                // 6502 body is raw packed MAVLink - no Andruav binary
+                // message can represent it; the bridge feeds the unit map
+                // (shadow unit) directly.
+                mMavlinkTelemetryBridge.feed(
+                        jMsg.optString(ProtocolHeaders.Sender, ""),
+                        message, splitIndex + 1, len - splitIndex - 1);
+                return;
+            }
             if (splitIndex < 0) {
                 // pure JSON text frame
                 onTextMessage(jMsg.toString());
@@ -438,8 +459,15 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
         messageDispatcher.onBinaryMessage(andruavBinary2MR);
     }
 
+    /***
+     * F2 (AN-0069): after {@code Execute()} has updated the unit map, a
+     * message from this unit's own party id (the shadow unit) is mirrored
+     * onto {@code AndruavSettings.andruavWe7daBase} so the screens that
+     * read the me-unit stay live.
+     */
     @Override
     protected void onTextMessage(final Andruav_2MR andruav2MR) {
+        NativeUnitMirror.onOwnUnitMessage(andruav2MR);
     }
 
     @Override
