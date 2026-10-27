@@ -16,6 +16,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Executor;
 
+import ap.andruav_ap.guiEvent.GUIEvent_CommLineChanged;
 import de.databus.CModule;
 import de.databus.Messages;
 
@@ -88,8 +89,10 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
      * Sync_EventFire carrying {@code ms.d} = "d_cl_on" / "d_cl_off_*".
      * {@code null} = not yet reported; only definite edges fire the
      * emergency input, so repeated broadcasts do not retrigger alarms.
+     * Volatile: written on the inbound dispatch thread, read on the UI
+     * thread by the native-mode connection gating (AN-0052).
      */
-    private Boolean mCommLineOnline;
+    private volatile Boolean mCommLineOnline;
 
 
     public AndruavDeBusClient(final CModule module) {
@@ -131,6 +134,35 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
         mUnitPartyId = partyId;
         mUnitGroupName = groupName;
         mMavlinkTelemetryBridge.setUnitIdentity(partyId);
+    }
+
+
+    /***
+     * AN-0052: the comm-server link state as last reported by de_comm on
+     * the bus ({@code ms.g} on the 9100 broadcast / {@code d_cl_*} on
+     * 1061) - the "connected to the mission server" signal the UI must
+     * gate on in native mode. {@code true} only after a definite online
+     * edge: an unreported or offline line reads {@code false}.
+     * <p>
+     * The inherited socket state cannot stand in for this: it tracks the
+     * module socket lifetime ({@link #isConnected}), which stays up after
+     * the comm-server link drops.
+     */
+    public boolean isCommLineOnline() {
+        return Boolean.TRUE.equals(mCommLineOnline);
+    }
+
+
+    /***
+     * AN-0052: the comm-line state of the bus client installed as
+     * {@link AndruavEngine#getAndruavWS()} - the read seam behind the
+     * Com tile and the menu gating in native mode. {@code false} when
+     * the transport is not a databus client (Java-stack mode) or none is
+     * installed.
+     */
+    public static boolean commLineOnline() {
+        final AndruavWSClientBase ws = AndruavEngine.getAndruavWS();
+        return (ws instanceof AndruavDeBusClient) && ((AndruavDeBusClient) ws).isCommLineOnline();
     }
 
 
@@ -515,6 +547,10 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
         if ((mCommLineOnline != null) && (mCommLineOnline == online)) return;
         mCommLineOnline = online;
 
+        // AN-0052: the comm line is the UI's connection state in native
+        // mode - the Com tile and menu gating re-read it on each edge.
+        AndruavEngine.getEventBus().post(new GUIEvent_CommLineChanged(online));
+
         final EmergencyBase emergency = AndruavEngine.getEmergency();
         if (emergency == null) return;
 
@@ -584,6 +620,12 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
     public void shutDown() {
         super.shutDown();
         mModule = null;
+        if (mCommLineOnline != null) {
+            // AN-0052: the comm-line report dies with this client - the
+            // UI drops to offline on the edge.
+            mCommLineOnline = null;
+            AndruavEngine.getEventBus().post(new GUIEvent_CommLineChanged(false));
+        }
         if (AndruavEngine.getAndruavWS() == this) {
             AndruavEngine.setAndruavWS(null);
         }

@@ -9,6 +9,7 @@ import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.andruavUnit.AndruavUnitMapBase;
 import com.andruav.andruavUnit.AndruavUnitMe;
+import com.andruav.interfaces.IEventBus;
 import com.andruav.protocol.commands.ProtocolHeaders;
 import com.andruav.protocol.commands.textMessages.Control.AndruavMessage_RemoteExecute;
 
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ap.andruav_ap.Emergency;
+import ap.andruav_ap.guiEvent.GUIEvent_CommLineChanged;
 import ap.andruav_ap.denative.providers.phone.PhoneDevices;
 import ap.andruav_ap.denative.providers.phone.PhoneOutput;
 import ap.andruav_ap.denative.providers.phone.PhoneOutputBank;
@@ -250,6 +252,57 @@ public class CommLineEmergencyTest {
         receive(eventFireFrame("d_f_ms"));
         assertEquals(sirenCalls, mEmergency.sirenCalls);
         assertTrue(mEmergency.sirenOn);
+    }
+
+    /***
+     * AN-0052: the comm-line edge flips the status the UI reads -
+     * {@link AndruavDeBusClient#commLineOnline()} is the seam behind the
+     * Com tile / menu gating in native mode - and every definite edge
+     * posts a {@link GUIEvent_CommLineChanged} so the screen refreshes.
+     */
+    @Test
+    public void commLineEdgesDriveTheUiStatusSeam() throws Exception {
+        final List<Object> posted = new ArrayList<>();
+        final IEventBus oldBus = AndruavEngine.getEventBus();
+        AndruavEngine.setEventBus(new IEventBus() {
+            @Override public void post(final Object object) { posted.add(object); }
+            @Override public void postSticky(final Object object) { posted.add(object); }
+        });
+        AndruavEngine.setAndruavWS(mClient);
+        try {
+            // nothing reported yet: the card reads offline
+            assertFalse(AndruavDeBusClient.commLineOnline());
+
+            receive(moduleIdFrame(Messages.SOCKET_STATUS_REGISTERED));
+            assertTrue(AndruavDeBusClient.commLineOnline());
+
+            receive(moduleIdFrame(Messages.SOCKET_STATUS_ERROR));
+            assertFalse(AndruavDeBusClient.commLineOnline());
+
+            receive(eventFireFrame("d_cl_on"));
+            assertTrue(AndruavDeBusClient.commLineOnline());
+
+            receive(eventFireFrame("d_cl_off_r"));
+            assertFalse(AndruavDeBusClient.commLineOnline());
+
+            final List<Boolean> edges = new ArrayList<>();
+            for (final Object o : posted) {
+                if (o instanceof GUIEvent_CommLineChanged) {
+                    edges.add(((GUIEvent_CommLineChanged) o).online);
+                }
+            }
+            assertEquals(java.util.Arrays.asList(true, false, true, false), edges);
+
+            // teardown drops the read seam to offline
+            receive(eventFireFrame("d_cl_on"));
+            assertTrue(AndruavDeBusClient.commLineOnline());
+            mModule.cUDPClient = null; // no handler thread in tests - keep isConnected() false
+            mClient.shutDown();
+            assertFalse(AndruavDeBusClient.commLineOnline());
+        } finally {
+            AndruavEngine.setAndruavWS(null);
+            AndruavEngine.setEventBus(oldBus);
+        }
     }
 
     /*** A GCS MAKEFLASH/MAKEBEEP reaches Emergency over the normal bus dispatch. */

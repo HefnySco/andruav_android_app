@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavFacade;
 import com.andruav.protocol.communication.udpproxy.UDPProxy;
+import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -23,6 +24,7 @@ import java.util.function.BooleanSupplier;
 
 import ap.andruav.denative.DeUnitSupervisor;
 import ap.andruav_ap.App;
+import ap.andruav_ap.communication.AndruavDeBusClient;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 import ap.andruav_ap.denative.config.DeConfigGenerator;
 import ap.andruav_ap.denative.config.DeConfigSync;
@@ -174,6 +176,35 @@ public final class NativeUnitController {
                 != DeUnitSupervisor.State.STOPPED
                 || supervisor.getState(DeUnitSupervisor.Module.DE_MAVLINK)
                 != DeUnitSupervisor.State.STOPPED;
+    }
+
+    /**
+     * AN-0052: the comm-server link state de_comm reports on the
+     * databus (9100 {@code ms.g} socket status / 1061 {@code d_cl_*}
+     * events, F5 AN-0072) - the "connected" signal for native mode.
+     * The WS socket state cannot stand in for it:
+     * {@link AndruavDeBusClient} ties it to the module socket lifetime,
+     * which survives a dropped server link.
+     */
+    public static boolean isCommLineOnline() {
+        return AndruavDeBusClient.commLineOnline();
+    }
+
+    /**
+     * AN-0052: the {@link AndruavWSClientBase} socket state the legacy
+     * connection gating (menu items, tile enablement, Com tile) should
+     * apply in native mode: {@code SOCKETSTATE_REGISTERED} only while
+     * the comm line is up, {@code SOCKETSTATE_DISCONNECTED} once the
+     * module stack is off, {@code SOCKETSTATE_CONNECTED} while modules
+     * run but the server link is down or not yet reported.
+     */
+    public static int effectiveSocketState() {
+        if (!isNativeStackActive()) {
+            return AndruavWSClientBase.SOCKETSTATE_DISCONNECTED;
+        }
+        return isCommLineOnline()
+                ? AndruavWSClientBase.SOCKETSTATE_REGISTERED
+                : AndruavWSClientBase.SOCKETSTATE_CONNECTED;
     }
 
     /** One-line stack state for the home screen, e.g. appended to the server subtitle. */

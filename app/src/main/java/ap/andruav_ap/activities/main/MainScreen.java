@@ -71,6 +71,7 @@ import com.andruav.event.fpv7adath._7adath_FPVStreamingStatusChanged;
 import com.andruav.event.networkEvent.EventLoginClient;
 import com.andruav.event.networkEvent.EventSocketState;
 
+import ap.andruav_ap.guiEvent.GUIEvent_CommLineChanged;
 import ap.andruav_ap.guiEvent.GUIEvent_MissionServerChanged;
 import ap.andruav_ap.guiEvent.GUIEvent_UpdateConnection;
 import ap.andruav_ap.helpers.GUI;
@@ -104,6 +105,7 @@ import com.andruav.protocol.communication.tls.TlsTrustPolicy;
 import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
 
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETACTION_CONNECTING;
+import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETACTION_NONE;
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_CONNECTED;
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_DISCONNECTED;
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_ERROR;
@@ -238,6 +240,19 @@ public class MainScreen extends BaseAndruavShasha {
 
         Message msg = new Message();
         msg.obj = guiEvent_missionServerChanged;
+        mhandle.sendMessageDelayed(msg, 0);
+    }
+
+    /***
+     * AN-0052: in native mode the comm-server link edges arrive from the
+     * databus (AndruavDeBusClient), not as WS socket events - forward so
+     * the Com tile and menu gating refresh on the UI thread.
+     */
+    @Subscribe
+    public void onEvent(GUIEvent_CommLineChanged guiEvent_commLineChanged) {
+
+        Message msg = new Message();
+        msg.obj = guiEvent_commLineChanged;
         mhandle.sendMessageDelayed(msg, 0);
     }
 
@@ -386,6 +401,12 @@ public class MainScreen extends BaseAndruavShasha {
                 {
                     // HubConnectionSheet posts this after Save - refresh the Mission Server card.
                     updateServerCard();
+                }
+                else if (msg.obj instanceof GUIEvent_CommLineChanged)
+                {
+                    // AN-0052: de_comm's comm-server link edged - re-gate
+                    // the Com tile + menu items on the new link state.
+                    updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(), AndruavEngine.getAndruavWSAction());
                 }
                 else if (msg.obj instanceof _7adath_FPVStreamingStatusChanged)
                 {
@@ -795,10 +816,16 @@ public class MainScreen extends BaseAndruavShasha {
 
     protected void updateConnectionIconsStatus(final int status, final int  action) {
         if (miConnect == null) return; // issue 42
-        updateButtonsStatus(status, action);
+        // AN-0052: in native mode the WS socket state follows the databus
+        // module lifetime - it stays up after the comm-server link drops.
+        // Gate on the comm line de_comm reports (ms.g / d_cl_*) instead.
+        final boolean nativeMode = NativeUnitController.isNativeMode();
+        final int effectiveStatus = nativeMode ? NativeUnitController.effectiveSocketState() : status;
+        final int effectiveAction = nativeMode ? SOCKETACTION_NONE : action;
+        updateButtonsStatus(effectiveStatus, effectiveAction);
         updateServerCard();
         updateModuleTiles(); // Com tile (and dependents) track server link too - keep in sync.
-        switch (status) {
+        switch (effectiveStatus) {
             case SOCKETSTATE_CONNECTED:
                 miConnect.setIcon(R.drawable.connected_w_32x32);
               break;
@@ -893,8 +920,11 @@ public class MainScreen extends BaseAndruavShasha {
      */
     private void updateModuleTiles() {
         final boolean nativeMode = NativeUnitController.isNativeMode();
+        // AN-0052: in native mode "server live" is the comm line de_comm
+        // reports (ms.g / d_cl_*), not module processes running or the
+        // bus client's socket state - both survive a dropped server link.
         final boolean serverConnected = nativeMode
-                ? NativeUnitController.isNativeStackActive()
+                ? NativeUnitController.effectiveSocketState() == SOCKETSTATE_REGISTERED
                 : AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED);
         // AN-0069: in native mode "FC linked" means de_mavlink telemetry
         // (the 6502 packed-MAVLink stream) is arriving for this unit.
@@ -1099,6 +1129,9 @@ public class MainScreen extends BaseAndruavShasha {
                 NativeUnitController.startNativeStack(this);
             }
             updateServerCard();
+            // AN-0052: re-gate the Com tile + menu items now; the
+            // comm-line edge event covers the async module teardown.
+            updateConnectionIconsStatus(AndruavEngine.getAndruavWSStatus(), AndruavEngine.getAndruavWSAction());
             return;
         }
 
