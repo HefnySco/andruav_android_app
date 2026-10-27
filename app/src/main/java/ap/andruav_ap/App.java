@@ -621,7 +621,11 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
     public static void sendTelemetryfromDrone(final byte[] Data)
     {
-        if (AndruavEngine.getAndruavWS() != null) ((AndruavWSClient_TooTallNate) AndruavEngine.getAndruavWS()).sendTelemetryfromDrone(Data);
+        // F1 (AN-0068): in native mode getAndruavWS() is an AndruavDeBusClient,
+        // not a TooTallNate client - the Java light-telemetry feed does not run
+        // there anyway (de_mavlink owns telemetry).
+        if (AndruavEngine.getAndruavWS() instanceof AndruavWSClient_TooTallNate)
+            ((AndruavWSClient_TooTallNate) AndruavEngine.getAndruavWS()).sendTelemetryfromDrone(Data);
 
     }
 

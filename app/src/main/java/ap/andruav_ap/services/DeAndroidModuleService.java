@@ -17,6 +17,8 @@ import java.util.List;
 
 import ap.andruav_ap.BuildConfig;
 import ap.andruav_ap.R;
+import ap.andruav_ap.communication.AndruavDeBusClient;
+import ap.andruav_ap.denative.NativeUnitController;
 import ap.andruav_ap.denative.position.PhonePositionSource;
 import ap.andruav_ap.denative.providers.camera.CameraProvider;
 import ap.andruav_ap.denative.providers.phone.PhoneDevices;
@@ -28,6 +30,7 @@ import ap.andruav_ap.denative.providers.sound.SoundProvider;
 import ap.andruav_ap.denative.providers.sound.SoundProviderConfig;
 import ap.andruav_ap.services.fpv.CameraController;
 import ap.andruavmiddlelibrary.preference.Preference;
+import com.andruav.AndruavEngine;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import de.databus.CModule;
 import de.databus.Messages;
@@ -72,6 +75,7 @@ public class DeAndroidModuleService extends Service {
 
     private CModule mModule;
     private CapabilityHost mCapabilityHost;
+    private AndruavDeBusClient mDeBusClient;
     private PhoneProvider mPhoneProvider;
     private PhoneHealthMonitor mHealthMonitor;
     private SoundProvider mSoundProvider;
@@ -113,11 +117,22 @@ public class DeAndroidModuleService extends Service {
         super.onDestroy();
     }
 
-    /** Idempotent: a repeated START while running is a no-op. */
+    /** Idempotent: a repeated START while running is a near no-op. */
     private void startModule(final int port) {
         if (mModuleRunning) {
+            // The module stayed up while the WS-facing bus client was torn
+            // down (a disconnect that did not stop the service) - revive it.
+            if (NativeUnitController.isNativeMode()
+                    && (mModule != null)
+                    && ((mDeBusClient == null) || !mDeBusClient.isConnected())) {
+                mDeBusClient = attachBusClient(mModule);
+            }
             return;
         }
+
+        // F1 (AN-0068): in native mode the module also becomes the app's
+        // comm transport - the full message subscription is only wanted then.
+        final boolean busClientActive = NativeUnitController.isNativeMode();
 
         final CModule module = new CModule();
         module.defineModule(
@@ -125,10 +140,14 @@ public class DeAndroidModuleService extends Service {
                 MODULE_ID,
                 MODULE_KEY,
                 BuildConfig.VERSION_NAME,
-                // Subscribed to 9102 so de_comm fans other modules'
-                // position reports out to us - the "FC position present"
-                // signal for the phone-GPS gate (B8).
-                new JSONArray().put(Messages.TYPE_AndruavModule_Location_Info));
+                busClientActive
+                        // The whole unit-view/command surface AndruavDeBusClient
+                        // consumes (see its buildMessageFilter()).
+                        ? AndruavDeBusClient.buildMessageFilter()
+                        // Subscribed to 9102 so de_comm fans other modules'
+                        // position reports out to us - the "FC position present"
+                        // signal for the phone-GPS gate (B8).
+                        : new JSONArray().put(Messages.TYPE_AndruavModule_Location_Info));
 
         final List<DeCapabilityProvider> providers = new ArrayList<>();
         if (BuildConfig.DEBUG) {
@@ -192,6 +211,10 @@ public class DeAndroidModuleService extends Service {
         module.setOnReceive((message, len, jMsg) -> {
             host.onReceive(message, len, jMsg);
             positionSource.onModuleMessage(jMsg);
+            final AndruavDeBusClient busClient = mDeBusClient;
+            if (busClient != null) {
+                busClient.onReceive(message, len, jMsg);
+            }
         });
 
         // Socket bind + receiver threads off the main thread, mirroring
@@ -206,6 +229,12 @@ public class DeAndroidModuleService extends Service {
                         return;
                     }
                     mModuleRunning = true;
+                }
+                // F1 (AN-0068): socket is up - install the bus client as the
+                // app's getAndruavWS() transport so the UI/parser layer works
+                // exactly as if a WebSocket client were connected.
+                if (busClientActive) {
+                    mDeBusClient = attachBusClient(module);
                 }
                 // Socket is up: start the location feed + 1 Hz emitter.
                 positionSource.start();
@@ -227,25 +256,50 @@ public class DeAndroidModuleService extends Service {
         mPositionSource = positionSource;
     }
 
+    /**
+     * F1 (AN-0068): creates the {@link AndruavDeBusClient} riding on {@code module},
+     * stamps it with the unit identity used to label module-sourced frames, and
+     * installs it as {@link AndruavEngine#getAndruavWS()} so the whole
+     * unit-map/EventBus layer works unchanged.
+     */
+    private AndruavDeBusClient attachBusClient(final CModule module) {
+        final AndruavDeBusClient busClient = new AndruavDeBusClient(module);
+        final com.andruav.andruavUnit.AndruavUnitMe me = com.andruav.AndruavSettings.andruavWe7daBase;
+        if (me != null) {
+            busClient.setUnitIdentity(me.PartyID, me.GroupName);
+        }
+        busClient.start();
+        AndruavEngine.setAndruavWS(busClient);
+        Log.i(TAG, "AndruavDeBusClient installed as AndruavWS transport");
+        return busClient;
+    }
+
     private void stopModule() {
         final CModule module;
         final PhoneProvider phoneProvider;
         final PhoneHealthMonitor monitor;
         final SoundProvider soundProvider;
         final PhonePositionSource positionSource;
+        final AndruavDeBusClient busClient;
         synchronized (this) {
             module = mModule;
             phoneProvider = mPhoneProvider;
             monitor = mHealthMonitor;
             soundProvider = mSoundProvider;
             positionSource = mPositionSource;
+            busClient = mDeBusClient;
             mModule = null;
             mCapabilityHost = null;
             mPhoneProvider = null;
             mHealthMonitor = null;
             mSoundProvider = null;
             mPositionSource = null;
+            mDeBusClient = null;
             mModuleRunning = false;
+        }
+        if (busClient != null) {
+            // shutDown() also clears the AndruavEngine.getAndruavWS() ref.
+            busClient.shutDown();
         }
         if (positionSource != null) {
             positionSource.stop();
