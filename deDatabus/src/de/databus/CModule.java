@@ -170,6 +170,7 @@ public class CModule {
             fullMessage.put(INTERMODULE_ROUTING_TYPE, msg_routing_type);
             fullMessage.put(ANDRUAV_PROTOCOL_MESSAGE_TYPE, andruav_message_id);
             fullMessage.put(ANDRUAV_PROTOCOL_MESSAGE_CMD, jmsg);
+            mergeEnvelope(fullMessage, m_outbound_envelope);
 
             byte[] msg = fullMessage.toString().getBytes(StandardCharsets.UTF_8);
             sendMSG(msg, msg.length);
@@ -192,6 +193,7 @@ public class CModule {
             fullMessage.put(INTERMODULE_ROUTING_TYPE, msg_routing_type);
             fullMessage.put(ANDRUAV_PROTOCOL_MESSAGE_TYPE, andruav_message_id);
             fullMessage.put(ANDRUAV_PROTOCOL_MESSAGE_CMD, message_cmd);
+            mergeEnvelope(fullMessage, m_outbound_envelope);
 
             byte[] json_msg = fullMessage.toString().getBytes(StandardCharsets.UTF_8);
             byte[] msg = new byte[json_msg.length + 1 + bmsg_length];
@@ -200,6 +202,34 @@ public class CModule {
                 System.arraycopy(bmsg, 0, msg, json_msg.length + 1, bmsg_length);
             }
             sendMSG(msg, msg.length);
+        }
+    }
+
+    /** Extra top-level fields stamped onto every sendJMSG/sendBMSG datagram. */
+    private final JSONObject m_outbound_envelope = new JSONObject();
+
+    /**
+     * Stamp a top-level field onto every outgoing comm datagram built by
+     * {@link #sendJMSG}/{@link #sendBMSG} - e.g. {@code p}, the sender
+     * permission the comm server would inject on a wire message. Use for
+     * fields the module asserts for itself; {@code ms} content is untouched.
+     */
+    public void appendOutboundEnvelopeField(String name, Object value) {
+        this.m_outbound_envelope.put(name, value);
+    }
+
+    /*** Read-only view of the stamped outbound envelope fields (tests). */
+    public JSONObject getOutboundEnvelope() {
+        return m_outbound_envelope;
+    }
+
+    /** Merge caller-supplied envelope fields into an outgoing datagram (null-safe). */
+    private static void mergeEnvelope(JSONObject fullMessage, JSONObject extraEnvelope) {
+        if (extraEnvelope == null) return;
+        java.util.Iterator<String> keys = extraEnvelope.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            fullMessage.put(key, extraEnvelope.opt(key));
         }
     }
 

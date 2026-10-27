@@ -270,6 +270,13 @@ public class DeAndroidModuleService extends Service {
         }
         busClient.start();
         AndruavEngine.setAndruavWS(busClient);
+        // F3 (AN-0070): install the bus-backed control board so
+        // FCBoard.do_* commands reach de_mavlink over the databus. The
+        // DroneKit board is never built in native mode (FC belongs to
+        // de_mavlink).
+        if (me != null) {
+            AndruavEngine.getLo7etTa7akomMasna3().getFlightControlBoard(me);
+        }
         Log.i(TAG, "AndruavDeBusClient installed as AndruavWS transport");
         return busClient;
     }
@@ -300,6 +307,12 @@ public class DeAndroidModuleService extends Service {
         if (busClient != null) {
             // shutDown() also clears the AndruavEngine.getAndruavWS() ref.
             busClient.shutDown();
+        }
+        // F3 (AN-0070): drop the bus-backed board; the Java stack rebuilds
+        // its own FCBoard when the DroneKit link comes back.
+        final com.andruav.andruavUnit.AndruavUnitMe me = com.andruav.AndruavSettings.andruavWe7daBase;
+        if ((me != null) && (me.FCBoard instanceof ap.andruav_ap.communication.controlBoard.ControlBoard_DeBus)) {
+            me.FCBoard = null;
         }
         if (positionSource != null) {
             positionSource.stop();

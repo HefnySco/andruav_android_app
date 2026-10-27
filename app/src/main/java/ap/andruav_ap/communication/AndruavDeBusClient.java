@@ -60,6 +60,21 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
     /*** F2 (AN-0069): decodes de_mavlink's 6502 packed-MAVLink telemetry. */
     private final MavlinkTelemetryBridge mMavlinkTelemetryBridge = new MavlinkTelemetryBridge();
 
+    /***
+     * F3 (AN-0070): the {@code p} envelope stamp the real comm server
+     * injects into every routed message from a locally logged-in party
+     * ({@code m_prm = 0xffffffff}). On the unit databus there is no
+     * server to stamp it, so we stamp it ourselves: this module IS the
+     * unit. de_comm forwards the datagram to subscribed modules
+     * verbatim, so de_mavlink sees full-control permission exactly as if
+     * the command had come from a full-control GCS. The server relay leg
+     * ({@code API_sendCMD}) rebuilds a clean frame without {@code p} -
+     * the stamp never leaks off-unit.
+     */
+    // NOTE: serialized as an unsigned 32-bit value - de_* readers validate
+    // "p" as number_unsigned, so it must leave as 4294967295, not -1.
+    private static final long LOCAL_PERMISSION_FULL_CONTROL = 0xffffffffL;
+
 
     public AndruavDeBusClient(final CModule module) {
         this(module, null);
@@ -76,6 +91,13 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
         mModule = module;
         mInboundExecutor = inboundExecutor;
         messageDispatcher = new MessageDispatcher();
+
+        // F3 (AN-0070): stamp the sender permission onto every datagram
+        // this module emits. The real comm server injects "p" from the
+        // login permission of the sending party; on the unit bus there is
+        // no server, so the module stamps it itself - it IS the unit.
+        module.appendOutboundEnvelopeField(
+                Messages.ANDRUAV_PROTOCOL_MESSAGE_PERMISSION, LOCAL_PERMISSION_FULL_CONTROL);
 
         synchronized (mSocketStateSync) {
             mkillMe = false;
@@ -148,16 +170,16 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
                 .put(Messages.TYPE_AndruavMessage_UDPProxy_Info)
                 // commands issued to the unit
                 .put(Messages.TYPE_AndruavMessage_RemoteExecute)
-                .put(Messages.TYPE_AndruavMessage_FlightControl)
-                .put(Messages.TYPE_AndruavMessage_Arm)
-                .put(Messages.TYPE_AndruavMessage_ChangeAltitude)
-                .put(Messages.TYPE_AndruavMessage_Land)
-                .put(Messages.TYPE_AndruavMessage_GuidedPoint)
-                .put(Messages.TYPE_AndruavMessage_CirclePoint)
-                .put(Messages.TYPE_AndruavMessage_DoYAW)
-                .put(Messages.TYPE_AndruavMessage_ChangeSpeed)
-                .put(com.andruav.protocol.commands.textMessages.FlightControl.AndruavMessage_GimbalCtrl
-                        .TYPE_AndruavMessage_GimbalCtrl)
+                // F3 (AN-0070): the FC-command family (Arm 1030,
+                // FlightControl 1010, ChangeAltitude 1031, Land 1032,
+                // GuidedPoint 1033, CirclePoint 1034, DoYAW 1035,
+                // ChangeSpeed 1040, GimbalCtrl 1045, UploadWayPoints 1046)
+                // is deliberately NOT subscribed: in native mode
+                // de_mavlink owns the FC and answers them; the inherited
+                // Execute() would only re-dispatch them to
+                // FCBoard.do_*, echoing each command back onto the bus
+                // once. RC/remote-control types stay subscribed - their
+                // Execute() branches post events, no board echo.
                 .put(Messages.TYPE_AndruavMessage_RemoteControl2)
                 .put(Messages.TYPE_AndruavMessage_RemoteControlSettings)
                 .put(Messages.TYPE_AndruavMessage_CameraList)
@@ -290,6 +312,22 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
     /*** The module socket is owned by the hosting service - nothing to close here. */
     @Override
     protected void socketDisconnect() {
+    }
+
+
+    /***
+     * F3 (AN-0070): direct {@code ms}->bus send for the bus-backed control
+     * board. Same envelope shape as {@link #socketSendTextMessage} output
+     * ({@code internal_message=false}, {@code p} stamped): de_comm fans the
+     * datagram out to every subscribed local module - de_mavlink executes
+     * the command with no server round trip - and relays it to the comm
+     * server when one is connected.
+     */
+    public void sendBusCommand(final String target, final JSONObject ms, final int messageType) {
+        final CModule module = mModule;
+        if ((module == null) || (module.cUDPClient == null)) return;
+
+        module.sendJMSG(target, ms, messageType, false);
     }
 
 
