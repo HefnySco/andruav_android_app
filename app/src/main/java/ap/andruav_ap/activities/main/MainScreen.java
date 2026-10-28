@@ -670,8 +670,8 @@ public class MainScreen extends BaseAndruavShasha {
         mBtnServerConnect = findViewById(R.id.home_btn_server_connect);
         mBtnServerDisconnect = findViewById(R.id.home_btn_server_disconnect);
         mBtnServerSignIn.setOnClickListener(v -> doSignOut());
-        mBtnServerConnect.setOnClickListener(v -> onServerConnectToggle());
-        mBtnServerDisconnect.setOnClickListener(v -> onServerConnectToggle());
+        mBtnServerConnect.setOnClickListener(v -> onServerConnectToggle(true));
+        mBtnServerDisconnect.setOnClickListener(v -> onServerConnectToggle(false));
 
         mTxtTelemetryStatus = findViewById(R.id.home_txt_telemetry_status);
         mGroupTelemetryLinked = findViewById(R.id.home_group_telemetry_linked);
@@ -1108,9 +1108,15 @@ public class MainScreen extends BaseAndruavShasha {
         mTxtServerStatus.setTextColor(ContextCompat.getColor(this,
                 connected ? R.color.home_green_icon : R.color.home_red_text));
 
+        // AN-0103: in native mode the buttons follow whether the module stack
+        // runs, not the comm line - modules RUNNING with the server unreachable
+        // must still offer DISCONNECT (a CONNECT there would mislead).
+        final boolean showDisconnect = nativeMode
+                ? NativeUnitController.isNativeStackActive()
+                : connected;
         mBtnServerSignIn.setVisibility(connected ? View.GONE : View.VISIBLE);
-        mBtnServerConnect.setVisibility(connected ? View.GONE : View.VISIBLE);
-        mBtnServerDisconnect.setVisibility(connected ? View.VISIBLE : View.GONE);
+        mBtnServerConnect.setVisibility(showDisconnect ? View.GONE : View.VISIBLE);
+        mBtnServerDisconnect.setVisibility(showDisconnect ? View.VISIBLE : View.GONE);
 
         // AN-0065: no socket events fire in native mode, so re-arm a poll to
         // keep the module state live. onPause's removeCallbacksAndMessages
@@ -1169,8 +1175,12 @@ public class MainScreen extends BaseAndruavShasha {
      * Mirrors the previous ActionBar "connect" icon behavior (now the Mission Server
      * card's CONNECT/DISCONNECT control): toggles the server link and briefly disables
      * itself to guard against double taps while the tap is being processed.
+     *
+     * @param wantConnect true from CONNECT, false from DISCONNECT. Native mode
+     *                    acts on it explicitly (AN-0103); the Java path keeps
+     *                    its socket-state toggle.
      */
-    private void onServerConnectToggle() {
+    private void onServerConnectToggle(final boolean wantConnect) {
         mBtnServerConnect.setEnabled(false);
         mBtnServerDisconnect.setEnabled(false);
         mhandle.postDelayed(() -> {
@@ -1181,10 +1191,13 @@ public class MainScreen extends BaseAndruavShasha {
         // C3 (AN-0051): in native mode the connect toggle drives the module
         // stack directly - de_comm authenticates itself, no Java login round.
         if (NativeUnitController.isNativeMode()) {
-            if (NativeUnitController.isNativeStackActive()) {
+            // AN-0103: act on the button pressed, never on a toggle - a stale
+            // CONNECT must not tear down a running stack, nor DISCONNECT start one.
+            final boolean active = NativeUnitController.isNativeStackActive();
+            if (!wantConnect && active) {
                 NativeUnitController.stopNativeStack(this);
                 showStoppingDialog();
-            } else {
+            } else if (wantConnect && !active) {
                 NativeUnitController.connectNative(this);
             }
             updateServerCard();
