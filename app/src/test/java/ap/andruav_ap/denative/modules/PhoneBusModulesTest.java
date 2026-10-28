@@ -28,6 +28,7 @@ public class PhoneBusModulesTest {
     @Before
     public void setUp() throws Exception {
         mOutputs.put("torch", false);
+        mOutputs.put("torch_strobe", false);
         mOutputs.put("screen", false);
         mOutputs.put("vibrate", false);
         mGpio = new PhoneGpioModule(new PhoneGpioModule.Outputs() {
@@ -101,10 +102,29 @@ public class PhoneBusModulesTest {
         mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_REMOTE_EXECUTE,
                 new JSONObject().put("a", PhoneGpioModule.TYPE_GPIO_STATUS)));
         final JSONArray list = lastStatusList(GCS);
-        assertEquals(3, list.length());
+        assertEquals(4, list.length());
         assertEquals("camera_flash", list.getJSONObject(0).getString("n"));
         assertEquals("screen_flash", list.getJSONObject(1).getString("n"));
         assertEquals("vibrate", list.getJSONObject(2).getString("n"));
+        assertEquals("flash_strobe", list.getJSONObject(3).getString("n"));
+    }
+
+    /** Steady and strobe share one flash unit: turning one on turns the other off. */
+    @Test
+    public void steadyAndStrobeAreExclusive() throws Exception {
+        mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
+                .put("a", 2).put("n", "flash_strobe").put("v", 1)));
+        assertTrue(mOutputs.get("torch_strobe"));
+
+        mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
+                .put("a", 2).put("p", 1).put("v", 1)));
+        assertTrue(mOutputs.get("torch"));
+        assertFalse(mOutputs.get("torch_strobe"));
+        // both pins changed, so the reply carries the whole list
+        final JSONArray list = lastStatusList(GCS);
+        assertEquals(4, list.length());
+        assertEquals(1, list.getJSONObject(0).getInt("v"));
+        assertEquals(0, list.getJSONObject(3).getInt("v"));
     }
 
     /** A change made outside the bus (Emergency, capability action) is broadcast once. */

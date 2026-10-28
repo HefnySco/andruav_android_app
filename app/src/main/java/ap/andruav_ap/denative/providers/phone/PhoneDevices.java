@@ -81,9 +81,14 @@ public final class PhoneDevices {
      * {@link #specsFromConfig}.
      */
     public static List<PhoneOutputSpec> defaultSpecs() {
-        final List<PhoneOutputSpec> specs = new ArrayList<>(3);
+        final List<PhoneOutputSpec> specs = new ArrayList<>(4);
         specs.add(new PhoneOutputSpec("screen", PhoneOutputSpec.KIND_SCREEN));
-        specs.add(new PhoneOutputSpec("torch", PhoneOutputSpec.KIND_TORCH));
+        // AN-0107: the torch is steady on/off; blinking is its own resource
+        // over the same flash unit (the strobeHz default is the screen's)
+        final PhoneOutputSpec torch = new PhoneOutputSpec("torch", PhoneOutputSpec.KIND_TORCH);
+        torch.strobeHz = 0;
+        specs.add(torch);
+        specs.add(new PhoneOutputSpec("torch_strobe", PhoneOutputSpec.KIND_TORCH));
         specs.add(new PhoneOutputSpec("vibrate", PhoneOutputSpec.KIND_VIBRATE));
         return specs;
     }

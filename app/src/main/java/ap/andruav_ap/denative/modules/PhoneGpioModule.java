@@ -11,7 +11,8 @@ import java.util.Map;
  * AN-0107: the phone's torch / screen strobe / vibrate as a DroneEngage GPIO
  * module (class "gpio") with the de_rpi_gpio wire surface, so the webclient's
  * GPIO tab and its flash (sun) button - which looks for pins named
- * {@value #PIN_CAMERA_FLASH} - drive a native unit.
+ * {@value #PIN_CAMERA_FLASH} (steady torch) - drive a native unit;
+ * {@value #PIN_FLASH_STROBE} blinks the same torch.
  * <p>
  * Messages (droneengage_rpi_gpio src/gpio/gpio_facade.cpp, webclient
  * js_commands_api.js):
@@ -49,18 +50,24 @@ public final class PhoneGpioModule {
         final int number;
         final String name;
         final String output;
+        /** Output sharing the same hardware (turned off before this one goes on), or null. */
+        final String exclusive;
 
-        Pin(final int number, final String name, final String output) {
+        Pin(final int number, final String name, final String output, final String exclusive) {
             this.number = number;
             this.name = name;
             this.output = output;
+            this.exclusive = exclusive;
         }
     }
 
+    public static final String PIN_FLASH_STROBE = "flash_strobe";
+
     static final Pin[] PINS = {
-            new Pin(1, PIN_CAMERA_FLASH, "torch"),
-            new Pin(2, "screen_flash", "screen"),
-            new Pin(3, "vibrate", "vibrate"),
+            new Pin(1, PIN_CAMERA_FLASH, "torch", "torch_strobe"),   // steady on/off
+            new Pin(2, "screen_flash", "screen", null),
+            new Pin(3, "vibrate", "vibrate", null),
+            new Pin(4, PIN_FLASH_STROBE, "torch_strobe", "torch"),   // blinking torch
     };
 
     /** The phone output bank, narrowed to what the pins need. */
@@ -105,8 +112,13 @@ public final class PhoneGpioModule {
             if (action == ACTION_PORT_WRITE) {
                 final Pin pin = find(ms);
                 if (pin == null || !ms.has("v")) return;
-                m_outputs.write(pin.output, ms.optInt("v") != 0, SRC_GCS);
-                sendStatus(sender, pin);
+                final boolean on = ms.optInt("v") != 0;
+                // one flash unit: steady and strobe cannot both own it
+                final boolean freed = on && (pin.exclusive != null)
+                        && Boolean.TRUE.equals(m_outputs.read(pin.exclusive));
+                if (freed) m_outputs.write(pin.exclusive, false, SRC_GCS);
+                m_outputs.write(pin.output, on, SRC_GCS);
+                sendStatus(sender, freed ? null : pin);
             } else if (action == ACTION_INFO) {
                 sendStatus(sender, null);
             }
