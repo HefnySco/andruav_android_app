@@ -1080,8 +1080,12 @@ public class MainScreen extends BaseAndruavShasha {
         // the WS socket never connects, so the "connected" state and label come
         // from the module supervisor instead of the Java client.
         final boolean nativeMode = NativeUnitController.isNativeMode();
+        // DE-0028: "online" must mean the comm line is up (de_comm's 9100/1061
+        // link state via effectiveSocketState), not merely that the module
+        // processes run - modules RUNNING while the server socket is dead is
+        // an offline unit, and so is a stack whose bus client never attached.
         final boolean connected = nativeMode
-                ? NativeUnitController.isNativeStackActive()
+                ? NativeUnitController.effectiveSocketState() == AndruavWSClientBase.SOCKETSTATE_REGISTERED
                 : AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED);
 
         final String subtitle = Preference.getAuthServerURL(null);
