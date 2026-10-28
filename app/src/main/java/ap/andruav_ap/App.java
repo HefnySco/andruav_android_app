@@ -63,21 +63,15 @@ import com.andruav.interfaces.IPreference;
 import ap.andruav_ap.helpers.CheckAppPermissions;
 import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
 import org.greenrobot.eventbus.EventBus;
-import ap.andruav_ap.communication.AndruavWSClient_TooTallNate;
 import ap.andruav_ap.communication.ControlBoardFactory;
-import ap.andruav_ap.communication.controlBoard.mavlink.TrafficOptimizer;
-import ap.andruav_ap.communication.telemetry.IEvent_SocketData;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 
 import com.andruav.event.networkEvent.EventSocketState;
-import ap.andruav_ap.communication.telemetry.TelemetryProtocolParser;
 import ap.andruav_ap.communication.AndruavUnitFactory;
 
-import ap.andruav_ap.communication.telemetry.DroneKit.DroneKitServer;
 import com.andruav.FeatureSwitch;
 
 import ap.andruavmiddlelibrary.LoginClient;
-import ap.andruav_ap.communication.telemetry.BlueTooth.BlueToothFCB;
 import ap.andruavmiddlelibrary.com.serenegiant.encoder.MediaVideoEncoder;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_ProtocolChanged;
 import ap.andruavmiddlelibrary.preference.Preference;
@@ -112,7 +106,6 @@ import ap.sensors.SensorService;
 import ap.andruav_ap.denative.providers.camera.CameraBackend;
 import ap.andruav_ap.services.fpv.CameraController;
 import ap.andruav_ap.services.fpv.FPVStreamingService;
-import ap.andruav_ap.services.link.AndruavLinkService;
 import ap.andruavmiddlelibrary.database.DaoManager;
 
 import static com.andruav.uavos.modules.UAVOSConstants.UAVOS_MODULE_TYPE_CAMERA;
@@ -143,11 +136,9 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     public boolean D = false; // debug
     public final static String TAG = "RCMOB";
     public static Context context;
-    public static IEvent_SocketData iEvent_socketData;
     public static SoundManager soundManager;
     public static Intent iSensorService;
     public static Intent iFPVStreamingService;
-    public static Intent iLinkService;
     /***
      * unit-ID of the telemetry drone that this CGS connected with.
      */
@@ -158,15 +149,12 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
     public static PendingIntent MainPendingIntent;
     public static KMLFileHandler KMLFile;
 
-    public static DroneKitServer droneKitServer;
-    public static BlueToothFCB BT;
     /*public static USBFCB usbConn;
     public static FTDIFCB ftdiusbConn;*/
     public static String versionName;
     public static ExceptionDaoLogger exceptionDaoLogger;
     public static Notification notification;
 
-    public static TelemetryProtocolParser telemetryProtocolParser;
 
     public static boolean isFirstRun;
     public static boolean isNewVersion;
@@ -620,16 +608,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         return iFPVStreamingService != null;
     }
 
-    public static void sendTelemetryfromDrone(final byte[] Data)
-    {
-        // F1 (AN-0068): in native mode getAndruavWS() is an AndruavDeBusClient,
-        // not a TooTallNate client - the Java light-telemetry feed does not run
-        // there anyway (de_mavlink owns telemetry).
-        if (AndruavEngine.getAndruavWS() instanceof AndruavWSClient_TooTallNate)
-            ((AndruavWSClient_TooTallNate) AndruavEngine.getAndruavWS()).sendTelemetryfromDrone(Data);
-
-    }
-
     /***
      * This is not UAVOS. So even if UAVOS is disabled this function should be called.
      * It is used to make Andruav & UAVOS compatible.
@@ -715,85 +693,17 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         AndruavEngine.setAndruavSMSClientParserBase(new AndruavSMSClientParser());
     }
 
-    /***
-     * Starts the link-guardian foreground service ({@link AndruavLinkService}) that keeps the
-     * Andruav server link alive while the app is backgrounded. Persists the desired-flag and
-     * is idempotent. A failed start (e.g. a background start without the battery-optimization
-     * exemption) is logged and swallowed - it must not abort the WS connect that follows it.
-     */
-    public static void startAndruavLinkService ()
-    {
-        Preference.setLinkServiceDesired(null,true);
-        if (iLinkService == null) {
-            iLinkService = new Intent(App.getAppContext(), AndruavLinkService.class);
-        }
-
-        try {
-            // Deliberately Exception, not just SecurityException: a background start without
-            // the battery-optimization exemption throws ForegroundServiceStartNotAllowedException
-            // (an IllegalStateException).
-            ContextCompat.startForegroundService(App.getAppContext(), iLinkService);
-        } catch (Exception e) {
-            AndruavEngine.log().logException("link_fgs_start", e);
-        }
-    }
-
-    /***
-     * Stops the link-guardian service and clears the persisted desired-flag. Called only from
-     * explicit user-intent disconnect paths (see stopAndruavWS call sites).
-     */
-    public static void stopAndruavLinkService ()
-    {
-        Preference.setLinkServiceDesired(null,false);
-        if (iLinkService != null)
-        {
-            App.getAppContext().stopService(iLinkService);
-            iLinkService = null;
-        }
-    }
-
-    public static boolean isLinkServiceRunning ()
-    {
-        return iLinkService != null;
-    }
-
     /**
      * Connect to server.
      * You need to handle registration and other issues.
+     * <br>
+     * C6 (AN-0054): the Java WS client and its link guardian are hidden in
+     * {@code src/legacy/java} - the comm link is de_comm's job. Kept under
+     * the old name so every connect call site stays valid.
      */
     public static void startAndruavWS ()
     {
-        // C3 (AN-0051): with 'Native unit' on, the comm link is de_comm's job -
-        // the Java client must never come online beside it. Assert the native
-        // stack instead so every connect call site stays valid.
-        if (Preference.isNativeUnitEnabled(null))
-        {
-            NativeUnitController.startNativeStack(getAppContext());
-            return;
-        }
-
-        // The guardian must be up before the socket connects so it is already watching when
-        // the link comes alive.
-        startAndruavLinkService();
-
-        String websocketURL = "wss://" + LoginClient.getWSURL();
-
-        if (AndruavEngine.getAndruavWS() == null)
-        {
-            AndruavEngine.setAndruavWS(new AndruavWSClient_TooTallNate(websocketURL, null));
-         }
-        else {
-
-
-            if (AndruavEngine.getAndruavWS().isConnected())
-                AndruavEngine.getAndruavWS().disconnect();
-
-
-        }
-        // The user asked for a connection: do not make them wait for the back-off
-        // delay that a previous outage may have grown.
-        AndruavEngine.getAndruavWS().resetReconnectDelay();
-        AndruavEngine.getAndruavWS().connect(websocketURL);
+        NativeUnitController.startNativeStack(getAppContext());
         TTS.getInstance().Speak(App.getAppContext().getString(ap.andruavmiddlelibrary.R.string.gen_speak_connecting));
 
     }
@@ -801,19 +711,15 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
     /**
      * Stops Andruav WebSocket Listener
+     * <br>
+     * C6 (AN-0054): every logout/exit path funnels here - the unit lives in
+     * de_comm, so "disconnect" brings the native stack down. The WS teardown
+     * below stays generic: in the native stack the client is the
+     * {@code AndruavDeBusClient}, whose socket is the module's bus link.
      */
     public static void stopAndruavWS (boolean kill)
     {
-        // User-intent disconnect: the guardian goes down with the link. Ahead of the null
-        // return below so a not-yet-created WS client still clears the desired-flag.
-        stopAndruavLinkService();
-
-        // C3 (AN-0051): every logout/exit path funnels here - in native mode the
-        // unit lives in de_comm, so "disconnect" must bring that stack down too.
-        if (Preference.isNativeUnitEnabled(null))
-        {
-            NativeUnitController.stopNativeStack(getAppContext());
-        }
+        NativeUnitController.stopNativeStack(getAppContext());
 
         if (AndruavEngine.getAndruavWS()== null)
         {
@@ -841,27 +747,13 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
     /***
      * Recreates and reconnects the Andruav server link after a process restart - used when the
-     * link is still desired but its WebSocket client is gone (process death, BOOT). Drives the
-     * existing reconnect() -> ValidateAccount -> connect chain (with backoff) via
-     * requestReconnectNow(), which also revives a client left disconnected by an explicit
-     * disconnect() earlier.
+     * link is still desired but its WebSocket client is gone (process death, BOOT).
+     * <br>
+     * C6 (AN-0054): the Java client is gone - resume means the native stack.
      */
     public static void resumeLink ()
     {
-        // C3 (AN-0051): a surviving link-guardian or BOOT receiver must not
-        // resurrect the Java client while 'Native unit' is on.
-        if (Preference.isNativeUnitEnabled(null))
-        {
-            NativeUnitController.startNativeStack(getAppContext());
-            return;
-        }
-
-        if (AndruavEngine.getAndruavWS() == null)
-        {
-            AndruavEngine.setAndruavWS(new AndruavWSClient_TooTallNate("wss://" + LoginClient.getWSURL(), null));
-        }
-
-        AndruavEngine.getAndruavWS().requestReconnectNow();
+        NativeUnitController.startNativeStack(getAppContext());
     }
 
 
@@ -985,10 +877,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         prepareSounds();
 
-        if (DeviceManagerFacade.hasBlueTooth()) {
-            BT = new BlueToothFCB();
-        }
-
         if (DeviceManagerFacade.hasUSBHost()) {
            /* usbConn = new USBFCB();
             ftdiusbConn = new FTDIFCB();*/
@@ -1016,13 +904,12 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         defineBuiltIntModules();
 
-        // C3 (AN-0051): 'Native unit' persists across (re)launches. Application
-        // onCreate also runs inside the :de_* module processes - only the main
-        // process may own the supervisor. Like the Java stack, the unit only
-        // comes up by itself when 'Auto connect' is on; otherwise the user
-        // presses Connect.
-        if (NativeUnitController.isMainProcess(this) && Preference.isNativeUnitEnabled(null)
-                && Preference.isAutoStart(null)) {
+        // C3/C6 (AN-0051/AN-0054): the native stack is the only stack.
+        // Application onCreate also runs inside the :de_* module processes -
+        // only the main process may own the supervisor. Like the Java stack
+        // before it, the unit only comes up by itself when 'Auto connect' is
+        // on; otherwise the user presses Connect.
+        if (NativeUnitController.isMainProcess(this) && Preference.isAutoStart(null)) {
             NativeUnitController.startNativeStack(this);
         }
 
@@ -1200,7 +1087,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
             EventBus.getDefault().post(new Event_ShutDown_Signalling(4));
 
             App.stopSensorService();
-            App.stopAndruavLinkService();
 
 
         } catch (Exception ex) {
@@ -1342,12 +1228,14 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
     @Override
     public boolean recordUdpSendFeedback(final long durationUs) {
-        return TrafficOptimizer.recordSendFeedback(durationUs);
+        // C6 (AN-0054): the smart-telemetry TrafficOptimizer is in the legacy
+        // package - nothing feeds the Java UDP relay in the native stack.
+        return false;
     }
 
     @Override
     public int getEffectiveTelemetryLevel() {
-        return TrafficOptimizer.getEffectiveLevel();
+        return Preference.getSmartMavlinkTelemetry(null);
     }
 
     @Override

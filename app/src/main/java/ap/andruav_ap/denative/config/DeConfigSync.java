@@ -71,12 +71,9 @@ public final class DeConfigSync implements SharedPreferences.OnSharedPreferenceC
     }
 
     private void regenerateNow() {
-        // The listener stays registered for the process lifetime; without this
-        // gate a settings change while 'Native unit' is off would restart
-        // module processes that must stay down (N8 mutual exclusion).
-        if (!ap.andruavmiddlelibrary.preference.Preference.isNativeUnitEnabled(null)) {
-            return;
-        }
+        // C6 (AN-0054): the 'Native unit' off-state no longer exists - the
+        // listener only runs while the stack is wanted (start/stop arm it),
+        // which is the guard the old pref check provided.
         List<String> changed = DeConfigGenerator.regenerate(app);
         for (String module : changed) {
             restart(module);

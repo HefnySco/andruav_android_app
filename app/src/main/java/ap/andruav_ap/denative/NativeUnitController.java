@@ -11,9 +11,6 @@ import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
-import com.andruav.AndruavEngine;
-import com.andruav.AndruavFacade;
-import com.andruav.protocol.communication.udpproxy.UDPProxy;
 import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
 
 import java.io.BufferedReader;
@@ -25,7 +22,6 @@ import java.util.function.BooleanSupplier;
 import ap.andruav.denative.DeUnitSupervisor;
 import ap.andruav_ap.App;
 import ap.andruav_ap.communication.AndruavDeBusClient;
-import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 import ap.andruav_ap.denative.config.DeConfigGenerator;
 import ap.andruav_ap.denative.config.DeConfigSync;
 import ap.andruav_ap.services.DeAndroidModuleService;
@@ -37,10 +33,10 @@ import ap.andruavmiddlelibrary.preference.Preference;
  * Java UDP proxy) and the native stack (DeUnitSupervisor modules +
  * DeAndroidModuleService), per decision N8.
  * <p>
- * The one rule: never both stacks online with the same unit id. Every
- * switch first stops the active stack and waits for its logout (WS socket
- * closed / module processes gone, with a timeout fallback) before the
- * other stack is started.
+ * C6 (AN-0054): the Java stack is hidden in {@code src/legacy/java} - the
+ * native modules are the only stack now and {@link #isNativeMode()} is
+ * always true. The mutual-exclusion start/stop surface stays so callers
+ * keep working unchanged.
  * <p>
  * All methods must be called from the app's main process; the
  * {@code :de_*} module processes are gated out via {@link #isMainProcess}.
@@ -59,20 +55,6 @@ public final class NativeUnitController {
 
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
-    /**
-     * True when the Java link was up at the moment native was switched on;
-     * switching back off then re-connects the session instead of leaving
-     * the unit offline.
-     */
-    private static boolean sResumeJavaLink;
-
-    /**
-     * True when the Java FC link (DroneKitServer) was open at the moment
-     * native was switched on. Tracked apart from {@link #sResumeJavaLink}:
-     * a unit can have its FC up without a server link.
-     */
-    private static boolean sResumeFcLink;
-
     /*** Bumped per switch so a stale pending wait cannot fire after a newer toggle. */
     private static int sSwitchGeneration;
 
@@ -89,38 +71,31 @@ public final class NativeUnitController {
     private NativeUnitController() {
     }
 
+    /**
+     * C6 (AN-0054): the Java stack is hidden - native is the only mode.
+     * Kept as a method so the native-mode branches callers already have
+     * stay untouched.
+     */
     public static boolean isNativeMode() {
-        return Preference.isNativeUnitEnabled(null);
+        return true;
     }
 
     /**
-     * The setting changed: persist it, then run the mutual-exclusion switch.
+     * The setting changed: persist it, then run the stack switch. With the
+     * Java stack gone (C6) the ON path just brings the native stack up and
+     * the OFF path takes it down - there is nothing to wait for or restore.
      */
     public static synchronized void applyMode(final Context context, final boolean nativeOn) {
         final Context app = context.getApplicationContext();
-        // Snapshot what the Java stack had up only on the ON switch - the OFF
-        // switch must read these, never overwrite them. A repeated ON while
-        // already native keeps the first snapshot (the Java stack is down by then).
-        if (nativeOn && !Preference.isNativeUnitEnabled(null)) {
-            sResumeJavaLink = Preference.isLinkServiceDesired(null) || App.isAndruavWSConnected();
-            sResumeFcLink = App.droneKitServer != null;
-        }
         Preference.isNativeUnitEnabled(null, nativeOn);
-        final int generation = ++sSwitchGeneration;
+        ++sSwitchGeneration;
         if (nativeOn) {
             Log.i(TAG, "switching to native stack");
-            stopJavaStack(app);
-            // AN-0064: stopJavaStack transitively calls stopNativeStack via
-            // the stopAndruavWS guard, which clears the wanted flag - arm it
-            // only after that teardown so the pending start is not dropped.
             sNativeWanted = true;
-            waitFor("java stack down", generation, NativeUnitController::isJavaStackDown,
-                    () -> startNativeStack(app));
+            startNativeStack(app);
         } else {
-            Log.i(TAG, "switching to java stack");
+            Log.i(TAG, "native stack off");
             stopNativeStack(app);
-            waitFor("native stack down", generation, NativeUnitController::isNativeStackDown,
-                    () -> restoreJavaStack(app));
         }
     }
 
@@ -275,44 +250,6 @@ public final class NativeUnitController {
         } catch (IOException e) {
             return false;
         }
-    }
-
-    private static void stopJavaStack(final Context app) {
-        // FC link: DroneKitServer / ControlBoard_DroneKit connections.
-        TelemetryModeer.closeAllConnections();
-        // Java UDP proxy: stop the server-side feed, drop the relay token
-        // hello loop and pause the forwarder.
-        AndruavFacade.StopUdpProxyTelemetry();
-        final UDPProxy proxy = AndruavEngine.getUDPProxy();
-        if (proxy != null) {
-            proxy.setToken(null);
-            proxy.setPause(true);
-        }
-        // Java comm client + its link guardian.
-        App.stopAndruavWS(true);
-    }
-
-    private static void restoreJavaStack(final Context app) {
-        // AN-0106: native mode ran the me-unit under de_comm's party id;
-        // the Java stack logs in with the saved one.
-        App.updateWe7daInfo();
-        final UDPProxy proxy = AndruavEngine.getUDPProxy();
-        if (proxy != null) {
-            proxy.setPause(false);
-        }
-        if (sResumeFcLink) {
-            sResumeFcLink = false;
-            TelemetryModeer.connectToPreferredConnection(app, true);
-        }
-        if (sResumeJavaLink) {
-            sResumeJavaLink = false;
-            App.startAndruavWS();
-        }
-    }
-
-    private static boolean isJavaStackDown() {
-        return AndruavEngine.getAndruavWS() == null
-                || !AndruavEngine.getAndruavWS().isConnected();
     }
 
     private static boolean isNativeStackDown() {

@@ -1,1 +1,4 @@
-include ':app', ':andruavProtocol', ':andruavmiddlelibrary', ':ClientLib', ':Mavlink', ':rangebar-release', ':webrtc', ':deNative', ':deDatabus'
+// C6 (AN-0054): ':ClientLib' (the DroneKit client) and the Java comm client
+// stay in the repo but are no longer referenced - the native DroneEngage
+// modules are the unit now. Restore by reverting the C6 commit(s).
+include ':app', ':andruavProtocol', ':andruavmiddlelibrary', ':Mavlink', ':rangebar-release', ':webrtc', ':deNative', ':deDatabus'

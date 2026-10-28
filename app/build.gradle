@@ -103,8 +103,9 @@ java {
 }
 
 dependencies {
+    // C6 (AN-0054): the Java DroneKit/WS stack moved to src/legacy/java (not a
+    // source root) and ':ClientLib' is unreferenced - native is the only stack.
     implementation project(':andruavmiddlelibrary')
-    implementation project(':ClientLib')
     implementation project(':deNative')
     implementation project(':deDatabus')
     implementation fileTree(include: ['*.jar'], dir: 'libs')

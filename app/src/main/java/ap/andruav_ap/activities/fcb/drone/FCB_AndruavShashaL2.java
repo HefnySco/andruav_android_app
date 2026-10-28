@@ -40,7 +40,6 @@ import java.util.Set;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha_L2;
 import ap.andruav_ap.App;
 import ap.andruav_ap.helpers.CheckAppPermissions;
-import ap.andruav_ap.communication.telemetry.DroneKit.DroneKitServer;
 import ap.andruav_ap.guiEvent.GUIEvent_UpdateConnection;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 import ap.andruav_ap.DeviceManagerFacade;
@@ -180,14 +179,9 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
 
 
 
-        if (AndruavSettings.andruavWe7daBase.getTelemetry_protocol()== TelemetryProtocol.TelemetryProtocol_DroneKit_Telemetry)
-        {
-            txtMavSysID.setText(String.valueOf(App.droneKitServer.getSysID()));
-        }
-        else
-        {
-            txtMavSysID.setText(getString(R.string.label_unknown));
-        }
+        // C6 (AN-0054): the MAV sysid came from the DroneKit link - the
+        // native FC link does not report it here.
+        txtMavSysID.setText(getString(R.string.label_unknown));
 
         final CharSequence[] baudRates = Constants.baudRateItems;
 
@@ -232,10 +226,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
             @Override
             public void onClick(View v) {
                 bSaved = false;
-                if (!DroneKitServer.isValidAndroidVersion()) {
-                    DialogHelper.doModalDialog(Me, getString(ap.andruavmiddlelibrary.R.string.gen_connection), getString(ap.andruavmiddlelibrary.R.string.err_3dr_mobileversion), null);
-                    rbService_3DR.setChecked(false);
-                }
 
                 //setPhysicalConnectionGUI();
                 savePreference();
@@ -264,10 +254,6 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
                     if ((adath_fcb_changed.andruavUnitBase == null) || (!adath_fcb_changed.andruavUnitBase.IsMe()))
                     {
                         return ;
-                    }
-                    if (adath_fcb_changed.andruavUnitBase.getTelemetry_protocol()== TelemetryProtocol.TelemetryProtocol_DroneKit_Telemetry)
-                    {
-                        txtMavSysID.setText(String.valueOf(App.droneKitServer.getSysID()));
                     }
 
                 }
@@ -508,8 +494,7 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
         int id = item.getItemId();
 
         if (id == R.id.mi_fcb_drone_connect) {
-            if ((TelemetryModeer.getConnectionInfo() != TelemetryModeer.CURRENTCONNECTION_NON) || (App.droneKitServer != null)) {
-                // DroneKitServer != null means it is active, but does not mean it is connected. i.e. could be waiting for UDP connection.
+            if (TelemetryModeer.getConnectionInfo() != TelemetryModeer.CURRENTCONNECTION_NON) {
 
                 // TTS.getInstance().Speak("Disconnecting");
                 final String connstr = getString(ap.andruavmiddlelibrary.R.string.gen_bluetooth_disconnecting);
@@ -671,8 +656,14 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
     public boolean turnOnBlueTooth(){
 
         BTArrayAdapter.clear();
-        if (App.BT.Bluetooth.GetAdapter()) {
-            App.BT.Bluetooth.Enable();
+        final BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        if (adapter != null) {
+            try {
+                if (!adapter.isEnabled()) {
+                    adapter.enable();
+                }
+            } catch (SecurityException ignored) {
+            }
             registerReceiver(bReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
             registerReceiver(bReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED));
             registerReceiver(bReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
@@ -683,12 +674,15 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
 
 
     public void turnOffBlueTooth() {
-        if ((App.BT.Bluetooth == null) || (!App.BT.Bluetooth.GetAdapter())) {
-            App.BT.StopPersistentConnection();
-            //killThread();
-            //BTArrayAdapter.clear();
-            App.BT.Bluetooth.cancelDiscovery();
-            App.BT.Bluetooth.disable();
+        final BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        if (adapter != null) {
+            try {
+                if (adapter.isDiscovering()) {
+                    adapter.cancelDiscovery();
+                }
+                adapter.disable();
+            } catch (SecurityException ignored) {
+            }
         }
 
         unregisterReceiver(bReceiver);
@@ -711,16 +705,21 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
 
     public void scanforDevices() {
 
-        if (!App.BT.Bluetooth.isEnabled()) return ;
+        final BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        if ((adapter == null) || !adapter.isEnabled()) return ;
 
-        App.BT.StopPersistentConnection();
-
-        if (App.BT.Bluetooth.isDiscovering()) {
-            App.BT.Bluetooth.cancelDiscovery();
+        try {
+            if (adapter.isDiscovering()) {
+                adapter.cancelDiscovery();
+            }
+        } catch (SecurityException ignored) {
         }
 
         BTArrayAdapter.clear();
-        App.BT.Bluetooth.startDiscovery();
+        try {
+            adapter.startDiscovery();
+        } catch (SecurityException ignored) {
+        }
 
     }
 
@@ -741,7 +740,8 @@ public class FCB_AndruavShashaL2 extends BaseAndruavShasha_L2 implements Adapter
             protected Void doInBackground(Void... params) {
 
                 try {
-                    while (!App.BT.Bluetooth.isEnabled()) {
+                    final BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+                    while ((adapter == null) || !adapter.isEnabled()) {
                         Thread.sleep(2000);
                     }
                 } catch (InterruptedException e) {

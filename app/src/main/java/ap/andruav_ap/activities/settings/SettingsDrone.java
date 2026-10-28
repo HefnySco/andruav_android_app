@@ -10,12 +10,9 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.andruav.AndruavSettings;
 import com.andruav.Constants;
-import com.andruav.controlBoard.ControlBoardBase;
 
 import ap.andruav_ap.R;
-import ap.andruav_ap.communication.controlBoard.ControlBoard_DroneKit;
 
 /**
  * Created by mhefny on 2/27/17.
@@ -234,30 +231,13 @@ public class SettingsDrone extends AppCompatActivity {
                 }
             });
 
-            // C3 (AN-0051): 'Native unit' switch. Built in code rather than the
-            // XML so the toggle can run the mutual-exclusion stack switch
-            // through NativeUnitController.
+            // C6 (AN-0054): the 'Native unit' switch is gone - the Java stack
+            // is hidden in src/legacy/java and native is the only stack. The
+            // category stays for the native-module settings below.
             final androidx.preference.PreferenceCategory nativeCategory =
                     new androidx.preference.PreferenceCategory(requireContext());
             nativeCategory.setTitle("DroneEngage native");
             getPreferenceScreen().addPreference(nativeCategory);
-
-            final CheckBoxPreference chkNativeUnit = new CheckBoxPreference(requireContext());
-            chkNativeUnit.setKey("pref_native_unit");
-            chkNativeUnit.setTitle("Native unit (experimental)");
-            chkNativeUnit.setSummary("Run this unit on the native DroneEngage modules (de_comm + de_mavlink) instead of the Java stack. "
-                    + "The Java comm client, the DroneKit FC link and the Java UDP proxy stay off while this is on. "
-                    + "Never run both stacks at once - leave this off unless you are testing the native stack.");
-            chkNativeUnit.setDefaultValue(false);
-            nativeCategory.addPreference(chkNativeUnit);
-            chkNativeUnit.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    ap.andruav_ap.denative.NativeUnitController.applyMode(
-                            requireContext(), Boolean.TRUE.equals(newValue));
-                    return true;
-                }
-            });
 
             // DE-0027 (AN-0074): comm-loss flight failsafe prefs - DeConfigGenerator
             // seeds them into the generated de_mavlink config so what the user
@@ -294,29 +274,11 @@ public class SettingsDrone extends AppCompatActivity {
         private void refreshGPSInjectionStatus() {
             if (chkGPSInjection == null) return;
 
-            final ControlBoardBase fcBoard = AndruavSettings.andruavWe7daBase.FCBoard;
-            if (!(fcBoard instanceof ControlBoard_DroneKit)) {
-                chkGPSInjection.setSummary(getString(
-                        ap.andruavmiddlelibrary.R.string.pref_gr_fcb_gps_injection_status_not_connected, baseGPSInjectionSummary));
-                return;
-            }
-
-            final ControlBoard_DroneKit droneKitBoard = (ControlBoard_DroneKit) fcBoard;
-            if (!droneKitBoard.hasReceivedGPSTypeParams()) {
-                chkGPSInjection.setSummary(getString(
-                        ap.andruavmiddlelibrary.R.string.pref_gr_fcb_gps_injection_status_checking, baseGPSInjectionSummary));
-                return;
-            }
-
-            if (droneKitBoard.isFCConfiguredForGPSInjection()) {
-                final int mavSlot = (droneKitBoard.getGPS1_Type() == ControlBoard_DroneKit.GPS_TYPE_MAV) ? 1 : 2;
-                chkGPSInjection.setSummary(getString(
-                        ap.andruavmiddlelibrary.R.string.pref_gr_fcb_gps_injection_status_ready, baseGPSInjectionSummary, mavSlot));
-            } else {
-                chkGPSInjection.setSummary(getString(
-                        ap.andruavmiddlelibrary.R.string.pref_gr_fcb_gps_injection_status_not_ready, baseGPSInjectionSummary,
-                        droneKitBoard.getGPS1_Type(), droneKitBoard.getGPS2_Type()));
-            }
+            // C6 (AN-0054): the GPS_TYPE param read-out was a DroneKit-board
+            // feature - the bus board has no equivalent query yet, so the
+            // summary falls back to the not-connected text for now.
+            chkGPSInjection.setSummary(getString(
+                    ap.andruavmiddlelibrary.R.string.pref_gr_fcb_gps_injection_status_not_connected, baseGPSInjectionSummary));
         }
     }
 }

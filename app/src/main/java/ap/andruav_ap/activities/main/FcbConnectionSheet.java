@@ -233,13 +233,6 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
         rowBt.setEnabled(usable);
         rowBt.setAlpha(usable ? 1f : 0.55f);
 
-        // Ensure the adapter handle is initialized even if the user never taps
-        // the toggle (e.g. BT is already on via system settings). Without this,
-        // mBluetoothAdapter stays null and isEnabled()/startDiscovery() no-op.
-        if (usable && App.BT.Bluetooth != null) {
-            App.BT.Bluetooth.GetAdapter();
-        }
-
         btAdapter = new Adapter_BluetoothList(requireActivity(), this);
         // Paired devices (a telemetry radio is normally paired once) are listed
         // straight away; a scan only finds devices that are discoverable now.
@@ -256,7 +249,7 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
         refreshBtList();
 
         btnBtToggle.setOnClickListener(v -> {
-            if (App.BT.Bluetooth.isEnabled()) {
+            if (btEnabled()) {
                 turnOffBlueTooth();
             } else {
                 turnOnBlueTooth();
@@ -265,7 +258,7 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
         });
 
         btnBtScan.setOnClickListener(v -> {
-            if (App.BT.Bluetooth.isEnabled()) {
+            if (btEnabled()) {
                 scanForDevices();
             }
         });
@@ -274,32 +267,57 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
     }
 
     private void turnOnBlueTooth() {
-        if (App.BT.Bluetooth.GetAdapter()) {
-            App.BT.Bluetooth.Enable();
+        try {
+            final BluetoothAdapter a = BluetoothAdapter.getDefaultAdapter();
+            if ((a != null) && !a.isEnabled()) {
+                a.enable();
+            }
+        } catch (SecurityException ignored) {
         }
     }
 
     private void turnOffBlueTooth() {
-        App.BT.StopPersistentConnection();
-        if (App.BT.Bluetooth.isDiscovering()) {
-            App.BT.Bluetooth.cancelDiscovery();
+        btCancelDiscovery();
+        try {
+            final BluetoothAdapter a = BluetoothAdapter.getDefaultAdapter();
+            if (a != null) {
+                a.disable();
+            }
+        } catch (SecurityException ignored) {
         }
-        App.BT.Bluetooth.disable();
     }
 
     private void scanForDevices() {
-        App.BT.StopPersistentConnection();
-        if (App.BT.Bluetooth.isDiscovering()) {
-            App.BT.Bluetooth.cancelDiscovery();
-        }
+        btCancelDiscovery();
         btAdapter.clear();
         selectedBtRow = null;
         refreshBtList();
-        App.BT.Bluetooth.startDiscovery();
+        try {
+            final BluetoothAdapter a = BluetoothAdapter.getDefaultAdapter();
+            if (a != null) {
+                a.startDiscovery();
+            }
+        } catch (SecurityException ignored) {
+        }
+    }
+
+    private boolean btEnabled() {
+        final BluetoothAdapter a = BluetoothAdapter.getDefaultAdapter();
+        return (a != null) && a.isEnabled();
+    }
+
+    private void btCancelDiscovery() {
+        try {
+            final BluetoothAdapter a = BluetoothAdapter.getDefaultAdapter();
+            if ((a != null) && a.isDiscovering()) {
+                a.cancelDiscovery();
+            }
+        } catch (SecurityException ignored) {
+        }
     }
 
     private void updateBtToggleUi() {
-        final boolean on = (App.BT.Bluetooth != null) && App.BT.Bluetooth.isEnabled();
+        final boolean on = btEnabled();
         btnBtToggle.setText(on ? R.string.home_fcb_bt_on : R.string.home_fcb_bt_off);
         btnBtToggle.setBackgroundResource(on ? R.drawable.bg_home_bt_toggle_on : R.drawable.bg_home_bt_toggle_off);
         listBtScroll.setVisibility(on ? View.VISIBLE : View.GONE);
@@ -348,9 +366,7 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
         aView.setBackgroundResource(R.drawable.bg_home_bt_row_selected);
         selectedBtRow = aView;
 
-        if (App.BT.Bluetooth.isDiscovering()) {
-            App.BT.Bluetooth.cancelDiscovery();
-        }
+        btCancelDiscovery();
         savePreferences();
         TelemetryModeer.connectToPreferredConnection(requireActivity(), false);
         dismiss();

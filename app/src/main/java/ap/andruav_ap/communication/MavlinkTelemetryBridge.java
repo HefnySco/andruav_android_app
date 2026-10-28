@@ -25,7 +25,8 @@ import com.andruav.event.droneReport_Event.Event_GPS_Ready;
 import com.andruav.event.droneReport_Event.Event_IMU_Ready;
 import com.andruav.sensors.AndruavIMU;
 
-import ap.andruav_ap.communication.controlBoard.mavlink.DroneMavlinkHandler;
+import com.andruav.notification.PanicFacade;
+
 import ap.andruav_ap.communication.controlBoard.mavlink.MavLink_Helpers;
 
 /**
@@ -196,9 +197,17 @@ public class MavlinkTelemetryBridge {
                     break;
                 }
 
-                case msg_statustext.MAVLINK_MSG_ID_STATUSTEXT:
-                    DroneMavlinkHandler.execute_StatusMessage((msg_statustext) message);
+                case msg_statustext.MAVLINK_MSG_ID_STATUSTEXT: {
+                    // Same handling the legacy DroneMavlinkHandler applied:
+                    // severity-numbered autopilot text forwarded to the user.
+                    final msg_statustext status = (msg_statustext) message;
+                    final char[] cbuf = new char[status.text.length + 1];
+                    for (int c = 0; c < status.text.length; c++) {
+                        cbuf[c] = (char) status.text[c];
+                    }
+                    PanicFacade.cannotDoAutopilotAction(status.severity, status.severity, String.valueOf(cbuf), null);
                     break;
+                }
 
                 default:
                     break;
