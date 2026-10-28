@@ -374,8 +374,8 @@ public class SensorService extends Service {
      */
     private boolean shouldMobileGpsImuRun()
     {
-        // C6 (AN-0054): FC link is de_mavlink's - "connected" means its telemetry stream is live.
-        boolean fcConnected = ap.andruav_ap.communication.MavlinkTelemetryBridge.isOwnTelemetryLive();
+        // C6 (AN-0054): FC link is de_mavlink's - "connected" means it reports a real FC.
+        boolean fcConnected = ap.andruav_ap.communication.NativeUnitMirror.isOwnFcLinked();
         if (!fcConnected) return true; // no FC telemetry at all - phone is the only location source
 
         if (Preference.isGPSInjecttionEnabled(null)) return true; // FC is relying on the phone feeding it GPS

@@ -2,6 +2,7 @@ package ap.andruav_ap.communication;
 
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
+import com.andruav.TelemetryProtocol;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitMe;
 import com.andruav.controlBoard.shared.geoFence.GeoFenceBase;
@@ -38,6 +39,26 @@ public final class NativeUnitMirror {
     public static boolean isOwnUnit(final String partyID) {
         final AndruavUnitMe me = AndruavSettings.andruavWe7daBase;
         return (me != null) && (partyID != null) && partyID.equals(me.PartyID);
+    }
+
+
+    /**
+     * True when a flight controller is really on de_mavlink's link: its
+     * 6502 stream is live AND the own-unit 1004 reports a telemetry
+     * protocol. de_mavlink sends attitude/nav/vfr_hud on a timer from its
+     * cached (zeroed) vehicle state even with no FC, so the stream alone
+     * is not proof; it resends the 1004 with TP=no-telemetry while the FC
+     * link is down.
+     */
+    public static boolean isOwnFcLinked() {
+        if (!MavlinkTelemetryBridge.isOwnTelemetryLive()) return false;
+        final AndruavUnitMe me = AndruavSettings.andruavWe7daBase;
+        if ((me == null) || (me.PartyID == null)) return false;
+        final AndruavUnitBase shadow = AndruavEngine.getAndruavWe7daMapBase().get(me.PartyID);
+        if (shadow == null) return false;
+        final int protocol = shadow.getTelemetry_protocol();
+        return (protocol != TelemetryProtocol.TelemetryProtocol_No_Telemetry)
+                && (protocol != TelemetryProtocol.TelemetryProtocol_Unknown_Telemetry);
     }
 
 

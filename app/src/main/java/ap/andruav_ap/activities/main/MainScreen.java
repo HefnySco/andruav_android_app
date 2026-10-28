@@ -53,7 +53,7 @@ import ap.andruav_ap.App;
 import ap.andruav_ap.BuildConfig;
 import ap.andruav.denative.DeNativeDebugActivity;
 import ap.andruav_ap.denative.NativeUnitController;
-import ap.andruav_ap.communication.MavlinkTelemetryBridge;
+import ap.andruav_ap.communication.NativeUnitMirror;
 
 
 import com.andruav.AndruavInternalCommands;
@@ -963,10 +963,10 @@ public class MainScreen extends BaseAndruavShasha {
         final boolean serverConnected = nativeMode
                 ? NativeUnitController.effectiveSocketState() == SOCKETSTATE_REGISTERED
                 : AndruavEngine.isAndruavWSStatus(SOCKETSTATE_REGISTERED);
-        // AN-0069: in native mode "FC linked" means de_mavlink telemetry
-        // (the 6502 packed-MAVLink stream) is arriving for this unit.
+        // AN-0069: in native mode "FC linked" means de_mavlink reports a
+        // real FC (1004 TP) and its 6502 stream is arriving for this unit.
         final boolean fcbConnected = nativeMode
-                ? MavlinkTelemetryBridge.isOwnTelemetryLive()
+                ? NativeUnitMirror.isOwnFcLinked()
                 : TelemetryModeer.getConnectionInfo() != TelemetryModeer.CURRENTCONNECTION_NON;
 
         setTileState(mTileImu, mIconImu, mStateImu,

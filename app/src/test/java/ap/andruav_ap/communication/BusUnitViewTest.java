@@ -15,6 +15,7 @@ import com.MAVLink.enums.MAV_SYS_STATUS_SENSOR;
 import com.MAVLink.minimal.msg_heartbeat;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
+import com.andruav.TelemetryProtocol;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitMapBase;
 import com.andruav.andruavUnit.AndruavUnitMe;
@@ -159,6 +160,10 @@ public class BusUnitViewTest {
 
 
     private void receiveId() throws Exception {
+        receiveId(1);
+    }
+
+    private void receiveId(final int telemetryProtocol) throws Exception {
         final JSONObject ms = new JSONObject()
                 .put("VT", VehicleTypes.VEHICLE_QUAD)
                 .put("GS", false)
@@ -168,7 +173,7 @@ public class BusUnitViewTest {
                 .put("FM", 9)
                 .put("AR", 3)            // bit0 ready-to-arm, bit1 armed
                 .put("GM", 2)
-                .put("TP", 1)
+                .put("TP", telemetryProtocol)
                 .put("C", 0)
                 .put("B", false);
         final byte[] datagram = idFrame(ms).toString().getBytes(StandardCharsets.UTF_8);
@@ -286,6 +291,18 @@ public class BusUnitViewTest {
         assertEquals(3400.0, mMe.LastEvent_Battery.FCB_CurrentConsumed, 1e-6); // mA
 
         assertTrue(MavlinkTelemetryBridge.isOwnTelemetryLive());
+        assertTrue(NativeUnitMirror.isOwnFcLinked());
+    }
+
+
+    /*** de_mavlink's timer frames with no FC on its link (1004 TP=0) are not an FC link. */
+    @Test
+    public void timerFramesWithoutFcAreNotLinked() throws Exception {
+        receiveId(TelemetryProtocol.TelemetryProtocol_No_Telemetry);
+        receive(mavlinkDatagram(attitudeFrame()));
+
+        assertTrue(MavlinkTelemetryBridge.isOwnTelemetryLive());
+        assertFalse(NativeUnitMirror.isOwnFcLinked());
     }
 
 
