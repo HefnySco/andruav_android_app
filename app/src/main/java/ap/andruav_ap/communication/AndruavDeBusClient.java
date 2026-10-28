@@ -463,10 +463,11 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
                         message, splitIndex + 1, len - splitIndex - 1);
                 return;
             }
-            if ((splitIndex < 0) || (splitIndex == len - 1)) {
+            if ((splitIndex < 0) || onlyPaddingAfter(message, splitIndex, len)) {
                 // pure JSON text frame - CUDPClient NUL-terminates EVERY
-                // inbound datagram, so a text frame still shows a split at
-                // len-1; only a split with bytes after it means binary.
+                // inbound datagram, and a frame de_comm forwards from
+                // another module (e.g. de_mavlink's 1071) carries its own
+                // NUL too; only a non-NUL byte after the split means binary.
                 onTextMessage(jMsg.toString());
             } else {
                 // JSON header + 0x00 + binary payload: re-serialize the
@@ -616,6 +617,15 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
         }
     }
 
+
+    /*** True when every byte after {@code splitIndex} is a NUL terminator, not binary payload. */
+    static boolean onlyPaddingAfter(final byte[] message, final int splitIndex, final int len) {
+        final int limit = Math.min(len, message.length);
+        for (int i = splitIndex + 1; i < limit; i++) {
+            if (message[i] != 0) return false;
+        }
+        return true;
+    }
 
     /*** Index of the {@code 0x00} separating a JSON header from binary data; -1 for pure text. */
     private static int splitIndexOf(final byte[] message, final int len) {

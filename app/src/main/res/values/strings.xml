@@ -30,12 +30,14 @@
     <string name="home_telemetry_subtitle_format">%1$s · via %2$s</string>
     <string name="home_telemetry_udp_format">telemetry: [%1$s:%2$d]  MP-UDPC connection</string>
     <string name="home_telemetry_udp_unavailable">telemetry: not available</string>
+    <string name="home_btn_enable_telemetry">ENABLE TELEMETRY</string>
     <string name="home_stat_gps">GPS FIX</string>
     <string name="home_stat_battery">BATTERY</string>
     <string name="home_stat_signal">SIGNAL</string>
     <string name="home_sats_format">%1$d SATS</string>
     <string name="home_battery_format">%1$d%%</string>
     <string name="home_signal_format">%1$d dBm</string>
+    <string name="home_signal_unknown">— dBm</string>
     <string name="home_value_placeholder">–</string>
 
     <string name="home_modules_title">MODULES</string>

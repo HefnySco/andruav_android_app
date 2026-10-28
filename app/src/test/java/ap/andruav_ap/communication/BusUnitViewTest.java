@@ -16,6 +16,7 @@ import com.MAVLink.minimal.msg_heartbeat;
 import com.andruav.AndruavEngine;
 import com.andruav.AndruavSettings;
 import com.andruav.TelemetryProtocol;
+import com.andruav.protocol.commands.textMessages.AndruavMessage_UDPProxy_Info;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitMapBase;
 import com.andruav.andruavUnit.AndruavUnitMe;
@@ -303,6 +304,42 @@ public class BusUnitViewTest {
 
         assertTrue(MavlinkTelemetryBridge.isOwnTelemetryLive());
         assertFalse(NativeUnitMirror.isOwnFcLinked());
+    }
+
+
+    /*** de_mavlink's 1071 (module frame, no sd) is kept as the unit's own UDP-proxy status. */
+    @Test
+    public void ownUdpProxyInfoIsKept() throws Exception {
+        NativeUnitMirror.clearOwnUdpProxy();
+        receiveId();
+
+        final JSONObject ms = new JSONObject()
+                .put("a", "15.235.101.105")
+                .put("p", 38204)
+                .put("o", 4)
+                .put("e", 0)
+                .put("en", true)
+                .put("z", true);
+        final JSONObject frame = new JSONObject()
+                .put(Messages.INTERMODULE_MODULE_KEY, "de_mavlink")
+                .put(Messages.ANDRUAV_PROTOCOL_TARGET_ID, "")
+                .put(Messages.INTERMODULE_ROUTING_TYPE, Messages.CMD_COMM_GROUP)
+                // strings: Android's getString coerces the numeric mt / ms
+                // object, the strict JVM jar does not (see idFrame)
+                .put(Messages.ANDRUAV_PROTOCOL_MESSAGE_TYPE, String.valueOf(
+                        AndruavMessage_UDPProxy_Info.TYPE_AndruavMessage_UdpProxy_Info))
+                .put(Messages.ANDRUAV_PROTOCOL_MESSAGE_CMD, ms.toString());
+        // de_comm forwards the module's NUL-terminated frame and CUDPClient
+        // adds its own NUL: two trailing zeros, still a text frame
+        final byte[] json = frame.toString().getBytes(StandardCharsets.UTF_8);
+        receive(java.util.Arrays.copyOf(json, json.length + 2));
+
+        final AndruavMessage_UDPProxy_Info proxy = NativeUnitMirror.ownUdpProxy();
+        assertNotNull(proxy);
+        assertTrue(proxy.udp_enabled);
+        assertTrue(proxy.udp_paused);
+        assertEquals(38204, proxy.udp_port);
+        assertEquals("15.235.101.105", proxy.udp_ip);
     }
 
 

@@ -106,6 +106,7 @@ import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
 
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETACTION_CONNECTING;
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETACTION_NONE;
+import org.json.JSONObject;
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_CONNECTED;
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_DISCONNECTED;
 import static com.andruav.protocol.communication.websocket.AndruavWSClientBase.SOCKETSTATE_ERROR;
@@ -146,8 +147,12 @@ public class MainScreen extends BaseAndruavShasha {
     private TextView mTxtGps;
     private TextView mTxtBattery;
     private TextView mTxtSignal;
+    private ImageView mImgGps;
+    private ImageView mImgBattery;
+    private ImageView mImgSignal;
     private TextView mTxtTelemetryHelper;
     private TextView mTxtTelemetryUdp;
+    private TextView mBtnEnableTelemetry;
 
     // module grid tiles: container (tap target), icon (runtime-tinted), state caption
     private View mTileImu;
@@ -204,6 +209,11 @@ public class MainScreen extends BaseAndruavShasha {
     //////////BUS EVENT
 
 
+
+    @Subscribe
+    public void onEvent(final NativeUnitMirror.Event_OwnUdpProxy event) {
+        if (mhandle != null) mhandle.post(this::updateModuleTiles);
+    }
 
     @Subscribe
     public void onEvent(Event_UDP_Proxy event_protocolChanged) {
@@ -686,8 +696,15 @@ public class MainScreen extends BaseAndruavShasha {
         mTxtGps = findViewById(R.id.home_txt_gps);
         mTxtBattery = findViewById(R.id.home_txt_battery);
         mTxtSignal = findViewById(R.id.home_txt_signal);
+        mImgGps = findViewById(R.id.home_img_gps);
+        mImgBattery = findViewById(R.id.home_img_battery);
+        mImgSignal = findViewById(R.id.home_img_signal);
         mTxtTelemetryHelper = findViewById(R.id.home_txt_telemetry_helper);
         mTxtTelemetryUdp = findViewById(R.id.home_txt_telemetry_udp);
+        mBtnEnableTelemetry = findViewById(R.id.home_btn_enable_telemetry);
+        if (mBtnEnableTelemetry != null) {
+            mBtnEnableTelemetry.setOnClickListener(v -> requestTelemetryProxyEnable());
+        }
 
         mTileImu = findViewById(R.id.home_tile_imu);
         mTileFpv = findViewById(R.id.home_tile_fpv);
@@ -1025,7 +1042,13 @@ public class MainScreen extends BaseAndruavShasha {
         mGroupTelemetryLinked.setVisibility(fcbConnected ? View.VISIBLE : View.GONE);
         mTxtTelemetryHelper.setVisibility(fcbConnected ? View.GONE : View.VISIBLE);
 
-        if (!fcbConnected) return;
+        if (!fcbConnected) {
+            mImgBattery.setImageResource(R.drawable.ic_home_battery);
+            tintStatIcon(mImgGps, R.color.home_icon_muted);
+            tintStatIcon(mImgBattery, R.color.home_icon_muted);
+            tintStatIcon(mImgSignal, R.color.home_icon_muted);
+            return;
+        }
 
         final com.andruav.andruavUnit.AndruavUnitBase unit = AndruavSettings.andruavWe7daBase;
 
@@ -1046,15 +1069,98 @@ public class MainScreen extends BaseAndruavShasha {
                     vehicleLabel, linkTypeLabel(Preference.getFCBTargetComm(null))));
         }
 
-        mTxtGps.setText(getString(R.string.home_sats_format, unit.getActiveIMU().SATC));
-        mTxtBattery.setText(getString(R.string.home_battery_format, (int) unit.LastEvent_Battery.FCB_BatteryRemaining));
-        mTxtSignal.setText(getString(R.string.home_signal_format, unit.getSignalLevel()));
+        final int sats = unit.getActiveIMU().SATC;
+        final int batteryPct = (int) unit.LastEvent_Battery.FCB_BatteryRemaining;
+        final int signalDbm = unit.getSignalLevel();
 
-        if (unit.isUdpProxyEnabled()) {
+        mTxtGps.setText(getString(R.string.home_sats_format, sats));
+        mTxtBattery.setText(getString(R.string.home_battery_format, batteryPct));
+        // dBm is always negative; Integer.MAX_VALUE / >= 0 means no reading yet
+        final boolean signalKnown = signalDbm < 0;
+        mTxtSignal.setText(signalKnown
+                ? getString(R.string.home_signal_format, signalDbm)
+                : getString(R.string.home_signal_unknown));
+
+        tintStatIcon(mImgGps, sats >= 8 ? R.color.home_green_icon
+                : sats >= 4 ? R.color.home_amber : R.color.home_red_text);
+        mImgBattery.setImageResource(batteryPct > 50 ? R.drawable.ic_home_battery_full
+                : batteryPct > 20 ? R.drawable.ic_home_battery_mid
+                : R.drawable.ic_home_battery_low);
+        tintStatIcon(mImgBattery, batteryPct > 50 ? R.color.home_green_icon
+                : batteryPct > 20 ? R.color.home_amber : R.color.home_red_text);
+        tintStatIcon(mImgSignal, !signalKnown ? R.color.home_icon_muted
+                : signalDbm > -60 ? R.color.home_green_icon
+                : signalDbm > -70 ? R.color.home_amber : R.color.home_red_text);
+
+        final boolean proxyOn;
+        final boolean streaming;
+        final String proxyIp;
+        final int proxyPort;
+        if (NativeUnitController.isNativeMode()) {
+            // the proxy is de_mavlink's: its 1071 status is the only source
+            final com.andruav.protocol.commands.textMessages.AndruavMessage_UDPProxy_Info proxy =
+                    NativeUnitMirror.ownUdpProxy();
+            proxyOn = (proxy != null) && proxy.udp_enabled && (proxy.udp_port != 0);
+            streaming = proxyOn && !proxy.udp_paused;
+            proxyIp = proxyOn ? proxy.udp_ip : null;
+            proxyPort = proxyOn ? proxy.udp_port : 0;
+        } else {
+            proxyOn = unit.isUdpProxyEnabled()
+                    && unit.getUdp_socket_port_3rdparty() != 0;
+            final com.andruav.protocol.communication.udpproxy.UDPProxy udpProxy =
+                    AndruavEngine.getUDPProxy();
+            streaming = proxyOn && (udpProxy != null) && !udpProxy.isPaused();
+            proxyIp = unit.getUdp_socket_ip_3rdparty();
+            proxyPort = unit.getUdp_socket_port_3rdparty();
+        }
+        if (proxyOn) {
             mTxtTelemetryUdp.setText(getString(R.string.home_telemetry_udp_format,
-                    unit.getUdp_socket_ip_3rdparty(), unit.getUdp_socket_port_3rdparty()));
+                    proxyIp, proxyPort));
+            mTxtTelemetryUdp.setTextColor(ContextCompat.getColor(this,
+                    streaming ? R.color.home_green_icon : R.color.home_blue_icon));
         } else {
             mTxtTelemetryUdp.setText(R.string.home_telemetry_udp_unavailable);
+            mTxtTelemetryUdp.setTextColor(ContextCompat.getColor(this, R.color.home_amber));
+        }
+        if (mBtnEnableTelemetry != null) {
+            mBtnEnableTelemetry.setVisibility(View.VISIBLE);
+            mBtnEnableTelemetry.setTextColor(ContextCompat.getColor(this,
+                    streaming ? R.color.home_icon_gray : R.color.home_amber));
+        }
+    }
+
+    /**
+     * Asks this unit's own de_mavlink to open the UDP telemetry proxy pair
+     * (RemoteExecute 506). The pair-open reply lands back as a 9008 config,
+     * so the card flips to the relay endpoint on the next refresh.
+     */
+    private void requestTelemetryProxyEnable() {
+        final com.andruav.protocol.communication.websocket.AndruavWSClientBase ws =
+                AndruavEngine.getAndruavWS();
+        if (!(ws instanceof ap.andruav_ap.communication.AndruavDeBusClient)) {
+            return;
+        }
+        try {
+            // Same wire messages a GCS sends to start telemetry:
+            // {C:108 TELEMETRYCTRL, Act:1 REQUEST_START} opens the pair,
+            // {C:108, Act:3 REQUEST_RESUME} unpauses the MAVLink stream.
+            final ap.andruav_ap.communication.AndruavDeBusClient bus =
+                    (ap.andruav_ap.communication.AndruavDeBusClient) ws;
+            final String target = AndruavSettings.andruavWe7daBase.PartyID;
+            for (final int act : new int[]{1, 3}) {
+                final JSONObject ms = new JSONObject();
+                ms.put("C", 108);
+                ms.put("Act", act);
+                bus.sendBusCommand(target, ms, 1005);
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    /*** Status tint for the telemetry stat glyphs (gps/battery/signal). */
+    private void tintStatIcon(final ImageView icon, final int colorRes) {
+        if (icon != null) {
+            icon.setColorFilter(ContextCompat.getColor(this, colorRes));
         }
     }
 

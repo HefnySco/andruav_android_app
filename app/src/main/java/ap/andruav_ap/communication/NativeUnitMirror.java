@@ -8,6 +8,7 @@ import com.andruav.andruavUnit.AndruavUnitMe;
 import com.andruav.controlBoard.shared.geoFence.GeoFenceBase;
 import com.andruav.controlBoard.shared.geoFence.GeoFenceManager;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_GeoFence;
+import com.andruav.protocol.commands.textMessages.AndruavMessage_UDPProxy_Info;
 import com.andruav.protocol.commands.textMessages.Andruav_2MR;
 import com.andruav.sensors.AndruavIMU;
 
@@ -32,7 +33,25 @@ import com.andruav.sensors.AndruavIMU;
  */
 public final class NativeUnitMirror {
 
+    /*** Posted when de_mavlink reports a new UDP-proxy status for this unit. */
+    public static final class Event_OwnUdpProxy {
+    }
+
+    // The me-unit's own udp fields belong to the Java UDPProxy, which never
+    // runs in native mode: de_mavlink owns the proxy and reports it as 1071.
+    private static volatile AndruavMessage_UDPProxy_Info sOwnUdpProxy = null;
+
     private NativeUnitMirror() {
+    }
+
+    /*** The last UDP-proxy status (1071) de_mavlink reported for this unit, or null. */
+    public static AndruavMessage_UDPProxy_Info ownUdpProxy() {
+        return sOwnUdpProxy;
+    }
+
+    /*** Forgets the reported UDP-proxy status (native stack stopped). */
+    public static void clearOwnUdpProxy() {
+        sOwnUdpProxy = null;
     }
 
     /*** True when {@code partyID} is this unit's own party id. */
@@ -75,6 +94,11 @@ public final class NativeUnitMirror {
                 AndruavEngine.getAndruavWe7daMapBase().get(andruav2MR.partyID);
         if (shadow != null) {
             syncFromShadow(shadow);
+        }
+
+        if (andruav2MR.andruavMessageBase instanceof AndruavMessage_UDPProxy_Info) {
+            sOwnUdpProxy = (AndruavMessage_UDPProxy_Info) andruav2MR.andruavMessageBase;
+            AndruavEngine.getEventBus().post(new Event_OwnUdpProxy());
         }
 
         if (andruav2MR.andruavMessageBase != null

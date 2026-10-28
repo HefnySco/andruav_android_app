@@ -176,6 +176,7 @@ public final class NativeUnitController {
         supervisor.init(app);
         supervisor.stop(DeUnitSupervisor.Module.DE_COMM);
         supervisor.stop(DeUnitSupervisor.Module.DE_MAVLINK);
+        ap.andruav_ap.communication.NativeUnitMirror.clearOwnUdpProxy();
         Log.i(TAG, "native stack stop requested");
     }
 

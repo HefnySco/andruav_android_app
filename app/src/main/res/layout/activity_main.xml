@@ -124,20 +124,28 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/home_server_title"
                                 android:textColor="@color/home_text_primary"
                                 android:textSize="16sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                android:maxLines="1"
+                                android:ellipsize="end"
+                                android:autoSizeTextType="uniform"
+                                android:autoSizeMinTextSize="10sp"
+                                android:autoSizeMaxTextSize="16sp"
+                                android:autoSizeStepGranularity="1sp" />
 
                             <TextView
                                 android:id="@+id/home_txt_server_subtitle"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
                                 android:textColor="@color/home_text_secondary"
                                 android:textSize="12sp"
+                                android:maxLines="3"
+                                android:ellipsize="end"
                                 tools:text="gcs.andruav.com" />
                         </LinearLayout>
                     </LinearLayout>
@@ -145,6 +153,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
                         android:layout_marginTop="2dp"
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
@@ -160,11 +169,18 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="6dp"
+                            android:maxWidth="150dp"
                             android:text="@string/home_server_status_disconnected"
                             android:textColor="@color/home_red_text"
                             android:textSize="11sp"
                             android:textStyle="bold"
-                            android:letterSpacing="0.04" />
+                            android:letterSpacing="0.04"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:autoSizeTextType="uniform"
+                            android:autoSizeMinTextSize="8sp"
+                            android:autoSizeMaxTextSize="11sp"
+                            android:autoSizeStepGranularity="1sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -202,7 +218,13 @@
                         android:textColor="@color/home_text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:letterSpacing="0.03" />
+                        android:letterSpacing="0.03"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="10sp"
+                        android:autoSizeMaxTextSize="14sp"
+                        android:autoSizeStepGranularity="1sp" />
 
                     <TextView
                         android:id="@+id/home_btn_server_connect"
@@ -218,7 +240,13 @@
                         android:textColor="@color/home_amber_on"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:letterSpacing="0.03" />
+                        android:letterSpacing="0.03"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="10sp"
+                        android:autoSizeMaxTextSize="14sp"
+                        android:autoSizeStepGranularity="1sp" />
                 </LinearLayout>
 
                 <TextView
@@ -260,17 +288,30 @@
                         android:textColor="@color/home_text_dim"
                         android:textSize="11sp"
                         android:textStyle="bold"
-                        android:letterSpacing="0.09" />
+                        android:letterSpacing="0.09"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="8sp"
+                        android:autoSizeMaxTextSize="11sp"
+                        android:autoSizeStepGranularity="1sp" />
 
                     <TextView
                         android:id="@+id/home_txt_telemetry_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:maxWidth="150dp"
                         android:text="@string/home_telemetry_not_linked"
                         android:textColor="@color/home_text_dim"
                         android:textSize="11sp"
                         android:textStyle="bold"
-                        android:letterSpacing="0.04" />
+                        android:letterSpacing="0.04"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="8sp"
+                        android:autoSizeMaxTextSize="11sp"
+                        android:autoSizeStepGranularity="1sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -282,21 +323,33 @@
 
                     <TextView
                         android:id="@+id/home_txt_drone_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:textColor="@color/home_text_primary"
                         android:textSize="15sp"
                         android:textStyle="bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="11sp"
+                        android:autoSizeMaxTextSize="15sp"
+                        android:autoSizeStepGranularity="1sp"
                         tools:text="SKYHAWK X4" />
 
                     <TextView
                         android:id="@+id/home_txt_drone_subtitle"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="1dp"
                         android:textColor="@color/home_text_secondary"
                         android:textSize="12sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="9sp"
+                        android:autoSizeMaxTextSize="12sp"
+                        android:autoSizeStepGranularity="1sp"
                         tools:text="Quadcopter · via Wi-Fi" />
 
                     <View
@@ -318,6 +371,7 @@
                             android:orientation="vertical">
 
                             <ImageView
+                                android:id="@+id/home_img_gps"
                                 android:layout_width="15dp"
                                 android:layout_height="15dp"
                                 android:src="@drawable/ic_home_gps"
@@ -326,6 +380,7 @@
                             <TextView
                                 android:id="@+id/home_txt_gps"
                                 android:layout_width="wrap_content"
+                                android:maxLines="1"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:fontFamily="monospace"
@@ -351,6 +406,7 @@
                             android:orientation="vertical">
 
                             <ImageView
+                                android:id="@+id/home_img_battery"
                                 android:layout_width="15dp"
                                 android:layout_height="15dp"
                                 android:src="@drawable/ic_home_battery"
@@ -359,6 +415,7 @@
                             <TextView
                                 android:id="@+id/home_txt_battery"
                                 android:layout_width="wrap_content"
+                                android:maxLines="1"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:fontFamily="monospace"
@@ -384,6 +441,7 @@
                             android:orientation="vertical">
 
                             <ImageView
+                                android:id="@+id/home_img_signal"
                                 android:layout_width="15dp"
                                 android:layout_height="15dp"
                                 android:src="@drawable/ic_home_signal"
@@ -392,6 +450,7 @@
                             <TextView
                                 android:id="@+id/home_txt_signal"
                                 android:layout_width="wrap_content"
+                                android:maxLines="1"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:fontFamily="monospace"
@@ -411,15 +470,51 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/home_txt_telemetry_udp"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:fontFamily="monospace"
-                        android:textColor="@color/home_green_icon"
-                        android:textSize="11sp"
-                        tools:text="telemetry: [0.0.0.0:14550]  MP-UDPC connection" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/home_txt_telemetry_udp"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="monospace"
+                            android:textColor="@color/home_green_icon"
+                            android:textSize="11sp"
+                            android:maxLines="2"
+                            android:ellipsize="end"
+                            android:autoSizeTextType="uniform"
+                            android:autoSizeMinTextSize="8sp"
+                            android:autoSizeMaxTextSize="11sp"
+                            android:autoSizeStepGranularity="1sp"
+                            tools:text="telemetry: [0.0.0.0:14550]  MP-UDPC connection" />
+
+                        <TextView
+                            android:id="@+id/home_btn_enable_telemetry"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:background="@drawable/bg_home_btn_outline"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:paddingTop="7dp"
+                            android:paddingBottom="7dp"
+                            android:text="@string/home_btn_enable_telemetry"
+                            android:textColor="@color/home_green_icon"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.04"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:visibility="gone" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <TextView
