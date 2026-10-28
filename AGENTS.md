@@ -83,6 +83,36 @@ parent dir).
   dev/testing, not for Play Store production release.
 - `compileOptions` targets Java 11 bytecode while the toolchain JDK is 17.
 
+## Testing on a real (non-rooted) phone — remember always
+
+Verified on a production phone (adb over USB, no root):
+
+- **`am start(-foreground)-service` CANNOT start the app-internal
+  `DeAndroidModuleService`** — it is `exported=false`, so shell (uid 2000)
+  gets `Permission Denial`. This works only on an emulator running `adb root`.
+  The same applies to `ap.andruav.denative.*` module services? (DeCommService /
+  DeMavlinkService DO start from shell — they are exported.)
+- The app-side bus client (`andruav_phone` CModule → `AndruavDeBusClient`)
+  is installed by that supervisor service inside the main app process; its
+  internal start defaults the s2s dial to port **60000** (no `s2s_port`
+  extra possible from shell on a non-rooted phone). Match the module
+  configs to it: `de_comm s2s_udp_listening_port` and
+  `de_mavlink s2s_udp_target_port` must be `60000` on a real phone,
+  or `andruav_phone` never registers (Com OFFLINE / telemetry NOT LINKED).
+- `pref_native_unit` must go into the DEFAULT shared prefs
+  (`shared_prefs/ardupilot.andruav_preferences.xml`); party/unit identity is
+  the `owPg4M` string pref.
+- Sim-pushed module configs land at
+  `/sdcard/Android/data/ardupilot.andruav/files/de_override/<mod>/` and
+  override the bundled assets at module START — editing the APK asset config
+  alone does nothing while an override exists.
+- USB phone → host connectivity: `adb reverse tcp:<port> tcp:<port>` makes
+  host ports reachable as `127.0.0.1:<port>` on the phone (no LAN needed).
+  `adb reverse --remove` is a clean way to simulate a real socket loss
+  (de_comm reports `Socket Status Error` → comm-loss failsafe fires).
+  The in-band `commline`/`6509` command is a *commanded* offline and does
+  NOT trip the failsafe — only a real socket error does.
+
 ## Relationship to DroneEngage (sibling repo)
 
 This APK is the **Android counterpart of the Linux DroneEngage modules**
