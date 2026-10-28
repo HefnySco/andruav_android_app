@@ -7,9 +7,11 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.content.res.AssetManager;
+import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.os.Process;
 import android.util.Log;
 
@@ -46,6 +48,11 @@ public abstract class DeModuleService extends Service {
 
     private final IBinder binder = new Binder();
     private Thread moduleThread;
+    // Held while the module runs: with the screen off, Doze and Wi-Fi power
+    // save otherwise stretch de_comm's server pings and the UDP telemetry
+    // until the server drops the unit.
+    private PowerManager.WakeLock wakeLock;
+    private WifiManager.WifiLock wifiLock;
 
     protected abstract String getModuleName();
 
@@ -93,6 +100,7 @@ public abstract class DeModuleService extends Service {
     @Override
     public void onDestroy() {
         nativeRequestStop();
+        releaseLocks();
         super.onDestroy();
     }
 
@@ -106,11 +114,44 @@ public abstract class DeModuleService extends Service {
         copyAssetsIfMissing(workDir);
         applyOverrides(workDir);
         onModuleStarting(workDir);
+        acquireLocks();
         moduleThread = new Thread(() -> {
             int rc = nativeRun(getModuleName(), workDir.getAbsolutePath(), argv(extraArgs));
             Log.i(TAG, getModuleName() + " nativeRun returned " + rc);
         }, "de_" + getModuleName());
         moduleThread.start();
+    }
+
+    private void acquireLocks() {
+        final String tag = "andruav:de_" + getModuleName();
+        try {
+            if (wakeLock == null) {
+                final PowerManager pm = getSystemService(PowerManager.class);
+                if (pm != null) {
+                    wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, tag);
+                    wakeLock.setReferenceCounted(false);
+                }
+            }
+            if (wakeLock != null) wakeLock.acquire();
+            if (wifiLock == null) {
+                final WifiManager wm = (WifiManager) getApplicationContext()
+                        .getSystemService(WIFI_SERVICE);
+                if (wm != null) {
+                    // HIGH_PERF is a no-op from Android 14; still keeps the
+                    // radio out of power save on older units.
+                    wifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, tag);
+                    wifiLock.setReferenceCounted(false);
+                }
+            }
+            if (wifiLock != null) wifiLock.acquire();
+        } catch (RuntimeException e) {
+            Log.e(TAG, "cannot acquire locks for " + getModuleName(), e);
+        }
+    }
+
+    private void releaseLocks() {
+        if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
+        if (wifiLock != null && wifiLock.isHeld()) wifiLock.release();
     }
 
     private String[] argv(String[] extraArgs) {
@@ -133,6 +174,7 @@ public abstract class DeModuleService extends Service {
             } catch (InterruptedException ignored) {
             }
         }
+        releaseLocks();
         Process.killProcess(Process.myPid());
     }
 

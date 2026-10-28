@@ -45,6 +45,12 @@ public final class NativeUnitController {
 
     private static final String TAG = "NativeUnitCtrl";
 
+    // Survives a main-process kill: the module processes keep running, and
+    // the restarted app process must adopt them again (supervisor restarts
+    // are tracked in memory only).
+    private static final String PREFS_STACK = "de_native_stack";
+    private static final String KEY_STACK_WANTED = "wanted";
+
     /** Poll cadence while waiting for the outgoing stack to go offline. */
     private static final long POLL_MS = 250;
     /**
@@ -110,6 +116,7 @@ public final class NativeUnitController {
             return;
         }
         final Context app = context.getApplicationContext();
+        setStackWanted(app, true);
         final DeUnitSupervisor supervisor = DeUnitSupervisor.get();
         supervisor.init(app);
         // de_comm gets its connection settings and de_mavlink its FC link
@@ -150,6 +157,21 @@ public final class NativeUnitController {
     }
 
     /**
+     * True when the stack was up and not disconnected by the user when the
+     * main process last ran - the app was killed, not stopped.
+     */
+    public static boolean wasStackWanted(final Context context) {
+        return context.getApplicationContext()
+                .getSharedPreferences(PREFS_STACK, Context.MODE_PRIVATE)
+                .getBoolean(KEY_STACK_WANTED, false);
+    }
+
+    private static void setStackWanted(final Context app, final boolean wanted) {
+        app.getSharedPreferences(PREFS_STACK, Context.MODE_PRIVATE)
+                .edit().putBoolean(KEY_STACK_WANTED, wanted).apply();
+    }
+
+    /**
      * User-initiated connect (AN-0064): re-arms {@link #sNativeWanted}, then
      * brings the stack up. Auto-resume paths call {@link #startNativeStack}
      * directly and stay gated by the flag.
@@ -166,6 +188,7 @@ public final class NativeUnitController {
     public static void stopNativeStack(final Context context) {
         sNativeWanted = false;
         final Context app = context.getApplicationContext();
+        setStackWanted(app, false);
         // AN-0064: the config sync fires ACTION_START straight at the module
         // services on a config change, bypassing the supervisor and the
         // wanted flag - disarm it while the user has the stack off.

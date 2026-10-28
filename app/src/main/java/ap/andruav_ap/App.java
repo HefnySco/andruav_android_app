@@ -908,8 +908,10 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         // Application onCreate also runs inside the :de_* module processes -
         // only the main process may own the supervisor. Like the Java stack
         // before it, the unit only comes up by itself when 'Auto connect' is
-        // on; otherwise the user presses Connect.
-        if (NativeUnitController.isMainProcess(this) && Preference.isAutoStart(null)) {
+        // on; otherwise the user presses Connect. A main process the system
+        // killed while connected adopts its still-running modules again.
+        if (NativeUnitController.isMainProcess(this)
+                && (Preference.isAutoStart(null) || NativeUnitController.wasStackWanted(this))) {
             NativeUnitController.startNativeStack(this);
         }
 
