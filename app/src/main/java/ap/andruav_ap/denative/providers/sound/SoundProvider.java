@@ -282,7 +282,24 @@ public class SoundProvider implements DeCapabilityProvider, SoundDispatch.Worker
      *  module's legacy SOUND_PLAY_FILE path. */
     @Override
     public void onPlayFile(String fileName, String src) {
-        if (_is_muted() || fileName == null || fileName.isEmpty()) return;
+        if (_is_muted()) return;
+        _play_file(fileName, src);
+    }
+
+    /** AN-0107: a GCS-commanded say (6511 to the snd module) sounds even while
+     *  the app is muted - the mute is for the phone's own announcements. */
+    public void sayCommanded(String text, String language, int pitch, int volume, String src) {
+        if (text == null || text.isEmpty()) return;
+        m_worker.enqueue(SoundWorker.Item.say(text, language, pitch, volume, src));
+    }
+
+    /** AN-0107: GCS-commanded play-file (6512), not gated by the mute. */
+    public void playFileCommanded(String fileName, String src) {
+        _play_file(fileName, src);
+    }
+
+    private void _play_file(String fileName, String src) {
+        if (fileName == null || fileName.isEmpty()) return;
         SoundClips.Surface surface = _resolve_clip(fileName);
         if (surface != null) {
             m_worker.enqueue(SoundWorker.Item.play(surface.key, surface.file, src, false));

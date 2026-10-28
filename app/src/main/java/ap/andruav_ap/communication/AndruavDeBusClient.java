@@ -236,8 +236,8 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
                 .put(Messages.TYPE_AndruavMessage_CameraZoom)
                 .put(Messages.TYPE_AndruavMessage_CameraSwitch)
                 .put(Messages.TYPE_AndruavMessage_CameraFlash)
-                .put(com.andruav.protocol.commands.textMessages.AndruavMessage_Sound_TextToSpeech
-                        .TYPE_AndruavMessage_Sound_TextToSpeech)
+                // 6511 text-to-speech belongs to the andruav_sound module
+                // (AN-0107); subscribing here too would speak it twice.
                 // GCS-driven config of the app itself
                 .put(Messages.TYPE_AndruavMessage_ConfigCOM)
                 .put(Messages.TYPE_AndruavMessage_ConfigFCB)

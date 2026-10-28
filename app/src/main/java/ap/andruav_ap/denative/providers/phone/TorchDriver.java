@@ -31,6 +31,9 @@ final class TorchDriver implements PhoneOutput.Driver {
 
     private boolean m_blink_lit;
     private Runnable m_blink_task;
+    // bumped by every stop: a blink step from an older run must not toggle
+    // or re-post itself (apply() may run off the main looper)
+    private volatile int m_blink_gen;
 
     TorchDriver(final Context context, final double strobe_hz) {
         this.m_context = context;
@@ -48,11 +51,15 @@ final class TorchDriver implements PhoneOutput.Driver {
         return _set_torch(true);
     }
 
-    private void _start_blink() {
+    private synchronized void _start_blink() {
         final long half_period_ms = Math.max(40L, (long) (500.0 / m_strobe_hz));
+        final int gen = m_blink_gen;
         m_blink_task = new Runnable() {
             @Override
             public void run() {
+                synchronized (TorchDriver.this) {
+                    if (gen != m_blink_gen) return;
+                }
                 m_blink_lit = !m_blink_lit;
                 _set_torch(m_blink_lit);
                 m_handler.postDelayed(this, half_period_ms);
@@ -61,7 +68,8 @@ final class TorchDriver implements PhoneOutput.Driver {
         m_handler.post(m_blink_task);
     }
 
-    private void _stop_blink() {
+    private synchronized void _stop_blink() {
+        m_blink_gen++;
         if (m_blink_task != null) {
             m_handler.removeCallbacks(m_blink_task);
             m_blink_task = null;

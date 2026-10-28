@@ -19,6 +19,7 @@ import ap.andruav_ap.BuildConfig;
 import ap.andruav_ap.R;
 import ap.andruav_ap.communication.AndruavDeBusClient;
 import ap.andruav_ap.denative.NativeUnitController;
+import ap.andruav_ap.denative.modules.PhoneBusModules;
 import ap.andruav_ap.denative.position.PhonePositionSource;
 import ap.andruav_ap.denative.providers.camera.CameraProvider;
 import ap.andruav_ap.denative.providers.phone.PhoneDevices;
@@ -80,6 +81,7 @@ public class DeAndroidModuleService extends Service {
     private PhoneHealthMonitor mHealthMonitor;
     private SoundProvider mSoundProvider;
     private PhonePositionSource mPositionSource;
+    private PhoneBusModules mBusModules;
     private volatile boolean mModuleRunning;
     private String mStatusText = "starting";
 
@@ -217,6 +219,7 @@ public class DeAndroidModuleService extends Service {
             }
         });
 
+        final PhoneBusModules busModules = new PhoneBusModules();
         // Socket bind + receiver threads off the main thread, mirroring
         // DeModuleService's moduleThread pattern.
         new Thread(() -> {
@@ -236,6 +239,12 @@ public class DeAndroidModuleService extends Service {
                 if (busClientActive) {
                     mDeBusClient = attachBusClient(module);
                 }
+                // AN-0107: torch/strobe/vibrate as a "gpio" module and sound
+                // as a "snd" module, so the webclient's flash button and
+                // Audio tab work for this (DE) unit.
+                if (busClientActive) {
+                    busModules.start(port, BuildConfig.VERSION_NAME, soundProvider);
+                }
                 // Socket is up: start the location feed + 1 Hz emitter.
                 positionSource.start();
                 mStatusText = MODULE_ID + " on 127.0.0.1:" + port;
@@ -254,6 +263,7 @@ public class DeAndroidModuleService extends Service {
         mHealthMonitor = monitor;
         mSoundProvider = soundProvider;
         mPositionSource = positionSource;
+        mBusModules = busModules;
     }
 
     /**
@@ -288,6 +298,7 @@ public class DeAndroidModuleService extends Service {
         final SoundProvider soundProvider;
         final PhonePositionSource positionSource;
         final AndruavDeBusClient busClient;
+        final PhoneBusModules busModules;
         synchronized (this) {
             module = mModule;
             phoneProvider = mPhoneProvider;
@@ -295,6 +306,8 @@ public class DeAndroidModuleService extends Service {
             soundProvider = mSoundProvider;
             positionSource = mPositionSource;
             busClient = mDeBusClient;
+            busModules = mBusModules;
+            mBusModules = null;
             mModule = null;
             mCapabilityHost = null;
             mPhoneProvider = null;
@@ -313,6 +326,9 @@ public class DeAndroidModuleService extends Service {
         final com.andruav.andruavUnit.AndruavUnitMe me = com.andruav.AndruavSettings.andruavWe7daBase;
         if ((me != null) && (me.FCBoard instanceof ap.andruav_ap.communication.controlBoard.ControlBoard_DeBus)) {
             me.FCBoard = null;
+        }
+        if (busModules != null) {
+            busModules.stop();
         }
         if (positionSource != null) {
             positionSource.stop();
