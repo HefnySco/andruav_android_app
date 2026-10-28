@@ -1,7 +1,11 @@
 # Upstream DroneEngage module sources pinned for the Android native build.
-# Format: <repo> <full commit sha>  (one line per repo)
-# Synced into deNative/external/ by deNative/sync_sources.sh (decision N5).
+# Format: <repo> <url> <full commit sha>   (one line per repo)
+#         de_common <url>                  (source of each repo's src/de_common gitlink)
+# Every pinned commit is tagged andruav-pin-<sha8> in its repo (and in de_common
+# for the gitlink) so it stays fetchable; see deNative/sync_sources.sh.
+# URLs are the private prv_* repos until the public release (see AGENTS.md).
 #   droneengage_communication_pro = A3/DE-0012 + DE-0017 compat fixes (de_comm)
 #   droneengage_mavlink           = A4/MV-0019 (de_mavlink)
-droneengage_communication_pro 782127ac45acf8a69944b8f50d3bd450ec5c950b
-droneengage_mavlink 77dbc0ff9a193a8c82193108204a56b270539256
+droneengage_communication_pro git@github.com:HefnySco/prv_drone_engage_communication.git 782127ac45acf8a69944b8f50d3bd450ec5c950b
+droneengage_mavlink git@github.com:HefnySco/prv_droneengage_mavlink.git 77dbc0ff9a193a8c82193108204a56b270539256
+de_common git@github.com:HefnySco/droneengage_common.git

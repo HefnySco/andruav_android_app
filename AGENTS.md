@@ -69,12 +69,67 @@ deNative/third_party/build_deps.sh
 deNative/sync_sources.sh
 ```
 
-`deNative/sources.lock` pins one commit per upstream repo;
-`deNative/external/` and `deNative/third_party/out/` are gitignored. Gradle
-runs `sync_sources.sh --check` in `preBuild` — if the lock changes, re-run
-`deNative/sync_sources.sh`. `DE_WORKSPACE` overrides where the upstream
-checkouts live (default `../../drone_engage`, falls back to the repo's
-parent dir).
+`deNative/sources.lock` pins one commit per upstream repo as
+`<repo> <url> <sha>`, plus a `de_common <url>` line for the `src/de_common`
+gitlink. `deNative/external/` is a throwaway `git archive` export — no `.git`,
+gitignored, wiped on every sync — so **never edit it**; fix the upstream repo,
+then bump the pin. `deNative/third_party/out/` is gitignored too. Gradle runs
+`sync_sources.sh --check` in `preBuild`: it fails when the lock changed (re-run
+`deNative/sync_sources.sh`) and only *warns* when a repo's `master` has moved
+past its pin or the pin is off `master`.
+
+`sync_sources.sh` takes each pin from a local checkout when it has the commit
+(`DE_WORKSPACE`, default `../../drone_engage`, falls back to the repo's parent
+dir), otherwise it fetches the pin's tag from the lock URL into
+`DE_SRC_CACHE` (default `~/.cache/andruav_denative`). So a developer with
+read access to the lock's repos builds the exact pinned sources with no
+sibling checkouts at all.
+
+### Pins, tags and moving to a newer de_comm / de_mavlink
+
+Every pinned commit (and its de_common gitlink) carries the annotated tag
+`andruav-pin-<first 8 chars of sha>`, pushed to the lock URL. The tag keeps
+the commit fetchable after its branch is deleted or rebased. Never pin a
+commit whose tag isn't pushed — other builders can't fetch it.
+
+```bash
+deNative/sync_sources.sh --bump droneengage_mavlink   # pin = local master, tag it, re-sync
+./gradlew :app:assembleDebug --no-daemon               # build + test on a phone
+git add deNative/sources.lock && git commit            # andruav repo
+deNative/sync_sources.sh --push-tags                   # publish the tags to the lock URLs
+```
+
+`--bump` with no repo moves every pin; `--tag` creates missing tags locally
+without pushing. Upstream changes the APK needs are committed and merged to
+`master` in the upstream repo first — the pin follows `master`, not side
+branches.
+
+### Private vs public repos
+
+All three projects (de_comm, de_mavlink, this app) are developed in the
+**private** `HefnySco/prv_*` repos (git remote `origin_local`) until the
+work is release-ready; then it is published to the public repos by hand.
+
+| Project | Private (now) | Public (release) |
+|---|---|---|
+| andruav_android_app | `HefnySco/prv_andruav_android_app` (`origin_local`) | `HefnySco/andruav_android_app` (`origin`) |
+| de_comm | `HefnySco/prv_drone_engage_communication` | `DroneEngage/drone_engage_communication` (`upstream`) |
+| de_mavlink | `HefnySco/prv_droneengage_mavlink` | `DroneEngage/droneengage_mavlink` (`upstream`) |
+| de_common | `HefnySco/droneengage_common` | `DroneEngage/droneengage_common` (`upstream`) |
+
+Rules:
+
+- **Never push to the public `DroneEngage/*` (`upstream`) repos** — agents
+  don't publish; the owner does. `sync_sources.sh --push-tags` refuses a
+  `DroneEngage/` URL unless `DE_ALLOW_PUBLIC_PUSH=1`.
+- The lock always points at one consistent side. While private, all URLs
+  are the private repos and the APK must be built from the private
+  `prv_andruav_android_app`. A build from the public andruav repo can't fetch
+  the private pins.
+- Publishing (done by the owner): push the de_comm / de_mavlink / de_common
+  branches **and** the `andruav-pin-*` tags to the public repos, then change
+  only the URLs in `sources.lock` (the SHAs stay identical) and push the
+  andruav repo to its public `origin`.
 
 ## Notes
 
