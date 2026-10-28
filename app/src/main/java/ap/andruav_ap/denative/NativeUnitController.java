@@ -293,6 +293,9 @@ public final class NativeUnitController {
     }
 
     private static void restoreJavaStack(final Context app) {
+        // AN-0106: native mode ran the me-unit under de_comm's party id;
+        // the Java stack logs in with the saved one.
+        App.updateWe7daInfo();
         final UDPProxy proxy = AndruavEngine.getUDPProxy();
         if (proxy != null) {
             proxy.setPause(false);

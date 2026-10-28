@@ -7,6 +7,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import com.andruav.AndruavSettings;
+import com.andruav.andruavUnit.AndruavUnitMe;
 import com.andruav.protocol.commands.Andruav_Parser;
 import com.andruav.protocol.commands.ProtocolHeaders;
 import com.andruav.protocol.commands.binaryMessages.AndruavBinaryHelper;
@@ -203,6 +205,90 @@ public class AndruavDeBusClientTest {
         assertNotNull(client.lastTextMessage);
         assertEquals(OWN_PARTY_ID, client.lastTextMessage.partyID);
         assertEquals(OWN_GROUP, client.lastTextMessage.groupName);
+    }
+
+
+    /*** A de_comm 9100 module-ID reply, optionally carrying the ms.f party record. */
+    private static void receiveModuleIdReply(final CapturingClient client, final JSONObject partyRecord)
+            throws Exception {
+        final JSONObject ms = new JSONObject().put(Messages.JSON_INTERMODULE_SOCKET_STATUS, -1);
+        if (partyRecord != null) ms.put(Messages.JSON_INTERMODULE_PARTY_RECORD, partyRecord);
+        final JSONObject frame = new JSONObject()
+                .put(Messages.INTERMODULE_MODULE_KEY, "de_comm")
+                .put(Messages.INTERMODULE_ROUTING_TYPE, Messages.CMD_TYPE_INTERMODULE)
+                .put(Messages.ANDRUAV_PROTOCOL_MESSAGE_TYPE, Messages.TYPE_AndruavModule_ID)
+                .put(Messages.ANDRUAV_PROTOCOL_MESSAGE_CMD, ms);
+        final byte[] datagram = frame.toString().getBytes(StandardCharsets.UTF_8);
+        client.onReceive(datagram, datagram.length,
+                new JSONObject(new String(datagram, StandardCharsets.UTF_8)));
+    }
+
+    private static void receiveSiblingFrame(final CapturingClient client) throws Exception {
+        final JSONObject frame = new JSONObject()
+                .put(Messages.INTERMODULE_MODULE_KEY, "de_mavlink")
+                .put(Messages.ANDRUAV_PROTOCOL_TARGET_ID, "")
+                .put(Messages.INTERMODULE_ROUTING_TYPE, Messages.CMD_COMM_GROUP)
+                .put(Messages.ANDRUAV_PROTOCOL_MESSAGE_TYPE,
+                        String.valueOf(Messages.TYPE_AndruavMessage_Signaling))
+                .put(Messages.ANDRUAV_PROTOCOL_MESSAGE_CMD, new JSONObject()
+                        .put("w", new JSONObject().put("channel", "cam0")));
+        final byte[] datagram = frame.toString().getBytes(StandardCharsets.UTF_8);
+        client.onReceive(datagram, datagram.length,
+                new JSONObject(new String(datagram, StandardCharsets.UTF_8)));
+    }
+
+
+    /***
+     * AN-0106: de_comm's 9100 reports the unit's party id/group in ms.f;
+     * later sibling frames are stamped with it and the me-unit takes it.
+     */
+    @Test
+    public void moduleIdReplyPartyRecordBecomesUnitIdentity() throws Exception {
+        final AndruavUnitMe savedMe = AndruavSettings.andruavWe7daBase;
+        final AndruavUnitMe me = new AndruavUnitMe();
+        me.PartyID = OWN_PARTY_ID;
+        me.GroupName = OWN_GROUP;
+        AndruavSettings.andruavWe7daBase = me;
+        try {
+            final CapturingClient client = newClient(new FakeModule());
+
+            receiveModuleIdReply(client, new JSONObject()
+                    .put(ProtocolHeaders.Sender, "phone1")
+                    .put(ProtocolHeaders.Group, "simgroup"));
+            receiveSiblingFrame(client);
+
+            assertNotNull(client.lastTextMessage);
+            assertEquals("phone1", client.lastTextMessage.partyID);
+            assertEquals("simgroup", client.lastTextMessage.groupName);
+            assertEquals("phone1", me.PartyID);
+            assertEquals("simgroup", me.GroupName);
+        } finally {
+            AndruavSettings.andruavWe7daBase = savedMe;
+        }
+    }
+
+
+    /*** AN-0106: a 9100 without a party record leaves the identity alone. */
+    @Test
+    public void moduleIdReplyWithoutPartyRecordKeepsIdentity() throws Exception {
+        final AndruavUnitMe savedMe = AndruavSettings.andruavWe7daBase;
+        final AndruavUnitMe me = new AndruavUnitMe();
+        me.PartyID = OWN_PARTY_ID;
+        me.GroupName = OWN_GROUP;
+        AndruavSettings.andruavWe7daBase = me;
+        try {
+            final CapturingClient client = newClient(new FakeModule());
+
+            receiveModuleIdReply(client, null);
+            receiveSiblingFrame(client);
+
+            assertNotNull(client.lastTextMessage);
+            assertEquals(OWN_PARTY_ID, client.lastTextMessage.partyID);
+            assertEquals(OWN_PARTY_ID, me.PartyID);
+            assertEquals(OWN_GROUP, me.GroupName);
+        } finally {
+            AndruavSettings.andruavWe7daBase = savedMe;
+        }
     }
 
 

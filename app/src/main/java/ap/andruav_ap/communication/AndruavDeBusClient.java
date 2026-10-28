@@ -1,7 +1,9 @@
 package ap.andruav_ap.communication;
 
 import com.andruav.AndruavEngine;
+import com.andruav.AndruavSettings;
 import com.andruav.EmergencyBase;
+import com.andruav.andruavUnit.AndruavUnitMe;
 import com.andruav.event.networkEvent.EventSocketState;
 import com.andruav.protocol.commands.ProtocolHeaders;
 import com.andruav.protocol.commands.binaryMessages.AndruavBinary_2MR;
@@ -424,6 +426,7 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
             if (Messages.CMD_TYPE_INTERMODULE.equals(jMsg.optString(Messages.INTERMODULE_ROUTING_TYPE))) {
                 final int messageType = jMsg.optInt(Messages.ANDRUAV_PROTOCOL_MESSAGE_TYPE);
                 if (messageType == Messages.TYPE_AndruavModule_ID) {
+                    adoptUnitIdentity(jMsg);
                     // F5 (C4e, AN-0072): ms.g reports the comm-server link
                     // status on every change - the registration ack is
                     // only the first broadcast.
@@ -493,6 +496,38 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
      * not flap the alarm. Mirrors de_mavlink's
      * OnConnectionStatusChangedWithAndruavServer mapping.
      */
+    /***
+     * AN-0106: de_comm owns the unit's identity (its party_id from
+     * de_comm.local, or one it generated) and reports it on every 9100 in
+     * {@code ms.f.sd/gr} - the record every C++ module adopts. The app's
+     * login party id can differ, and de_comm's own 1004 arrives keyed by
+     * de_comm's id, so stamping sibling frames (de_mavlink 6502) with the
+     * login id leaves them on a unit-map entry that never exists. Adopt
+     * the reported id for stamping, the telemetry bridge and the in-memory
+     * me-unit; the login party-id preference is never written - leaving
+     * native mode reloads me from preferences.
+     */
+    private void adoptUnitIdentity(final JSONObject jMsg) {
+        final JSONObject cmd = jMsg.optJSONObject(Messages.ANDRUAV_PROTOCOL_MESSAGE_CMD);
+        if (cmd == null) return;
+        final JSONObject record = cmd.optJSONObject(Messages.JSON_INTERMODULE_PARTY_RECORD);
+        if (record == null) return;
+
+        final String partyId = record.optString(ProtocolHeaders.Sender, "");
+        final String groupName = record.optString(ProtocolHeaders.Group, "");
+        if (partyId.isEmpty()) return;
+        if (partyId.equals(mUnitPartyId) && groupName.equals(mUnitGroupName)) return;
+
+        setUnitIdentity(partyId, groupName.isEmpty() ? mUnitGroupName : groupName);
+
+        final AndruavUnitMe me = AndruavSettings.andruavWe7daBase;
+        if (me != null) {
+            me.PartyID = partyId;
+            if (!groupName.isEmpty()) me.GroupName = groupName;
+        }
+    }
+
+
     private void applyServerLinkStatus(final JSONObject jMsg) {
         final Object cmdObj = jMsg.opt(Messages.ANDRUAV_PROTOCOL_MESSAGE_CMD);
         if (!(cmdObj instanceof JSONObject)) return;
