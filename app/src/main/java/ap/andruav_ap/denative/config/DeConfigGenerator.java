@@ -32,7 +32,23 @@ public final class DeConfigGenerator {
     public static final String COMM = "de_comm";
     public static final String MAVLINK = "de_mavlink";
 
+    /** Preference keys that seed the comm-loss failsafe (DE-0027/AN-0074). */
+    public static final String PREF_FAILSAFE_ON_COMM_LOST = "pref_failsafe_on_comm_lost";
+    public static final String PREF_FAILSAFE_ON_COMM_LOST_MODE = "pref_failsafe_on_comm_lost_mode";
+
     private DeConfigGenerator() {
+    }
+
+    /** Seeds the failsafe keys in the de_mavlink module json from the
+     *  preferences, so the generated config follows what the user sees. */
+    private static String seedMavlinkFailsafe(final String json, final boolean enabled,
+                                              final String mode) {
+        final String safeMode = (mode == null || mode.trim().isEmpty()) ? "rtl"
+                : mode.trim().replace("\"", "");
+        String out = json.replaceAll("(\"failsafe_on_comm_lost\"\\s*:\\s*)(?:true|false)",
+                "$1" + enabled);
+        return out.replaceAll("(\"failsafe_on_comm_lost_mode\"\\s*:\\s*)\"[^\"]*\"",
+                "$1\"" + safeMode + "\"");
     }
 
     /** Snapshot of the current preferences. */
@@ -89,10 +105,15 @@ public final class DeConfigGenerator {
             // screen on the command line. The digest also covers what the
             // FC link bridge reads (link kind, baud, BT MAC) so any FCB
             // screen change restarts the module and the bridge with it.
+            final android.content.SharedPreferences prefs =
+                    androidx.preference.PreferenceManager.getDefaultSharedPreferences(context);
+            final boolean failsafeOn = prefs.getBoolean(PREF_FAILSAFE_ON_COMM_LOST, true);
+            final String failsafeMode = prefs.getString(PREF_FAILSAFE_ON_COMM_LOST_MODE, "rtl");
             boolean mav = writePrivate(new File(moduleDir(context, MAVLINK), MAVLINK + ".config.module.json"),
-                    asset(context, MAVLINK));
+                    seedMavlinkFailsafe(asset(context, MAVLINK), failsafeOn, failsafeMode));
             mav |= writePrivate(new File(moduleDir(context, MAVLINK), ARGS_DIGEST),
-                    digest(DeConfigWriter.mavlinkArgs(s), s.fcType + "", s.fcBaud + "", s.fcBtMac));
+                    digest(DeConfigWriter.mavlinkArgs(s), s.fcType + "", s.fcBaud + "", s.fcBtMac,
+                            failsafeOn + "", failsafeMode));
             if (comm) {
                 changed.add(COMM);
             }

@@ -258,6 +258,23 @@ public class SettingsDrone extends AppCompatActivity {
                     return true;
                 }
             });
+
+            // DE-0027 (AN-0074): comm-loss flight failsafe prefs - DeConfigGenerator
+            // seeds them into the generated de_mavlink config so what the user
+            // sees is what the module runs.
+            final CheckBoxPreference chkFailsafe = new CheckBoxPreference(requireContext());
+            chkFailsafe.setKey(ap.andruav_ap.denative.config.DeConfigGenerator.PREF_FAILSAFE_ON_COMM_LOST);
+            chkFailsafe.setTitle("Comm-loss flight failsafe");
+            chkFailsafe.setSummary("When the link to the comm server drops, de_mavlink drives the FC into the failsafe mode itself - no app or GCS needed.");
+            chkFailsafe.setDefaultValue(true);
+            nativeCategory.addPreference(chkFailsafe);
+
+            final EditTextPreference edtFailsafeMode = new EditTextPreference(requireContext());
+            edtFailsafeMode.setKey(ap.andruav_ap.denative.config.DeConfigGenerator.PREF_FAILSAFE_ON_COMM_LOST_MODE);
+            edtFailsafeMode.setTitle("Failsafe flight mode");
+            edtFailsafeMode.setSummary("Mode driven on comm loss: rtl (default), smart_rtl, land, loiter, pos_hold, brake - unknown names fall back to rtl.");
+            edtFailsafeMode.setDefaultValue("rtl");
+            nativeCategory.addPreference(edtFailsafeMode);
         }
 
         @Override
