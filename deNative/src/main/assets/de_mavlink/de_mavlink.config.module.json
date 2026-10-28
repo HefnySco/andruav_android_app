@@ -908,6 +908,15 @@
         }
     },
     "read_only_mode": false,
+    // C4g/F6: comm-loss flight failsafe - when the comm link to the server
+    // drops, de_mavlink drives the FC into failsafe_on_comm_lost_mode over
+    // its own MAVLink link (no GCS, no other module needed). Default off
+    // upstream; the Android native unit config enables it.
+    // Modes: rtl (default), smart_rtl, land, loiter, pos_hold, brake,
+    // circle, auto, guided, stabilize, alt_hold, fbwa, fbwb, cruise,
+    // qrtl, qland, qloiter, qstabilize - an unknown name falls back to rtl.
+    "failsafe_on_comm_lost": true,
+    "failsafe_on_comm_lost_mode": "rtl",
     // Saved cloud tasks (geofences, missions) are reloaded only on the first
     // comm-server registration after boot; a link flap in flight must not
     // replay a stale cloud mission. Set true to restore the old
