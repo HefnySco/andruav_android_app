@@ -142,9 +142,11 @@ public class MavlinkTelemetryBridge {
                     final msg_sys_status sys = (msg_sys_status) message;
                     unit.isReadyToArm((sys.onboard_control_sensors_health
                             & MAV_SYS_STATUS_SENSOR.MAV_SYS_STATUS_PREARM_CHECK) != 0);
-                    unit.LastEvent_Battery.FCB_BatteryVoltage = sys.voltage_battery / 1000.0;
-                    if (sys.current_battery >= 0) { // -1 = not measured
-                        unit.LastEvent_Battery.FCB_CurrentConsumed = sys.current_battery / 100.0;
+                    // the app keeps FCB voltage in mV and current in mA (the
+                    // DroneKit board and the info widget both use that scale)
+                    unit.LastEvent_Battery.FCB_BatteryVoltage = sys.voltage_battery;
+                    if (sys.current_battery >= 0) { // -1 = not measured; cA -> mA
+                        unit.LastEvent_Battery.FCB_CurrentConsumed = sys.current_battery * 10.0;
                     }
                     if (sys.battery_remaining >= 0) { // -1 = not measured
                         unit.LastEvent_Battery.FCB_BatteryRemaining = sys.battery_remaining;
@@ -165,10 +167,10 @@ public class MavlinkTelemetryBridge {
                         }
                     }
                     if (millivolts > 0) {
-                        unit.LastEvent_Battery.FCB_BatteryVoltage = millivolts / 1000.0;
+                        unit.LastEvent_Battery.FCB_BatteryVoltage = millivolts;
                     }
-                    if (battery.current_battery >= 0) {
-                        unit.LastEvent_Battery.FCB_CurrentConsumed = battery.current_battery / 100.0;
+                    if (battery.current_battery >= 0) { // cA -> mA
+                        unit.LastEvent_Battery.FCB_CurrentConsumed = battery.current_battery * 10.0;
                     }
                     batteryUpdated = true;
                     break;

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.MAVLink.common.msg_attitude;
 import com.MAVLink.common.msg_gps_raw_int;
+import com.MAVLink.common.msg_mission_current;
 import com.MAVLink.common.msg_sys_status;
 import com.MAVLink.enums.MAV_MODE_FLAG;
 import com.MAVLink.enums.MAV_STATE;
@@ -19,6 +20,12 @@ import com.andruav.andruavUnit.AndruavUnitMapBase;
 import com.andruav.andruavUnit.AndruavUnitMe;
 import com.andruav.controlBoard.shared.common.FlightMode;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
+import com.andruav.controlBoard.shared.geoFence.GeoFenceManager;
+import com.andruav.controlBoard.shared.geoFence.GeoFenceMapBaseMasna3;
+import com.andruav.controlBoard.shared.missions.MissionBase;
+import com.andruav.controlBoard.shared.missions.WayPointStep;
+import com.andruav.protocol.commands.textMessages.AndruavMessage_GeoFence;
+import com.andruav.protocol.commands.textMessages.AndruavMessage_WayPoints;
 import com.andruav.protocol.commands.ProtocolHeaders;
 import com.andruav.protocol.commands.binaryMessages.AndruavBinaryHelper;
 
@@ -267,7 +274,7 @@ public class BusUnitViewTest {
         assertEquals(Math.toDegrees(0.1), shadow.LastEvent_FCB_IMU.R, 1e-4);
         assertEquals(Math.toDegrees(1.5), shadow.LastEvent_FCB_IMU.Y, 1e-4);
         assertEquals(85.0, shadow.LastEvent_Battery.FCB_BatteryRemaining, 1e-6);
-        assertEquals(12.6, shadow.LastEvent_Battery.FCB_BatteryVoltage, 1e-6);
+        assertEquals(12600.0, shadow.LastEvent_Battery.FCB_BatteryVoltage, 1e-6); // mV
 
         // mirrored onto the me-unit the screens read
         assertTrue(mMe.IsArmed());
@@ -275,8 +282,8 @@ public class BusUnitViewTest {
         assertEquals(FlightMode.CONST_FLIGHT_CONTROL_GUIDED, mMe.getFlightModeFromBoard());
         assertEquals(14, mMe.LastEvent_FCB_IMU.SATC);
         assertEquals(85.0, mMe.LastEvent_Battery.FCB_BatteryRemaining, 1e-6);
-        assertEquals(12.6, mMe.LastEvent_Battery.FCB_BatteryVoltage, 1e-6);
-        assertEquals(3.4, mMe.LastEvent_Battery.FCB_CurrentConsumed, 1e-6);
+        assertEquals(12600.0, mMe.LastEvent_Battery.FCB_BatteryVoltage, 1e-6);
+        assertEquals(3400.0, mMe.LastEvent_Battery.FCB_CurrentConsumed, 1e-6); // mA
 
         assertTrue(MavlinkTelemetryBridge.isOwnTelemetryLive());
     }
@@ -289,6 +296,79 @@ public class BusUnitViewTest {
         receive(datagram);
         assertTrue(AndruavEngine.getAndruavWe7daMapBase().isEmpty());
         assertFalse(mMe.IsArmed());
+    }
+
+
+    /*** A comm frame from the own party id (as de_comm fans it out), ms as a string. */
+    private void receiveOwnFrame(final int messageType, final JSONObject ms) throws Exception {
+        final JSONObject frame = idFrame(ms)
+                .put(ProtocolHeaders.MessageType, String.valueOf(messageType));
+        receive(frame.toString().getBytes(StandardCharsets.UTF_8));
+    }
+
+
+    /**
+     * The geofence view: the unit's own 1023 fence report (de_mavlink ->
+     * de_comm fan-out) lands in GeoFenceManager for the me-unit.
+     */
+    @Test
+    public void ownGeoFenceReportFeedsGeoFenceManager() throws Exception {
+        GeoFenceManager.clear();
+        try {
+            receiveId();
+
+            final JSONObject fence = new JSONObject()
+                    .put("t", GeoFenceMapBaseMasna3.PolygonFence)
+                    .put("n", "fence_a")
+                    .put("r", "0")
+                    .put("o", 0)
+                    .put("a", 0)
+                    .put("c", 3)
+                    .put("0", new JSONObject().put("a", "30.000000").put("g", "31.000000"))
+                    .put("1", new JSONObject().put("a", "30.001000").put("g", "31.000000"))
+                    .put("2", new JSONObject().put("a", "30.001000").put("g", "31.001000"));
+            receiveOwnFrame(AndruavMessage_GeoFence.TYPE_AndruavMessage_GeoFence, fence);
+
+            assertTrue(GeoFenceManager.containsKey("fence_a"));
+        } finally {
+            GeoFenceManager.clear();
+        }
+    }
+
+
+    /**
+     * The mission view: the unit's own 1027 waypoint list lands on the
+     * shadow unit, and a 6502 MISSION_CURRENT marks the item reached.
+     */
+    @Test
+    public void ownWaypointsLandOnShadowAndMissionCurrentMarksReached() throws Exception {
+        receiveId();
+
+        final JSONObject waypoints = new JSONObject().put("n", 2);
+        for (int i = 0; i < 2; ++i) {
+            waypoints.put(String.valueOf(i), new JSONObject()
+                    .put("t", WayPointStep.TYPE_WAYPOINTSTEP)
+                    .put("s", i)
+                    .put("a", "30.00" + i)
+                    .put("g", "31.00" + i)
+                    .put("l", "50")
+                    .put("h", "0")
+                    .put("y", "0"));
+        }
+        receiveOwnFrame(AndruavMessage_WayPoints.TYPE_AndruavMessage_WayPoints, waypoints);
+
+        final AndruavUnitBase shadow = AndruavEngine.getAndruavWe7daMapBase().get(OWN_PARTY_ID);
+        assertNotNull(shadow);
+        assertEquals(2, shadow.getMohemmaMapBase().size());
+
+        final msg_mission_current current = new msg_mission_current();
+        current.sysid = 1;
+        current.compid = 1;
+        current.seq = 1;
+        receive(mavlinkDatagram(current.pack().encodePacket()));
+
+        assertEquals(MissionBase.Report_NAV_ItemReached,
+                shadow.getMohemmaMapBase().valueAt(1).Status);
     }
 
 
