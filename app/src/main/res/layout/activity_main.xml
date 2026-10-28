@@ -175,6 +175,20 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
+                    <!-- AN-0104: native mode, modules up but the comm line not yet:
+                         replaces SIGN-IN/CONNECT; the dots are animated in code. -->
+                    <TextView
+                        android:id="@+id/home_txt_server_connecting"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Connecting"
+                        android:textColor="@color/home_text_secondary"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.04"
+                        android:visibility="gone" />
+
                     <TextView
                         android:id="@+id/home_btn_server_signin"
                         android:layout_width="0dp"

@@ -133,6 +133,11 @@ public class MainScreen extends BaseAndruavShasha {
     private TextView mBtnServerSignIn;
     private TextView mBtnServerConnect;
     private TextView mBtnServerDisconnect;
+    private TextView mTxtServerConnecting;
+    /*** AN-0104: pulses the status dot while the native unit is connecting. */
+    private android.animation.ObjectAnimator mDotPulse;
+    private int mConnectingStep;
+    private boolean mConnectingShown;
 
     private TextView mTxtTelemetryStatus;
     private View mGroupTelemetryLinked;
@@ -669,6 +674,7 @@ public class MainScreen extends BaseAndruavShasha {
         mBtnServerSignIn = findViewById(R.id.home_btn_server_signin);
         mBtnServerConnect = findViewById(R.id.home_btn_server_connect);
         mBtnServerDisconnect = findViewById(R.id.home_btn_server_disconnect);
+        mTxtServerConnecting = findViewById(R.id.home_txt_server_connecting);
         mBtnServerSignIn.setOnClickListener(v -> doSignOut());
         mBtnServerConnect.setOnClickListener(v -> onServerConnectToggle(true));
         mBtnServerDisconnect.setOnClickListener(v -> onServerConnectToggle(false));
@@ -1097,7 +1103,7 @@ public class MainScreen extends BaseAndruavShasha {
         setViewColor(mDotServer, connected ? R.color.home_green_icon : R.color.home_red_dot);
 
         if (nativeMode) {
-            mTxtServerStatus.setText(connected ? "Native unit online" : "Native unit offline");
+            mTxtServerStatus.setText(connected ? "Native Unit Online" : "Native Unit Offline");
         } else if (connected) {
             mTxtServerStatus.setText(TlsTrustPolicy.isLastConnectionSecure()
                     ? R.string.home_server_status_connected_secure
@@ -1114,9 +1120,14 @@ public class MainScreen extends BaseAndruavShasha {
         final boolean showDisconnect = nativeMode
                 ? NativeUnitController.isNativeStackActive()
                 : connected;
-        mBtnServerSignIn.setVisibility(connected ? View.GONE : View.VISIBLE);
+        // AN-0104: modules up but no comm line yet is "connecting" - SIGN-IN
+        // there only confuses (de_comm is already trying), so the row shows an
+        // animated Connecting label instead, next to DISCONNECT.
+        final boolean connecting = nativeMode && showDisconnect && !connected;
+        mBtnServerSignIn.setVisibility((connected || connecting) ? View.GONE : View.VISIBLE);
         mBtnServerConnect.setVisibility(showDisconnect ? View.GONE : View.VISIBLE);
         mBtnServerDisconnect.setVisibility(showDisconnect ? View.VISIBLE : View.GONE);
+        setConnectingAnimation(connecting);
 
         // AN-0065: no socket events fire in native mode, so re-arm a poll to
         // keep the module state live. onPause's removeCallbacksAndMessages
@@ -1124,6 +1135,46 @@ public class MainScreen extends BaseAndruavShasha {
         mhandle.removeCallbacks(mNativeCardRefresh);
         if (nativeMode) {
             mhandle.postDelayed(mNativeCardRefresh, 1500);
+        }
+    }
+
+    /**
+     * AN-0104: cycling "Connecting . . ." label plus a pulsing status dot.
+     * The label ticks on mhandle, so onPause's removeCallbacksAndMessages
+     * stops it; onResume's updateServerCard restarts it when still needed.
+     */
+    private final Runnable mConnectingTick = new Runnable() {
+        @Override
+        public void run() {
+            mConnectingStep = (mConnectingStep + 1) % 4;
+            final StringBuilder text = new StringBuilder("Connecting");
+            for (int i = 0; i < mConnectingStep; ++i) text.append(" .");
+            mTxtServerConnecting.setText(text);
+            mhandle.postDelayed(this, 450);
+        }
+    };
+
+    private void setConnectingAnimation(final boolean on) {
+        // updateServerCard re-runs every 1.5 s in native mode - start once,
+        // or the dots would jump on every refresh.
+        if (on == mConnectingShown) return;
+        mConnectingShown = on;
+        mhandle.removeCallbacks(mConnectingTick);
+        if (on) {
+            mTxtServerConnecting.setVisibility(View.VISIBLE);
+            mConnectingStep = -1;
+            mhandle.post(mConnectingTick);
+            if (mDotPulse == null) {
+                mDotPulse = android.animation.ObjectAnimator.ofFloat(mDotServer, View.ALPHA, 1f, 0.25f);
+                mDotPulse.setDuration(700);
+                mDotPulse.setRepeatMode(android.animation.ValueAnimator.REVERSE);
+                mDotPulse.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+            }
+            if (!mDotPulse.isStarted()) mDotPulse.start();
+        } else {
+            mTxtServerConnecting.setVisibility(View.GONE);
+            if (mDotPulse != null) mDotPulse.cancel();
+            mDotServer.setAlpha(1f);
         }
     }
 
@@ -1745,6 +1796,8 @@ public class MainScreen extends BaseAndruavShasha {
         // Another activity is taking focus (this activity is about to be "paused").
         EventBus.getDefault().unregister(this);
         mhandle.removeCallbacksAndMessages(null);
+        // AN-0104: the dot pulse is an animator, not a handler post.
+        setConnectingAnimation(false);
         super.onPause();
 
 
