@@ -398,3 +398,50 @@ Record on AN-0049 (decision or note): (1) approve option (a) with the
 `AndruavWSClientBase` subclass as the seam; (2) own unit is rendered as a
 shadow unit fed by telemetry; (3) Emergency failsafe stays in Java (F5) or
 moves into de_mavlink (F6).
+
+## Parity results (AN-0053)
+
+Legend: **same** = verified working end-to-end through the mode's stack;
+**pending** = not yet exercised on this leg; **blocked** = needs hardware
+not attached. Native leg driven on `emulator-5554` running the app's
+native modules as `phone1` in `tests/android/android_bringup`
+(real server :62020, SITL via fcb_proxy). Commands sent as real GCS wire
+frames (`./sim ctl opmsg`, mts per protocol); FC state read over MAVLink.
+Java leg and real-FC leg not run yet (device re-provisioning / no FC
+attached); the owner decision on the default is recorded separately.
+
+| Checklist row | Native (SITL) | Java (SITL) | Real FC | Evidence / notes |
+|---|---|---|---|---|
+| connect / disconnect | same | pending | blocked | android_bringup 5/5: phone de_comm registers, remote restart works |
+| set mode (Copter) | same | pending | blocked | 1010 `{F:9}` STABILIZE->GUIDED |
+| set mode (Plane) | pending | pending | blocked | mode map is per-vehicle in CFCBModes; no plane unit run |
+| set mode (Rover) | pending | pending | blocked | same |
+| arm | same | pending | blocked | 1030 `{A:true}` -> armed |
+| takeoff | same | pending | blocked | 1031 `{a:15}` grounded -> takeOff; climbed to 15m |
+| climb | same | pending | blocked | 1031 in flight = changeAltitude; also climbed on goto leg |
+| goto | same | pending | blocked | 1033 `{a,g,l}` tracked to target position |
+| guided velocity | pending | pending | blocked | wire shape unconfirmed this leg |
+| mission upload/download/start/speed | pending | pending | blocked | needs a package deploy drive (1085/1015) |
+| set home | same | pending | blocked | 1048 `{a,g}` accepted |
+| parameters read/write | pending | pending | blocked | mt/shape not driven this leg |
+| servo | same | pending | blocked | 6001 `{n,v}` accepted (no servo on SITL to see) |
+| camera trigger | same | pending | blocked | 1081 `{e:true,m:2}` accepted (no camera to confirm) |
+| gimbal | pending | pending | blocked | 1045 not driven |
+| manual control / RC override | pending | pending | blocked | 1052 `{R,T,A,E}` shape confirmed, not flown |
+| RC Block / RC camera switch | pending | pending | blocked | app-side feature (RC-Channel-Triggers.md) |
+| UDP relay telemetry (token) | pending | pending | blocked | udp proxy path not exercised |
+| video streaming | pending | pending | blocked | needs GCS webclient dial + camera |
+| photo | pending | pending | blocked | needs camera |
+| recording | pending | pending | blocked | needs camera |
+| TTS | worse* | pending | blocked | andruav_phone was not on the bus this run - app-side outputs unroutable unless the supervisor attaches the client |
+| siren | worse* | pending | blocked | same bus-client dependency |
+| flash | worse* | pending | blocked | same |
+| SMS emergency | pending | pending | blocked | needs real phone + SIM |
+| geofence | pending | pending | blocked | 1071/1024 not driven |
+| swarm follow | pending | pending | blocked | 6505/6506; second unit (c2) available |
+| comm-loss flight failsafe | better | pending | blocked | de_mavlink drives FC to failsafe mode on socket loss (AN-0074), Java stack cannot do this without the app |
+
+*worse = in native mode the app-side bus client (andruav_phone) must be
+attached for output commands to reach the phone; the supervisor does not
+reliably auto-attach it on every provisioning path (see AN-0073 note and
+the DE follow-up on the status-line fix).
