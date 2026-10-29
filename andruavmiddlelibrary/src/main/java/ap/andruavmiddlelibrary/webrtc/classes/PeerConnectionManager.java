@@ -354,21 +354,37 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
         final int mode = isFront ? Preference.getStreamResolutionModeFront(null) : Preference.getStreamResolutionModeBack(null);
 
         if (mode == Preference.STREAM_RESOLUTION_MAX) {
-            final List<CameraEnumerationAndroid.CaptureFormat> formats = enumerator.getSupportedFormats(deviceName);
-            if (formats != null && !formats.isEmpty()) {
-                CameraEnumerationAndroid.CaptureFormat best = formats.get(0);
-                for (final CameraEnumerationAndroid.CaptureFormat format : formats) {
-                    if ((long) format.width * format.height > (long) best.width * best.height) {
-                        best = format;
-                    }
+            if (Preference.useAppCameraCapturer(null)) {
+                // App path: formats come from the Camera2 stream map, not the
+                // fork enumerator's supported-formats list.
+                final String cameraId = (enumerator instanceof Camera2Enumerator) ? deviceName : null;
+                final int[] maxFormat = AndruavCameraCapturer.maxCaptureFormat(mContext, cameraId);
+                if (maxFormat != null) {
+                    mCaptureWidth = maxFormat[0];
+                    mCaptureHeight = maxFormat[1];
+                    mCaptureFps = Math.max(10, Math.min(30, maxFormat[2]));
+                    Log.i(TAG_CAM_METRICS,
+                            "capture " + mCaptureWidth + "x" + mCaptureHeight + "@" + mCaptureFps);
+                    return;
                 }
-                mCaptureWidth = best.width;
-                mCaptureHeight = best.height;
-                // framerate.max is expressed in fps*1000; cap it to a sane streaming range.
-                mCaptureFps = Math.max(10, Math.min(30, best.framerate.max / 1000));
-                return;
+                // No format info available: fall through to HD below as a safe default.
+            } else {
+                final List<CameraEnumerationAndroid.CaptureFormat> formats = enumerator.getSupportedFormats(deviceName);
+                if (formats != null && !formats.isEmpty()) {
+                    CameraEnumerationAndroid.CaptureFormat best = formats.get(0);
+                    for (final CameraEnumerationAndroid.CaptureFormat format : formats) {
+                        if ((long) format.width * format.height > (long) best.width * best.height) {
+                            best = format;
+                        }
+                    }
+                    mCaptureWidth = best.width;
+                    mCaptureHeight = best.height;
+                    // framerate.max is expressed in fps*1000; cap it to a sane streaming range.
+                    mCaptureFps = Math.max(10, Math.min(30, best.framerate.max / 1000));
+                    return;
+                }
+                // No format info available: fall through to HD below as a safe default.
             }
-            // No format info available: fall through to HD below as a safe default.
         }
 
         if (mode == Preference.STREAM_RESOLUTION_SD) {
@@ -381,6 +397,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
             mCaptureHeight = 720;
             mCaptureFps = 15;
         }
+        Log.i(TAG_CAM_METRICS, "capture " + mCaptureWidth + "x" + mCaptureHeight + "@" + mCaptureFps);
     }
 
     /***

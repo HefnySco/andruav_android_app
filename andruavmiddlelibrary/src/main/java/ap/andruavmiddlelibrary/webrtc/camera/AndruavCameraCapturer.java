@@ -248,6 +248,84 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         }
     }
 
+    /**
+     * Largest capture format a camera supports for FPV - biggest preview size
+     * from the Camera2 stream map plus its achievable fps (plain fps). Used by
+     * PeerConnectionManager's MAX resolution mode on the app capturer path.
+     *
+     * @return int[]{width, height, fps} or null when it cannot be determined.
+     */
+    public static int[] maxCaptureFormat(final Context context, final String cameraId) {
+        final CameraManager manager =
+                (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+        if (manager == null) {
+            return null;
+        }
+        try {
+            String id = cameraId;
+            if (id == null) {
+                // Same auto-pick as resolveCameraId: first back-facing, else first.
+                final List<String> ids = orderedCameraIds(context);
+                for (final String candidate : ids) {
+                    if (manager.getCameraCharacteristics(candidate).get(CameraCharacteristics.LENS_FACING)
+                            == CameraMetadata.LENS_FACING_BACK) {
+                        id = candidate;
+                        break;
+                    }
+                }
+                if (id == null) {
+                    if (ids.isEmpty()) {
+                        return null;
+                    }
+                    id = ids.get(0);
+                }
+            }
+            final CameraCharacteristics characteristics = manager.getCameraCharacteristics(id);
+            final StreamConfigurationMap streamMap =
+                    characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+            if (streamMap == null) {
+                return null;
+            }
+            final android.util.Size[] sizes =
+                    streamMap.getOutputSizes(android.graphics.SurfaceTexture.class);
+            if (sizes == null || sizes.length == 0) {
+                return null;
+            }
+            android.util.Size best = sizes[0];
+            for (final android.util.Size size : sizes) {
+                if ((long) size.getWidth() * size.getHeight()
+                        > (long) best.getWidth() * best.getHeight()) {
+                    best = size;
+                }
+            }
+            int maxFps = 0;
+            try {
+                final long minFrameDurationNs = streamMap.getOutputMinFrameDuration(
+                        android.graphics.SurfaceTexture.class, best);
+                if (minFrameDurationNs > 0) {
+                    maxFps = (int) Math.round(1e9 / minFrameDurationNs);
+                }
+            } catch (Exception ignored) {
+                // getOutputMinFrameDuration() is not supported on all devices.
+            }
+            if (maxFps <= 0) {
+                final Range<Integer>[] ranges = characteristics.get(
+                        CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES);
+                if (ranges != null) {
+                    for (final Range<Integer> range : ranges) {
+                        // Ranges are plain fps, except old Tegra2 devices that report x1000.
+                        final int upper = range.getUpper();
+                        maxFps = Math.max(maxFps, upper < 1000 ? upper : upper / 1000);
+                    }
+                }
+            }
+            return new int[] {best.getWidth(), best.getHeight(), maxFps};
+        } catch (CameraAccessException e) {
+            Logging.e(TAG, "maxCaptureFormat: " + e);
+            return null;
+        }
+    }
+
     @Override
     public void setFlash(final int onOff) {
         runOnCameraThread(() -> setFlashOnCameraThread(onOff));
