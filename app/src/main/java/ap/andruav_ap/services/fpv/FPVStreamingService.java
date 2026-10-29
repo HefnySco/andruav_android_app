@@ -484,6 +484,9 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
             }
             AndruavEngine.getEventBus().post(new Event_RecordVideoStatus(Event_RecordVideoStatus.CONST_IS_RECORDING));
             AndruavFacade.broadcastID();
+            // the GCS record button follows the track's "r" in the camera list;
+            // the ID broadcast never leaves a native unit, so push the list
+            com.andruav.AndruavDroneFacade.sendCameraList(false, null);
             return videoName;
         } catch (Exception e) {
             e.printStackTrace();
@@ -522,6 +525,7 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
             // failed to update camera module.
         }
         AndruavFacade.broadcastID();
+        com.andruav.AndruavDroneFacade.sendCameraList(false, null);
         return file;
     }
 

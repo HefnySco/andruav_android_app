@@ -705,7 +705,10 @@ public class MessageDispatcher {
 
                 case AndruavMessage_Ctrl_Camera.TYPE_AndruavResala_Ctrl_Camera:
                     final AndruavUnitShadow andruavUnit = (AndruavUnitShadow) AndruavEngine.getAndruavWe7daMapBase().get(andruav_2MR.partyID);
-                    if ((andruavUnit != null) && (!andruavUnit.canImage())) break;
+                    if ((andruavUnit != null) && (!andruavUnit.canImage())) {
+                        android.util.Log.w("CameraController", "take image from " + andruav_2MR.partyID + " dropped: sender has no image permission");
+                        break;
+                    }
 
                     andruav_2MR.processed = true;
 

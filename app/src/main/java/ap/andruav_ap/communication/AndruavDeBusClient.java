@@ -236,6 +236,8 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
                 .put(Messages.TYPE_AndruavMessage_CameraZoom)
                 .put(Messages.TYPE_AndruavMessage_CameraSwitch)
                 .put(Messages.TYPE_AndruavMessage_CameraFlash)
+                // 1041 take image (webclient Ctrl_Camera)
+                .put(Messages.TYPE_AndruavMessage_Ctrl_Cameras)
                 // 6511 text-to-speech belongs to the andruav_sound module
                 // (AN-0107); subscribing here too would speak it twice.
                 // GCS-driven config of the app itself
@@ -344,18 +346,70 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
             if (messageType < 0) return;
 
             final String target = header.optString(ProtocolHeaders.Target, "");
-            final int bodyLength = payload.length - splitIndex - 1;
-            final byte[] body = new byte[bodyLength];
-            if (bodyLength > 0) {
-                System.arraycopy(payload, splitIndex + 1, body, 0, bodyLength);
-            }
-            final Object messageCmd = header.opt(ProtocolHeaders.Message);
+            final Object headerCmd = header.opt(ProtocolHeaders.Message);
+            final Object[] split = toDeBinaryLayout(payload, splitIndex + 1, messageType,
+                    (headerCmd instanceof JSONObject) ? (JSONObject) headerCmd : null);
+            final byte[] body = (byte[]) split[1];
 
-            module.sendBMSG(target, body, bodyLength, messageType, false,
-                    (messageCmd instanceof JSONObject) ? messageCmd : new JSONObject());
+            module.sendBMSG(target, body, body.length, messageType, false, split[0]);
         } catch (Exception e) {
             AndruavEngine.log().logException("debus_sendbinary", e);
         }
+    }
+
+
+    /***
+     * Andruav binary frames carry their fields as JSON text inside the body
+     * ({@code header 0x00 json-text 0x00 payload}); the DroneEngage layout
+     * (de_camera, the webclient parser) carries them as {@code ms} and only
+     * the payload after the header. Sending the Andruav body behind an
+     * {@code ms} header made the webclient read the JSON text as image bytes.
+     * Also IMG lat/lng go out as degrees * 1e7 like de_camera's.
+     *
+     * @return {ms, payload}
+     */
+    static Object[] toDeBinaryLayout(final byte[] frame, final int bodyStart,
+                                     final int messageType, final JSONObject headerCmd) {
+        int payloadStart = bodyStart;
+        JSONObject ms = headerCmd;
+        if (ms == null) {
+            ms = new JSONObject();
+            final int textEnd = indexOfNul(frame, bodyStart);
+            if (textEnd > bodyStart) {
+                try {
+                    ms = new JSONObject(new String(frame, bodyStart, textEnd - bodyStart,
+                            StandardCharsets.UTF_8));
+                    payloadStart = textEnd + 1;
+                } catch (Exception e) {
+                    // not a JSON text - the whole body is payload
+                    ms = new JSONObject();
+                }
+            }
+        }
+        if (messageType == Messages.TYPE_AndruavMessage_IMG) {
+            scaleToE7(ms, "lat");
+            scaleToE7(ms, "lng");
+        }
+        final int payloadLength = Math.max(0, frame.length - payloadStart);
+        final byte[] payload = new byte[payloadLength];
+        System.arraycopy(frame, payloadStart, payload, 0, payloadLength);
+        return new Object[]{ms, payload};
+    }
+
+    private static void scaleToE7(final JSONObject ms, final String key) {
+        if (!ms.has(key)) return;
+        try {
+            ms.put(key, Math.round(ms.getDouble(key) * 1e7));
+        } catch (Exception ignored) {
+            // non-numeric: leave as is
+        }
+    }
+
+    private static int indexOfNul(final byte[] data, final int from) {
+        for (int i = from; i < data.length; i++) {
+            if (data[i] == 0) return i;
+        }
+        return -1;
     }
 
 

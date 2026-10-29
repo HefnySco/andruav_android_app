@@ -221,12 +221,17 @@ public class CameraController implements CameraBackend {
 
     /**
      * Resolve a user/mission channel string to a channel key:
-     * "" -> default (first surfaced, "back" preferred), then resource key,
-     * then the Camera2 device id, then the display name.
+     * "" -> the channel being streamed, else the one the stream will open
+     * (camera-number preference, "back" fallback) - a GCS take-image or
+     * record names no channel and means the camera it is watching; then
+     * resource key, then the Camera2 device id, then the display name.
      */
     @Override
     public String resolveChannelKey(final String channel) {
-        if (channel == null || channel.isEmpty()) return defaultChannelKey();
+        if (channel == null || channel.isEmpty()) {
+            final String active = activeChannelKey();
+            return (active != null) ? active : streamChannelKey();
+        }
         ensureChannels();
         for (final Channel c : mChannels) {
             if (c.key.equals(channel)) return c.key;
@@ -411,9 +416,14 @@ public class CameraController implements CameraBackend {
         if (cmd == null) return;
         long intervalMs = cmd.TimeBetweenShotes;
         if (intervalMs <= 0) intervalMs = 1;   // legacy: 0 means a 1-second floor
-        startCapture(null, cmd.NumberOfImages, intervalMs * 1000,
+        // The phone advertises one video track, so whatever track id the
+        // GCS names means "the streamed camera" (null channel).
+        final String[] err = new String[1];
+        if (!startCapture(null, cmd.NumberOfImages, intervalMs * 1000,
                 cmd.SaveImageLocally, cmd.SendBackImages, cmd.Requester,
-                false, null, SRC_GCS, new String[1]);
+                false, null, SRC_GCS, err)) {
+            android.util.Log.w(TAG, "GCS take image refused: " + err[0]);
+        }
     }
 
     /** Mode-change single shot forwarded by the FPV activities. */
@@ -479,6 +489,7 @@ public class CameraController implements CameraBackend {
             final byte[] jpeg = acquireJpeg(ch);
             if (jpeg == null) {
                 AndruavEngine.log().log2(TAG, "still", "capture failed on channel " + ch);
+                android.util.Log.w(TAG, "still capture failed on channel " + ch);
                 break;
             }
             processJpeg(ch, jpeg, n, saveLocal, sendBack, sendBackTo, gcsPreview, invokeId);
@@ -672,6 +683,8 @@ public class CameraController implements CameraBackend {
         if (saveLocal) {
             savedName = saveJpeg(jpeg, location);
         }
+        android.util.Log.i(TAG, "still " + index + " on " + ch + ": " + jpeg.length + " bytes, saved="
+                + savedName + ", sendBack=" + sendBack);
 
         if (savedName != null) {
             // Same bookkeeping event the FPV activity used to post, so the
@@ -790,7 +803,12 @@ public class CameraController implements CameraBackend {
 
     /** Async entry for bus/UI callers that must not block (record over the bus). */
     public void queueSetRecording(final String ch, final boolean on, final String src) {
-        mControlExecutor.execute(() -> setRecording(ch, on, src, new String[1]));
+        mControlExecutor.execute(() -> {
+            final String[] err = new String[1];
+            if (!setRecording(ch, on, src, err)) {
+                android.util.Log.w(TAG, "record " + (on ? "on" : "off") + " refused: " + err[0]);
+            }
+        });
     }
 
     /**

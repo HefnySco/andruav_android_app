@@ -412,4 +412,47 @@ public class AndruavDeBusClientTest {
         assertEquals(binaryBody.length, s.bmsgLength);
         assertNotNull(s.messageCmd);
     }
+
+
+    /*** An Andruav IMG body (json text 0x00 jpeg) goes out DE-style: text as ms, jpeg alone, lat/lng E7. */
+    @Test
+    public void outboundImageUsesDeBinaryLayout() throws Exception {
+        final FakeModule module = new FakeModule();
+        final AndruavDeBusClient client = newClient(module);
+
+        // jpeg bytes include a 0x00 - only the first NUL after the text splits
+        final byte[] jpeg = new byte[]{(byte) 0xFF, (byte) 0xD8, 0x00, 0x11, (byte) 0xFF, (byte) 0xD9};
+        final byte[] imgBody = AndruavBinaryHelper.joinBinarywithText(
+                "{\"des\":\"Image No#1\",\"prv\":\"gps\",\"lat\":1.0,\"lng\":2.0}", jpeg);
+        final JSONObject header = new JSONObject()
+                .put(ProtocolHeaders.MSG_ROUTING, ProtocolHeaders.CMD_COMM_INDIVIDUAL)
+                .put(ProtocolHeaders.Sender, OWN_PARTY_ID)
+                .put(ProtocolHeaders.MessageType, 1006)
+                .put(ProtocolHeaders.Target, "GCS_UNIT_1");
+
+        client.socketSendBinaryMessage(
+                AndruavBinaryHelper.joinBinarywithText(header.toString(), imgBody));
+
+        final Sent s = module.sent.get(0);
+        assertEquals(1006, s.messageType);
+        assertArrayEquals(jpeg, s.bmsg);
+        final JSONObject ms = (JSONObject) s.messageCmd;
+        assertEquals("Image No#1", ms.getString("des"));
+        assertEquals("gps", ms.getString("prv"));
+        assertEquals(10000000L, ms.getLong("lat"));
+    }
+
+    /*** Lat/lng scaling and a stored-only shot (no image bytes). */
+    @Test
+    public void imageLayoutScalesPositionAndKeepsEmptyPayload() throws Exception {
+        final byte[] frame = AndruavBinaryHelper.joinBinarywithText("{}",
+                AndruavBinaryHelper.joinBinarywithText(
+                        "{\"des\":\"x\",\"lcl\":1,\"lat\":30.5,\"lng\":-1.25}", new byte[0]));
+        final Object[] out = AndruavDeBusClient.toDeBinaryLayout(frame, 3, 1006, null);
+        final JSONObject ms = (JSONObject) out[0];
+        assertEquals(305000000L, ms.getLong("lat"));
+        assertEquals(-12500000L, ms.getLong("lng"));
+        assertEquals(1, ms.getInt("lcl"));
+        assertEquals(0, ((byte[]) out[1]).length);
+    }
 }

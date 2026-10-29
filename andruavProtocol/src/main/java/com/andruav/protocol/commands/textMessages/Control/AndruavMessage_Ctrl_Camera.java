@@ -19,6 +19,11 @@ public class AndruavMessage_Ctrl_Camera extends AndruavMessage_Control_Base {
 
 
     public int CameraSource             = CAMERA_SOURCE_MOBILE;
+    /***
+     * Track id of the camera to shoot: for a DE unit the webclient sends the
+     * camera-list "id" in "a" instead of a source number. null otherwise.
+     */
+    public String CameraChannel;
     public int NumberOfImages           = 1;
     /***
      * in milli seconds
@@ -42,7 +47,13 @@ public class AndruavMessage_Ctrl_Camera extends AndruavMessage_Control_Base {
     @Override
     public void setMessageText(String messageText) throws JSONException {
         JSONObject json_receive_data = new JSONObject(messageText);
-        CameraSource            = json_receive_data.getInt("a");
+        final Object source = json_receive_data.opt("a");
+        if (source instanceof String) {
+            CameraSource = CAMERA_SOURCE_MOBILE;
+            CameraChannel = (String) source;
+        } else {
+            CameraSource = json_receive_data.getInt("a");
+        }
         NumberOfImages          = json_receive_data.getInt("b");
         TimeBetweenShotes       = json_receive_data.getLong("c");
         DistanceBetweenShotes   = json_receive_data.getDouble("d");
