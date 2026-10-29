@@ -24,6 +24,8 @@ import de.databus.CModule;
  * extra databus modules next to andruav_phone (each its own CModule and
  * socket, as de_rpi_gpio and the sound module are on a Pi), so de_comm
  * advertises a "gpio" and a "snd" module for the phone in its 1004 m1 list.
+ * {@link PhoneCameraModule} does the same for the camera ("camera" class,
+ * C/V features), as de_camera does on a Pi.
  */
 public final class PhoneBusModules {
 
@@ -41,7 +43,8 @@ public final class PhoneBusModules {
 
     /** Binds both modules to de_comm's s2s port; call off the main thread. */
     public synchronized void start(final int s2sPort, final String version,
-                                   final SoundProvider soundProvider) {
+                                   final SoundProvider soundProvider,
+                                   final PhoneCameraModule.Cameras cameras) {
         if (m_stopped || !m_modules.isEmpty()) return;
 
         final CModule gpioBus = new CModule();
@@ -93,6 +96,29 @@ public final class PhoneBusModules {
                     sound::onMessage, s2sPort);
         }
 
+        PhoneCameraModule camera = null;
+        if (cameras != null) {
+            final CModule cameraBus = new CModule();
+            camera = new PhoneCameraModule(cameras, new PhoneCameraModule.Registrar() {
+                @Override
+                public void addFeature(final String feature) {
+                    cameraBus.add_module_features(feature);
+                }
+
+                @Override
+                public void setCameraList(final JSONArray list) {
+                    cameraBus.appendExtraField("m", list);
+                    // before init the ID is built by init() itself
+                    if (cameraBus.cUDPClient != null) cameraBus.createJSONID(true);
+                }
+            });
+            m_camera_bus = cameraBus;
+            m_camera = camera;
+            m_version = version;
+            m_s2s_port = s2sPort;
+            openCameraWhenUsable();
+        }
+
         final PhoneSoundModule soundModule = sound;
         m_timer = Executors.newSingleThreadScheduledExecutor();
         // first status/list once de_comm has the registrations
@@ -102,6 +128,38 @@ public final class PhoneBusModules {
         }), ANNOUNCE_DELAY_MS, TimeUnit.MILLISECONDS);
         m_timer.scheduleWithFixedDelay(() -> m_main.post(gpio::pollChanges),
                 ANNOUNCE_DELAY_MS + POLL_MS, POLL_MS, TimeUnit.MILLISECONDS);
+        if (camera != null) {
+            m_timer.scheduleWithFixedDelay(this::pollCamera,
+                    ANNOUNCE_DELAY_MS + POLL_MS, POLL_MS, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    // The camera module opens only once the camera is usable: de_comm reads
+    // a module's features at its first registration only, so a module that
+    // registered before CAMERA was granted would never earn the C/V letters.
+    private PhoneCameraModule m_camera;
+    private CModule m_camera_bus;
+    private boolean m_camera_open;
+    private String m_version;
+    private int m_s2s_port;
+
+    /** Runs on the timer thread (socket bind stays off the main thread). */
+    private void pollCamera() {
+        if (!openCameraWhenUsable()) return;
+        final PhoneCameraModule camera = m_camera;
+        m_main.post(camera::refresh);
+    }
+
+    /** True once the camera module is open. */
+    private synchronized boolean openCameraWhenUsable() {
+        if (m_camera_open) return true;
+        if (m_stopped || m_camera == null || !m_camera.isUsable()) return false;
+        // features and list must be on the first ID de_comm sees
+        m_camera.refresh();
+        m_camera_open = open(m_camera_bus, CModule.MODULE_CLASS_VIDEO, PhoneCameraModule.MODULE_ID,
+                PhoneCameraModule.MODULE_KEY, m_version, PhoneCameraModule.messageFilter(),
+                jMsg -> { }, m_s2s_port);
+        return m_camera_open;
     }
 
     public synchronized void stop() {

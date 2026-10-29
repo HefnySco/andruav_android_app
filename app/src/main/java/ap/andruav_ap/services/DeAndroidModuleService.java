@@ -20,6 +20,7 @@ import ap.andruav_ap.R;
 import ap.andruav_ap.communication.AndruavDeBusClient;
 import ap.andruav_ap.denative.NativeUnitController;
 import ap.andruav_ap.denative.modules.PhoneBusModules;
+import ap.andruav_ap.denative.modules.PhoneCameraModule;
 import ap.andruav_ap.denative.position.PhonePositionSource;
 import ap.andruav_ap.denative.providers.camera.CameraProvider;
 import ap.andruav_ap.denative.providers.phone.PhoneDevices;
@@ -30,8 +31,10 @@ import ap.andruav_ap.denative.providers.sound.AndroidSoundBackend;
 import ap.andruav_ap.denative.providers.sound.SoundProvider;
 import ap.andruav_ap.denative.providers.sound.SoundProviderConfig;
 import ap.andruav_ap.services.fpv.CameraController;
+import ap.andruavmiddlelibrary.factory.DeviceFeatures;
 import ap.andruavmiddlelibrary.preference.Preference;
 import com.andruav.AndruavEngine;
+import com.andruav.uavos.modules.UAVOSHelper;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import de.databus.CModule;
 import de.databus.Messages;
@@ -241,9 +244,24 @@ public class DeAndroidModuleService extends Service {
                 }
                 // AN-0107: torch/strobe/vibrate as a "gpio" module and sound
                 // as a "snd" module, so the webclient's flash button and
-                // Audio tab work for this (DE) unit.
+                // Audio tab work for this (DE) unit. The camera rides a
+                // "camera" module so de_comm grants the unit its C/V
+                // permission letters and lists the phone camera.
                 if (busClientActive) {
-                    busModules.start(port, BuildConfig.VERSION_NAME, soundProvider);
+                    busModules.start(port, BuildConfig.VERSION_NAME, soundProvider,
+                            new PhoneCameraModule.Cameras() {
+                                @Override
+                                public boolean usable() {
+                                    return DeviceFeatures.hasCamera
+                                            && (checkSelfPermission(android.Manifest.permission.CAMERA)
+                                                == android.content.pm.PackageManager.PERMISSION_GRANTED);
+                                }
+
+                                @Override
+                                public JSONArray list() {
+                                    return UAVOSHelper.getCameraList();
+                                }
+                            });
                 }
                 // Socket is up: start the location feed + 1 Hz emitter.
                 positionSource.start();
