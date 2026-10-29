@@ -228,8 +228,45 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
 
     @Override
     public void setZoom(final float zoom) {
-        // E1e stub.
+        runOnCameraThread(() -> setZoomOnCameraThread(zoom));
+    }
+
+    private void setZoomOnCameraThread(float zoom) {
+        if (zoom > 1.0f) zoom = 1.0f;
+        if (zoom < 0.0f) zoom = 0.0f;
         zoomLevel = zoom;
+
+        if (!isZoomSupported()) {
+            // Fork reports this as a camera error, which would kill the
+            // stream - a warning is friendlier and loses nothing.
+            Logging.w(TAG, "setZoom: zoom not supported on this camera.");
+            return;
+        }
+        if (sessionRunning && captureRequestBuilder != null) {
+            applyZoomCrop();
+            if (!updateRepeatingRequest()) {
+                return;
+            }
+        }
+        if (eventsListener != null) {
+            eventsListener.onCameraZoomChanged(zoom);
+        }
+    }
+
+    private void applyZoomCrop() {
+        if (!isZoomSupported()) {
+            return;
+        }
+        final Rect activeArray =
+                cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
+        if (activeArray == null) {
+            return;
+        }
+        final int[] crop = ZoomMath.cropRegion(
+                activeArray.left, activeArray.top, activeArray.width(), activeArray.height(),
+                zoomLevel, zoomMax);
+        captureRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION,
+                new Rect(crop[0], crop[1], crop[2], crop[3]));
     }
 
     @Override
@@ -412,6 +449,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AE_LOCK, false);
                 applyFlashMode();
+                applyZoomCrop();
                 chooseFocusMode(captureRequestBuilder);
                 captureRequestBuilder.addTarget(surface);
                 session.setRepeatingRequest(captureRequestBuilder.build(), captureCallback, cameraThreadHandler);
