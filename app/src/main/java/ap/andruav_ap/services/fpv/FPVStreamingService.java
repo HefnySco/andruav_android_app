@@ -442,11 +442,13 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
                         if (mVideoFileRendererUri == null) {
                             throw new IOException("Unable to create video file in Downloads");
                         }
-                        java.io.OutputStream os = getContentResolver().openOutputStream(mVideoFileRendererUri);
-                        if (os == null) {
+                        // MP4 muxing seeks back to write the header: "rw", not a stream
+                        final android.os.ParcelFileDescriptor pfd =
+                                getContentResolver().openFileDescriptor(mVideoFileRendererUri, "rw");
+                        if (pfd == null) {
                             throw new IOException("Unable to open video file for writing");
                         }
-                        mVideoFileRenderer = new AndruavVideoFileRenderer(os, videoName, 15, width, height, mPeerConnectionManager.getEglBaseContextTX());
+                        mVideoFileRenderer = new AndruavVideoFileRenderer(pfd, videoName, 15, width, height, mPeerConnectionManager.getEglBaseContextTX());
                     } else {
                         mVideoFileRenderer = new AndruavVideoFileRenderer(App.KMLFile.getVideoPath() + "/v_" + Time_Helper.getDateTimeString() + ".mp4", 15, width, height, mPeerConnectionManager.getEglBaseContextTX());
                     }
