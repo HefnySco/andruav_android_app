@@ -28,10 +28,6 @@ import org.webrtc.RendererCommon;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoCapturer;
-import org.webrtc.VideoCodecInfo;
-import org.webrtc.VideoCodecStatus;
-import org.webrtc.VideoEncoder;
-import org.webrtc.VideoEncoderFactory;
 import org.webrtc.VideoFrame;
 import org.webrtc.VideoSink;
 import org.webrtc.VideoSource;
@@ -81,7 +77,6 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     private volatile long mCamSessionStartMs;
     private volatile boolean mCamFirstFrameLogged;
     private volatile int mCamFreezeCount;
-    private volatile int mCamEncoderErrorCount;
 
     private VideoSink mExternalVideoSink;
     /**
@@ -220,7 +215,6 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
                 mCamSessionStartMs = SystemClock.elapsedRealtime();
                 mCamFirstFrameLogged = false;
                 mCamFreezeCount = 0;
-                mCamEncoderErrorCount = 0;
                 capturer.startCapture(mCaptureWidth, mCaptureHeight, mCaptureFps);
             }
 
@@ -661,84 +655,8 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
         pcFactory = PeerConnectionFactory.builder()
                 .setOptions(options)
                 .setVideoDecoderFactory(defaultVideoDecoderFactory)
-                .setVideoEncoderFactory(new MetricsVideoEncoderFactory(mDefaultVideoEncoderFactory))
+                .setVideoEncoderFactory(mDefaultVideoEncoderFactory)
                 .createPeerConnectionFactory();
-    }
-
-    /** Encoder-factory wrapper that counts calls returning a non-OK
-     *  VideoCodecStatus into mCamEncoderErrorCount (AN-0077). */
-    private class MetricsVideoEncoderFactory implements VideoEncoderFactory {
-        private final VideoEncoderFactory innerFactory;
-
-        MetricsVideoEncoderFactory(final VideoEncoderFactory innerFactory) {
-            this.innerFactory = innerFactory;
-        }
-
-        @Override
-        public VideoEncoder createEncoder(final VideoCodecInfo info) {
-            final VideoEncoder encoder = innerFactory.createEncoder(info);
-            return encoder == null ? null : new MetricsVideoEncoder(encoder);
-        }
-
-        @Override
-        public VideoCodecInfo[] getSupportedCodecs() {
-            return innerFactory.getSupportedCodecs();
-        }
-
-        @Override
-        public VideoCodecInfo[] getImplementations() {
-            return innerFactory.getImplementations();
-        }
-    }
-
-    private class MetricsVideoEncoder implements VideoEncoder {
-        private final VideoEncoder innerEncoder;
-
-        MetricsVideoEncoder(final VideoEncoder innerEncoder) {
-            this.innerEncoder = innerEncoder;
-        }
-
-        private VideoCodecStatus countStatus(final VideoCodecStatus status) {
-            if (status != VideoCodecStatus.OK) {
-                mCamEncoderErrorCount++;
-            }
-            return status;
-        }
-
-        @Override
-        public VideoCodecStatus initEncode(final Settings settings, final Callback encodeCallback) {
-            return countStatus(innerEncoder.initEncode(settings, encodeCallback));
-        }
-
-        @Override
-        public VideoCodecStatus release() {
-            return countStatus(innerEncoder.release());
-        }
-
-        @Override
-        public VideoCodecStatus encode(final VideoFrame frame, final EncodeInfo info) {
-            return countStatus(innerEncoder.encode(frame, info));
-        }
-
-        @Override
-        public VideoCodecStatus setRateAllocation(final BitrateAllocation allocation, final int framerate) {
-            return countStatus(innerEncoder.setRateAllocation(allocation, framerate));
-        }
-
-        @Override
-        public ScalingSettings getScalingSettings() {
-            return innerEncoder.getScalingSettings();
-        }
-
-        @Override
-        public ResolutionBitrateLimits[] getResolutionBitrateLimits() {
-            return innerEncoder.getResolutionBitrateLimits();
-        }
-
-        @Override
-        public String getImplementationName() {
-            return innerEncoder.getImplementationName();
-        }
     }
 
 
@@ -752,7 +670,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
             e.printStackTrace();
         }
 
-        Log.i(TAG_CAM_METRICS, "freezes=" + mCamFreezeCount + " encoder_errors=" + mCamEncoderErrorCount);
+        Log.i(TAG_CAM_METRICS, "freezes=" + mCamFreezeCount);
 
         // stopLocalVideoSource() can run on any thread - e.g. a remote RemoteCommand_STREAMVIDEO
         // Act:false lands on the raw WebSocket read thread (see
