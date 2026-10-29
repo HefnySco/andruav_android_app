@@ -30,6 +30,7 @@ import org.webrtc.VideoCapturer;
 import org.webrtc.VideoFrame;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -66,6 +67,11 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
     private Context applicationContext;
     private CapturerObserver capturerObserver;
 
+    // Requested capture format - kept so a camera switch can reopen with it.
+    private int requestedWidth;
+    private int requestedHeight;
+    private int requestedFps;
+
     // Camera-session state. Camera thread only.
     private CameraDevice cameraDevice;
     private Surface surface;
@@ -73,6 +79,10 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
     private CaptureRequest.Builder captureRequestBuilder;
     private CameraCharacteristics cameraCharacteristics;
     private CaptureFormat captureFormat;
+
+    // Camera switch state. Camera thread only.
+    private List<String> cameraIds = Collections.emptyList();
+    private CameraSwitchHandler pendingSwitchHandler;
     private int fpsUnitFactor = 1;
     private boolean sessionOpening;
     private boolean sessionRunning;
@@ -123,6 +133,9 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         if (surfaceTextureHelper == null) {
             throw new IllegalStateException("AndruavCameraCapturer must be initialized before startCapture.");
         }
+        requestedWidth = width;
+        requestedHeight = height;
+        requestedFps = framerate;
         cameraThreadHandler.post(() -> openCameraSession(width, height, framerate));
     }
 
@@ -140,6 +153,9 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
     @Override
     public void changeCaptureFormat(final int width, final int height, final int framerate) {
         Logging.d(TAG, "changeCaptureFormat: " + width + "x" + height + "@" + framerate);
+        requestedWidth = width;
+        requestedHeight = height;
+        requestedFps = framerate;
         cameraThreadHandler.post(() -> {
             stopInternal();
             openCameraSession(width, height, framerate);
@@ -161,12 +177,75 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
 
     @Override
     public void switchCamera(final CameraSwitchHandler handler) {
-        // E1f: not implemented yet on this path.
-        runOnCameraThread(() -> {
-            if (handler != null) {
-                handler.onCameraSwitchError("AndruavCameraCapturer.switchCamera not implemented");
-            }
-        });
+        // May be called from any thread - like the fork, real work runs on the
+        // camera thread.
+        runOnCameraThread(() -> switchCameraInternal(handler));
+    }
+
+    private void switchCameraInternal(final CameraSwitchHandler handler) {
+        checkIsOnCameraThread();
+        cameraIds = orderedCameraIds(context);
+        if (cameraIds.size() < 2) {
+            reportSwitchError(handler, "No camera to switch to.");
+            return;
+        }
+        if (pendingSwitchHandler != null) {
+            reportSwitchError(handler, "Camera switch already in progress.");
+            return;
+        }
+        if (!sessionRunning) {
+            // Only a running session may switch (simpler than the fork's
+            // switch-while-opening state machine).
+            reportSwitchError(handler, "switchCamera: camera is not running.");
+            return;
+        }
+
+        pendingSwitchHandler = handler;
+        final int index = Math.max(0, cameraIds.indexOf(cameraId));
+        cameraId = cameraIds.get((index + 1) % cameraIds.size());
+        Logging.d(TAG, "switchCamera: switching to camera " + cameraId);
+        stopInternal();
+        openCameraSession(requestedWidth, requestedHeight, requestedFps);
+    }
+
+    private void reportSwitchError(final CameraSwitchHandler handler, final String error) {
+        Logging.e(TAG, "switchCamera: " + error);
+        if (handler != null) {
+            handler.onCameraSwitchError(error);
+        }
+    }
+
+    private void finishPendingSwitch() {
+        if (pendingSwitchHandler != null) {
+            pendingSwitchHandler.onCameraSwitchDone(cameraFrontFacing);
+            pendingSwitchHandler = null;
+        }
+    }
+
+    private void failPendingSwitch(final String error) {
+        if (pendingSwitchHandler != null) {
+            pendingSwitchHandler.onCameraSwitchError(error);
+            pendingSwitchHandler = null;
+        }
+    }
+
+    /**
+     * The camera id order this capturer cycles through - the single source of
+     * truth for camera order, shared with CameraController's channel table.
+     * CameraManager.getCameraIdList() order.
+     */
+    public static List<String> orderedCameraIds(final Context context) {
+        final CameraManager manager =
+                (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+        if (manager == null) {
+            return Collections.emptyList();
+        }
+        try {
+            return Arrays.asList(manager.getCameraIdList());
+        } catch (CameraAccessException e) {
+            Logging.e(TAG, "orderedCameraIds: " + e);
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -401,7 +480,13 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         @Override
         public void onDisconnected(final CameraDevice camera) {
             checkIsOnCameraThread();
+            if (camera != cameraDevice) {
+                // Stale callback from the pre-switch device - ignore it.
+                Logging.d(TAG, "onDisconnected from a closed camera device.");
+                return;
+            }
             Logging.w(TAG, "Camera disconnected.");
+            failPendingSwitch("Camera disconnected.");
             final boolean wasRunning = sessionRunning;
             final boolean wasOpening = sessionOpening;
             stopInternal();
@@ -420,12 +505,20 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         @Override
         public void onError(final CameraDevice camera, final int errorCode) {
             checkIsOnCameraThread();
+            if (camera != cameraDevice) {
+                Logging.d(TAG, "onError from a closed camera device.");
+                return;
+            }
             reportError(cameraErrorDescription(errorCode));
         }
 
         @Override
         public void onClosed(final CameraDevice camera) {
             checkIsOnCameraThread();
+            if (camera != cameraDevice && cameraDevice != null) {
+                Logging.d(TAG, "onClosed from a stale camera device.");
+                return;
+            }
             Logging.d(TAG, "Camera device closed.");
             if (eventsListener != null) {
                 eventsListener.onCameraClosed();
@@ -469,6 +562,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
             if (capturerObserver != null) {
                 capturerObserver.onCapturerStarted(true);
             }
+            finishPendingSwitch();
             Logging.d(TAG, "Camera device successfully started.");
         }
 
@@ -566,6 +660,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
 
     private void reportError(final String error) {
         Logging.e(TAG, "Error: " + error);
+        failPendingSwitch(error);
         // A failure before the session ran is a start failure - tell the
         // observer like the fork's CreateSessionCallback.onFailure does.
         final boolean startFailed = !sessionRunning;
@@ -599,16 +694,16 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         if (cameraId != null) {
             return cameraId;
         }
+        cameraIds = orderedCameraIds(context);
         try {
-            final String[] ids = cameraManager.getCameraIdList();
-            for (final String id : ids) {
+            for (final String id : cameraIds) {
                 if (cameraManager.getCameraCharacteristics(id).get(CameraCharacteristics.LENS_FACING)
                         == CameraMetadata.LENS_FACING_BACK) {
                     return id;
                 }
             }
-            if (ids.length > 0) {
-                return ids[0];
+            if (!cameraIds.isEmpty()) {
+                return cameraIds.get(0);
             }
         } catch (CameraAccessException e) {
             Logging.e(TAG, "resolveCameraId: " + e);

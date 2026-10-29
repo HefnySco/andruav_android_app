@@ -38,6 +38,7 @@ import com.andruav.andruavUnit.AndruavUnitAllGCS;
 import com.andruav.event.fpv7adath.Event_FPV_CMD;
 
 import ap.andruav_ap.App;
+import ap.andruavmiddlelibrary.webrtc.camera.AndruavCameraCapturer;
 import ap.andruav_ap.denative.providers.camera.CameraBackend;
 import ap.andruavmiddlelibrary.eventClasses.fpvEvent.Event_FPV_Image;
 import ap.andruavmiddlelibrary.factory.io.FileHelper;
@@ -157,7 +158,7 @@ public class CameraController implements CameraBackend {
                     (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
             if (manager == null) return channels;
 
-            orderedCameraIds.addAll(java.util.Arrays.asList(manager.getCameraIdList()));
+            orderedCameraIds.addAll(AndruavCameraCapturer.orderedCameraIds(context));
 
             int backIndex = 0, frontIndex = 0, usbIndex = 0;
             for (final String cameraId : manager.getCameraIdList()) {
