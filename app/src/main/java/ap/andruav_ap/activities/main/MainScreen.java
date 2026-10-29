@@ -150,6 +150,7 @@ public class MainScreen extends BaseAndruavShasha {
     private ImageView mImgGps;
     private ImageView mImgBattery;
     private ImageView mImgSignal;
+    private ImageView mImgGlobe;
     private TextView mTxtTelemetryHelper;
     private TextView mTxtTelemetryUdp;
     private TextView mBtnEnableTelemetry;
@@ -699,6 +700,7 @@ public class MainScreen extends BaseAndruavShasha {
         mImgGps = findViewById(R.id.home_img_gps);
         mImgBattery = findViewById(R.id.home_img_battery);
         mImgSignal = findViewById(R.id.home_img_signal);
+        mImgGlobe = findViewById(R.id.home_img_globe);
         mTxtTelemetryHelper = findViewById(R.id.home_txt_telemetry_helper);
         mTxtTelemetryUdp = findViewById(R.id.home_txt_telemetry_udp);
         mBtnEnableTelemetry = findViewById(R.id.home_btn_enable_telemetry);
@@ -879,6 +881,10 @@ public class MainScreen extends BaseAndruavShasha {
         }
         updateServerCard();
         updateModuleTiles(); // Com tile (and dependents) track server link too - keep in sync.
+        // server-card globe mirrors the comm-line state - green only once online
+        tintStatIcon(mImgGlobe,
+                effectiveStatus == SOCKETSTATE_REGISTERED
+                        ? R.color.home_green_icon : R.color.home_icon_muted);
         switch (effectiveStatus) {
             case SOCKETSTATE_CONNECTED:
                 miConnect.setIcon(R.drawable.connected_w_32x32);
