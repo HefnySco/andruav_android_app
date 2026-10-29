@@ -70,6 +70,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
     private CameraDevice cameraDevice;
     private Surface surface;
     private CameraCaptureSession captureSession;
+    private CaptureRequest.Builder captureRequestBuilder;
     private CameraCharacteristics cameraCharacteristics;
     private CaptureFormat captureFormat;
     private int fpsUnitFactor = 1;
@@ -170,13 +171,58 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
 
     @Override
     public void setFlash(final int onOff) {
-        // E1d stub: remember the request so getFlash()/the status event are
-        // coherent, but no capture-request change yet.
+        runOnCameraThread(() -> setFlashOnCameraThread(onOff));
+    }
+
+    private void setFlashOnCameraThread(final int onOff) {
+        if (cameraFrontFacing) {
+            // Front camera has no torch - same FlashDisabled reply as the fork.
+            if (eventsListener != null) {
+                eventsListener.onCameraFlashChanged(AndruavWebRTCGlobals.FlashDisabled);
+            }
+            return;
+        }
+        if (onOff != AndruavWebRTCGlobals.FlashOn && onOff != AndruavWebRTCGlobals.FlashOff) {
+            return;
+        }
+
         flashMode = onOff;
+        if (sessionRunning && captureRequestBuilder != null) {
+            applyFlashMode();
+            if (!updateRepeatingRequest()) {
+                return;
+            }
+        }
+        if (eventsListener != null) {
+            eventsListener.onCameraFlashChanged(onOff);
+        }
+    }
+
+    private void applyFlashMode() {
+        captureRequestBuilder.set(CaptureRequest.FLASH_MODE,
+                flashMode == AndruavWebRTCGlobals.FlashOn
+                        ? CameraMetadata.FLASH_MODE_TORCH : CameraMetadata.FLASH_MODE_OFF);
+    }
+
+    private boolean updateRepeatingRequest() {
+        if (captureSession == null) {
+            return false;
+        }
+        try {
+            captureSession.setRepeatingRequest(
+                    captureRequestBuilder.build(), captureCallback, cameraThreadHandler);
+        } catch (CameraAccessException | IllegalStateException e) {
+            reportError("Failed to update capture request. " + e);
+            return false;
+        }
+        return true;
     }
 
     @Override
     public int getFlash() {
+        if (cameraFrontFacing) {
+            return AndruavWebRTCGlobals.FlashDisabled;
+        }
         return flashMode;
     }
 
@@ -358,16 +404,17 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
             Logging.d(TAG, "Camera capture session configured.");
             captureSession = session;
             try {
-                final CaptureRequest.Builder requestBuilder =
+                captureRequestBuilder =
                         cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_RECORD);
-                requestBuilder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE,
+                captureRequestBuilder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE,
                         new Range<>(captureFormat.framerate.min / fpsUnitFactor,
                                 captureFormat.framerate.max / fpsUnitFactor));
-                requestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
-                requestBuilder.set(CaptureRequest.CONTROL_AE_LOCK, false);
-                chooseFocusMode(requestBuilder);
-                requestBuilder.addTarget(surface);
-                session.setRepeatingRequest(requestBuilder.build(), captureCallback, cameraThreadHandler);
+                captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
+                captureRequestBuilder.set(CaptureRequest.CONTROL_AE_LOCK, false);
+                applyFlashMode();
+                chooseFocusMode(captureRequestBuilder);
+                captureRequestBuilder.addTarget(surface);
+                session.setRepeatingRequest(captureRequestBuilder.build(), captureCallback, cameraThreadHandler);
             } catch (CameraAccessException | IllegalStateException e) {
                 reportError("Failed to start capture request. " + e);
                 return;
@@ -468,6 +515,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
             captureSession.close();
             captureSession = null;
         }
+        captureRequestBuilder = null;
         if (surface != null) {
             surface.release();
             surface = null;
