@@ -199,13 +199,18 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
                 // portrait while this Activity is minimized into Picture-in-Picture (its window
                 // briefly stops being the system's "foreground orientation owner"), visibly
                 // rotating both the local preview and the outgoing stream by 90 degrees.
-                org.webrtc.AndruavWebRTCGlobals.fixedDeviceOrientationDegrees = 90;
 
                 // Returns the number of cams & front/back face device name
                 capturer = createVideoCapturer();
 
                 if (capturer == null) {
                     return false;
+                }
+
+                if (capturer instanceof AndruavCameraControl) {
+                    ((AndruavCameraControl) capturer).setFixedOrientationDegrees(90);
+                } else {
+                    org.webrtc.AndruavWebRTCGlobals.fixedDeviceOrientationDegrees = 90;
                 }
 
                 // First create a Video Source, then we can make a Video Track
