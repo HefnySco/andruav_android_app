@@ -2,6 +2,7 @@ package ap.andruavmiddlelibrary.webrtc.camera;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.hardware.camera2.CameraAccessException;
@@ -13,6 +14,8 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.Image;
+import android.media.ImageReader;
 import android.os.Handler;
 import android.util.Range;
 import android.view.Surface;
@@ -23,6 +26,7 @@ import org.webrtc.CameraEnumerationAndroid;
 import org.webrtc.CameraEnumerationAndroid.CaptureFormat;
 import org.webrtc.CapturerObserver;
 import org.webrtc.Logging;
+import org.webrtc.NV21Buffer;
 import org.webrtc.Size;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.TextureBufferImpl;
@@ -56,6 +60,14 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
     private static final int CAMERA_OBSERVER_PERIOD_MS = 2000;
     private static final int CAMERA_FREEZE_REPORT_TIMOUT_MS = 4000;
 
+    /**
+     * Frame-path selector (E1j): false delivers texture frames through the
+     * SurfaceTextureHelper (default); true captures through an
+     * ImageReader(YUV_420_888) -> NV21Buffer path instead, for phones whose
+     * hardware encoder rejects texture frames. Set before startCapture.
+     */
+    public static boolean useYuvCapturePath = false;
+
     private final Context context;
     private final CameraManager cameraManager;
     private final Listener eventsListener;
@@ -75,6 +87,8 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
     // Camera-session state. Camera thread only.
     private CameraDevice cameraDevice;
     private Surface surface;
+    private ImageReader imageReader;
+    private byte[] nv21Data;
     private CameraCaptureSession captureSession;
     private CaptureRequest.Builder captureRequestBuilder;
     private CameraCharacteristics cameraCharacteristics;
@@ -545,11 +559,20 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
             Logging.d(TAG, "Camera opened.");
             cameraDevice = camera;
 
-            surfaceTextureHelper.setTextureSize(captureFormat.width, captureFormat.height);
-            surface = new Surface(surfaceTextureHelper.getSurfaceTexture());
+            final Surface captureSurface;
+            if (useYuvCapturePath) {
+                imageReader = ImageReader.newInstance(captureFormat.width, captureFormat.height,
+                        ImageFormat.YUV_420_888, 2);
+                imageReader.setOnImageAvailableListener(yuvFrameListener, cameraThreadHandler);
+                captureSurface = imageReader.getSurface();
+            } else {
+                surfaceTextureHelper.setTextureSize(captureFormat.width, captureFormat.height);
+                captureSurface = new Surface(surfaceTextureHelper.getSurfaceTexture());
+            }
+            surface = captureSurface;
             try {
                 camera.createCaptureSession(
-                        Collections.singletonList(surface), captureSessionCallback, cameraThreadHandler);
+                        Collections.singletonList(captureSurface), captureSessionCallback, cameraThreadHandler);
             } catch (CameraAccessException e) {
                 reportError("Failed to create capture session. " + e);
             }
@@ -632,7 +655,9 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
             sessionOpening = false;
             sessionRunning = true;
             firstFrameReported = false;
-            startFrameListening();
+            if (!useYuvCapturePath) {
+                startFrameListening();
+            }
             framesSinceLastCheck = 0;
             freezePeriodCount = 0;
             freezeReported = false;
@@ -715,6 +740,83 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         });
     }
 
+    // YUV fallback path (E1j): ImageReader frames -> NV21Buffer -> VideoFrame.
+    // Front-camera mirror is not expressible in an NV21 buffer, so the mirror
+    // is dropped on this path (rotation still reported on the VideoFrame).
+    private final ImageReader.OnImageAvailableListener yuvFrameListener =
+            new ImageReader.OnImageAvailableListener() {
+        @Override
+        public void onImageAvailable(final ImageReader reader) {
+        checkIsOnCameraThread();
+        if (!sessionRunning) {
+            return;
+        }
+        try (Image image = reader.acquireLatestImage()) {
+            if (image == null) {
+                return;
+            }
+            ++framesSinceLastCheck;
+            if (!firstFrameReported) {
+                firstFrameReported = true;
+                if (eventsListener != null) {
+                    eventsListener.onFirstFrameAvailable();
+                }
+            }
+            final int width = image.getWidth();
+            final int height = image.getHeight();
+            if (nv21Data == null || nv21Data.length != width * height * 3 / 2) {
+                nv21Data = new byte[width * height * 3 / 2];
+            }
+            yuv420ToNv21(image, nv21Data);
+            final VideoFrame frame = new VideoFrame(
+                    new NV21Buffer(nv21Data, width, height, null),
+                    getFrameOrientation(), image.getTimestamp());
+            capturerObserver.onFrameCaptured(frame);
+            frame.release();
+        } catch (IllegalStateException e) {
+            Logging.e(TAG, "yuvFrameListener: " + e);
+        }
+        }
+    };
+
+    private static void yuv420ToNv21(final Image image, final byte[] nv21) {
+        final int width = image.getWidth();
+        final int height = image.getHeight();
+        final int ySize = width * height;
+        int offset = 0;
+
+        final Image.Plane yPlane = image.getPlanes()[0];
+        final java.nio.ByteBuffer yBuffer = yPlane.getBuffer();
+        final int yRowStride = yPlane.getRowStride();
+        if (yPlane.getPixelStride() == 1 && yRowStride == width) {
+            yBuffer.get(nv21, 0, ySize);
+        } else {
+            for (int row = 0; row < height; ++row) {
+                yBuffer.position(row * yRowStride);
+                yBuffer.get(nv21, offset, width);
+                offset += width;
+            }
+        }
+        offset = ySize;
+
+        final Image.Plane uPlane = image.getPlanes()[1];
+        final Image.Plane vPlane = image.getPlanes()[2];
+        final java.nio.ByteBuffer uBuffer = uPlane.getBuffer();
+        final java.nio.ByteBuffer vBuffer = vPlane.getBuffer();
+        final int uRowStride = uPlane.getRowStride();
+        final int vRowStride = vPlane.getRowStride();
+        final int uPixelStride = uPlane.getPixelStride();
+        final int vPixelStride = vPlane.getPixelStride();
+        final int chromaHeight = height / 2;
+        final int chromaWidth = width / 2;
+        for (int row = 0; row < chromaHeight; ++row) {
+            for (int col = 0; col < chromaWidth; ++col) {
+                nv21[offset++] = vBuffer.get(row * vRowStride + col * vPixelStride);
+                nv21[offset++] = uBuffer.get(row * uRowStride + col * uPixelStride);
+            }
+        }
+    }
+
     private void stopInternal() {
         checkIsOnCameraThread();
         sessionOpening = false;
@@ -726,6 +828,10 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
             captureSession = null;
         }
         captureRequestBuilder = null;
+        if (imageReader != null) {
+            imageReader.close();
+            imageReader = null;
+        }
         if (surface != null) {
             surface.release();
             surface = null;
