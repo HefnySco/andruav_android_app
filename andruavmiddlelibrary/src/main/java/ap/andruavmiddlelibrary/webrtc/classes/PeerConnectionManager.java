@@ -405,6 +405,24 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
      */
     public void switchCamera () {
 
+        if (capturer instanceof AndruavCameraControl) {
+            // App path: the capturer owns the camera order and cycles it.
+            ((AndruavCameraControl) capturer).switchCamera(new AndruavCameraControl.CameraSwitchHandler() {
+                @Override
+                public void onCameraSwitchDone(boolean isFrontCamera) {
+                    mCaptureFrontFacing = isFrontCamera;
+                    // The capturer owns the id order; facing is the channel
+                    // fallback id on this path.
+                    mCaptureDeviceName = null;
+                }
+
+                @Override
+                public void onCameraSwitchError(String errorDescription) {
+                }
+            });
+            return;
+        }
+
         final int deviceCount = createCameraEnumerator().getDeviceNames().length;
         if (deviceCount <= 1) return;
         if (!(capturer instanceof CameraVideoCapturer)) return;
@@ -444,30 +462,47 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
     public void setFlash (final int onOff)
     {
+        if (capturer instanceof AndruavCameraControl) {
+            ((AndruavCameraControl) capturer).setFlash(onOff);
+            return;
+        }
         if (!(capturer instanceof CameraVideoCapturer)) return;
         ((CameraVideoCapturer) capturer).setFlash(onOff);
     }
 
     public int getFlash ()
     {
+        if (capturer instanceof AndruavCameraControl) {
+            return ((AndruavCameraControl) capturer).getFlash();
+        }
         if (!(capturer instanceof CameraVideoCapturer)) return org.webrtc.AndruavWebRTCGlobals.FlashOff;
         return ((CameraVideoCapturer) capturer).getFlash();
     }
 
     public void setZoom (final float zoom)
     {
+        if (capturer instanceof AndruavCameraControl) {
+            ((AndruavCameraControl) capturer).setZoom(zoom);
+            return;
+        }
         if (!(capturer instanceof CameraVideoCapturer)) return;
         ((CameraVideoCapturer) capturer).setZoom(zoom);
     }
 
     public float getZoom ()
     {
+        if (capturer instanceof AndruavCameraControl) {
+            return ((AndruavCameraControl) capturer).getZoom();
+        }
         if (!(capturer instanceof CameraVideoCapturer)) return 0f;
         return ((CameraVideoCapturer) capturer).getZoom();
     }
 
     public boolean isZoomSupported ()
     {
+        if (capturer instanceof AndruavCameraControl) {
+            return ((AndruavCameraControl) capturer).isZoomSupported();
+        }
         return (capturer instanceof CameraVideoCapturer)
                 && ((CameraVideoCapturer) capturer).isZoomSupported();
     }
