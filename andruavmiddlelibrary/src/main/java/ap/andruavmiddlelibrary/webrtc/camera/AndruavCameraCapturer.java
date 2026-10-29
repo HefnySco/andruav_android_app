@@ -10,6 +10,7 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
+import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.os.Handler;
@@ -37,16 +38,22 @@ import java.util.List;
  * AndruavCameraControl surface for it. All camera work runs on the
  * SurfaceTextureHelper thread (the "camera thread").
  *
- * This is the E1b skeleton: capture path only (CameraManager ->
- * CameraCaptureSession -> repeating request -> SurfaceTexture ->
- * CapturerObserver). The AndruavCameraControl camera controls (flash, zoom,
- * switch) are stubs for now; setFixedOrientationDegrees already stores the
- * value that replaces the AndruavWebRTCGlobals.fixedDeviceOrientationDegrees
- * global on this path.
+ * Capture path (CameraManager -> CameraCaptureSession -> repeating request ->
+ * SurfaceTexture -> CapturerObserver) plus the freeze watchdog and error
+ * event mapping equivalent to the fork's CameraStatistics/StateCallback. The
+ * AndruavCameraControl camera controls (flash, zoom, switch) are stubs for
+ * now; setFixedOrientationDegrees already stores the value that replaces the
+ * AndruavWebRTCGlobals.fixedDeviceOrientationDegrees global on this path.
  */
 public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraControl {
 
     private static final String TAG = "AndruavCameraCapturer";
+
+    // Freeze watchdog - same cadence as the fork's CameraStatistics: a 2 s
+    // observer that fires onCameraFreezed once two consecutive periods pass
+    // with zero frames (i.e. no frames for >= 4 s).
+    private static final int CAMERA_OBSERVER_PERIOD_MS = 2000;
+    private static final int CAMERA_FREEZE_REPORT_TIMOUT_MS = 4000;
 
     private final Context context;
     private final CameraManager cameraManager;
@@ -69,6 +76,11 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
     private boolean sessionOpening;
     private boolean sessionRunning;
     private boolean firstFrameReported;
+
+    // Freeze-watchdog state. Camera thread only.
+    private int framesSinceLastCheck;
+    private int freezePeriodCount;
+    private boolean freezeReported;
     private int sensorOrientationDegrees;
     private boolean cameraFrontFacing;
     private float zoomMax = 0.0f;
@@ -355,7 +367,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
                 requestBuilder.set(CaptureRequest.CONTROL_AE_LOCK, false);
                 chooseFocusMode(requestBuilder);
                 requestBuilder.addTarget(surface);
-                session.setRepeatingRequest(requestBuilder.build(), null, cameraThreadHandler);
+                session.setRepeatingRequest(requestBuilder.build(), captureCallback, cameraThreadHandler);
             } catch (CameraAccessException | IllegalStateException e) {
                 reportError("Failed to start capture request. " + e);
                 return;
@@ -365,6 +377,10 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
             sessionRunning = true;
             firstFrameReported = false;
             startFrameListening();
+            framesSinceLastCheck = 0;
+            freezePeriodCount = 0;
+            freezeReported = false;
+            cameraThreadHandler.postDelayed(freezeWatchdogRunnable, CAMERA_OBSERVER_PERIOD_MS);
             if (capturerObserver != null) {
                 capturerObserver.onCapturerStarted(true);
             }
@@ -379,12 +395,53 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         }
     };
 
+    private final CameraCaptureSession.CaptureCallback captureCallback =
+            new CameraCaptureSession.CaptureCallback() {
+        @Override
+        public void onCaptureFailed(final CameraCaptureSession session, final CaptureRequest request,
+                                    final CaptureFailure failure) {
+            Logging.d(TAG, "Capture failed: " + failure);
+        }
+    };
+
+    // Camera observer - monitors the framerate like the fork's
+    // CameraStatistics. Fires onCameraFreezed once, then stops.
+    private final Runnable freezeWatchdogRunnable = new Runnable() {
+        @Override
+        public void run() {
+            checkIsOnCameraThread();
+            if (!sessionRunning) {
+                return;
+            }
+            if (framesSinceLastCheck == 0) {
+                ++freezePeriodCount;
+                if (CAMERA_OBSERVER_PERIOD_MS * freezePeriodCount >= CAMERA_FREEZE_REPORT_TIMOUT_MS
+                        && !freezeReported) {
+                    freezeReported = true;
+                    Logging.e(TAG, "Camera freezed.");
+                    if (eventsListener != null) {
+                        eventsListener.onCameraFreezed(
+                                surfaceTextureHelper.isTextureInUse()
+                                        ? "Camera failure. Client must return video buffers."
+                                        : "Camera failure.");
+                    }
+                    return;
+                }
+            } else {
+                freezePeriodCount = 0;
+            }
+            framesSinceLastCheck = 0;
+            cameraThreadHandler.postDelayed(this, CAMERA_OBSERVER_PERIOD_MS);
+        }
+    };
+
     private void startFrameListening() {
         surfaceTextureHelper.startListening(frame -> {
             checkIsOnCameraThread();
             if (!sessionRunning) {
                 return;
             }
+            ++framesSinceLastCheck;
             if (!firstFrameReported) {
                 firstFrameReported = true;
                 if (eventsListener != null) {
@@ -405,6 +462,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         checkIsOnCameraThread();
         sessionOpening = false;
         sessionRunning = false;
+        cameraThreadHandler.removeCallbacks(freezeWatchdogRunnable);
         surfaceTextureHelper.stopListening();
         if (captureSession != null) {
             captureSession.close();
