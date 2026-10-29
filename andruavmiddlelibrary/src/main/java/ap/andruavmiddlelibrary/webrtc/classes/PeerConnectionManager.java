@@ -42,6 +42,8 @@ import com.andruav.FeatureSwitch;
 import ap.andruavmiddlelibrary.factory.LooperExecutor;
 import ap.andruavmiddlelibrary.preference.Preference;
 import ap.andruavmiddlelibrary.webrtc.IRTCListener;
+import ap.andruavmiddlelibrary.webrtc.camera.AndruavCameraCapturer;
+import ap.andruavmiddlelibrary.webrtc.camera.AndruavCameraControl;
 import ap.andruavmiddlelibrary.factory.communication.NetInfoAdapter;
 
 import com.andruav.AndruavSettings;
@@ -50,7 +52,8 @@ import com.andruav.AndruavSettings;
 /**
  * Created by mhefny on 2/28/16.
  */
-public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHandler, CapturerObserver {
+public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHandler,
+        AndruavCameraControl.Listener, CapturerObserver {
 
     protected PeerConnectionManager Me;
     /**
@@ -325,6 +328,14 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
         mCaptureDeviceName = deviceName;
         mCaptureFrontFacing = enumerator.isFrontFacing(deviceName);
 
+        if (Preference.useAppCameraCapturer(null)) {
+            // The app capturer takes a camera2 id. Camera2Enumerator device
+            // names already are ids; Camera1Enumerator display names are not,
+            // so on a Camera1-only device let the capturer auto-pick instead.
+            final String cameraId = (enumerator instanceof Camera2Enumerator) ? deviceName : null;
+            return new AndruavCameraCapturer(mContext, cameraId, this);
+        }
+
         return enumerator.createCapturer(deviceName, this);
     }
 
@@ -374,6 +385,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
         final int deviceCount = createCameraEnumerator().getDeviceNames().length;
         if (deviceCount <= 1) return;
+        if (!(capturer instanceof CameraVideoCapturer)) return;
 
         Preference.setCameraNumber(null,(Preference.getCameraNumber(null) + 1) % deviceCount);
         ((CameraVideoCapturer) capturer).switchCamera(new CameraVideoCapturer.CameraSwitchHandler() {
@@ -410,27 +422,32 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
     public void setFlash (final int onOff)
     {
+        if (!(capturer instanceof CameraVideoCapturer)) return;
         ((CameraVideoCapturer) capturer).setFlash(onOff);
     }
 
     public int getFlash ()
     {
+        if (!(capturer instanceof CameraVideoCapturer)) return org.webrtc.AndruavWebRTCGlobals.FlashOff;
         return ((CameraVideoCapturer) capturer).getFlash();
     }
 
     public void setZoom (final float zoom)
     {
+        if (!(capturer instanceof CameraVideoCapturer)) return;
         ((CameraVideoCapturer) capturer).setZoom(zoom);
     }
 
     public float getZoom ()
     {
+        if (!(capturer instanceof CameraVideoCapturer)) return 0f;
         return ((CameraVideoCapturer) capturer).getZoom();
     }
 
     public boolean isZoomSupported ()
     {
-        return ((CameraVideoCapturer) capturer).isZoomSupported();
+        return (capturer instanceof CameraVideoCapturer)
+                && ((CameraVideoCapturer) capturer).isZoomSupported();
     }
 
 
