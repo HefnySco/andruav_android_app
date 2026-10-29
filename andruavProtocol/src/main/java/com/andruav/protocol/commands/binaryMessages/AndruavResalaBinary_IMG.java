@@ -23,6 +23,13 @@ public class AndruavResalaBinary_IMG extends AndruavResalaBinaryBase {
      */
     public String Description;
 
+    /***
+     * 1 when the shot was taken and stored on the unit but the image bytes
+     * were not sent back (send-back disabled) - the GCS can mark the capture
+     * without expecting an image payload.
+     */
+    public int TakenLocally;
+
 
     public AndruavResalaBinary_IMG() {
         super();
@@ -50,6 +57,9 @@ public class AndruavResalaBinary_IMG extends AndruavResalaBinaryBase {
         if (json_receive_data.has("des")) {
             Description = json_receive_data.getString("des");
         }
+        if (json_receive_data.has("lcl")) {
+            TakenLocally = json_receive_data.getInt("lcl");
+        }
         if (json_receive_data.has("prv")) {
             ImageLocation = new Location(json_receive_data.getString("prv"));
             ImageLocation.setLatitude(json_receive_data.getDouble("lat")); // please correct similar to GPS Message
@@ -71,6 +81,9 @@ public class AndruavResalaBinary_IMG extends AndruavResalaBinaryBase {
         JSONObject json_data = new JSONObject();
 
         json_data.accumulate("des", Description);
+        if (TakenLocally != 0) {
+            json_data.accumulate("lcl", TakenLocally);
+        }
         if (ImageLocation != null) {
             json_data.accumulate("lat", ImageLocation.getLatitude());
             json_data.accumulate("lng", ImageLocation.getLongitude());

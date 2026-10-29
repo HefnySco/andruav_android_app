@@ -137,6 +137,12 @@ public class AndruavFacade extends AndruavFacadeBase{
         {
             andruavMessageBinary_img.setImage(image);
         }
+        else
+        {
+            // Shot happened but stays on the unit - tell the GCS so it can
+            // mark the capture on the map without image bytes.
+            andruavMessageBinary_img.TakenLocally = 1;
+        }
         sendMessage(andruavMessageBinary_img,target, Boolean.FALSE);
     }
 
