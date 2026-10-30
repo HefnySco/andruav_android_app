@@ -101,6 +101,15 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
     private boolean sessionOpening;
     private boolean sessionRunning;
     private boolean firstFrameReported;
+    // Camera-open generations. openCamera() bumps cameraOpenGeneration and
+    // hands it to the callbacks it registers; stopInternal() raises the stale
+    // cutoff so a stop landing while an openCamera -> onConfigured sequence is
+    // still in flight marks that open (and every earlier one) stale - the late
+    // HAL callbacks then close what they are handed instead of wiring a session
+    // after onCapturerStopped() already ran. Same net effect as the fork, where
+    // stopCapture() blocks on stateLock until the session open settles.
+    private int cameraOpenGeneration;
+    private int staleCameraOpenGeneration;
 
     // Freeze-watchdog state. Camera thread only.
     private int framesSinceLastCheck;
@@ -546,16 +555,31 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
             eventsListener.onCameraOpening(cameraId);
         }
         try {
-            cameraManager.openCamera(cameraId, cameraStateCallback, cameraThreadHandler);
+            cameraManager.openCamera(cameraId,
+                    new CameraStateCallback(++cameraOpenGeneration), cameraThreadHandler);
         } catch (CameraAccessException | IllegalArgumentException | SecurityException e) {
             reportError("Failed to open camera: " + e);
         }
     }
 
-    private final CameraDevice.StateCallback cameraStateCallback = new CameraDevice.StateCallback() {
+    private final class CameraStateCallback extends CameraDevice.StateCallback {
+        private final int openGeneration;
+
+        CameraStateCallback(final int openGeneration) {
+            this.openGeneration = openGeneration;
+        }
+
         @Override
         public void onOpened(final CameraDevice camera) {
             checkIsOnCameraThread();
+            if (openGeneration <= staleCameraOpenGeneration) {
+                // stopInternal() superseded this open while it was in flight -
+                // drop the device instead of wiring a session behind a capturer
+                // that already reported onCapturerStopped().
+                Logging.d(TAG, "onOpened from a stopped camera open - closing it.");
+                camera.close();
+                return;
+            }
             Logging.d(TAG, "Camera opened.");
             cameraDevice = camera;
 
@@ -572,7 +596,8 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
             surface = captureSurface;
             try {
                 camera.createCaptureSession(
-                        Collections.singletonList(captureSurface), captureSessionCallback, cameraThreadHandler);
+                        Collections.singletonList(captureSurface),
+                        new CaptureSessionStateCallback(openGeneration), cameraThreadHandler);
             } catch (CameraAccessException e) {
                 reportError("Failed to create capture session. " + e);
             }
@@ -625,14 +650,26 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
                 eventsListener.onCameraClosed();
             }
         }
-    };
+    }
 
-    private final CameraCaptureSession.StateCallback captureSessionCallback =
-            new CameraCaptureSession.StateCallback() {
+    private final class CaptureSessionStateCallback extends CameraCaptureSession.StateCallback {
+        private final int openGeneration;
+
+        CaptureSessionStateCallback(final int openGeneration) {
+            this.openGeneration = openGeneration;
+        }
+
         @Override
         public void onConfigured(final CameraCaptureSession session) {
             checkIsOnCameraThread();
             Logging.d(TAG, "Camera capture session configured.");
+            if (openGeneration <= staleCameraOpenGeneration || cameraDevice == null) {
+                // A stop superseded this open before configure finished (the
+                // camera device may already be closed and nulled) - drop the
+                // session instead of starting capture / reporting started.
+                session.close();
+                return;
+            }
             captureSession = session;
             try {
                 captureRequestBuilder =
@@ -644,6 +681,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AE_LOCK, false);
                 applyFlashMode();
                 applyZoomCrop();
+                chooseStabilizationMode(captureRequestBuilder);
                 chooseFocusMode(captureRequestBuilder);
                 captureRequestBuilder.addTarget(surface);
                 session.setRepeatingRequest(captureRequestBuilder.build(), captureCallback, cameraThreadHandler);
@@ -673,9 +711,13 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         public void onConfigureFailed(final CameraCaptureSession session) {
             checkIsOnCameraThread();
             session.close();
+            if (openGeneration <= staleCameraOpenGeneration) {
+                // Aborted by a stop while configuring - not an error.
+                return;
+            }
             reportError("Failed to configure capture session.");
         }
-    };
+    }
 
     private final CameraCaptureSession.CaptureCallback captureCallback =
             new CameraCaptureSession.CaptureCallback() {
@@ -819,6 +861,9 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
 
     private void stopInternal() {
         checkIsOnCameraThread();
+        // Any openCamera() call still in flight is now stale - its callbacks
+        // check this cutoff and drop what the HAL hands them.
+        staleCameraOpenGeneration = cameraOpenGeneration;
         sessionOpening = false;
         sessionRunning = false;
         cameraThreadHandler.removeCallbacks(freezeWatchdogRunnable);
@@ -855,6 +900,42 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         if (eventsListener != null) {
             eventsListener.onCameraError(error);
         }
+    }
+
+    // Prefers optical stabilization over software stabilization if available.
+    // Only enables one of the stabilization modes at a time because having both
+    // enabled can cause strange results - same as the fork's Camera2Session.
+    private void chooseStabilizationMode(final CaptureRequest.Builder requestBuilder) {
+        final int[] availableOpticalStabilization = cameraCharacteristics.get(
+                CameraCharacteristics.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION);
+        if (availableOpticalStabilization != null) {
+            for (final int mode : availableOpticalStabilization) {
+                if (mode == CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE_ON) {
+                    requestBuilder.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE,
+                            CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE_ON);
+                    requestBuilder.set(CaptureRequest.CONTROL_VIDEO_STABILIZATION_MODE,
+                            CaptureRequest.CONTROL_VIDEO_STABILIZATION_MODE_OFF);
+                    Logging.d(TAG, "Using optical stabilization.");
+                    return;
+                }
+            }
+        }
+        // If no optical mode is available, try software.
+        final int[] availableVideoStabilization = cameraCharacteristics.get(
+                CameraCharacteristics.CONTROL_AVAILABLE_VIDEO_STABILIZATION_MODES);
+        if (availableVideoStabilization != null) {
+            for (final int mode : availableVideoStabilization) {
+                if (mode == CaptureRequest.CONTROL_VIDEO_STABILIZATION_MODE_ON) {
+                    requestBuilder.set(CaptureRequest.CONTROL_VIDEO_STABILIZATION_MODE,
+                            CaptureRequest.CONTROL_VIDEO_STABILIZATION_MODE_ON);
+                    requestBuilder.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE,
+                            CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE_OFF);
+                    Logging.d(TAG, "Using video stabilization.");
+                    return;
+                }
+            }
+        }
+        Logging.d(TAG, "Stabilization not available.");
     }
 
     private void chooseFocusMode(final CaptureRequest.Builder requestBuilder) {
