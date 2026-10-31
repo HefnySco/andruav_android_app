@@ -24,7 +24,7 @@ public final class DeConfigSettings {
     public String group = "";
     public String authHost = "";
     public int authPort = 0;
-    public boolean requireSsl = true;
+    public boolean requireSsl = false;
     public boolean isLocalServer = false;
     public String localServerHost = "";
     public int localServerPort = 0;

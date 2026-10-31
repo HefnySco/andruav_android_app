@@ -19,6 +19,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -62,6 +65,7 @@ import com.andruav.controlBoard.shared.common.FlightMode;
 import com.andruav.controlBoard.shared.common.VehicleTypes;
 
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_ProtocolChanged;
+import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_SSLVerifyFailed;
 import ap.andruavmiddlelibrary.LoginClient;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 import ap.andruav_ap.DeviceManagerFacade;
@@ -210,6 +214,11 @@ public class MainScreen extends BaseAndruavShasha {
     //////////BUS EVENT
 
 
+
+    @Subscribe
+    public void onEvent(final Event_SSLVerifyFailed event) {
+        maybeShowSslVerifyDialog();
+    }
 
     @Subscribe
     public void onEvent(final NativeUnitMirror.Event_OwnUdpProxy event) {
@@ -1214,17 +1223,35 @@ public class MainScreen extends BaseAndruavShasha {
         mCardServer.setBackgroundResource(connected ? R.drawable.bg_home_card : R.drawable.bg_home_card_warning);
         setViewColor(mDotServer, connected ? R.color.home_green_icon : R.color.home_red_dot);
 
+        // Normal green status text; only a verified-TLS connection gets a
+        // small red "SECURED" sub-line. Non-secure shows nothing extra.
+        final boolean secureConn = connected
+                && (nativeMode ? Preference.isRequireSSL(null) : TlsTrustPolicy.isLastConnectionSecure());
+        final String mainText;
         if (nativeMode) {
-            mTxtServerStatus.setText(connected ? "Native Unit Online" : "Native Unit Offline");
+            mainText = connected ? "Native Unit Online" : "Native Unit Offline";
         } else if (connected) {
-            mTxtServerStatus.setText(TlsTrustPolicy.isLastConnectionSecure()
+            mainText = getString(TlsTrustPolicy.isLastConnectionSecure()
                     ? R.string.home_server_status_connected_secure
                     : R.string.home_server_status_connected_nonsecure);
         } else {
-            mTxtServerStatus.setText(R.string.home_server_status_disconnected);
+            mainText = getString(R.string.home_server_status_disconnected);
         }
-        mTxtServerStatus.setTextColor(ContextCompat.getColor(this,
-                connected ? R.color.home_green_icon : R.color.home_red_text));
+        final int mainColor = connected ? R.color.home_green_icon : R.color.home_red_text;
+        if (secureConn) {
+            final String tail = "SECURED";
+            final SpannableString status = new SpannableString(mainText + "\n" + tail);
+            status.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, mainColor)),
+                    0, mainText.length(), 0);
+            status.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.home_red_text)),
+                    mainText.length() + 1, status.length(), 0);
+            status.setSpan(new RelativeSizeSpan(0.7f),
+                    mainText.length() + 1, status.length(), 0);
+            mTxtServerStatus.setText(status);
+        } else {
+            mTxtServerStatus.setText(mainText);
+            mTxtServerStatus.setTextColor(ContextCompat.getColor(this, mainColor));
+        }
 
         // AN-0103: in native mode the buttons follow whether the module stack
         // runs, not the comm line - modules RUNNING with the server unreachable
@@ -1329,6 +1356,39 @@ public class MainScreen extends BaseAndruavShasha {
                     public void onClick(DialogInterface dialog, int which) {
                         TlsTrustPolicy.declinePending();
                         mTlsDialogShowing = false;
+                    }
+                })
+                .show();
+    }
+
+    /***
+     * de_comm's auth call fails inside the native library - Java only sees that
+     * the comm line never came online while "Require SSL" is on. Offer to drop
+     * back to unverified connections; confirming flips the preference and the
+     * config sync restarts de_comm with the new flag.
+     */
+    private boolean mSslVerifyDialogShowing = false;
+
+    private void maybeShowSslVerifyDialog() {
+        if (mSslVerifyDialogShowing || isFinishing()) return;
+
+        mSslVerifyDialogShowing = true;
+        new AlertDialog.Builder(this)
+                .setTitle("SSL verification failing")
+                .setMessage("The unit cannot connect while \"Require SSL\" is enabled - the server certificate could not be verified. Turn SSL verification off and retry?")
+                .setCancelable(false)
+                .setPositiveButton("Turn SSL off", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mSslVerifyDialogShowing = false;
+                        Preference.isRequireSSL(MainScreen.this, false);
+                        NativeUnitController.connectNative(MainScreen.this);
+                    }
+                })
+                .setNegativeButton("Keep SSL on", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mSslVerifyDialogShowing = false;
                     }
                 })
                 .show();

@@ -13,6 +13,10 @@ import androidx.core.content.ContextCompat;
 
 import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
 
+import org.greenrobot.eventbus.EventBus;
+
+import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_SSLVerifyFailed;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -58,6 +62,7 @@ public final class NativeUnitController {
      * a socket that never finishes closing is already not an online party.
      */
     private static final long WAIT_TIMEOUT_MS = 8000;
+    private static final long SSL_VERIFY_WATCH_MS = 30_000;
 
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
@@ -152,6 +157,22 @@ public final class NativeUnitController {
             ContextCompat.startForegroundService(app, moduleIntent);
         } catch (Exception e) {
             Log.e(TAG, "cannot start DeAndroidModuleService", e);
+        }
+        // When the user requires strict SSL verification, a comm line that
+        // never comes online most likely means the server certificate failed
+        // verification (de_comm cannot tell Java which curl error it hit).
+        // Watch once per bring-up and offer the user an escape hatch.
+        if (Preference.isRequireSSL(null)) {
+            final int generation = sSwitchGeneration;
+            handler.postDelayed(() -> {
+                if (generation != sSwitchGeneration || !sNativeWanted) {
+                    return;
+                }
+                if (!Preference.isRequireSSL(null) || isCommLineOnline()) {
+                    return;
+                }
+                EventBus.getDefault().post(new Event_SSLVerifyFailed());
+            }, SSL_VERIFY_WATCH_MS);
         }
         Log.i(TAG, "native stack start requested");
     }

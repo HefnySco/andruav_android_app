@@ -269,7 +269,7 @@ public class Preference {
      * OFF restores the legacy trust-all behaviour as an explicit opt-out.
      */
     public static boolean isRequireSSL(final android.content.ContextWrapper contextWrapper) {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, com.andruav.protocol.communication.tls.TlsTrustPolicy.PREF_REQUIRE_SSL, true);
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, com.andruav.protocol.communication.tls.TlsTrustPolicy.PREF_REQUIRE_SSL, false);
     }
 
     public static void isRequireSSL(final android.content.ContextWrapper contextWrapper, final boolean requireSSL) {
