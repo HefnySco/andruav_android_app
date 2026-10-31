@@ -7,6 +7,7 @@ import com.andruav.andruavUnit.AndruavUnitBase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.webrtc.AudioTrack;
 import org.webrtc.DataChannel;
 import org.webrtc.IceCandidate;
 import org.webrtc.MediaStream;
@@ -16,7 +17,10 @@ import org.webrtc.RtpReceiver;
 import org.webrtc.RtpTransceiver;
 import org.webrtc.SdpObserver;
 import org.webrtc.SessionDescription;
+import org.webrtc.VideoTrack;
 import ap.andruavmiddlelibrary.webrtc.events.Event_WebRTC;
+
+import java.util.Collections;
 
 
 /**
@@ -64,12 +68,21 @@ public class PnPeer implements SdpObserver, PeerConnection.Observer {
         //        pcClient.signalingParams.pcConstraints, this);
         PeerConnection.RTCConfiguration rtcConfig = new PeerConnection.RTCConfiguration(pcClient.signalingParams.iceServers);
         /// EXTRA SETTINGS HERE IN rtcConfig
+        rtcConfig.sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN;
         this.pc = pcClient.pcFactory.createPeerConnection(rtcConfig, this);
         setStatus(STATUS_CONNECTING);
         //BUG: seems that pc can be null and crash the APP.
         // not sure why it can be NULL
         mChannel = channel;
-        pc.addStream(pcClient.getLocalMediaStream());
+        final MediaStream localStream = pcClient.getLocalMediaStream();
+        if (localStream != null) {
+            for (final VideoTrack track : localStream.videoTracks) {
+                pc.addTrack(track, Collections.singletonList(localStream.getId()));
+            }
+            for (final AudioTrack track : localStream.audioTracks) {
+                pc.addTrack(track, Collections.singletonList(localStream.getId()));
+            }
+        }
     }
 
     public AndruavUnitBase getConnectedPeer ()
@@ -278,7 +291,15 @@ public class PnPeer implements SdpObserver, PeerConnection.Observer {
 
     @Override
     public void onAddTrack(RtpReceiver rtpReceiver, MediaStream[] mediaStreams) {
-
+        // Unified Plan delivers remote tracks here instead of onAddStream.
+        try {
+            if (mediaStreams != null && mediaStreams.length > 0) {
+                this.mMediaStream = mediaStreams[0];
+                pcClient.mRtcListener.onAddRemoteStream(mediaStreams[0], PnPeer.this);
+            }
+        } catch (Exception e) {
+            AndruavEngine.log().logException("rtc", e);
+        }
     }
 
     @Override

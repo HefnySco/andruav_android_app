@@ -535,7 +535,7 @@ public class PeerConnection {
     // Use "Unknown" to represent no preference of adapter types, not the
     // preference of adapters of unknown types.
     public final AdapterType networkPreference;
-    public final SdpSemantics sdpSemantics;
+    public SdpSemantics sdpSemantics;
 
     // This is an optional wrapper for the C++ webrtc::TurnCustomizer.
     @Nullable public TurnCustomizer turnCustomizer;
