@@ -21,6 +21,7 @@ import org.webrtc.VideoTrack;
 import ap.andruavmiddlelibrary.webrtc.events.Event_WebRTC;
 
 import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -52,6 +53,7 @@ public class PnPeer implements SdpObserver, PeerConnection.Observer {
     final String mChannel;
     private final AndruavUnitBase mAndruavUnitBase;
     private MediaStream mMediaStream;
+    private boolean mSdpLogged = false;
 
     // Todo: Maybe attach MediaStream as private var?
 
@@ -76,11 +78,14 @@ public class PnPeer implements SdpObserver, PeerConnection.Observer {
         mChannel = channel;
         final MediaStream localStream = pcClient.getLocalMediaStream();
         if (localStream != null) {
+            final List<String> streamIds = Collections.singletonList(localStream.getId());
+            final RtpTransceiver.RtpTransceiverInit sendOnly = new RtpTransceiver.RtpTransceiverInit(
+                    RtpTransceiver.RtpTransceiverDirection.SEND_ONLY, streamIds);
             for (final VideoTrack track : localStream.videoTracks) {
-                pc.addTrack(track, Collections.singletonList(localStream.getId()));
+                pc.addTransceiver(track, sendOnly);
             }
             for (final AudioTrack track : localStream.audioTracks) {
-                pc.addTrack(track, Collections.singletonList(localStream.getId()));
+                pc.addTransceiver(track, sendOnly);
             }
         }
     }
@@ -149,7 +154,10 @@ public class PnPeer implements SdpObserver, PeerConnection.Observer {
         try {
             String sdp_desc = sdp.description;
             sdp_desc = sdp_desc; //PnSignalingParams.preferCodec(sdp_desc, PnSignalingParams.VideoCodec.H264.toString(), true);
-            //   Log.d("offer action","onCreateSuccess " + sdp_desc );
+            if (!mSdpLogged) {
+                mSdpLogged = true;
+                Log.d(TAG, "session SDP " + sdp.type.canonicalForm() + ":\n" + sdp_desc);
+            }
             JSONObject payload = new JSONObject();
             payload.put("type", sdp.type.canonicalForm());
             payload.put("sdp", sdp_desc);

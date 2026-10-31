@@ -48,8 +48,6 @@ public class PnRTC_3ameel {
 
         final MediaConstraints pcConstraints = new MediaConstraints();
         pcConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
-        pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "false"));
-        pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "false"));
 
         // Actual capture resolution is fixed directly on the VideoCapturer by
         // PeerConnectionManager (per-facing Camera Resolution preference); videoConstraints here
