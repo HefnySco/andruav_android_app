@@ -1,6 +1,7 @@
 package ap.andruavmiddlelibrary.webrtc.camera;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -63,5 +64,40 @@ public class ZoomMathTest {
                 ZoomMath.cropRegion(100, 200, 4000, 3000, 1.0f, 10.0f));
         assertArrayEquals(new int[] {100, 200, 4100, 3200},
                 ZoomMath.cropRegion(100, 200, 4000, 3000, 0.0f, 10.0f));
+    }
+
+    @Test
+    public void zoomRatioZeroStaysAtOneX() {
+        assertEquals(1.0f, ZoomMath.zoomRatio(0.0f, 1.0f, 10.0f), 1e-6f);
+    }
+
+    @Test
+    public void zoomRatioOneReachesMax() {
+        assertEquals(10.0f, ZoomMath.zoomRatio(1.0f, 1.0f, 10.0f), 1e-6f);
+    }
+
+    @Test
+    public void zoomRatioHalfScalesTowardMax() {
+        assertEquals(5.5f, ZoomMath.zoomRatio(0.5f, 1.0f, 10.0f), 1e-6f);
+    }
+
+    @Test
+    public void zoomRatioClampsFraction() {
+        assertEquals(1.0f, ZoomMath.zoomRatio(-0.5f, 1.0f, 10.0f), 1e-6f);
+        assertEquals(10.0f, ZoomMath.zoomRatio(2.5f, 1.0f, 10.0f), 1e-6f);
+    }
+
+    @Test
+    public void zoomRatioUltrawideMinStillOneXAtZero() {
+        // Range dipping below 1 (ultrawide) must not pull fraction 0 off 1x.
+        assertEquals(1.0f, ZoomMath.zoomRatio(0.0f, 0.6f, 10.0f), 1e-6f);
+        assertEquals(5.5f, ZoomMath.zoomRatio(0.5f, 0.6f, 10.0f), 1e-6f);
+    }
+
+    @Test
+    public void zoomRatioDegenerateRangeStaysInRange() {
+        // A fixed-only range collapses every fraction to the bound.
+        assertEquals(1.0f, ZoomMath.zoomRatio(0.0f, 1.0f, 1.0f), 1e-6f);
+        assertEquals(1.0f, ZoomMath.zoomRatio(1.0f, 1.0f, 1.0f), 1e-6f);
     }
 }

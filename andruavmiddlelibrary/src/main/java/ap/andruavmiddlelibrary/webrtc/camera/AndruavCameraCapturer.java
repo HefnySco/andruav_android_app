@@ -16,6 +16,7 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Range;
 import android.view.Surface;
@@ -118,6 +119,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
     private int sensorOrientationDegrees;
     private boolean cameraFrontFacing;
     private float zoomMax = 0.0f;
+    private Range<Float> zoomRatioRange;
 
     // Control state (stubs for E1d-E1g).
     private int flashMode = AndruavWebRTCGlobals.FlashOff;
@@ -423,7 +425,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
             return;
         }
         if (sessionRunning && captureRequestBuilder != null) {
-            applyZoomCrop();
+            applyZoom();
             if (!updateRepeatingRequest()) {
                 return;
             }
@@ -433,7 +435,20 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         }
     }
 
-    private void applyZoomCrop() {
+    private boolean useZoomRatio() {
+        return zoomRatioRange != null && zoomRatioRange.getUpper() > 1.0f;
+    }
+
+    private void applyZoom() {
+        // API 30+: CONTROL_ZOOM_RATIO lets the HAL pick the lens (tele on
+        // multi-lens phones) and wins over SCALER_CROP_REGION when both
+        // are present, so only one mechanism is ever written.
+        if (useZoomRatio()) {
+            captureRequestBuilder.set(CaptureRequest.CONTROL_ZOOM_RATIO,
+                    ZoomMath.zoomRatio(zoomLevel,
+                            zoomRatioRange.getLower(), zoomRatioRange.getUpper()));
+            return;
+        }
         if (!isZoomSupported()) {
             return;
         }
@@ -456,7 +471,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
 
     @Override
     public boolean isZoomSupported() {
-        return zoomMax > 0.0f;
+        return useZoomRatio() || zoomMax > 0.0f;
     }
 
     @Override
@@ -492,6 +507,9 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
                 == CameraMetadata.LENS_FACING_FRONT;
         final Float maxZoom = cameraCharacteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM);
         zoomMax = maxZoom == null ? 0.0f : maxZoom;
+        zoomRatioRange = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                ? cameraCharacteristics.get(CameraCharacteristics.CONTROL_ZOOM_RATIO_RANGE)
+                : null;
         if (cameraFrontFacing) {
             flashMode = AndruavWebRTCGlobals.FlashDisabled;
         }
@@ -680,7 +698,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
                 captureRequestBuilder.set(CaptureRequest.CONTROL_AE_LOCK, false);
                 applyFlashMode();
-                applyZoomCrop();
+                applyZoom();
                 chooseStabilizationMode(captureRequestBuilder);
                 chooseFocusMode(captureRequestBuilder);
                 captureRequestBuilder.addTarget(surface);

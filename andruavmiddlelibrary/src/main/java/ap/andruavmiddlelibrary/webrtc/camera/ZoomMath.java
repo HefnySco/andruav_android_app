@@ -46,4 +46,29 @@ public final class ZoomMath {
                 centerY + halfHeight,
         };
     }
+
+    /**
+     * Maps the same 0..1 zoom fraction onto a CONTROL_ZOOM_RATIO value
+     * (CaptureRequest key, API 30+). Fraction 0 stays at 1x - parity with
+     * the crop path even on devices whose range dips below 1 (ultrawide
+     * lens) - and fraction 1 reaches the camera's advertised maximum,
+     * which on multi-lens devices is where the tele lens takes over.
+     * The result is clamped into the camera's CONTROL_ZOOM_RATIO_RANGE.
+     *
+     * @param zoomFraction 0..1 of the camera's max zoom; out-of-range
+     *        values are clamped.
+     * @param minRatio lower end of CONTROL_ZOOM_RATIO_RANGE.
+     * @param maxRatio upper end of CONTROL_ZOOM_RATIO_RANGE.
+     */
+    public static float zoomRatio(final float zoomFraction,
+                                  final float minRatio, final float maxRatio) {
+        float zoom = zoomFraction;
+        if (zoom > 1.0f) zoom = 1.0f;
+        if (zoom < 0.0f) zoom = 0.0f;
+
+        float ratio = 1.0f + zoom * (maxRatio - 1.0f);
+        if (ratio < minRatio) ratio = minRatio;
+        if (ratio > maxRatio) ratio = maxRatio;
+        return ratio;
+    }
 }
