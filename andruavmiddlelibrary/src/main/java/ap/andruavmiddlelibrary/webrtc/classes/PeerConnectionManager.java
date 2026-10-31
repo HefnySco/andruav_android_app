@@ -41,6 +41,7 @@ import org.webrtc.VideoTrack;
 
 
 import com.andruav.FeatureSwitch;
+import ap.andruavmiddlelibrary.Voting;
 import ap.andruavmiddlelibrary.factory.LooperExecutor;
 import ap.andruavmiddlelibrary.preference.Preference;
 import ap.andruavmiddlelibrary.webrtc.IRTCListener;
@@ -941,12 +942,14 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     ///////////////////////  Begin CameraEventsHandler
     @Override
     public void onCameraError(String s) {
-
+        Log.w("fpvstream", "onCameraError: " + s);
+        Voting.onCameraIssue();
     }
 
     @Override
     public void onCameraDisconnected() {
-
+        Log.w("fpvstream", "onCameraDisconnected");
+        Voting.onCameraIssue();
     }
 
     @Override

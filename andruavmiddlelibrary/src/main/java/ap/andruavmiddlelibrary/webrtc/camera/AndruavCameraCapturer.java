@@ -231,8 +231,11 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         }
 
         pendingSwitchHandler = handler;
-        final int index = Math.max(0, cameraIds.indexOf(cameraId));
-        cameraId = cameraIds.get((index + 1) % cameraIds.size());
+        final int index = cameraIds.indexOf(cameraId);
+        // A current id missing from the refreshed list (camera unplugged or
+        // ids renumbered) falls back to the first entry - max(0,-1)+1 used to
+        // skip straight to index 1.
+        cameraId = cameraIds.get(index < 0 ? 0 : (index + 1) % cameraIds.size());
         Logging.d(TAG, "switchCamera: switching to camera " + cameraId);
         stopInternal();
         openCameraSession(requestedWidth, requestedHeight, requestedFps);
@@ -664,6 +667,12 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         @Override
         public void onClosed(final CameraDevice camera) {
             checkIsOnCameraThread();
+            if (openGeneration <= staleCameraOpenGeneration) {
+                // A superseded open's device closing must not fire the
+                // listener during the cameraDevice==null window.
+                Logging.d(TAG, "onClosed from a superseded camera open.");
+                return;
+            }
             if (camera != cameraDevice && cameraDevice != null) {
                 Logging.d(TAG, "onClosed from a stale camera device.");
                 return;
