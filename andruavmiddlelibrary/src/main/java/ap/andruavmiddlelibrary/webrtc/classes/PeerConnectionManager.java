@@ -1,9 +1,11 @@
 package ap.andruavmiddlelibrary.webrtc.classes;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Surface;
 
@@ -65,6 +67,8 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     private int mCaptureWidth = 1280;
     private int mCaptureHeight = 720;
     private int mCaptureFps = 15;
+    private boolean mCapturing;
+    private SharedPreferences.OnSharedPreferenceChangeListener mStreamResolutionPrefListener;
     /** Enumerator device name + facing of the camera currently captured -
      *  tracked so the camera channel surface can name the active channel. */
     private String mCaptureDeviceName;
@@ -216,6 +220,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
                 mCamFirstFrameLogged = false;
                 mCamFreezeCount = 0;
                 capturer.startCapture(mCaptureWidth, mCaptureHeight, mCaptureFps);
+                mCapturing = true;
             }
 
             // We start out with an emptly MediaStream object, created with help from our PeerConnectionFactory
@@ -252,6 +257,14 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
             // Then attach your local media stream to the PnRTC_3ameel.
             //  This will trigger the onLocalStream callback.
             this.pnRTC3ameel.attachLocalMediaStream(mediaStream);
+
+            mStreamResolutionPrefListener = (prefs, key) -> {
+                if ("streamResModeBack".equals(key) || "streamResModeFront".equals(key)) {
+                    onStreamResolutionModeChanged();
+                }
+            };
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .registerOnSharedPreferenceChangeListener(mStreamResolutionPrefListener);
 
             return  true;
         }
@@ -344,7 +357,10 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
      * for {@link #init} to pass to VideoCapturer.startCapture().
      */
     private void resolveCaptureFormat(final CameraEnumerator enumerator, final String deviceName) {
-        final boolean isFront = enumerator.isFrontFacing(deviceName);
+        resolveCaptureFormat(enumerator, deviceName, enumerator.isFrontFacing(deviceName));
+    }
+
+    private void resolveCaptureFormat(final CameraEnumerator enumerator, final String deviceName, final boolean isFront) {
         final int mode = isFront ? Preference.getStreamResolutionModeFront(null) : Preference.getStreamResolutionModeBack(null);
 
         if (mode == Preference.STREAM_RESOLUTION_MAX) {
@@ -392,6 +408,33 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
             mCaptureFps = 15;
         }
         Log.i(TAG_CAM_METRICS, "capture " + mCaptureWidth + "x" + mCaptureHeight + "@" + mCaptureFps);
+    }
+
+    /**
+     * Re-resolves the camera-resolution preference and applies it to the running
+     * capturer via {@link VideoCapturer#changeCaptureFormat}. The peer connection
+     * is untouched - the same video track keeps sending, the encoder just picks
+     * up the new frame size, so the viewer's received size changes without a
+     * reconnect.
+     */
+    private void onStreamResolutionModeChanged() {
+        if (capturer == null || !mCapturing) {
+            return;
+        }
+        try {
+            final int oldWidth = mCaptureWidth;
+            final int oldHeight = mCaptureHeight;
+            final int oldFps = mCaptureFps;
+            // mCaptureDeviceName may be null after a blind camera switch; the
+            // tracked facing still selects the right per-facing preference.
+            resolveCaptureFormat(createCameraEnumerator(), mCaptureDeviceName, mCaptureFrontFacing);
+            if (mCaptureWidth == oldWidth && mCaptureHeight == oldHeight && mCaptureFps == oldFps) {
+                return;
+            }
+            capturer.changeCaptureFormat(mCaptureWidth, mCaptureHeight, mCaptureFps);
+        } catch (Exception e) {
+            AndruavEngine.log().logException("rtc", e);
+        }
     }
 
     /***
@@ -523,6 +566,11 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
     public void onDestroy ()
     {
+        if (mStreamResolutionPrefListener != null && mContext != null) {
+            PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .unregisterOnSharedPreferenceChangeListener(mStreamResolutionPrefListener);
+            mStreamResolutionPrefListener = null;
+        }
         killHandler();
 
         if (localVideoSource!=null) {
@@ -661,6 +709,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
 
     private void stopLocalVideoSource() {
+        mCapturing = false;
         try {
             if (capturer != null)
             {

@@ -182,6 +182,11 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         requestedHeight = height;
         requestedFps = framerate;
         cameraThreadHandler.post(() -> {
+            if (!sessionRunning && !sessionOpening) {
+                // Not capturing: the recorded request applies on the next
+                // startCapture - reopening here would start the camera.
+                return;
+            }
             stopInternal();
             openCameraSession(width, height, framerate);
         });
