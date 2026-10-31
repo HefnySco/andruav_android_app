@@ -632,10 +632,17 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         @Override
         public void onDisconnected(final CameraDevice camera) {
             checkIsOnCameraThread();
-            if (camera != cameraDevice) {
+            if (camera != cameraDevice
+                    && !(sessionOpening && openGeneration > staleCameraOpenGeneration)) {
                 // Stale callback from the pre-switch device - ignore it.
                 Logging.d(TAG, "onDisconnected from a closed camera device.");
                 return;
+            }
+            if (cameraDevice == null) {
+                // The open this callback belongs to was still in flight -
+                // the device was never adopted, so release it here or the
+                // failed open leaks it.
+                camera.close();
             }
             Logging.w(TAG, "Camera disconnected.");
             failPendingSwitch("Camera disconnected.");
@@ -657,9 +664,15 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         @Override
         public void onError(final CameraDevice camera, final int errorCode) {
             checkIsOnCameraThread();
-            if (camera != cameraDevice) {
+            if (camera != cameraDevice
+                    && !(sessionOpening && openGeneration > staleCameraOpenGeneration)) {
                 Logging.d(TAG, "onError from a closed camera device.");
                 return;
+            }
+            if (cameraDevice == null) {
+                // In-flight open that never adopted the device - release it
+                // before the error path clears sessionOpening.
+                camera.close();
             }
             reportError(cameraErrorDescription(errorCode));
         }
