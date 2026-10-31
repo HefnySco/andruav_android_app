@@ -61,13 +61,14 @@ public class PhoneBusModulesTest {
 
     /** webclient flash button: 6519 {i, a:2, p, v} on the camera_flash pin. */
     @Test
-    public void writeDrivesTorchAndRepliesStatus() throws Exception {
+    public void writeDrivesTorchAndBroadcastsStatus() throws Exception {
         mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
                 .put("i", PhoneGpioModule.MODULE_KEY).put("a", 2).put("p", 1).put("v", 1)));
 
         assertTrue(mOutputs.get("torch"));
         assertEquals(Arrays.asList(PhoneGpioModule.SRC_GCS), mWriteSrc);
-        final JSONArray list = lastStatusList(GCS);
+        // de_rpi_gpio broadcasts the post-write status to all GCS, not only the requester
+        final JSONArray list = lastStatusList("");
         assertEquals(1, list.length());
         final JSONObject pin = list.getJSONObject(0);
         assertEquals(PhoneGpioModule.MODULE_KEY, pin.getString("i"));
@@ -80,7 +81,7 @@ public class PhoneBusModulesTest {
         mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
                 .put("i", PhoneGpioModule.MODULE_KEY).put("a", 2).put("p", 1).put("v", 0)));
         assertFalse(mOutputs.get("torch"));
-        assertEquals(0, lastStatusList(GCS).getJSONObject(0).getInt("v"));
+        assertEquals(0, lastStatusList("").getJSONObject(0).getInt("v"));
     }
 
     @Test
@@ -94,6 +95,21 @@ public class PhoneBusModulesTest {
                 .put("i", "rpi_gpio_key").put("a", 2).put("p", 2).put("v", 1)));
         assertFalse(mOutputs.get("screen"));
         assertEquals(sent, mSent.size());
+    }
+
+    /** de_rpi_gpio matches 'n' first; 'p' is a fallback only when 'n' is absent. */
+    @Test
+    public void pinLookupPrefersNameOverNumber() throws Exception {
+        // both present: the name wins, so pin 1 (camera_flash) must stay off
+        mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
+                .put("a", 2).put("n", "vibrate").put("p", 1).put("v", 1)));
+        assertTrue(mOutputs.get("vibrate"));
+        assertFalse(mOutputs.get("torch"));
+
+        // an unknown name does not fall back to the number
+        mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
+                .put("a", 2).put("n", "no_such_pin").put("p", 1).put("v", 1)));
+        assertFalse(mOutputs.get("torch"));
     }
 
     /** 6521 {a:6520} returns the whole pin list. */
@@ -120,8 +136,8 @@ public class PhoneBusModulesTest {
                 .put("a", 2).put("p", 1).put("v", 1)));
         assertTrue(mOutputs.get("torch"));
         assertFalse(mOutputs.get("torch_strobe"));
-        // both pins changed, so the reply carries the whole list
-        final JSONArray list = lastStatusList(GCS);
+        // both pins changed, so the broadcast carries the whole list
+        final JSONArray list = lastStatusList("");
         assertEquals(4, list.length());
         assertEquals(1, list.getJSONObject(0).getInt("v"));
         assertEquals(0, list.getJSONObject(3).getInt("v"));

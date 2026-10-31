@@ -17,7 +17,8 @@ import java.util.Map;
  * Messages (droneengage_rpi_gpio src/gpio/gpio_facade.cpp, webclient
  * js_commands_api.js):
  * <ul>
- * <li>6519 GPIO_ACTION {i, a:2 PORT_WRITE, p|n, v}: write one pin; a:1 INFO
+ * <li>6519 GPIO_ACTION {i, a:2 PORT_WRITE, n|p, v}: write one pin - 'n' is
+ * matched first, 'p' only when 'n' is absent (gpio_parser.cpp); a:1 INFO
  * asks for the pin list.</li>
  * <li>6521 GPIO_REMOTE_EXECUTE {a:6520, p?, i?}: status request.</li>
  * <li>6520 GPIO_STATUS {a:1, s:[{i, p, b, m, t, d, v, n}]}: the reply, also
@@ -118,7 +119,8 @@ public final class PhoneGpioModule {
                         && Boolean.TRUE.equals(m_outputs.read(pin.exclusive));
                 if (freed) m_outputs.write(pin.exclusive, false, SRC_GCS);
                 m_outputs.write(pin.output, on, SRC_GCS);
-                sendStatus(sender, freed ? null : pin);
+                // de_rpi_gpio broadcasts the post-write status so every GCS sees the flip
+                sendStatus("", freed ? null : pin);
             } else if (action == ACTION_INFO) {
                 sendStatus(sender, null);
             }
@@ -176,9 +178,18 @@ public final class PhoneGpioModule {
     }
 
     private Pin find(final JSONObject ms) {
+        // de_rpi_gpio: 'n' is matched first; 'p' is only a fallback when 'n' is absent
+        if (ms.has("n")) {
+            final String name = ms.optString("n", null);
+            for (Pin pin : PINS) {
+                if (pin.name.equals(name)) return pin;
+            }
+            return null;
+        }
+        if (!ms.has("p")) return null;
+        final int number = ms.optInt("p", -1);
         for (Pin pin : PINS) {
-            if (ms.has("p") && ms.optInt("p", -1) == pin.number) return pin;
-            if (!ms.has("p") && pin.name.equals(ms.optString("n", null))) return pin;
+            if (number == pin.number) return pin;
         }
         return null;
     }
