@@ -9,7 +9,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Surface;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.andruav.AndruavDroneFacade;
 import com.andruav.AndruavEngine;
@@ -27,6 +30,7 @@ import org.webrtc.GlRectDrawer;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.RendererCommon;
+import org.webrtc.RTCStats;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoCapturer;
@@ -69,6 +73,24 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
     private int mCaptureFps = 15;
     private boolean mCapturing;
     private SharedPreferences.OnSharedPreferenceChangeListener mStreamResolutionPrefListener;
+
+    // Weak-link quality stepping (AN-0099): poll connected peers'
+    // availableOutgoingBitrate; step the capture format down while it stays
+    // low, back up toward the configured resolution mode when the link
+    // recovers. Bitrate units are bps; ~500k is the floor below which even
+    // the SD rung is unlikely to stay smooth.
+    private static final long STATS_POLL_MS = 2_000;
+    private static final long STEP_DOWN_AFTER_MS = 6_000;
+    private static final long STEP_UP_AFTER_MS = 20_000;
+    private static final double LOW_OUTGOING_BITRATE_BPS = 500_000.0;
+    private final List<PnPeer> mStatsPeers = new ArrayList<>();
+    private final Map<PnPeer, Double> mPeerBitrateBps = new HashMap<>();
+    private int mConfiguredResolutionMode = Preference.STREAM_RESOLUTION_HD;
+    private int mQualityStep = Preference.STREAM_RESOLUTION_HD;
+    private long mLowBitrateSinceMs;
+    private long mHealthyBitrateSinceMs;
+    private boolean mStatsPolling;
+    private Handler mStatsHandler;
     /** Enumerator device name + facing of the camera currently captured -
      *  tracked so the camera channel surface can name the active channel. */
     private String mCaptureDeviceName;
@@ -266,6 +288,8 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
             PreferenceManager.getDefaultSharedPreferences(context)
                     .registerOnSharedPreferenceChangeListener(mStreamResolutionPrefListener);
 
+            mStatsHandler = new Handler(Looper.getMainLooper());
+
             return  true;
         }
         catch (Exception ex)
@@ -362,7 +386,14 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
     private void resolveCaptureFormat(final CameraEnumerator enumerator, final String deviceName, final boolean isFront) {
         final int mode = isFront ? Preference.getStreamResolutionModeFront(null) : Preference.getStreamResolutionModeBack(null);
+        // The configured mode is the ceiling the weak-link stepper (AN-0099)
+        // may climb back to; any (re)resolution resets the step to it.
+        mConfiguredResolutionMode = mode;
+        mQualityStep = mode;
+        applyCaptureFormatMode(enumerator, deviceName, mode);
+    }
 
+    private void applyCaptureFormatMode(final CameraEnumerator enumerator, final String deviceName, final int mode) {
         if (mode == Preference.STREAM_RESOLUTION_MAX) {
             if (Preference.useAppCameraCapturer(null)) {
                 // App path: formats come from the Camera2 stream map, not the
@@ -435,6 +466,134 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
         } catch (Exception e) {
             AndruavEngine.log().logException("rtc", e);
         }
+    }
+
+    // ---- weak-link quality stepping (AN-0099) ---------------------------------
+
+    private void trackStatsPeer(final PnPeer peer) {
+        synchronized (mStatsPeers) {
+            if (!mStatsPeers.contains(peer)) {
+                mStatsPeers.add(peer);
+            }
+        }
+        if (mStatsHandler != null && !mStatsPolling) {
+            mStatsPolling = true;
+            mStatsHandler.postDelayed(mStatsPoller, STATS_POLL_MS);
+        }
+    }
+
+    private void untrackStatsPeer(final PnPeer peer) {
+        synchronized (mStatsPeers) {
+            mStatsPeers.remove(peer);
+            mPeerBitrateBps.remove(peer);
+        }
+    }
+
+    private void resetLinkQualityState() {
+        synchronized (mStatsPeers) {
+            mStatsPeers.clear();
+            mPeerBitrateBps.clear();
+        }
+        mLowBitrateSinceMs = 0;
+        mHealthyBitrateSinceMs = 0;
+        if (mStatsHandler != null) {
+            mStatsHandler.removeCallbacks(mStatsPoller);
+        }
+        mStatsPolling = false;
+    }
+
+    private final Runnable mStatsPoller = new Runnable() {
+        @Override
+        public void run() {
+            final List<PnPeer> peers;
+            synchronized (mStatsPeers) {
+                peers = new ArrayList<>(mStatsPeers);
+            }
+            for (final PnPeer peer : peers) {
+                try {
+                    peer.getPc().getStats(report -> {
+                        synchronized (mStatsPeers) {
+                            if (!mStatsPeers.contains(peer)) return;
+                            mPeerBitrateBps.put(peer, outgoingBitrateBps(report));
+                        }
+                        evaluateLinkQuality();
+                    });
+                } catch (Exception e) {
+                    // A closing peer can throw on getStats - drop it from tracking.
+                    untrackStatsPeer(peer);
+                }
+            }
+            synchronized (mStatsPeers) {
+                if (mCapturing && !mStatsPeers.isEmpty()) {
+                    mStatsHandler.postDelayed(this, STATS_POLL_MS);
+                } else {
+                    mStatsPolling = false;
+                }
+            }
+        }
+    };
+
+    /** Min availableOutgoingBitrate (bps) across nominated candidate-pairs in one report. */
+    private static double outgoingBitrateBps(final org.webrtc.RTCStatsReport report) {
+        double best = -1;
+        for (final RTCStats stats : report.getStatsMap().values()) {
+            if (!"candidate-pair".equals(stats.getType())) continue;
+            final Object nominated = stats.getMembers().get("nominated");
+            if (nominated instanceof Boolean && !((Boolean) nominated)) continue;
+            final Object bitrate = stats.getMembers().get("availableOutgoingBitrate");
+            if (!(bitrate instanceof Number)) continue;
+            final double bps = ((Number) bitrate).doubleValue();
+            best = (best < 0) ? bps : Math.min(best, bps);
+        }
+        return best;
+    }
+
+    private void evaluateLinkQuality() {
+        double minBitrate = -1;
+        synchronized (mStatsPeers) {
+            for (final double bps : mPeerBitrateBps.values()) {
+                if (bps < 0) continue;
+                minBitrate = (minBitrate < 0) ? bps : Math.min(minBitrate, bps);
+            }
+        }
+        if (minBitrate < 0) return;
+
+        final long now = SystemClock.elapsedRealtime();
+        if (minBitrate < LOW_OUTGOING_BITRATE_BPS) {
+            mHealthyBitrateSinceMs = 0;
+            if (mLowBitrateSinceMs == 0) {
+                mLowBitrateSinceMs = now;
+            } else if (now - mLowBitrateSinceMs >= STEP_DOWN_AFTER_MS
+                    && mQualityStep > Preference.STREAM_RESOLUTION_SD) {
+                stepCaptureQuality(mQualityStep - 1);
+                mLowBitrateSinceMs = 0;
+            }
+        } else {
+            mLowBitrateSinceMs = 0;
+            if (mHealthyBitrateSinceMs == 0) {
+                mHealthyBitrateSinceMs = now;
+            } else if (now - mHealthyBitrateSinceMs >= STEP_UP_AFTER_MS
+                    && mQualityStep < mConfiguredResolutionMode) {
+                stepCaptureQuality(mQualityStep + 1);
+                mHealthyBitrateSinceMs = 0;
+            }
+        }
+    }
+
+    private void stepCaptureQuality(final int newStep) {
+        if (capturer == null || !mCapturing) return;
+        final int oldWidth = mCaptureWidth;
+        final int oldHeight = mCaptureHeight;
+        final int oldFps = mCaptureFps;
+        applyCaptureFormatMode(createCameraEnumerator(), mCaptureDeviceName, newStep);
+        if (mCaptureWidth == oldWidth && mCaptureHeight == oldHeight && mCaptureFps == oldFps) {
+            return;
+        }
+        final boolean down = newStep < mQualityStep;
+        mQualityStep = newStep;
+        capturer.changeCaptureFormat(mCaptureWidth, mCaptureHeight, mCaptureFps);
+        Log.i(TAG_CAM_METRICS, "step=" + (down ? "down" : "up")
+                + " " + mCaptureWidth + "x" + mCaptureHeight + "@" + mCaptureFps);
     }
 
     /***
@@ -571,6 +730,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
                     .unregisterOnSharedPreferenceChangeListener(mStreamResolutionPrefListener);
             mStreamResolutionPrefListener = null;
         }
+        resetLinkQualityState();
         killHandler();
 
         if (localVideoSource!=null) {
@@ -710,6 +870,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
     private void stopLocalVideoSource() {
         mCapturing = false;
+        resetLinkQualityState();
         try {
             if (capturer != null)
             {
@@ -873,7 +1034,12 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
             // called when a remote closes connection with this Drone
             if (peer.status.equals(PnPeer.STATUS_CONNECTED))
             {
+                trackStatsPeer(peer);
                 mIRTCListener.onPeerConnected(peer.id);
+            }
+            else if (peer.status.equals(PnPeer.STATUS_DISCONNECTED))
+            {
+                untrackStatsPeer(peer);
             }
 
         }
@@ -968,6 +1134,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
         public void onPeerConnectionClosed(PnPeer peer) {
             try
             {
+                untrackStatsPeer(peer);
                 // Quit back to MainActivity
                 mIRTCListener.onPeerConnectionClosed(peer);
             }
