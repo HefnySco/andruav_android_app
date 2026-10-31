@@ -53,7 +53,8 @@ public class SensorService extends Service {
      * {@code DroidPlannerService}'s own (101) and every id in {@link com.andruav.interfaces.INotification},
      * since this service and the FCB-link service can both be in the foreground at once.
      */
-    private static final int FOREGROUND_ID = 120;
+    // AN-0114: shared "DroneEngage unit" notification id
+    private static final int FOREGROUND_ID = ap.andruav_ap.Notification.UNIT_NOTIFICATION_ID;
 
     //////// Attributes
     protected boolean               mcreated = false;
@@ -182,8 +183,8 @@ public class SensorService extends Service {
      */
     private void promoteToForeground()
     {
-        android.app.Notification notification = new NotificationCompat.Builder(this, ap.andruav_ap.Notification.CHANNEL_ID)
-                .setContentTitle("Andruav")
+        android.app.Notification notification = new NotificationCompat.Builder(this, ap.andruav_ap.Notification.UNIT_CHANNEL_ID)
+                .setContentTitle("DroneEngage unit")
                 .setContentText("Collecting sensor and location data")
                 .setSmallIcon(R.drawable.ic_logo2)
                 .setPriority(NotificationCompat.PRIORITY_MIN)

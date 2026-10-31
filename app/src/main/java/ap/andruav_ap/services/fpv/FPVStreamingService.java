@@ -72,7 +72,8 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
     /**
      * Distinct from {@code SensorService}'s 120 - both foreground services can run concurrently.
      */
-    private static final int FOREGROUND_ID = 121;
+    // AN-0114: shared "DroneEngage unit" notification id
+    private static final int FOREGROUND_ID = ap.andruav_ap.Notification.UNIT_NOTIFICATION_ID;
 
     private final Handler mHandle = new Handler(Looper.getMainLooper());
 
@@ -131,8 +132,8 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
     }
 
     private void promoteToForeground() {
-        android.app.Notification notification = new NotificationCompat.Builder(this, ap.andruav_ap.Notification.CHANNEL_ID)
-                .setContentTitle("Andruav")
+        android.app.Notification notification = new NotificationCompat.Builder(this, ap.andruav_ap.Notification.UNIT_CHANNEL_ID)
+                .setContentTitle("DroneEngage unit")
                 .setContentText("Streaming camera")
                 .setSmallIcon(R.drawable.ic_logo2)
                 .setPriority(NotificationCompat.PRIORITY_MIN)

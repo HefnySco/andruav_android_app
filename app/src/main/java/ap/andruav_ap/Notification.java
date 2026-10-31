@@ -51,6 +51,15 @@ import ap.andruavmiddlelibrary.factory.tts.TTS;
 public  class Notification implements INotification{
 
     public static final String CHANNEL_ID = "andruav_notifications";
+
+    /***
+     * Shared channel + id for every persistent foreground-service
+     * notification on a unit (AN-0114). All FGS still call startForeground
+     * as required, but they post into this one entry so the shade shows a
+     * single "DroneEngage unit" line instead of one per service.
+     */
+    public static final String UNIT_CHANNEL_ID = "de_unit";
+    public static final int UNIT_NOTIFICATION_ID = 62008;
     /** High-importance channel used for the full-screen FPV-start notification (Android 14+). */
     public static final String CHANNEL_ID_FPV_URGENT = "andruav_fpv_urgent";
     /** Silent low-importance channel for the AndruavLinkService ongoing link-status notification. */
@@ -108,6 +117,12 @@ public  class Notification implements INotification{
             NotificationChannel linkChannel = new NotificationChannel(CHANNEL_ID_LINK,
                     "Andruav Link", NotificationManager.IMPORTANCE_LOW);
             mNotificationManager.createNotificationChannel(linkChannel);
+
+            // Minimal-importance channel every persistent unit FGS posts into
+            // (AN-0114): collapsed in the shade, never audible.
+            NotificationChannel unitChannel = new NotificationChannel(UNIT_CHANNEL_ID,
+                    "DroneEngage unit", NotificationManager.IMPORTANCE_MIN);
+            mNotificationManager.createNotificationChannel(unitChannel);
         }
 
         EventBus.getDefault().register(this);

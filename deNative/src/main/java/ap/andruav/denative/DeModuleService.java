@@ -38,8 +38,10 @@ public abstract class DeModuleService extends Service {
     public static final String EXTRA_ARGS = "ap.andruav.denative.ARGS";
 
     private static final String TAG = "DeModuleService";
-    private static final String CHANNEL_ID = "de_modules";
-    private static final int NOTIFICATION_ID = 4201;
+    // AN-0114: all module FGS post into the app's single "DroneEngage unit"
+    // entry (channel/id kept in sync with ap.andruav_ap.Notification).
+    private static final String CHANNEL_ID = "de_unit";
+    private static final int NOTIFICATION_ID = 62008;
     private static final long STOP_GRACE_MS = 5000;
 
     static {
@@ -227,7 +229,7 @@ public abstract class DeModuleService extends Service {
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID, "DroneEngage modules", NotificationManager.IMPORTANCE_LOW);
+                    CHANNEL_ID, "DroneEngage unit", NotificationManager.IMPORTANCE_MIN);
             getSystemService(NotificationManager.class).createNotificationChannel(channel);
         }
     }
@@ -236,14 +238,14 @@ public abstract class DeModuleService extends Service {
         Notification notification;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notification = new Notification.Builder(this, CHANNEL_ID)
-                    .setContentTitle("DroneEngage " + getModuleName())
-                    .setContentText("native module running")
+                    .setContentTitle("DroneEngage unit")
+                    .setContentText(getModuleName() + " running")
                     .setSmallIcon(android.R.drawable.stat_sys_download)
                     .build();
         } else {
             notification = new Notification.Builder(this)
-                    .setContentTitle("DroneEngage " + getModuleName())
-                    .setContentText("native module running")
+                    .setContentTitle("DroneEngage unit")
+                    .setContentText(getModuleName() + " running")
                     .setSmallIcon(android.R.drawable.stat_sys_download)
                     .build();
         }

@@ -71,8 +71,9 @@ public class DeAndroidModuleService extends Service {
     public static int s2sPort = 60000;
 
     private static final String TAG = "DeAndroidModuleSvc";
-    private static final String CHANNEL_ID = "de_module_host";
-    private static final int FOREGROUND_ID = 124;
+    // AN-0114: shared "DroneEngage unit" channel + id (ap.andruav_ap.Notification)
+    private static final String CHANNEL_ID = "de_unit";
+    private static final int FOREGROUND_ID = 62008;
 
     private static final String MODULE_ID = "andruav_phone";
     private static final String MODULE_KEY = "andruav_phone";
@@ -98,7 +99,7 @@ public class DeAndroidModuleService extends Service {
         super.onCreate();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID, "DroneEngage app module", NotificationManager.IMPORTANCE_LOW);
+                    CHANNEL_ID, "DroneEngage unit", NotificationManager.IMPORTANCE_MIN);
             getSystemService(NotificationManager.class).createNotificationChannel(channel);
         }
     }
@@ -405,7 +406,7 @@ public class DeAndroidModuleService extends Service {
             builder = new Notification.Builder(this);
         }
         return builder
-                .setContentTitle("DroneEngage app module")
+                .setContentTitle("DroneEngage unit")
                 .setContentText(text)
                 .setSmallIcon(R.drawable.ic_logo2)
                 .setOngoing(true)
