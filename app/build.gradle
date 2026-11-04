@@ -22,8 +22,8 @@ android {
         targetSdkVersion android_build_target_sdk_version
 
 
-        versionName '14.7.5'
-        versionCode 14007005
+        versionName '14.7.6'
+        versionCode 14007006
         multiDexEnabled true
     }
 
