@@ -7,5 +7,5 @@
 #   droneengage_communication_pro = A3/DE-0012 + DE-0017 compat fixes (de_comm)
 #   droneengage_mavlink           = A4/MV-0019 (de_mavlink)
 droneengage_communication_pro git@github.com:HefnySco/prv_drone_engage_communication.git 02f624d9a0603ba257f209f4afffbe9a2f116079
-droneengage_mavlink git@github.com:HefnySco/prv_droneengage_mavlink.git a00eec09ae5893342d5f7a511fd4b16f728bba49
+droneengage_mavlink git@github.com:HefnySco/prv_droneengage_mavlink.git dbf680a3238a50022c5bf83f2b48c26a20d5d02b
 de_common git@github.com:HefnySco/droneengage_common.git
