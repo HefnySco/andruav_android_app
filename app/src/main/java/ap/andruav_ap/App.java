@@ -50,6 +50,7 @@ import com.andruav.event.fcb_event._7adath_FCB_2AMR;
 import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
 import com.andruav.event.networkEvent._7adath_ConnectionQuality;
 import com.andruav.event.systemEvent.Event_ShutDown_Signalling;
+import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.andruavUnit.AndruavUnitMe;
 import com.andruav.Constants;
 import com.andruav.TelemetryProtocol;
@@ -953,12 +954,19 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
     public static void defineAndruavUnit()
     {
+        final AndruavUnitBase oldUnit = AndruavSettings.andruavWe7daBase;
+        final int oldProtocol = (oldUnit == null) ? TelemetryProtocol.TelemetryProtocol_No_Telemetry : oldUnit.getTelemetry_protocol();
+        if (oldUnit != null) oldUnit.setTelemetry_protocol(TelemetryProtocol.TelemetryProtocol_No_Telemetry);  // releases its FCBoard
+
         AndruavSettings.andruavWe7daBase = new AndruavUnitMe();
         AndruavSettings.andruavWe7daBase.setTelemetry_protocol(TelemetryProtocol.TelemetryProtocol_No_Telemetry);  // reset telemetry
 
 
 
         updateWe7daInfo();
+
+        // a live FCB link fires no new connected event, so the new unit needs its FCBoard here
+        AndruavSettings.andruavWe7daBase.setTelemetry_protocol(oldProtocol);
 
         if (PreferenceValidator.isInvalidLoginCode())
         {
