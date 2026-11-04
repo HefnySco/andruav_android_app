@@ -368,6 +368,9 @@ public class MainScreen extends BaseAndruavShasha {
 
                     AndruavFacade.sendUdpProxyStatus(null);
 
+                    // new proxy ports - refresh the port shown on the Flight Telemetry card.
+                    updateFCBButton();
+
                 }
                 else if (msg.obj instanceof Event_GCSBlockedChanged)
                 {
