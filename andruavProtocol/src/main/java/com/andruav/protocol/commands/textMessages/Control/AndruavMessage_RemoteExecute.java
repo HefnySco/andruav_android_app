@@ -3,7 +3,6 @@ package com.andruav.protocol.commands.textMessages.Control;
 import androidx.collection.SimpleArrayMap;
 
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_RemoteControlSettings;
-import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_WayPoints;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_ExternalCommand_GeoFence;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_GeoFenceAttachStatus;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_ID;
@@ -188,7 +187,7 @@ public class AndruavMessage_RemoteExecute extends AndruavMessage_Control_Base {
 
     /***
      * Asks Drone to clear its waypoints
-     * <br> Drone will need  to instruct FCB to do so. and then sbroadcast a {@link AndruavResalaBinary_WayPoints}
+     * <br> Drone will need  to instruct FCB to do so. and then sbroadcast a {@link AndruavMessage_WayPoints}
      * to all parties with new waypoints which should be null.
      */
     public final static int  RemoteCommand_CLEAR_WAY_POINTS = 502;

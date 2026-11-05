@@ -251,16 +251,8 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
                 .put(Messages.TYPE_AndruavMessage_IMG)
                 .put(com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_IMU
                         .TYPE_AndruavMessage_BinaryIMU)
-                .put(com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_WayPoints
-                        .TYPE_AndruavMessageBinary_WayPoints)
                 .put(com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_IMUStatistics
                         .TYPE_AndruavMessage_IMUStatistics)
-                .put(com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_RemoteControl
-                        .TYPE_AndruavMessage_RemoteControl)
-                .put(com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_WayPointsUpdates
-                        .TYPE_AndruavMessage_WayPointsUpates)
-                .put(com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_ExternalCommand_WayPoints
-                        .TYPE_AndruavResalaBinary_ExternalCommand_WayPoints)
                 .put(com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_RemoteControlSettings
                         .TYPE_AndruavMessage_RemoteControlSettings)
                 .put(Messages.TYPE_AndruavMessage_LightTelemetry)

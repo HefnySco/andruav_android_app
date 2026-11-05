@@ -8,15 +8,11 @@ import com.andruav.protocol.commands.binaryMessages.AndruavBinary_2MR;
 import com.andruav.protocol.commands.binaryMessages.AndruavBinaryHelper;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinaryBase;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_BinaryData;
-import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_ExternalCommand_WayPoints;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_IMG;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_IMU;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_IMUStatistics;
-import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_RemoteControl;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_RemoteControlSettings;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_ServoOutput;
-import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_WayPointsUpdates;
-import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_WayPoints;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_LightTelemetry;
 import com.andruav.protocol.commands.textMessages.AndruavMessageBase;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_CameraFlash;
@@ -115,25 +111,8 @@ public class Andruav_Parser {
                 andruavResalaBinaryBase = new AndruavResalaBinary_IMU();
                 break;
 
-            case AndruavResalaBinary_WayPoints.TYPE_AndruavMessageBinary_WayPoints:
-                andruavResalaBinaryBase = new AndruavResalaBinary_WayPoints();
-                break;
-
             case AndruavResalaBinary_IMUStatistics.TYPE_AndruavMessage_IMUStatistics:
                 andruavResalaBinaryBase = new AndruavResalaBinary_IMUStatistics();
-                break;
-
-            case AndruavResalaBinary_RemoteControl.TYPE_AndruavMessage_RemoteControl:
-                andruavResalaBinaryBase = new AndruavResalaBinary_RemoteControl();
-                break;
-
-
-            case AndruavResalaBinary_WayPointsUpdates.TYPE_AndruavMessage_WayPointsUpates:
-                andruavResalaBinaryBase = new AndruavResalaBinary_WayPointsUpdates();
-                break;
-
-            case AndruavResalaBinary_ExternalCommand_WayPoints.TYPE_AndruavResalaBinary_ExternalCommand_WayPoints:
-                andruavResalaBinaryBase = new AndruavResalaBinary_ExternalCommand_WayPoints();
                 break;
 
             case AndruavResalaBinary_RemoteControlSettings.TYPE_AndruavMessage_RemoteControlSettings:

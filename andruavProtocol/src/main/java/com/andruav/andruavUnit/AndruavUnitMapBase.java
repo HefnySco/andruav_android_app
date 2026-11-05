@@ -6,15 +6,12 @@ import com.andruav.AndruavFacade;
 import com.andruav.AndruavEngine;
 import com.andruav.Constants;
 import com.andruav.sensors.AndruavIMU;
-import com.andruav.controlBoard.shared.missions.MissionBase;
 import com.andruav.controlBoard.shared.missions.MohemmaMapBase;
 import com.andruav.protocol.R;
 import com.andruav.protocol.commands.ProtocolHeaders;
 import com.andruav.protocol.commands.binaryMessages.AndruavBinary_2MR;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_IMU;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_IMUStatistics;
-import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_WayPoints;
-import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_WayPointsUpdates;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_GPS;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_HomeLocation;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_ID;
@@ -199,46 +196,6 @@ public class AndruavUnitMapBase extends SimpleArrayMap<String, AndruavUnitBase> 
 
     }
 
-
-    /***
-     * Replaces missions with same Sequence Number.
-     * @param andruavWe7da
-     * @param andruavResalaBinary_wayPointsUpdates
-     */
-    public void updateWayPoints(AndruavUnitBase andruavWe7da, AndruavResalaBinary_WayPointsUpdates andruavResalaBinary_wayPointsUpdates)
-    {
-        updateWayPoints_private (andruavWe7da, andruavResalaBinary_wayPointsUpdates);
-    }
-
-    //BUG: This is a bad logic
-    private void updateWayPoints_private (AndruavUnitBase anruavWe7da, AndruavResalaBinary_WayPointsUpdates andruavResalaBinary_wayPointsUpdates)
-    {
-       final MohemmaMapBase mohemmaMapBase = andruavResalaBinary_wayPointsUpdates.getWayPoints();
-
-        for (int i=0, limit=andruavResalaBinary_wayPointsUpdates.getWayPoints().size();i<limit;i++) {
-
-            MissionBase missionBase = mohemmaMapBase.valueAt(i);
-            anruavWe7da.getMohemmaMapBase().put(String.valueOf(missionBase.Sequence), missionBase);
-        }
-
-
-    }
-
-
-    /***
-     * sendMessageToModule an empty waypoints will clear the current waypoints of the unit.
-     * @param andruavWe7da
-     * @param andruavMessageBinary_wayPoints
-     */
-    public void refreshWayPoints(AndruavUnitBase andruavWe7da, AndruavResalaBinary_WayPoints andruavMessageBinary_wayPoints)
-    {
-
-        MohemmaMapBase mohemmaMapBase = andruavMessageBinary_wayPoints.getWayPoints();
-
-        andruavWe7da.refreshWayPoints(mohemmaMapBase);
-
-
-    }
 
     /***
      * Applies a 1027 waypoints message. Chunked missions are assembled per unit

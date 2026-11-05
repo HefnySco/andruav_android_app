@@ -21,7 +21,6 @@ import com.andruav.event.droneReport_Event.Event_RemoteControlSettingsReceived;
 import com.andruav.event.droneReport_Event.Event_Signalling;
 import com.andruav.event.droneReport_Event.Event_TargetLocation_Ready;
 import com.andruav.event.droneReport_Event.Event_WayPointsRecieved;
-import com.andruav.event.droneReport_Event.Event_WayPointsUpdated;
 import com.andruav.event.droneReport_Event.Event_CameraZoom;
 import com.andruav.event.fcb_event.Event_FCB_RemoteControlSettings;
 import com.andruav.event.fpv7adath.Event_FPV_CMD;
@@ -35,11 +34,8 @@ import com.andruav.protocol.commands.Andruav_Parser;
 import com.andruav.protocol.commands.ProtocolHeaders;
 import com.andruav.protocol.commands.binaryMessages.AndruavBinary_2MR;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinaryBase;
-import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_ExternalCommand_WayPoints;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_IMU;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_RemoteControlSettings;
-import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_WayPoints;
-import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_WayPointsUpdates;
 import com.andruav.protocol.commands.textMessages.AndruavMessageBase;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_CameraFlash;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_CameraSwitch;
@@ -1429,62 +1425,6 @@ public abstract class AndruavWSClientBase {
             break;
 
 
-
-            // This is not internal command it s external command comes from a third party and to be executed here
-            case AndruavResalaBinary_ExternalCommand_WayPoints.TYPE_AndruavResalaBinary_ExternalCommand_WayPoints: {
-                andruav_2MR.processed = true;
-                AndruavSettings.andruavWe7daBase.getMohemmaMapBase().clear();
-
-                MohemmaMapBase mohemmaMapBase = ((AndruavResalaBinary_ExternalCommand_WayPoints) andruav_2MR.andruavResalaBinaryBase).getWayPoints();
-                if (mohemmaMapBase == null) return ;
-
-                AndruavSettings.andruavWe7daBase.updateExternalWayPoints(mohemmaMapBase);
-
-            }
-            break;
-
-            // Waypoints recieved.
-            case AndruavResalaBinary_WayPoints.TYPE_AndruavMessageBinary_WayPoints: {
-                andruav_2MR.processed = true;
-                AndruavUnitBase andruavWe7da = (AndruavEngine.getAndruavWe7daMapBase()).get(andruav_2MR.partyID);
-                if (andruavWe7da == null) {
-                    // Object is not in the defined markers...
-                    // either because :
-                    // 1- No Message ID has been sent yet.
-                    // 2- future reason: permissions and security related issues.
-                    // We can add it as update list to increase response time but I prefer to leave it as is
-                    // for future security and permissions updates.
-                    // The safest way here is to sendMessageToModule individual message asking the unit to sendMessageToModule its ID
-                    break;
-                }
-                (AndruavEngine.getAndruavWe7daMapBase()).refreshWayPoints(andruavWe7da, ((AndruavResalaBinary_WayPoints) andruav_2MR.andruavResalaBinaryBase));
-                AndruavEngine.getEventBus().post(new Event_WayPointsRecieved(andruavWe7da));
-            }
-            break;
-
-            case AndruavResalaBinary_WayPointsUpdates.TYPE_AndruavMessage_WayPointsUpates: {
-                {
-                    // Update IMU Data
-                    andruav_2MR.processed = true;
-
-                    AndruavUnitBase andruavWe7da = (AndruavEngine.getAndruavWe7daMapBase()).get(andruav_2MR.partyID);
-                    if (andruavWe7da == null) {
-                        // Object is not in the defined markers...
-                        // either because :
-                        // 1- No Message ID has been sent yet.
-                        // 2- future reason: permissions and security related issues.
-                        // We can add it as update list to increase response time but I prefer to leave it as is
-                        // for future security and permissions updates.
-                        // The safest way here is to sendMessageToModule individual message asking the unit to sendMessageToModule its ID
-                        break;
-                    }
-                    //BUG: This is a bad logic
-                    AndruavEngine.getAndruavWe7daMapBase().updateWayPoints(andruavWe7da,((AndruavResalaBinary_WayPointsUpdates)andruav_2MR.andruavResalaBinaryBase));
-                    AndruavEngine.getEventBus().post(new Event_WayPointsUpdated(andruavWe7da, ((AndruavResalaBinary_WayPointsUpdates) andruav_2MR.andruavResalaBinaryBase).getWayPoints()));
-
-                }
-            }
-            break;
 
             case AndruavResalaBinary_RemoteControlSettings.TYPE_AndruavMessage_RemoteControlSettings:
             {

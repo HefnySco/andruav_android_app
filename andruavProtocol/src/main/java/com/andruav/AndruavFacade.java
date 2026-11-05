@@ -12,7 +12,6 @@ import com.andruav.controlBoard.shared.geoFence.GeoFenceBase;
 import com.andruav.controlBoard.shared.geoFence.GeoFenceManager;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_RemoteControlSettings;
 import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_IMG;
-import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_WayPointsUpdates;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_DroneReport;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_ExternalCommand_WayPoints;
@@ -27,7 +26,6 @@ import com.andruav.protocol.commands.textMessages.AndruavMessage_Signaling;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_DistinationLocation;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_WayPoints;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_LoadTasks;
-import com.andruav.protocol.commands.binaryMessages.AndruavResalaBinary_WayPoints;
 import com.andruav.protocol.commands.textMessages.systemCommands.AndruavSystem_UdpProxy;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_UDPProxy_Info;
 import com.andruav.util.AndruavLatLngAlt;
@@ -294,13 +292,6 @@ public class AndruavFacade extends AndruavFacadeBase{
 
         andruavMessage_externalCommand_wayPoints.setWayPoints(mohemmaMapBase);
         sendMessage(andruavMessage_externalCommand_wayPoints, andruavUnitBase, Boolean.FALSE);
-
-        /*
-        AndruavResalaBinary_ExternalCommand_WayPoints andruavResalaBinary_externalCommand_wayPoints = new AndruavResalaBinary_ExternalCommand_WayPoints();
-
-        andruavResalaBinary_externalCommand_wayPoints.setWayPoints(mohemmaMapBase);
-        sendMessage(andruavResalaBinary_externalCommand_wayPoints, andruavWe7daBase);
-        */
     }
 
     /***
@@ -316,30 +307,6 @@ public class AndruavFacade extends AndruavFacadeBase{
 
         andruavMessage_wayPoints.setWayPoints(mohemmaMapBase);
         sendMessage(andruavMessage_wayPoints, andruavUnitBase, Boolean.FALSE);
-    }
-
-    public static void sendWayPoints_binary(final AndruavUnitBase andruavUnitBase)
-    {
-        final MohemmaMapBase mohemmaMapBase = AndruavSettings.andruavWe7daBase.getMohemmaMapBase();
-        AndruavResalaBinary_WayPoints andruavMessageBinary_wayPoints = new AndruavResalaBinary_WayPoints();
-
-        andruavMessageBinary_wayPoints.setWayPoints(mohemmaMapBase);
-        sendMessage(andruavMessageBinary_wayPoints, andruavUnitBase, Boolean.FALSE);
-    }
-
-    /***
-     * Sends Andruav updated waypoints stored in {@link AndruavUnitBase} of self.
-     * <br>updates could be because Item has been reached or changes in specs.
-     * @param target
-     * @param mohemmaMapBase if size equals zero then it simply return and does nothing.
-     */
-    public static void sendWayPointsUpdates(final AndruavUnitBase target, MohemmaMapBase mohemmaMapBase)
-    {
-        if (mohemmaMapBase.size()==0) return;
-        AndruavResalaBinary_WayPointsUpdates andruavMessageBinary_wayPointUpdated = new AndruavResalaBinary_WayPointsUpdates();
-
-        andruavMessageBinary_wayPointUpdated.setWayPoints(mohemmaMapBase);
-        sendMessage(andruavMessageBinary_wayPointUpdated, target, Boolean.FALSE);
     }
 
     public static void  sendWayPointsReached(final AndruavUnitBase target, final int missionItemIndex, final int missionItemStatus)
