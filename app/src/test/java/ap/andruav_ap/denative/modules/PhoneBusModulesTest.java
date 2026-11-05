@@ -80,8 +80,43 @@ public class PhoneBusModulesTest {
 
         mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
                 .put("i", PhoneGpioModule.MODULE_KEY).put("a", 2).put("p", 1).put("v", 0)));
+
+        assertFalse(mOutputs.get("torch"));
+        assertEquals(PhoneGpioModule.PIN_CAMERA_FLASH,
+                lastStatusList("").getJSONObject(0).getString("n"));
+        assertEquals(0, lastStatusList("").getJSONObject(0).getInt("v"));
+    }
+
+    /** AN-0120: the 1051 camera-flash command goes through the one torch
+     * choke point - same write, same exclusivity, same 6520 status. */
+    @Test
+    public void flashCommandDrivesTorchAndBroadcastsStatus() throws Exception {
+        mGpio.writeFlash(true);
+
+        assertTrue(mOutputs.get("torch"));
+        final JSONArray list = lastStatusList("");
+        final JSONObject pin = list.getJSONObject(0);
+        assertEquals(1, pin.getInt("p"));
+        assertEquals(1, pin.getInt("v"));
+        assertEquals(PhoneGpioModule.PIN_CAMERA_FLASH, pin.getString("n"));
+
+        mGpio.writeFlash(false);
         assertFalse(mOutputs.get("torch"));
         assertEquals(0, lastStatusList("").getJSONObject(0).getInt("v"));
+    }
+
+    /** AN-0120: toolbar flash on while flash_strobe is on stops the strobe. */
+    @Test
+    public void flashCommandStopsStrobe() throws Exception {
+        mOutputs.put("torch_strobe", true);
+
+        mGpio.writeFlash(true);
+
+        assertFalse(mOutputs.get("torch_strobe"));
+        assertTrue(mOutputs.get("torch"));
+        // the exclusive free + the write both happened; status carries all pins
+        final JSONArray list = lastStatusList("");
+        assertTrue(list.length() > 1);
     }
 
     @Test

@@ -7,6 +7,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import ap.andruav_ap.denative.providers.phone.PhoneOutput;
+
 /**
  * AN-0107: the phone's torch / screen strobe / vibrate as a DroneEngage GPIO
  * module (class "gpio") with the de_rpi_gpio wire surface, so the webclient's
@@ -113,14 +115,7 @@ public final class PhoneGpioModule {
             if (action == ACTION_PORT_WRITE) {
                 final Pin pin = find(ms);
                 if (pin == null || !ms.has("v")) return;
-                final boolean on = ms.optInt("v") != 0;
-                // one flash unit: steady and strobe cannot both own it
-                final boolean freed = on && (pin.exclusive != null)
-                        && Boolean.TRUE.equals(m_outputs.read(pin.exclusive));
-                if (freed) m_outputs.write(pin.exclusive, false, SRC_GCS);
-                m_outputs.write(pin.output, on, SRC_GCS);
-                // de_rpi_gpio broadcasts the post-write status so every GCS sees the flip
-                sendStatus("", freed ? null : pin);
+                writePin(pin, ms.optInt("v") != 0, SRC_GCS);
             } else if (action == ACTION_INFO) {
                 sendStatus(sender, null);
             }
@@ -133,6 +128,30 @@ public final class PhoneGpioModule {
     /** Full pin list to every GCS (module start). */
     public void announce() {
         sendStatus("", null);
+    }
+
+    /**
+     * AN-0120: the 1051 camera-flash command writes the camera_flash pin,
+     * so the video toolbar and the GPIO buttons share one state (and the
+     * strobe exclusivity still applies).
+     */
+    public void writeFlash(final boolean on) {
+        for (Pin pin : PINS) {
+            if (pin.name.equals(PIN_CAMERA_FLASH)) {
+                writePin(pin, on, PhoneOutput.SRC_LEGACY);
+                return;
+            }
+        }
+    }
+
+    private void writePin(final Pin pin, final boolean on, final String src) {
+        // one flash unit: steady and strobe cannot both own it
+        final boolean freed = on && (pin.exclusive != null)
+                && Boolean.TRUE.equals(m_outputs.read(pin.exclusive));
+        if (freed) m_outputs.write(pin.exclusive, false, src);
+        m_outputs.write(pin.output, on, src);
+        // de_rpi_gpio broadcasts the post-write status so every GCS sees the flip
+        sendStatus("", freed ? null : pin);
     }
 
     /** Polled: broadcasts the list when a pin changed outside a bus write (Emergency, actions). */

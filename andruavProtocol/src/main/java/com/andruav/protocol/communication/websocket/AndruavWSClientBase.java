@@ -271,6 +271,22 @@ public abstract class AndruavWSClientBase {
 
 
 
+    /***
+     * AN-0120: routes the 1051 camera-flash command through the phone's
+     * torch output choke point (one state for the video toolbar and the
+     * GPIO pins). Installed by the app while the native phone output
+     * surface is up; null keeps the legacy FPV_CMD_FLASHCAM event path.
+     */
+    public interface FlashCamHandler {
+        void onFlashCam(boolean on);
+    }
+
+    private static volatile FlashCamHandler s_flashCamHandler;
+
+    public static void setFlashCamHandler(final FlashCamHandler handler) {
+        s_flashCamHandler = handler;
+    }
+
     public void disconnect()
     {
         mhandler.removeCallbacksAndMessages(null);
@@ -963,11 +979,19 @@ public abstract class AndruavWSClientBase {
 
                     if (cameraModule.BuiltInModule) {
                         // This is a local camera for this Andruav Device
-                        Event_FPV_CMD a7adath_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_FLASHCAM);
+                        final boolean flashOn = (andruavMessage_cameraFlash.FlashOn == AndruavMessage_CameraFlash.FLASH_ON);
+                        final FlashCamHandler flashCamHandler = s_flashCamHandler;
+                        if (flashCamHandler != null) {
+                            // one torch path: the phone output choke point
+                            // keeps the camera_flash pin state consistent
+                            flashCamHandler.onFlashCam(flashOn);
+                        } else {
+                            Event_FPV_CMD a7adath_fpv_cmd = new Event_FPV_CMD(Event_FPV_CMD.FPV_CMD_FLASHCAM);
 
-                        a7adath_fpv_cmd.ACT = (andruavMessage_cameraFlash.FlashOn == AndruavMessage_CameraFlash.FLASH_ON);
-                        a7adath_fpv_cmd.Requester = andruavWe7da;
-                        AndruavEngine.getEventBus().post(a7adath_fpv_cmd);
+                            a7adath_fpv_cmd.ACT = flashOn;
+                            a7adath_fpv_cmd.Requester = andruavWe7da;
+                            AndruavEngine.getEventBus().post(a7adath_fpv_cmd);
+                        }
                     }
                 }
                 catch (final Exception ex)

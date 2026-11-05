@@ -13,6 +13,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.andruav.protocol.communication.websocket.AndruavWSClientBase;
+
 import ap.andruav_ap.denative.providers.phone.PhoneDevices;
 import ap.andruav_ap.denative.providers.phone.PhoneOutput;
 import ap.andruav_ap.denative.providers.sound.SoundClips;
@@ -66,6 +68,10 @@ public final class PhoneBusModules {
                 gpio::onMessage, s2sPort)) {
             return;
         }
+        // AN-0120: the 1051 camera-flash command writes the camera_flash
+        // pin through the same output choke point, so toolbar and GPIO
+        // buttons share one state. Only while this surface is up.
+        AndruavWSClientBase.setFlashCamHandler(gpio::writeFlash);
 
         PhoneSoundModule sound = null;
         if (soundProvider != null) {
@@ -164,6 +170,7 @@ public final class PhoneBusModules {
 
     public synchronized void stop() {
         m_stopped = true;
+        AndruavWSClientBase.setFlashCamHandler(null);
         if (m_timer != null) {
             m_timer.shutdownNow();
             m_timer = null;
