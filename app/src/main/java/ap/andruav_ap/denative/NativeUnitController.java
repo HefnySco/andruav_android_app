@@ -64,6 +64,28 @@ public final class NativeUnitController {
     private static final long WAIT_TIMEOUT_MS = 8000;
     private static final long SSL_VERIFY_WATCH_MS = 30_000;
 
+    /** DE-0029: points at which the andruav_phone bus presence is checked
+     *  and the module service START is re-sent when it is still absent. */
+    private static final long[] MODULE_BUS_VERIFY_MS = {5_000, 20_000, 60_000};
+
+    /** START DeAndroidModuleService, with a plain startService fallback
+     *  when the foreground-service call is denied (background start). */
+    private static void startAndroidModuleService(final Context app) {
+        final Intent moduleIntent = new Intent(app, DeAndroidModuleService.class)
+                .setAction(DeAndroidModuleService.ACTION_START);
+        try {
+            ContextCompat.startForegroundService(app, moduleIntent);
+            return;
+        } catch (Exception e) {
+            Log.e(TAG, "cannot startForegroundService DeAndroidModuleService", e);
+        }
+        try {
+            app.startService(moduleIntent);
+        } catch (Exception e) {
+            Log.e(TAG, "cannot startService DeAndroidModuleService", e);
+        }
+    }
+
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
     /*** Bumped per switch so a stale pending wait cannot fire after a newer toggle. */
@@ -151,12 +173,23 @@ public final class NativeUnitController {
         }
 
         // B2: the app-side databus module (capability surface) joins the unit.
-        final Intent moduleIntent = new Intent(app, DeAndroidModuleService.class)
-                .setAction(DeAndroidModuleService.ACTION_START);
-        try {
-            ContextCompat.startForegroundService(app, moduleIntent);
-        } catch (Exception e) {
-            Log.e(TAG, "cannot start DeAndroidModuleService", e);
+        // DE-0029: a single START is not reliable - a background-start denial
+        // or a late module init leaves andruav_phone off the bus forever, so
+        // verify the bus client attached and retry the START a few times.
+        startAndroidModuleService(app);
+        final int busCheckGen = sSwitchGeneration;
+        for (final long delay : MODULE_BUS_VERIFY_MS) {
+            handler.postDelayed(() -> {
+                if (busCheckGen != sSwitchGeneration || !sNativeWanted) {
+                    return;
+                }
+                if (com.andruav.AndruavEngine.getAndruavWS() instanceof AndruavDeBusClient) {
+                    return;   // andruav_phone is on the bus
+                }
+                Log.w(TAG, "andruav_phone not on the bus after "
+                        + delay + "ms - re-starting DeAndroidModuleService");
+                startAndroidModuleService(app);
+            }, delay);
         }
         // When the user requires strict SSL verification, a comm line that
         // never comes online most likely means the server certificate failed
