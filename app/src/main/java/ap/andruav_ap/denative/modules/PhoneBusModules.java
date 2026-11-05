@@ -62,6 +62,25 @@ public final class PhoneBusModules {
                 final PhoneOutput out = PhoneDevices.output(key);
                 return out != null ? out.write(on, src) : "no output " + key;
             }
+
+            @Override
+            public String writeRate(final String key, final boolean on, final double hz,
+                                    final int duty, final String src) {
+                final PhoneOutput out = PhoneDevices.output(key);
+                return out != null ? out.writePwm(on, hz, duty, src) : "no output " + key;
+            }
+
+            @Override
+            public Double rate(final String key) {
+                final PhoneOutput out = PhoneDevices.output(key);
+                return out != null ? out.pwmHz() : null;
+            }
+
+            @Override
+            public Integer duty(final String key) {
+                final PhoneOutput out = PhoneDevices.output(key);
+                return out != null ? out.pwmDuty() : null;
+            }
         }, sender(gpioBus));
         if (!open(gpioBus, CModule.MODULE_CLASS_GPIO, PhoneGpioModule.MODULE_ID,
                 PhoneGpioModule.MODULE_KEY, version, PhoneGpioModule.messageFilter(),

@@ -23,7 +23,7 @@ import ap.andruav_ap.App;
  * {@code strobe_hz > 0} turns a steady "on" into a blink on the main
  * looper (TO-BE section 5.2 torch note).
  */
-final class TorchDriver implements PhoneOutput.Driver {
+final class TorchDriver implements PhoneOutput.RateDriver {
 
     private final Context m_context;
     private final double m_strobe_hz;
@@ -42,17 +42,29 @@ final class TorchDriver implements PhoneOutput.Driver {
 
     @Override
     public String apply(final boolean on) {
-        _stop_blink();
-        if (!on) return _set_torch(false);
-        if (m_strobe_hz > 0) {
-            _start_blink();
-            return null;
-        }
-        return _set_torch(true);
+        return apply(on, m_strobe_hz, 512);
     }
 
-    private synchronized void _start_blink() {
-        final long half_period_ms = Math.max(40L, (long) (500.0 / m_strobe_hz));
+    /**
+     * AN-0119: timed blink with an explicit rate - {@code hz} is the
+     * frequency (already clamped by the output), {@code duty} the lit
+     * share 0..1024. Each phase keeps the 40 ms minimum half period;
+     * a full duty is a steady on, a zero duty or hz is off.
+     */
+    @Override
+    public String apply(final boolean on, final double hz, final int duty) {
+        _stop_blink();
+        final double rate = (hz > 0) ? hz : m_strobe_hz;
+        if (!on || rate <= 0 || duty <= 0) return _set_torch(false);
+        if (duty >= 1024) return _set_torch(true);
+        _start_blink(rate, duty);
+        return null;
+    }
+
+    private synchronized void _start_blink(final double hz, final int duty) {
+        final long period_ms = (long) (1000.0 / hz);
+        final long lit_ms = Math.max(40L, (long) (period_ms * duty / 1024.0));
+        final long off_ms = Math.max(40L, period_ms - lit_ms);
         final int gen = m_blink_gen;
         m_blink_task = new Runnable() {
             @Override
@@ -62,7 +74,7 @@ final class TorchDriver implements PhoneOutput.Driver {
                 }
                 m_blink_lit = !m_blink_lit;
                 _set_torch(m_blink_lit);
-                m_handler.postDelayed(this, half_period_ms);
+                m_handler.postDelayed(this, m_blink_lit ? lit_ms : off_ms);
             }
         };
         m_handler.post(m_blink_task);

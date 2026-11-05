@@ -25,6 +25,18 @@ public final class PhoneOutput {
         String apply(boolean on);
     }
 
+    /**
+     * AN-0119: a driver that also takes a timed-blink rate — a PWM pin in
+     * the registry sense (v = frequency Hz, d = duty 0..1024), not
+     * hardware PWM.
+     */
+    public interface RateDriver extends Driver {
+        String apply(boolean on, double hz, int duty);
+    }
+
+    /** Max blink rate: the 40 ms minimum half period of TorchDriver. */
+    public static final double MAX_STROBE_HZ = 12.5;
+
     /** Edge-fact channel; {@code verb} is "went_on" or "went_off". */
     public interface FactSink {
         void onFact(String verb, int v, String src);
@@ -55,6 +67,8 @@ public final class PhoneOutput {
     private long m_generation;
     private boolean m_pulse_active;
     private boolean m_pulse_restore_on;
+    private double m_pwm_hz;
+    private int m_pwm_duty;
 
     /** One in-flight pulse's restore bookkeeping. */
     private static final class PulseRun {
@@ -81,6 +95,51 @@ public final class PhoneOutput {
 
     public synchronized boolean isPulseActive() {
         return m_pulse_active;
+    }
+
+    /** Last written blink rate (Hz, clamped); what the pin status reports. */
+    public synchronized double pwmHz() {
+        return m_pwm_hz;
+    }
+
+    /** Last written blink duty (0..1024). */
+    public synchronized int pwmDuty() {
+        return m_pwm_duty;
+    }
+
+    /**
+     * AN-0119: PWM-mode write - {@code hz} is the blink frequency (clamped
+     * to {@link #MAX_STROBE_HZ}), {@code duty} the lit share 0..1024,
+     * {@code on} is {@code hz > 0}. Same edge/fact rules as
+     * {@link #write}; a plain driver gets the level only.
+     */
+    public String writePwm(final boolean on, final double hz, final int duty, final String src) {
+        synchronized (this) {
+            m_generation++;
+            final double rate = Math.min(Math.max(hz, 0), MAX_STROBE_HZ);
+            final int share = Math.max(0, Math.min(duty, 1024));
+            if (on == m_on && rate == m_pwm_hz && share == m_pwm_duty) return null;
+            if (m_driver != null) {
+                final String err;
+                try {
+                    err = (m_driver instanceof RateDriver)
+                            ? ((RateDriver) m_driver).apply(on, rate, share)
+                            : m_driver.apply(on);
+                } catch (Exception e) {
+                    return "driver: " + e;
+                }
+                if (err != null) return err;
+            }
+            m_pwm_hz = rate;
+            m_pwm_duty = share;
+            if (on != m_on) {
+                m_on = on;
+                if (m_spec.events && m_fact_sink != null) {
+                    m_fact_sink.onFact(on ? "went_on" : "went_off", on ? 1 : 0, src);
+                }
+            }
+            return null;
+        }
     }
 
     /**

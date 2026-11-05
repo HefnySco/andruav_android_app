@@ -21,6 +21,8 @@ public class PhoneBusModulesTest {
     private static final String GCS = "gcs_session_1";
 
     private final Map<String, Boolean> mOutputs = new HashMap<>();
+    private final Map<String, Double> mRates = new HashMap<>();
+    private final Map<String, Integer> mDuties = new HashMap<>();
     private final List<String> mWriteSrc = new ArrayList<>();
     private final List<Object[]> mSent = new ArrayList<>();
     private PhoneGpioModule mGpio;
@@ -42,6 +44,25 @@ public class PhoneBusModulesTest {
                 mOutputs.put(key, on);
                 mWriteSrc.add(src);
                 return null;
+            }
+
+            @Override
+            public String writeRate(String key, boolean on, double hz, int duty, String src) {
+                mOutputs.put(key, on);
+                // clamp like PhoneOutput.writePwm does (12.5 Hz max)
+                mRates.put(key, Math.min(Math.max(hz, 0), 12.5));
+                mDuties.put(key, Math.max(0, Math.min(duty, 1024)));
+                return null;
+            }
+
+            @Override
+            public Double rate(String key) {
+                return mRates.get(key);
+            }
+
+            @Override
+            public Integer duty(String key) {
+                return mDuties.get(key);
             }
         }, (target, ms, type) -> mSent.add(new Object[]{target, ms, type}));
     }
@@ -119,6 +140,81 @@ public class PhoneBusModulesTest {
         assertTrue(list.length() > 1);
     }
 
+    /** AN-0119: flash_strobe reports as a PWM pin (m:2) with v=Hz, d=duty. */
+    @Test
+    public void strobeReportsPwmWithRateAndDuty() throws Exception {
+        mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
+                .put("a", 2).put("n", PhoneGpioModule.PIN_FLASH_STROBE)
+                .put("v", 2).put("d", 512)));
+
+        assertTrue(mOutputs.get("torch_strobe"));
+        assertEquals(2.0, mRates.get("torch_strobe"), 0.001);
+        assertEquals(512, (int) mDuties.get("torch_strobe"));
+
+        JSONObject strobe = null;
+        final JSONArray list = lastStatusList("");
+        for (int i = 0; i < list.length(); i++) {
+            if (PhoneGpioModule.PIN_FLASH_STROBE.equals(list.getJSONObject(i).getString("n"))) {
+                strobe = list.getJSONObject(i);
+            }
+        }
+        assertTrue(strobe != null);
+        assertEquals(2, strobe.getInt("m")); // PWM_OUTPUT
+        assertEquals(2, strobe.getInt("v")); // Hz
+        assertEquals(512, strobe.getInt("d")); // duty
+
+        // v:0 stops the blink
+        mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
+                .put("a", 2).put("n", PhoneGpioModule.PIN_FLASH_STROBE)
+                .put("v", 0).put("d", 512)));
+        assertFalse(mOutputs.get("torch_strobe"));
+    }
+
+    /** AN-0119: a rate above the 12.5 Hz limit is clamped and reported clamped. */
+    @Test
+    public void strobeRateAboveLimitIsClamped() throws Exception {
+        mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
+                .put("a", 2).put("n", PhoneGpioModule.PIN_FLASH_STROBE)
+                .put("v", 50).put("d", 256)));
+
+        assertEquals(12.5, mRates.get("torch_strobe"), 0.001);
+        final JSONArray list = lastStatusList("");
+        for (int i = 0; i < list.length(); i++) {
+            final JSONObject pin = list.getJSONObject(i);
+            if (PhoneGpioModule.PIN_FLASH_STROBE.equals(pin.getString("n"))) {
+                assertEquals(12, pin.getInt("v"));
+            }
+        }
+    }
+
+    /** AN-0119: a PWM write without 'd' is ignored, like rpi_gpio. */
+    @Test
+    public void strobeWriteWithoutDutyIsIgnored() throws Exception {
+        mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
+                .put("a", 2).put("n", PhoneGpioModule.PIN_FLASH_STROBE).put("v", 4)));
+
+        assertFalse(mOutputs.get("torch_strobe"));
+        assertTrue(mRates.get("torch_strobe") == null);
+    }
+
+    /** AN-0119: camera_flash and flash_strobe stay exclusive across the PWM path. */
+    @Test
+    public void strobeAndFlashStayExclusive() throws Exception {
+        mOutputs.put("torch", true);
+
+        mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
+                .put("a", 2).put("n", PhoneGpioModule.PIN_FLASH_STROBE)
+                .put("v", 3).put("d", 512)));
+
+        assertFalse(mOutputs.get("torch"));
+        assertTrue(mOutputs.get("torch_strobe"));
+
+        // and back: camera_flash on frees the strobe
+        mGpio.writeFlash(true);
+        assertFalse(mOutputs.get("torch_strobe"));
+        assertTrue(mOutputs.get("torch"));
+    }
+
     @Test
     public void writeByNameAndForeignModuleKey() throws Exception {
         mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
@@ -164,7 +260,7 @@ public class PhoneBusModulesTest {
     @Test
     public void steadyAndStrobeAreExclusive() throws Exception {
         mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
-                .put("a", 2).put("n", "flash_strobe").put("v", 1)));
+                .put("a", 2).put("n", "flash_strobe").put("v", 4).put("d", 512)));
         assertTrue(mOutputs.get("torch_strobe"));
 
         mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()

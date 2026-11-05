@@ -82,6 +82,18 @@ public final class PhoneOutputBank {
         return state;
     }
 
+    /**
+     * AN-0119: PWM-mode write - {@code hz} is the blink frequency,
+     * {@code duty} the lit share 0..1024. Delegates to
+     * {@link PhoneOutput#writePwm}.
+     */
+    public String writePwm(final String key, final boolean on, final double hz,
+                           final int duty, final String src) {
+        final PhoneOutput output = m_outputs.get(key);
+        if (output == null) return "unknown resource '" + key + "'";
+        return output.writePwm(on, hz, duty, src);
+    }
+
     /** Explicit write on a named resource. Returns null or an error string. */
     public String write(final String key, final boolean on, final String src) {
         final PhoneOutput output = m_outputs.get(key);

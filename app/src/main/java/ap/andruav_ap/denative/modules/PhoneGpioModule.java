@@ -41,8 +41,9 @@ public final class PhoneGpioModule {
     static final int ACTION_INFO = 1;
     static final int ACTION_PORT_WRITE = 2;
 
-    // de_rpi_gpio gpio_driver.hpp: OUTPUT = 1, ENUM_GPIO_TYPE GENERIC = 0
+    // de_rpi_gpio gpio_driver.hpp: OUTPUT = 1, PWM_OUTPUT = 2, GENERIC = 0
     private static final int PIN_MODE_OUTPUT = 1;
+    private static final int PIN_MODE_PWM = 2;
     private static final int GPIO_TYPE_GENERIC = 0;
 
     public static final String PIN_CAMERA_FLASH = "camera_flash";
@@ -55,22 +56,26 @@ public final class PhoneGpioModule {
         final String output;
         /** Output sharing the same hardware (turned off before this one goes on), or null. */
         final String exclusive;
+        /** PIN_MODE_OUTPUT or PIN_MODE_PWM (de_rpi_gpio modes). */
+        final int mode;
 
-        Pin(final int number, final String name, final String output, final String exclusive) {
+        Pin(final int number, final String name, final String output, final String exclusive,
+            final int mode) {
             this.number = number;
             this.name = name;
             this.output = output;
             this.exclusive = exclusive;
+            this.mode = mode;
         }
     }
 
     public static final String PIN_FLASH_STROBE = "flash_strobe";
 
     static final Pin[] PINS = {
-            new Pin(1, PIN_CAMERA_FLASH, "torch", "torch_strobe"),   // steady on/off
-            new Pin(2, "screen_flash", "screen", null),
-            new Pin(3, "vibrate", "vibrate", null),
-            new Pin(4, PIN_FLASH_STROBE, "torch_strobe", "torch"),   // blinking torch
+            new Pin(1, PIN_CAMERA_FLASH, "torch", "torch_strobe", PIN_MODE_OUTPUT),   // steady on/off
+            new Pin(2, "screen_flash", "screen", null, PIN_MODE_OUTPUT),
+            new Pin(3, "vibrate", "vibrate", null, PIN_MODE_OUTPUT),
+            new Pin(4, PIN_FLASH_STROBE, "torch_strobe", "torch", PIN_MODE_PWM),      // blinking torch
     };
 
     /** The phone output bank, narrowed to what the pins need. */
@@ -80,6 +85,15 @@ public final class PhoneGpioModule {
 
         /** Null on success, else an error string. */
         String write(String key, boolean on, String src);
+
+        /** AN-0119: PWM write - hz = frequency, duty = lit share 0..1024. */
+        String writeRate(String key, boolean on, double hz, int duty, String src);
+
+        /** Last written rate (Hz) of a PWM output, or null. */
+        Double rate(String key);
+
+        /** Last written duty (0..1024) of a PWM output, or null. */
+        Integer duty(String key);
     }
 
     /** Bus send surface (CModule.sendJMSG, not internal). */
@@ -114,8 +128,16 @@ public final class PhoneGpioModule {
             final int action = ms.optInt("a", -1);
             if (action == ACTION_PORT_WRITE) {
                 final Pin pin = find(ms);
-                if (pin == null || !ms.has("v")) return;
-                writePin(pin, ms.optInt("v") != 0, SRC_GCS);
+                if (pin == null) return;
+                if (pin.mode == PIN_MODE_PWM) {
+                    // rpi_gpio: a PWM write carries 'v' (frequency Hz) and
+                    // 'd' (duty); a write without 'd' is ignored, v:0 is off
+                    if (!ms.has("v") || !ms.has("d")) return;
+                    writePwmPin(pin, ms.optDouble("v", 0), ms.optInt("d", 0), SRC_GCS);
+                } else {
+                    if (!ms.has("v")) return;
+                    writePin(pin, ms.optInt("v") != 0, SRC_GCS);
+                }
             } else if (action == ACTION_INFO) {
                 sendStatus(sender, null);
             }
@@ -154,13 +176,22 @@ public final class PhoneGpioModule {
         sendStatus("", freed ? null : pin);
     }
 
+    private void writePwmPin(final Pin pin, final double hz, final int duty, final String src) {
+        final boolean on = hz > 0;
+        final boolean freed = on && (pin.exclusive != null)
+                && Boolean.TRUE.equals(m_outputs.read(pin.exclusive));
+        if (freed) m_outputs.write(pin.exclusive, false, src);
+        m_outputs.writeRate(pin.output, on, hz, duty, src);
+        sendStatus("", freed ? null : pin);
+    }
+
     /** Polled: broadcasts the list when a pin changed outside a bus write (Emergency, actions). */
     public void pollChanges() {
         for (Pin pin : PINS) {
             final Integer last = m_last_sent.get(pin.number);
-            final Boolean now = m_outputs.read(pin.output);
+            final Integer now = pinValue(pin);
             if (now == null) continue;
-            if (last == null || last != (now ? 1 : 0)) {
+            if (last == null || !last.equals(now)) {
                 sendStatus("", null);
                 return;
             }
@@ -179,21 +210,39 @@ public final class PhoneGpioModule {
         final JSONArray list = new JSONArray();
         for (Pin pin : PINS) {
             if (only != null && only != pin) continue;
-            final Boolean on = m_outputs.read(pin.output);
-            if (on == null) continue;
-            final int v = on ? 1 : 0;
+            final Integer v = pinValue(pin);
+            if (v == null) continue;
             m_last_sent.put(pin.number, v);
             list.put(new JSONObject()
                     .put("i", MODULE_KEY)
                     .put("p", pin.number)
                     .put("b", pin.number)
-                    .put("m", PIN_MODE_OUTPUT)
+                    .put("m", pin.mode)
                     .put("t", GPIO_TYPE_GENERIC)
-                    .put("d", 0)
+                    .put("d", pinDuty(pin))
                     .put("v", v)
                     .put("n", pin.name));
         }
         return new JSONObject().put("a", ACTION_INFO).put("s", list);
+    }
+
+    /** The 'v' a pin reports: level for OUTPUT, blink rate (Hz, floored) for PWM. */
+    private Integer pinValue(final Pin pin) {
+        final Boolean on = m_outputs.read(pin.output);
+        if (on == null) return null;
+        if (pin.mode == PIN_MODE_PWM) {
+            if (!on) return 0; // v:0 is off - report no rate on a stopped pin
+            final Double rate = m_outputs.rate(pin.output);
+            return (rate != null) ? (int) Math.floor(rate) : 0;
+        }
+        return on ? 1 : 0;
+    }
+
+    /** The 'd' a pin reports: blink duty for PWM, 0 for OUTPUT. */
+    private int pinDuty(final Pin pin) {
+        if (pin.mode != PIN_MODE_PWM) return 0;
+        final Integer duty = m_outputs.duty(pin.output);
+        return (duty != null) ? duty : 0;
     }
 
     private Pin find(final JSONObject ms) {
