@@ -37,6 +37,14 @@ import de.databus.caps.DeCapabilityProvider;
  * net/rssi_dbm/gps_ok/gps_src and the edge facts battery_low/overheat/
  * net_lost/net_back raised by {@link PhoneHealthTracker}.
  *
+ * AN-0128 SMS surface - the configured trigger keywords as class-"sms"
+ * resources {@code sms_<kw>} under the {@code *.received} fact pattern
+ * ({@code {contact, age_s}} - the payload never carries a number or the
+ * message text), plus the {@code phone.sms_send {contact, text}} action,
+ * rate-limited per {@link PhoneSmsConfig} so a mission loop cannot send
+ * without limit. Facts arrive from the SMS parser through
+ * {@link #onSmsKeyword}; with no attached host the event is dropped.
+ *
  * Facts go out through {@link CapabilityHost#fireEvent} and state changes
  * through {@link CapabilityHost#publishState}, rate-limited to at most
  * two publishes per second per the spec. The bus connection is attached
@@ -74,8 +82,11 @@ public class PhoneProvider implements DeCapabilityProvider {
 
     private final PhoneHealthTracker m_tracker;
     private final PhoneOutputBank m_bank;
+    private final PhoneSmsConfig m_sms;
     private final Object m_publish_lock = new Object();
     private final Set<String> m_ignored_once = new HashSet<>();
+    /** sms_send send times inside the rate window (config send_limit). */
+    private final List<Long> m_sms_sends = new ArrayList<>();
 
     private CapabilityHost m_host;
     private ScheduledExecutorService m_scheduler;
@@ -86,10 +97,16 @@ public class PhoneProvider implements DeCapabilityProvider {
 
     /** Health-only provider (no output resources wired). */
     public PhoneProvider(PhoneHealthConfig config) {
-        this(config, null);
+        this(config, null, null);
     }
 
     public PhoneProvider(PhoneHealthConfig config, final PhoneOutputBank bank) {
+        this(config, bank, null);
+    }
+
+    public PhoneProvider(PhoneHealthConfig config, final PhoneOutputBank bank,
+                         final PhoneSmsConfig sms) {
+        this.m_sms = sms;
         this.m_tracker = new PhoneHealthTracker(config);
         this.m_tracker.setListener(new PhoneHealthTracker.Listener() {
             @Override
@@ -157,11 +174,11 @@ public class PhoneProvider implements DeCapabilityProvider {
     private JSONObject _build_advert() {
         try {
             final JSONObject advert = new JSONObject(ADVERT);
-            if (m_bank == null) return advert;
-
-            final JSONObject state = advert.getJSONObject("state");
             final JSONObject actions = new JSONObject();
             final JSONObject resources = new JSONObject();
+            final JSONObject patterns = new JSONObject();
+            if (m_bank != null) {
+            final JSONObject state = advert.getJSONObject("state");
             for (final PhoneOutputSpec spec : m_bank.specs()) {
                 resources.put(spec.name, PhoneOutputSpec.CLASS_OUT);
                 state.put(spec.name, _kv("type", "int"));
@@ -195,24 +212,47 @@ public class PhoneProvider implements DeCapabilityProvider {
                             "length_ms", _kv("type", "int", "min", 1,
                                     "max", PhoneOutput.PULSE_MS_MAX,
                                     "unit", "ms"))));
-            advert.put("actions", actions);
-            advert.put("resources", resources);
+            patterns.put("*.on", _command_pattern());
+            patterns.put("*.off", _command_pattern());
+            patterns.put("*.toggle", _command_pattern());
+            patterns.put("*.pulse", _command_pattern()
+                    .put("payload", _kv("ms", _kv(
+                            "type", "int", "min", 1,
+                            "max", PhoneOutput.PULSE_MS_MAX,
+                            "unit", "ms", "optional", true))));
+            patterns.put("*.went_on", _fact_pattern());
+            patterns.put("*.went_off", _fact_pattern());
+            }
 
-            advert.put("event_patterns", _kv(
-                    "*.on", _command_pattern(),
-                    "*.off", _command_pattern(),
-                    "*.toggle", _command_pattern(),
-                    "*.pulse", _command_pattern()
-                            .put("payload", _kv("ms", _kv(
-                                    "type", "int", "min", 1,
-                                    "max", PhoneOutput.PULSE_MS_MAX,
-                                    "unit", "ms", "optional", true))),
-                    "*.went_on", _fact_pattern(),
-                    "*.went_off", _fact_pattern()));
+            // AN-0128: sms_<kw> resources (class "sms") + the *.received
+            // fact pattern + the rate-limited sms_send action.
+            if (m_sms != null) {
+                for (final String keyword : m_sms.keywords) {
+                    resources.put("sms_" + keyword, "sms");
+                }
+                patterns.put("*.received", _kv(
+                        "kind", "fact",
+                        "res", new JSONArray().put("sms"),
+                        "payload", _kv(
+                                "contact", _kv("type", "string"),
+                                "age_s", _kv("type", "int"))));
+                actions.put("sms_send", _kv(
+                        "desc", "send an SMS to a configured contact",
+                        "params", _kv(
+                                "contact", _kv("type", "string",
+                                        "desc", "configured contact name"),
+                                "text", _kv("type", "string"))));
+            }
+
+            if (actions.length() > 0) advert.put("actions", actions);
+            if (resources.length() > 0) advert.put("resources", resources);
+            if (patterns.length() > 0) advert.put("event_patterns", patterns);
             advert.put("desc", "commands: phone.<key>.on|off|toggle|pulse {ms? 1.."
                     + PhoneOutput.PULSE_MS_MAX
                     + "}; facts: phone.<key>.went_on|went_off {v,src}; "
-                    + "facts: battery_low {v}, overheat {temp_c}, net_lost, net_back");
+                    + "facts: battery_low {v}, overheat {temp_c}, net_lost, net_back"
+                    + "; facts: phone.sms_<kw>.received {contact,age_s}; "
+                    + "action: phone.sms_send {contact,text}");
             return advert;
         } catch (JSONException e) {
             // a literal advert never fails; a bad merge keeps the health surface
@@ -231,6 +271,12 @@ public class PhoneProvider implements DeCapabilityProvider {
     @Override
     public void invoke(String id, String ns, String act, JSONObject params,
                        long deadlineMs, ResultSink sink) {
+        // AN-0128: sms_send needs no output bank - it can run on a
+        // health-only provider.
+        if ("sms_send".equals(act)) {
+            _invoke_sms_send(params, sink);
+            return;
+        }
         if (m_bank == null) {
             sink.err("unknown action " + ns + "." + act);
             return;
@@ -322,9 +368,78 @@ public class PhoneProvider implements DeCapabilityProvider {
         return snapshot;
     }
 
+    /**
+     * AN-0128: an allowed contact sent ATT:&lt;kw&gt;:&lt;pin&gt; and the
+     * parser matched the configured keyword - fire
+     * {@code phone.sms_<kw>.received {contact, age_s}}. Returns false
+     * when the event cannot be delivered (unknown keyword here, or no
+     * bus host attached) so the caller can tell the sender it failed.
+     */
+    public boolean onSmsKeyword(final String keyword, final String contact,
+                                final long age_s) {
+        if (m_sms == null || keyword == null
+                || !m_sms.keywords.contains(keyword)) {
+            return false;
+        }
+        final CapabilityHost host;
+        synchronized (m_publish_lock) {
+            host = this.m_host;
+        }
+        if (host == null) return false;
+        host.fireEvent(NS, "sms_" + keyword + ".received",
+                _kv("contact", contact == null ? "" : contact,
+                        "age_s", age_s));
+        return true;
+    }
+
     // ------------------------------------------------------------------
     // internals
     // ------------------------------------------------------------------
+
+    /** phone.sms_send {contact, text}: the contact is a name from the
+     *  configured contact book - never a number - and the action is
+     *  rate-limited so a mission loop cannot send without limit. */
+    private void _invoke_sms_send(final JSONObject params, final ResultSink sink) {
+        if (m_sms == null || m_sms.sender == null) {
+            sink.err("phone.sms_send not configured");
+            return;
+        }
+        final String contact = params.optString("contact", "").trim().toLowerCase();
+        final String text = params.optString("text", "");
+        if (contact.isEmpty()) {
+            sink.err("phone.sms_send needs 'contact'");
+            return;
+        }
+        if (text.isEmpty()) {
+            sink.err("phone.sms_send needs 'text'");
+            return;
+        }
+        if (contact.matches("^\\+?[0-9()\\-. ]+$")) {
+            sink.err("phone.sms_send needs a contact name, not a number");
+            return;
+        }
+        final String number = m_sms.contacts.get(contact);
+        if (number == null) {
+            sink.err("phone.sms_send: unknown contact '" + contact + "'");
+            return;
+        }
+        final long now = System.currentTimeMillis();
+        synchronized (m_sms_sends) {
+            while (!m_sms_sends.isEmpty()
+                    && m_sms_sends.get(0) < now - m_sms.send_window_ms) {
+                m_sms_sends.remove(0);
+            }
+            if (m_sms_sends.size() >= m_sms.send_limit) {
+                sink.err("phone.sms_send rate limit ("
+                        + m_sms.send_limit + " per "
+                        + (m_sms.send_window_ms / 1000) + "s)");
+                return;
+            }
+            m_sms_sends.add(now);
+        }
+        m_sms.sender.send(number, text);
+        sink.ok(_kv("contact", contact, "sent", true));
+    }
 
     /**
      * org.json in the app module declares a checked JSONException on

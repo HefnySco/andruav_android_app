@@ -851,7 +851,10 @@ public class Preference {
     }
 
     /* AN-0127: SMS command gate - comma-separated allowed numbers plus a
-     * PIN; both required (ATT:<cmd>:<pin>). Empty = refuse all. */
+     * PIN; both required (ATT:<cmd>:<pin>). Empty = refuse all.
+     * AN-0128: an entry may be "name=number" - the name labels the
+     * sender in mission facts and is the only target phone.sms_send
+     * accepts. Bare numbers keep working as before. */
     public static java.util.List<String> getSmsAllowedContacts(final android.content.ContextWrapper contextWrapper) {
         final String raw = SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_rx_contacts", "");
         final java.util.List<String> contacts = new java.util.ArrayList<>();
@@ -874,6 +877,33 @@ public class Preference {
 
     public static void setSmsPin(final android.content.ContextWrapper contextWrapper, final String pin) {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_rx_pin", pin);
+    }
+
+    /* AN-0128: trigger keywords for the phone.sms_<kw>.received facts,
+     * a comma-separated list ("go, abort"). ATT:<kw>:<pin> from an
+     * allowed contact fires the fact; command names can never be
+     * keywords (SmsKeywords drops them). */
+    public static String getSmsKeywords(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_rx_keywords", "");
+    }
+
+    public static void setSmsKeywords(final android.content.ContextWrapper contextWrapper, final String csvKeywords) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_rx_keywords", csvKeywords);
+    }
+
+    /* AN-0128: accepted SMS age in seconds - a message older than this
+     * (SMSC timestamp) is dropped. Default 120; <= 0 disables the check. */
+    public static long getSmsMaxAgeS(final android.content.ContextWrapper contextWrapper) {
+        final String raw = SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_rx_max_age_s", "120");
+        try {
+            return Long.parseLong(raw.trim());
+        } catch (NumberFormatException e) {
+            return 120L;
+        }
+    }
+
+    public static void setSmsMaxAgeS(final android.content.ContextWrapper contextWrapper, final long maxAgeS) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_rx_max_age_s", String.valueOf(maxAgeS));
     }
 
 

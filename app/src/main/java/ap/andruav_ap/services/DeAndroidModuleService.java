@@ -18,6 +18,8 @@ import java.util.List;
 import ap.andruav_ap.BuildConfig;
 import ap.andruav_ap.R;
 import ap.andruav_ap.communication.AndruavDeBusClient;
+import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
+import ap.andruav_ap.communication.telemetry.SmsKeywords;
 import ap.andruav_ap.denative.NativeUnitController;
 import ap.andruav_ap.denative.modules.PhoneBusModules;
 import ap.andruav_ap.denative.modules.PhoneCameraModule;
@@ -27,11 +29,13 @@ import ap.andruav_ap.denative.providers.phone.PhoneDevices;
 import ap.andruav_ap.denative.providers.phone.PhoneHealthConfig;
 import ap.andruav_ap.denative.providers.phone.PhoneHealthMonitor;
 import ap.andruav_ap.denative.providers.phone.PhoneProvider;
+import ap.andruav_ap.denative.providers.phone.PhoneSmsConfig;
 import ap.andruav_ap.denative.providers.sound.AndroidSoundBackend;
 import ap.andruav_ap.denative.providers.sound.SoundProvider;
 import ap.andruav_ap.denative.providers.sound.SoundProviderConfig;
 import ap.andruav_ap.services.fpv.CameraController;
 import ap.andruavmiddlelibrary.factory.DeviceFeatures;
+import ap.andruavmiddlelibrary.factory.communication.SMS;
 import ap.andruavmiddlelibrary.preference.Preference;
 import com.andruav.AndruavEngine;
 import com.andruav.uavos.modules.UAVOSHelper;
@@ -162,8 +166,16 @@ public class DeAndroidModuleService extends Service {
         // (battery_low, overheat, net_lost, net_back - section 5.6). The
         // outputs bank is process-wide so Emergency drives the same
         // choke points the bus sees.
+        // AN-0128 SMS surface: keywords + the "name=number" contact book
+        // come from the phone settings; the parser's keyword listener
+        // below routes matched messages into provider facts.
+        final PhoneSmsConfig smsConfig = new PhoneSmsConfig();
+        smsConfig.keywords = SmsKeywords.parse(Preference.getSmsKeywords(this));
+        smsConfig.contacts = SmsKeywords.contactBook(
+                Preference.getSmsAllowedContacts(this));
+        smsConfig.sender = (number, text) -> SMS.sendSMS(number, text);
         final PhoneProvider phoneProvider = new PhoneProvider(
-                PhoneHealthConfig.defaults(), PhoneDevices.shared(this));
+                PhoneHealthConfig.defaults(), PhoneDevices.shared(this), smsConfig);
         providers.add(phoneProvider);
         // "sound" namespace: say/play/stop + per-clip actions and the
         // sound.<clip>.* event surface - TO-BE section 5.1. Registered
@@ -187,6 +199,12 @@ public class DeAndroidModuleService extends Service {
         // socket exists; the advert goes out on the first ID reply.
         host.start();
         phoneProvider.attach(host);
+        // AN-0128: SMS keyword messages become phone.sms_<kw>.received
+        // facts only while this service runs; the parser falls back to a
+        // failure reply when no listener is installed.
+        AndruavSMSClientParser.setKeywordFactListener(
+                (keyword, contact, age_s) ->
+                        phoneProvider.onSmsKeyword(keyword, contact, age_s));
         soundProvider.attach(host);
         cameraProvider.attach(host);
         soundProvider.setSirenHook(whistling -> {
@@ -354,6 +372,9 @@ public class DeAndroidModuleService extends Service {
             monitor.stop();
         }
         if (phoneProvider != null) {
+            // AN-0128: drop the keyword listener before the provider so
+            // no fact can fire into a stopped host.
+            AndruavSMSClientParser.setKeywordFactListener(null);
             phoneProvider.stop();
         }
         if (soundProvider != null) {

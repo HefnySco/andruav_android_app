@@ -53,7 +53,10 @@ public class SMSReceiver extends BroadcastReceiver {
                         String messageBody = smsMessage.getMessageBody();
 
                         try {
-                            andruavSMSClientParser.executeCommand (sender, messageBody);
+                            // AN-0128: the SMSC time feeds the max-age
+                            // drop and the fact's age_s field.
+                            andruavSMSClientParser.executeCommand (sender, messageBody,
+                                    smsMessage.getTimestampMillis());
                         } catch (Exception e) {
                             AndruavEngine.log().logException("SMSReceiver", e);
                             Log.e(TAG, "executeCommand failed", e);

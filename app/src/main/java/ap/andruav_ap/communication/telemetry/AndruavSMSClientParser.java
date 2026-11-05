@@ -51,12 +51,24 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
      * ATT:<command>:<pin>. Fail closed: an empty contact list or an
      * empty PIN refuses everything, a refused sender never gets a reply,
      * and log lines never carry the PIN or the message text.
+     * AN-0128 — contact entries may be "name=number"; the name goes into
+     * the fact payload (never the number). keywords() is the configured
+     * trigger keyword list, maxAgeS() the accepted message age.
      * Contacts/PIN come from the phone settings (Preference) by default;
      * tests inject their own provider via setGateConfigProvider. */
     public interface GateConfigProvider {
         java.util.List<String> contacts();
         String pin();
+        default java.util.List<String> keywords() {
+            return java.util.Collections.emptyList();
+        }
+        default long maxAgeS() {
+            return DEFAULT_MAX_AGE_S;
+        }
     }
+
+    /** AN-0128: default accepted message age (seconds). */
+    public static final long DEFAULT_MAX_AGE_S = 120L;
 
     private static GateConfigProvider sGateConfig = null;
     public static void setGateConfigProvider(final GateConfigProvider p) {
@@ -74,8 +86,35 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
                 return ap.andruavmiddlelibrary.preference.Preference
                         .getSmsPin(null);
             }
+            @Override public java.util.List<String> keywords() {
+                return SmsKeywords.parse(
+                        ap.andruavmiddlelibrary.preference.Preference
+                                .getSmsKeywords(null));
+            }
+            @Override public long maxAgeS() {
+                return ap.andruavmiddlelibrary.preference.Preference
+                        .getSmsMaxAgeS(null);
+            }
         };
     }
+
+    /* AN-0128: where a matched keyword goes. DeAndroidModuleService
+     * installs a listener that fires the fact through the running
+     * PhoneProvider and clears it on stop; a null listener (or a false
+     * return) means the event could not be delivered and the sender
+     * gets a short failure reply. */
+    public interface KeywordFactListener {
+        boolean onKeyword(String keyword, String contact, long age_s);
+    }
+
+    private static volatile KeywordFactListener sKeywordListener = null;
+    public static void setKeywordFactListener(final KeywordFactListener l) {
+        sKeywordListener = l;
+    }
+
+    /** Reply sent when a keyword event cannot reach the bus. */
+    private static final String KEYWORD_FAIL_REPLY =
+            "Andruav: event not delivered (unit offline).";
 
     /* wrong-PIN rate limiting: 5 failures inside the window locks every
      * command (even correct ones) for the same window length */
@@ -85,7 +124,7 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
     private static long sLockoutUntilMs = 0;
 
     /** test hook: clear the rate-limit state. */
-    static void resetPinFailures() {
+    public static void resetPinFailures() {
         sPinFailures.clear();
         sLockoutUntilMs = 0;
     }
@@ -117,11 +156,25 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
                                          final java.util.List<String> contacts) {
         if (contacts == null) return false;
         for (final String c : contacts) {
-            if (numbersMatch(sender, c)) {
+            if (numbersMatch(sender, SmsKeywords.entryNumber(c))) {
                 return true;
             }
         }
         return false;
+    }
+
+    /* AN-0128: the configured name of the entry the sender matched -
+     * what a fact may carry as "contact". Bare-number entries have no
+     * name and yield "". The number itself never leaves the device. */
+    private static String contactName(final String sender,
+                                      final java.util.List<String> contacts) {
+        if (contacts == null) return "";
+        for (final String c : contacts) {
+            if (numbersMatch(sender, SmsKeywords.entryNumber(c))) {
+                return SmsKeywords.entryName(c);
+            }
+        }
+        return "";
     }
 
     /* PhoneNumberUtils.compare is the device implementation; unit tests
@@ -137,6 +190,19 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
 
     @Override
     public void executeCommand (final String sender, final String sms_msg)
+    {
+        /* No delivery timestamp: treated as fresh (the old pre-AN-0128
+         * path had no age check at all). */
+        executeCommand(sender, sms_msg, System.currentTimeMillis());
+    }
+
+    /**
+     * AN-0128 form: timestampMs is SmsMessage.getTimestampMillis (the
+     * SMSC time). A message older than the configured age is dropped -
+     * SMS can arrive very late. timestampMs &lt;= 0 skips the check.
+     */
+    public void executeCommand (final String sender, final String sms_msg,
+                                final long timestampMs)
     {
         if (sender == null || sender.isEmpty()) {
             skip("executeCommand skipped: empty sender", "");
@@ -170,6 +236,11 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
         if (!parts[parts.length - 1].trim().equals(pin)) {
             notePinFailure(nowMs);
             skip("executeCommand skipped: wrong PIN", sender);
+            return ;
+        }
+        final long maxAgeMs = cfg.maxAgeS() * 1000L;
+        if (timestampMs > 0 && maxAgeMs > 0 && nowMs - timestampMs > maxAgeMs) {
+            skip("executeCommand skipped: message too old", sender);
             return ;
         }
         // Extract CMD field
@@ -248,9 +319,29 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
             }
                 break;
 
-            default:
-                skip("unknown command", sender);
-                break;
+            default: {
+                /* AN-0128: a non-command token is a keyword candidate.
+                 * Reserved names land in the switch above, so a keyword
+                 * can never shadow a command. The fact rides the V2
+                 * capability path via the listener the module service
+                 * installs - with none attached the event is dropped,
+                 * logged, and the sender gets a short failure reply. */
+                final String keyword = SmsKeywords.match(cmd, cfg.keywords());
+                if (keyword == null) {
+                    skip("unknown command", sender);
+                    return;
+                }
+                final KeywordFactListener listener = sKeywordListener;
+                final long age_s = (timestampMs > 0)
+                        ? Math.max(0L, (nowMs - timestampMs) / 1000L) : 0L;
+                final String contact = contactName(sender, cfg.contacts());
+                if (listener == null
+                        || !listener.onKeyword(keyword, contact, age_s)) {
+                    skip("keyword event dropped: no provider attached", sender);
+                    sSmsSender.send(sender, KEYWORD_FAIL_REPLY);
+                }
+                return;
+            }
 
         }
     }

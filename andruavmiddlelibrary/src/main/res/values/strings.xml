@@ -56,9 +56,13 @@
     <string name="pref_gr_sms_rx_chk">SMS Commands</string>
     <string name="pref_gr_sms_rx_chk_summary">Enable execute commands received by SMS.</string>
     <string name="pref_gr_sms_rx_contacts">SMS Allowed Numbers</string>
-    <string name="pref_gr_sms_rx_contacts_summary">Comma-separated phone numbers allowed to send commands. Empty refuses all.</string>
+    <string name="pref_gr_sms_rx_contacts_summary">Comma-separated entries allowed to send commands, as number or name=number. Empty refuses all.</string>
     <string name="pref_gr_sms_rx_pin">SMS Command PIN</string>
     <string name="pref_gr_sms_rx_pin_summary">PIN appended to every command as ATT:command:PIN.</string>
+    <string name="pref_gr_sms_rx_keywords">SMS Event Keywords</string>
+    <string name="pref_gr_sms_rx_keywords_summary">Comma-separated keywords that fire mission events as ATT:keyword:PIN, e.g. go, abort.</string>
+    <string name="pref_gr_sms_rx_max_age">SMS Max Age (s)</string>
+    <string name="pref_gr_sms_rx_max_age_summary">Messages older than this many seconds are ignored. Default 120.</string>
     <string name="pref_gr_recovery_chk_rc_block">Enable RC Block</string>
     <string name="pref_gr_recovery_chk_rc_block_summary">vehicle accepts Blocking command to mute all control from GCSs.</string>
     <string name="pref_gr_recovery_edt_rcCh_blk_trigger">RC Block TX Channel</string>

@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import de.databus.CapSchema;
+import de.databus.caps.CapabilityHost;
 import de.databus.caps.DeCapabilityProvider;
 
 /**
@@ -44,6 +45,24 @@ public class PhoneProviderTest {
 
         void runNext() {
             queue.remove(0).run();
+        }
+    }
+
+    /** AN-0128: a CapabilityHost that records fireEvent calls instead of
+     *  putting them on a bus. */
+    private static final class FakeHost extends CapabilityHost {
+        final List<String> names = new ArrayList<>();
+        final List<JSONObject> payloads = new ArrayList<>();
+
+        FakeHost() {
+            super(null, null);
+        }
+
+        @Override
+        public String fireEvent(String ns, String ev, JSONObject payload) {
+            names.add(ns + "." + ev);
+            payloads.add(payload);
+            return "test-nonce";
         }
     }
 
@@ -208,6 +227,138 @@ public class PhoneProviderTest {
         assertEquals(0, state.getInt("screen"));
         // health keys still present
         assertEquals(80, state.getInt("battery"));
+    }
+
+    // ------------------------------------------------------------------
+    // AN-0128: SMS surface
+    // ------------------------------------------------------------------
+
+    private static final String MOM_NUMBER = "+201001110005";
+
+    private PhoneSmsConfig makeSmsConfig(final List<String[]> sent) {
+        final PhoneSmsConfig sms = new PhoneSmsConfig();
+        sms.keywords.addAll(java.util.Arrays.asList("go", "abort"));
+        sms.contacts.put("mom", MOM_NUMBER);
+        if (sent != null) {
+            sms.sender = (number, text) -> sent.add(new String[]{number, text});
+        }
+        return sms;
+    }
+
+    private PhoneProvider makeSmsProvider(final PhoneSmsConfig sms) {
+        m_driver = new FakeDriver();
+        m_scheduler = new ManualScheduler();
+        m_bank = new PhoneOutputBank(PhoneDevices.defaultSpecs(),
+                spec -> m_driver, m_scheduler);
+        m_provider = new PhoneProvider(PhoneHealthConfig.defaults(), m_bank, sms);
+        return m_provider;
+    }
+
+    @Test
+    public void advertListsSmsKeywordsAndReceivedPattern() throws Exception {
+        final JSONObject advert = (JSONObject) makeSmsProvider(
+                makeSmsConfig(null)).adverts().get(0);
+        assertEquals("", CapSchema.cap_validate_advert(advert));
+
+        final JSONObject resources = advert.getJSONObject("resources");
+        assertEquals("sms", resources.getString("sms_go"));
+        assertEquals("sms", resources.getString("sms_abort"));
+
+        final JSONObject pattern = advert.getJSONObject("event_patterns")
+                .getJSONObject("*.received");
+        assertEquals("fact", pattern.getString("kind"));
+        assertEquals("sms", pattern.getJSONArray("res").getString(0));
+        assertEquals("string", pattern.getJSONObject("payload")
+                .getJSONObject("contact").getString("type"));
+        assertEquals("int", pattern.getJSONObject("payload")
+                .getJSONObject("age_s").getString("type"));
+
+        final JSONObject smsSend = advert.getJSONObject("actions")
+                .getJSONObject("sms_send");
+        assertTrue(smsSend.getJSONObject("params").has("contact"));
+        assertTrue(smsSend.getJSONObject("params").has("text"));
+    }
+
+    @Test
+    public void smsKeywordFiresReceivedFactOnce() throws Exception {
+        final PhoneProvider provider = makeSmsProvider(makeSmsConfig(null));
+        final FakeHost host = new FakeHost();
+        provider.attach(host);
+
+        assertTrue(provider.onSmsKeyword("go", "mom", 5));
+        assertEquals(1, host.names.size());
+        assertEquals("phone.sms_go.received", host.names.get(0));
+        final JSONObject payload = host.payloads.get(0);
+        assertEquals("mom", payload.getString("contact"));
+        assertEquals(5, payload.getInt("age_s"));
+        // the payload never carries a number or the message text
+        assertFalse(payload.toString().contains(MOM_NUMBER));
+        assertFalse(payload.toString().contains("ATT:"));
+    }
+
+    @Test
+    public void smsKeywordDropsWithoutHostOrKeyword() {
+        final PhoneProvider provider = makeSmsProvider(makeSmsConfig(null));
+        // no host attached: the parser treats this as "service down"
+        assertFalse(provider.onSmsKeyword("go", "mom", 0));
+        provider.attach(new FakeHost());
+        // a keyword the advert does not know never fires
+        assertFalse(provider.onSmsKeyword("bogus", "mom", 0));
+    }
+
+    @Test
+    public void smsSendKnownContactSendsOnce() throws Exception {
+        final List<String[]> sent = new ArrayList<>();
+        final PhoneProvider provider = makeSmsProvider(makeSmsConfig(sent));
+        final Sink sink = new Sink();
+        provider.invoke("s1", "phone", "sms_send",
+                new JSONObject().put("contact", "Mom").put("text", "on my way"),
+                10000, sink);
+        assertNull(sink.err);
+        assertNotNull(sink.ok);
+        assertEquals(1, sent.size());
+        assertEquals(MOM_NUMBER, sent.get(0)[0]);
+        assertEquals("on my way", sent.get(0)[1]);
+    }
+
+    @Test
+    public void smsSendRejectsUnknownContactAndNumbers() throws Exception {
+        final List<String[]> sent = new ArrayList<>();
+        final PhoneProvider provider = makeSmsProvider(makeSmsConfig(sent));
+        Sink sink = new Sink();
+        provider.invoke("s2", "phone", "sms_send",
+                new JSONObject().put("contact", "stranger").put("text", "x"),
+                10000, sink);
+        assertNotNull(sink.err);
+
+        sink = new Sink();
+        provider.invoke("s3", "phone", "sms_send",
+                new JSONObject().put("contact", "+20100999").put("text", "x"),
+                10000, sink);
+        assertNotNull(sink.err);
+        assertTrue(sent.isEmpty());
+    }
+
+    @Test
+    public void smsSendRateLimitStopsTheLoop() throws Exception {
+        final List<String[]> sent = new ArrayList<>();
+        final PhoneSmsConfig sms = makeSmsConfig(sent);
+        sms.send_limit = 2;
+        sms.send_window_ms = 60_000L;
+        final PhoneProvider provider = makeSmsProvider(sms);
+        for (int i = 0; i < 2; i++) {
+            final Sink ok = new Sink();
+            provider.invoke("s" + i, "phone", "sms_send",
+                    new JSONObject().put("contact", "mom").put("text", "x"),
+                    10000, ok);
+            assertNull(ok.err);
+        }
+        final Sink blocked = new Sink();
+        provider.invoke("s9", "phone", "sms_send",
+                new JSONObject().put("contact", "mom").put("text", "x"),
+                10000, blocked);
+        assertNotNull(blocked.err);
+        assertEquals(2, sent.size());
     }
 
     @Test
