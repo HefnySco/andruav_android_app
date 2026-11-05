@@ -164,12 +164,6 @@
             android:key="ufcQwjT6FEe"
             android:summary="@string/pref_gr_fpv_stunserver_summary" />
 
-        <CheckBoxPreference
-            android:title="Use app camera capturer"
-            android:key="use_app_camera_capturer"
-            android:summary="Capture FPV through the app-owned Camera2 capturer instead of the bundled WebRTC capturer. On by default - turn off to roll back to the bundled capturer."
-            android:defaultValue="true" />
-
     </PreferenceCategory>
 
 

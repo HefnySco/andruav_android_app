@@ -676,22 +676,6 @@ public class Preference {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "MihUMPX2", bEnabled);
     }
 
-    /***
-     * Rollback flag for the app-owned camera path: when on, the app captures
-     * through AndruavCameraCapturer instead of the fork capturer. Default on;
-     * kept for one release as rollback.
-     *
-     * @param contextWrapper
-     * @return
-     */
-    public static boolean useAppCameraCapturer(final android.content.ContextWrapper contextWrapper) {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "use_app_camera_capturer", true);
-    }
-
-    public static void useAppCameraCapturer(final android.content.ContextWrapper contextWrapper, final boolean bEnabled) {
-        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "use_app_camera_capturer", bEnabled);
-    }
-
     /////////////////// EOFFPV Preference
 
 
