@@ -23,8 +23,8 @@ android {
         targetSdkVersion android_build_target_sdk_version
 
 
-        versionName '15.0.1'
-        versionCode 15000001
+        versionName '15.0.2'
+        versionCode 15000002
         multiDexEnabled true
     }
 
