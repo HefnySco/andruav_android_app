@@ -123,17 +123,15 @@ public class DeAndroidModuleService extends Service {
         super.onDestroy();
     }
 
-    /** Idempotent: a repeated START while running is a near no-op. */
+    /** A repeated START re-initializes the module so new config applies. */
     private void startModule(final int port) {
         if (mModuleRunning) {
-            // The module stayed up while the WS-facing bus client was torn
-            // down (a disconnect that did not stop the service) - revive it.
-            if (NativeUnitController.isNativeMode()
-                    && (mModule != null)
-                    && ((mDeBusClient == null) || !mDeBusClient.isConnected())) {
-                mDeBusClient = attachBusClient(mModule);
-            }
-            return;
+            /* DE-0048: a repeated START used to be a near no-op, so a
+             * stale module kept its old config forever. Stop the running
+             * module and fall through to a fresh init. The bus-client
+             * revive case is covered too - a restart re-attaches it. */
+            Log.i(TAG, "restart on repeated START");
+            stopModule();
         }
 
         // F1 (AN-0068): in native mode the module also becomes the app's

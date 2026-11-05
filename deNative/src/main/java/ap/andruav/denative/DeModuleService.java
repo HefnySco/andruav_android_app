@@ -108,7 +108,18 @@ public abstract class DeModuleService extends Service {
 
     private void startModule(final String[] extraArgs) {
         if (moduleThread != null && moduleThread.isAlive()) {
-            return;
+            /* DE-0048: a repeated START must re-initialize the native
+             * module - de_override configs only apply at native start,
+             * so a live module would keep its stale workdir config.
+             * Stop it first (in-process, unlike stopModule's kill). */
+            Log.i(TAG, getModuleName() + " restart on repeated START");
+            nativeRequestStop();
+            try {
+                moduleThread.join(STOP_GRACE_MS);
+            } catch (InterruptedException ignored) {
+            }
+            moduleThread = null;
+            releaseLocks();
         }
         final File workDir = new File(getFilesDir(), getModuleName());
         //noinspection ResultOfMethodCallIgnored
