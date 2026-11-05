@@ -55,6 +55,10 @@
     <string name="pref_gr_sms_chk_summary">Send info via SMS for emergency.</string>
     <string name="pref_gr_sms_rx_chk">SMS Commands</string>
     <string name="pref_gr_sms_rx_chk_summary">Enable execute commands received by SMS.</string>
+    <string name="pref_gr_sms_rx_contacts">SMS Allowed Numbers</string>
+    <string name="pref_gr_sms_rx_contacts_summary">Comma-separated phone numbers allowed to send commands. Empty refuses all.</string>
+    <string name="pref_gr_sms_rx_pin">SMS Command PIN</string>
+    <string name="pref_gr_sms_rx_pin_summary">PIN appended to every command as ATT:command:PIN.</string>
     <string name="pref_gr_recovery_chk_rc_block">Enable RC Block</string>
     <string name="pref_gr_recovery_chk_rc_block_summary">vehicle accepts Blocking command to mute all control from GCSs.</string>
     <string name="pref_gr_recovery_edt_rcCh_blk_trigger">RC Block TX Channel</string>

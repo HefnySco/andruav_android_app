@@ -201,6 +201,18 @@
             android:summary="@string/pref_gr_sms_rx_chk_summary"
             android:defaultValue="false" />
 
+        <EditTextPreference
+            android:title="@string/pref_gr_sms_rx_contacts"
+            android:key="key_sms_rx_contacts"
+            android:summary="@string/pref_gr_sms_rx_contacts_summary"
+            android:inputType="phone" />
+
+        <EditTextPreference
+            android:title="@string/pref_gr_sms_rx_pin"
+            android:key="key_sms_rx_pin"
+            android:summary="@string/pref_gr_sms_rx_pin_summary"
+            android:inputType="numberPassword" />
+
         <CheckBoxPreference
             android:title="@string/pref_gr_sms_chk"
             android:key="key_sms_chk"

@@ -850,6 +850,32 @@ public class Preference {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_rx_chk", enableSMS);
     }
 
+    /* AN-0127: SMS command gate - comma-separated allowed numbers plus a
+     * PIN; both required (ATT:<cmd>:<pin>). Empty = refuse all. */
+    public static java.util.List<String> getSmsAllowedContacts(final android.content.ContextWrapper contextWrapper) {
+        final String raw = SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_rx_contacts", "");
+        final java.util.List<String> contacts = new java.util.ArrayList<>();
+        for (final String n : raw.split(",")) {
+            final String trimmed = n.trim();
+            if (!trimmed.isEmpty()) {
+                contacts.add(trimmed);
+            }
+        }
+        return contacts;
+    }
+
+    public static void setSmsAllowedContacts(final android.content.ContextWrapper contextWrapper, final String csvNumbers) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_rx_contacts", csvNumbers);
+    }
+
+    public static String getSmsPin(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_rx_pin", "");
+    }
+
+    public static void setSmsPin(final android.content.ContextWrapper contextWrapper, final String pin) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "key_sms_rx_pin", pin);
+    }
+
 
     public static void isEmergencyFlashEnabled(final android.content.ContextWrapper contextWrapper, final boolean enableFlash) {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "Ua22l1asZBc3w", enableFlash);
