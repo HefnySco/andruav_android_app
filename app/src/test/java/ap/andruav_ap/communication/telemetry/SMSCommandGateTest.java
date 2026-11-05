@@ -27,7 +27,9 @@ import java.util.List;
  */
 public class SMSCommandGateTest {
 
-    private static final String ALLOWED = "+201001234567";
+    /* kept free of the PIN substring so the log-hygiene asserts can
+     * distinguish a leaked PIN from a logged sender number */
+    private static final String ALLOWED = "+201001110005";
     private static final String STRANGER = "+201009876543";
     private static final String PIN = "4321";
 
