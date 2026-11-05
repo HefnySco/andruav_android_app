@@ -62,6 +62,7 @@ android {
             logger.info('Release Built')
             debuggable false
             minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig keystorePropsFile.exists() ? signingConfigs.release : signingConfigs.debug
             android.applicationVariants.all { variant ->
                 variant.outputs.all {
