@@ -460,6 +460,22 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
         }
     }
 
+    /* AN-0111: a peer that joins a live stream has no decoder state -
+     * until the next periodic IDR it renders black. Toggling the track
+     * off/on makes the encoder emit a keyframe for the new sender. */
+    private void forceKeyFrame() {
+        final VideoTrack track = localVideoTrack;
+        if (track == null) {
+            return;
+        }
+        try {
+            track.setEnabled(false);
+            track.setEnabled(true);
+        } catch (Exception e) {
+            AndruavEngine.log().logException("rtc", e);
+        }
+    }
+
     private void untrackStatsPeer(final PnPeer peer) {
         synchronized (mStatsPeers) {
             mStatsPeers.remove(peer);
@@ -1070,6 +1086,7 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
             {
                 trackStatsPeer(peer);
                 mIRTCListener.onPeerConnected(peer.id);
+                forceKeyFrame();
             }
             else if (peer.status.equals(PnPeer.STATUS_DISCONNECTED))
             {
