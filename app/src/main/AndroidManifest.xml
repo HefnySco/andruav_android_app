@@ -100,6 +100,8 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <!-- upgrade to Android 9-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- AN-0116: the strobe full-screen intent needs this on API 34+ -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />

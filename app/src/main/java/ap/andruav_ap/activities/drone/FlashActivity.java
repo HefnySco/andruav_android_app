@@ -3,6 +3,10 @@ package ap.andruav_ap.activities.drone;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -31,6 +36,8 @@ import ap.andruav_ap.App;
  */
 public class FlashActivity extends AppCompatActivity {
 
+    private static final String TAG = "FlashActivity";
+
     public static final String EXTRA_STROBE_HZ = "strobe_hz";
     public static final String EXTRA_COLOR = "color";
 
@@ -42,16 +49,68 @@ public class FlashActivity extends AppCompatActivity {
     private static final AtomicBoolean sStrobeRequested = new AtomicBoolean(false);
     private static volatile FlashActivity sInstance;
 
-    /** Turn the screen strobe on: mark it requested and bring this activity up. */
-    public static void requestStrobe(final Context context, final double strobeHz, final int color) {
-        sStrobeRequested.set(true);
-        final Intent intent = new Intent(context, FlashActivity.class)
+    private static final String STROBE_CHANNEL_ID = "screen_strobe";
+    private static final int STROBE_NOTIFY_ID = 7041;
+
+    private static Intent strobeIntent(final Context context, final double strobeHz, final int color) {
+        return new Intent(context, FlashActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP
                         | Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra(EXTRA_STROBE_HZ, (float) strobeHz)
                 .putExtra(EXTRA_COLOR, color);
-        context.startActivity(intent);
+    }
+
+    /* AN-0116: Android 10+ silently blocks startActivity from a
+     * background app - the strobe then never shows although the pin
+     * reports on. A high-priority notification with a full-screen
+     * intent is the sanctioned path over the lockscreen (needs the
+     * USE_FULL_SCREEN_INTENT grant on API 34+; below that it lands as a
+     * heads-up notification the user can open). The direct start stays
+     * for the foreground case; the notification is cancelled once the
+     * activity is up or the strobe stops. */
+    private static void postStrobeNotification(final Context context, final Intent intent) {
+        final NotificationManager nm =
+                context.getSystemService(NotificationManager.class);
+        if (nm == null) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            nm.createNotificationChannel(new NotificationChannel(
+                    STROBE_CHANNEL_ID, "Screen strobe",
+                    NotificationManager.IMPORTANCE_HIGH));
+        }
+        final PendingIntent pi = PendingIntent.getActivity(context, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT
+                        | PendingIntent.FLAG_IMMUTABLE);
+        final Notification.Builder b = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                ? new Notification.Builder(context, STROBE_CHANNEL_ID)
+                : new Notification.Builder(context);
+        b.setSmallIcon(android.R.drawable.ic_dialog_alert)
+                .setContentTitle("Screen strobe")
+                .setContentText("Tap to show")
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setCategory(Notification.CATEGORY_ALARM)
+                .setFullScreenIntent(pi, true)
+                .setContentIntent(pi)
+                .setAutoCancel(true);
+        nm.notify(STROBE_NOTIFY_ID, b.build());
+    }
+
+    private static void cancelStrobeNotification(final Context context) {
+        final NotificationManager nm =
+                context.getSystemService(NotificationManager.class);
+        if (nm != null) nm.cancel(STROBE_NOTIFY_ID);
+    }
+
+    /** Turn the screen strobe on: mark it requested and bring this activity up. */
+    public static void requestStrobe(final Context context, final double strobeHz, final int color) {
+        sStrobeRequested.set(true);
+        final Intent intent = strobeIntent(context, strobeHz, color);
+        try {
+            context.startActivity(intent);
+        } catch (Exception e) {
+            Log.w(TAG, "direct strobe launch failed", e);
+        }
+        postStrobeNotification(context, intent);
     }
 
     /** Turn the screen strobe off: finish the activity when it is up. */
@@ -59,6 +118,7 @@ public class FlashActivity extends AppCompatActivity {
         sStrobeRequested.set(false);
         final FlashActivity instance = sInstance;
         if (instance != null) {
+            cancelStrobeNotification(instance);
             instance.runOnUiThread(instance::finish);
         }
     }
@@ -94,6 +154,7 @@ public class FlashActivity extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         sInstance = this;
+        cancelStrobeNotification(this);
 
         App.activeActivity = this;
         App.ForceLanguage();
@@ -124,6 +185,7 @@ public class FlashActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        cancelStrobeNotification(this);
         applyExtras(intent);
     }
 
