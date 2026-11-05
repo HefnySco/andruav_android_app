@@ -386,9 +386,15 @@ public class PhoneProvider implements DeCapabilityProvider {
             host = this.m_host;
         }
         if (host == null) return false;
-        host.fireEvent(NS, "sms_" + keyword + ".received",
-                _kv("contact", contact == null ? "" : contact,
-                        "age_s", age_s));
+        try {
+            host.fireEvent(NS, "sms_" + keyword + ".received",
+                    _kv("contact", contact == null ? "" : contact,
+                            "age_s", age_s));
+        } catch (RuntimeException e) {
+            // a dead bus socket must not kill the SMS receive path -
+            // report the drop so the sender gets a failure reply
+            return false;
+        }
         return true;
     }
 

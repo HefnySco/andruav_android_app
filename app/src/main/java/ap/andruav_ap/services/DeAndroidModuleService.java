@@ -199,12 +199,6 @@ public class DeAndroidModuleService extends Service {
         // socket exists; the advert goes out on the first ID reply.
         host.start();
         phoneProvider.attach(host);
-        // AN-0128: SMS keyword messages become phone.sms_<kw>.received
-        // facts only while this service runs; the parser falls back to a
-        // failure reply when no listener is installed.
-        AndruavSMSClientParser.setKeywordFactListener(
-                (keyword, contact, age_s) ->
-                        phoneProvider.onSmsKeyword(keyword, contact, age_s));
         soundProvider.attach(host);
         cameraProvider.attach(host);
         soundProvider.setSirenHook(whistling -> {
@@ -253,6 +247,13 @@ public class DeAndroidModuleService extends Service {
                     }
                     mModuleRunning = true;
                 }
+                // AN-0128: SMS keyword messages become
+                // phone.sms_<kw>.received facts only while this service
+                // runs on a live socket; with no listener the parser
+                // logs the drop and sends the sender a failure reply.
+                AndruavSMSClientParser.setKeywordFactListener(
+                        (keyword, contact, age_s) ->
+                                phoneProvider.onSmsKeyword(keyword, contact, age_s));
                 // F1 (AN-0068): socket is up - install the bus client as the
                 // app's getAndruavWS() transport so the UI/parser layer works
                 // exactly as if a WebSocket client were connected.
