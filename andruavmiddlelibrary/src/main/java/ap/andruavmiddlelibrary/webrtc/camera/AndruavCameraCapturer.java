@@ -22,7 +22,6 @@ import android.util.Range;
 import android.view.Surface;
 import android.view.WindowManager;
 
-import org.webrtc.AndruavWebRTCGlobals;
 import org.webrtc.CameraEnumerationAndroid;
 import org.webrtc.CameraEnumerationAndroid.CaptureFormat;
 import org.webrtc.CapturerObserver;
@@ -122,7 +121,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
     private Range<Float> zoomRatioRange;
 
     // Control state (stubs for E1d-E1g).
-    private int flashMode = AndruavWebRTCGlobals.FlashOff;
+    private int flashMode = AndruavCameraControl.FLASH_OFF;
     private float zoomLevel = 0.0f;
     private int fixedOrientationDegrees = -1;
 
@@ -368,11 +367,11 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
         if (cameraFrontFacing) {
             // Front camera has no torch - same FlashDisabled reply as the fork.
             if (eventsListener != null) {
-                eventsListener.onCameraFlashChanged(AndruavWebRTCGlobals.FlashDisabled);
+                eventsListener.onCameraFlashChanged(AndruavCameraControl.FLASH_DISABLED);
             }
             return;
         }
-        if (onOff != AndruavWebRTCGlobals.FlashOn && onOff != AndruavWebRTCGlobals.FlashOff) {
+        if (onOff != AndruavCameraControl.FLASH_ON && onOff != AndruavCameraControl.FLASH_OFF) {
             return;
         }
 
@@ -390,7 +389,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
 
     private void applyFlashMode() {
         captureRequestBuilder.set(CaptureRequest.FLASH_MODE,
-                flashMode == AndruavWebRTCGlobals.FlashOn
+                flashMode == AndruavCameraControl.FLASH_ON
                         ? CameraMetadata.FLASH_MODE_TORCH : CameraMetadata.FLASH_MODE_OFF);
     }
 
@@ -411,7 +410,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
     @Override
     public int getFlash() {
         if (cameraFrontFacing) {
-            return AndruavWebRTCGlobals.FlashDisabled;
+            return AndruavCameraControl.FLASH_DISABLED;
         }
         return flashMode;
     }
@@ -519,7 +518,7 @@ public class AndruavCameraCapturer implements VideoCapturer, AndruavCameraContro
                 ? cameraCharacteristics.get(CameraCharacteristics.CONTROL_ZOOM_RATIO_RANGE)
                 : null;
         if (cameraFrontFacing) {
-            flashMode = AndruavWebRTCGlobals.FlashDisabled;
+            flashMode = AndruavCameraControl.FLASH_DISABLED;
         }
         if (eventsListener != null) {
             eventsListener.onCameraFlashChanged(flashMode);

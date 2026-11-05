@@ -39,7 +39,7 @@ dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
     api project(':andruavProtocol')
-    api project(':webrtc')
+    api 'io.github.webrtc-sdk:android:137.7151.05'
     api 'org.greenrobot:greendao:3.3.0'
     api 'com.squareup.okhttp3:okhttp:3.14.9'
     //api 'org.webrtc:google-webrtc:1.0.30039'

@@ -18,7 +18,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.webrtc.AndruavWebRTCGlobals;
 import org.webrtc.ContextUtils;
 import org.webrtc.MediaStream;
 import org.webrtc.SurfaceViewRenderer;
@@ -50,6 +49,7 @@ import ap.andruavmiddlelibrary.factory.io.FileHelper;
 import ap.andruavmiddlelibrary.factory.util.Time_Helper;
 import ap.andruavmiddlelibrary.preference.Preference;
 import ap.andruavmiddlelibrary.webrtc.IRTCListener;
+import ap.andruavmiddlelibrary.webrtc.camera.AndruavCameraControl;
 import ap.andruavmiddlelibrary.webrtc.classes.AndruavVideoFileRenderer;
 import ap.andruavmiddlelibrary.webrtc.classes.PeerConnectionManager;
 import ap.andruavmiddlelibrary.webrtc.classes.PnPeer;
@@ -260,7 +260,7 @@ public class FPVStreamingService extends Service implements IRTCListener, VideoS
 
         switch (a7adath_FPV_CMD.CMD_ID) {
             case Event_FPV_CMD.FPV_CMD_FLASHCAM:
-                mPeerConnectionManager.setFlash(a7adath_FPV_CMD.ACT ? AndruavWebRTCGlobals.FlashOn : AndruavWebRTCGlobals.FlashOff);
+                mPeerConnectionManager.setFlash(a7adath_FPV_CMD.ACT ? AndruavCameraControl.FLASH_ON : AndruavCameraControl.FLASH_OFF);
                 break;
 
             case Event_FPV_CMD.FPV_CMD_SWITCHCAM:

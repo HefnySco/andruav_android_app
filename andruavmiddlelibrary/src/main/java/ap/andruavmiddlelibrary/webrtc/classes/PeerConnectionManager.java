@@ -19,9 +19,7 @@ import com.andruav.AndruavEngine;
 
 import org.webrtc.Camera1Enumerator;
 import org.webrtc.Camera2Enumerator;
-import org.webrtc.CameraEnumerationAndroid;
 import org.webrtc.CameraEnumerator;
-import org.webrtc.CameraVideoCapturer;
 import org.webrtc.CapturerObserver;
 import org.webrtc.DefaultVideoDecoderFactory;
 import org.webrtc.DefaultVideoEncoderFactory;
@@ -59,8 +57,7 @@ import com.andruav.AndruavSettings;
 /**
  * Created by mhefny on 2/28/16.
  */
-public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHandler,
-        AndruavCameraControl.Listener, CapturerObserver {
+public class PeerConnectionManager implements AndruavCameraControl.Listener, CapturerObserver {
 
     protected PeerConnectionManager Me;
     /**
@@ -234,11 +231,7 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
                     return false;
                 }
 
-                if (capturer instanceof AndruavCameraControl) {
-                    ((AndruavCameraControl) capturer).setFixedOrientationDegrees(90);
-                } else {
-                    org.webrtc.AndruavWebRTCGlobals.fixedDeviceOrientationDegrees = 90;
-                }
+                ((AndruavCameraControl) capturer).setFixedOrientationDegrees(90);
 
                 // First create a Video Source, then we can make a Video Track
                 localVideoSource = pcFactory.createVideoSource(false);
@@ -371,15 +364,11 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
         mCaptureDeviceName = deviceName;
         mCaptureFrontFacing = enumerator.isFrontFacing(deviceName);
 
-        if (Preference.useAppCameraCapturer(null)) {
-            // The app capturer takes a camera2 id. Camera2Enumerator device
-            // names already are ids; Camera1Enumerator display names are not,
-            // so on a Camera1-only device let the capturer auto-pick instead.
-            final String cameraId = (enumerator instanceof Camera2Enumerator) ? deviceName : null;
-            return new AndruavCameraCapturer(mContext, cameraId, this);
-        }
-
-        return enumerator.createCapturer(deviceName, this);
+        // The app capturer takes a camera2 id. Camera2Enumerator device
+        // names already are ids; Camera1Enumerator display names are not,
+        // so on a Camera1-only device let the capturer auto-pick instead.
+        final String cameraId = (enumerator instanceof Camera2Enumerator) ? deviceName : null;
+        return new AndruavCameraCapturer(mContext, cameraId, this);
     }
 
     /***
@@ -402,37 +391,19 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
     private void applyCaptureFormatMode(final CameraEnumerator enumerator, final String deviceName, final int mode) {
         if (mode == Preference.STREAM_RESOLUTION_MAX) {
-            if (Preference.useAppCameraCapturer(null)) {
-                // App path: formats come from the Camera2 stream map, not the
-                // fork enumerator's supported-formats list.
-                final String cameraId = (enumerator instanceof Camera2Enumerator) ? deviceName : null;
-                final int[] maxFormat = AndruavCameraCapturer.maxCaptureFormat(mContext, cameraId);
-                if (maxFormat != null) {
-                    mCaptureWidth = maxFormat[0];
-                    mCaptureHeight = maxFormat[1];
-                    mCaptureFps = Math.max(10, Math.min(30, maxFormat[2]));
-                    Log.i(TAG_CAM_METRICS,
-                            "capture " + mCaptureWidth + "x" + mCaptureHeight + "@" + mCaptureFps);
-                    return;
-                }
-                // No format info available: fall through to HD below as a safe default.
-            } else {
-                final List<CameraEnumerationAndroid.CaptureFormat> formats = enumerator.getSupportedFormats(deviceName);
-                if (formats != null && !formats.isEmpty()) {
-                    CameraEnumerationAndroid.CaptureFormat best = formats.get(0);
-                    for (final CameraEnumerationAndroid.CaptureFormat format : formats) {
-                        if ((long) format.width * format.height > (long) best.width * best.height) {
-                            best = format;
-                        }
-                    }
-                    mCaptureWidth = best.width;
-                    mCaptureHeight = best.height;
-                    // framerate.max is expressed in fps*1000; cap it to a sane streaming range.
-                    mCaptureFps = Math.max(10, Math.min(30, best.framerate.max / 1000));
-                    return;
-                }
-                // No format info available: fall through to HD below as a safe default.
+            // App path: formats come from the Camera2 stream map, not the
+            // enumerator's supported-formats list.
+            final String cameraId = (enumerator instanceof Camera2Enumerator) ? deviceName : null;
+            final int[] maxFormat = AndruavCameraCapturer.maxCaptureFormat(mContext, cameraId);
+            if (maxFormat != null) {
+                mCaptureWidth = maxFormat[0];
+                mCaptureHeight = maxFormat[1];
+                mCaptureFps = Math.max(10, Math.min(30, maxFormat[2]));
+                Log.i(TAG_CAM_METRICS,
+                        "capture " + mCaptureWidth + "x" + mCaptureHeight + "@" + mCaptureFps);
+                return;
             }
+            // No format info available: fall through to HD below as a safe default.
         }
 
         if (mode == Preference.STREAM_RESOLUTION_SD) {
@@ -608,39 +579,15 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
      */
     public void switchCamera () {
 
-        if (capturer instanceof AndruavCameraControl) {
-            // App path: the capturer owns the camera order and cycles it.
-            ((AndruavCameraControl) capturer).switchCamera(new AndruavCameraControl.CameraSwitchHandler() {
-                @Override
-                public void onCameraSwitchDone(boolean isFrontCamera) {
-                    mCaptureFrontFacing = isFrontCamera;
-                    // The capturer owns the id order; facing is the channel
-                    // fallback id on this path.
-                    mCaptureDeviceName = null;
-                }
-
-                @Override
-                public void onCameraSwitchError(String errorDescription) {
-                }
-            });
-            return;
-        }
-
-        final int deviceCount = createCameraEnumerator().getDeviceNames().length;
-        if (deviceCount <= 1) return;
-        if (!(capturer instanceof CameraVideoCapturer)) return;
-
-        Preference.setCameraNumber(null,(Preference.getCameraNumber(null) + 1) % deviceCount);
-        ((CameraVideoCapturer) capturer).switchCamera(new CameraVideoCapturer.CameraSwitchHandler() {
+        if (!(capturer instanceof AndruavCameraControl)) return;
+        // The capturer owns the camera order and cycles it.
+        ((AndruavCameraControl) capturer).switchCamera(new AndruavCameraControl.CameraSwitchHandler() {
             @Override
             public void onCameraSwitchDone(boolean isFrontCamera) {
                 mCaptureFrontFacing = isFrontCamera;
-                // The switch handler only reports facing; re-read the camera
-                // index preference (already advanced by the caller above) to
-                // recover the new enumerator device name.
-                final String[] names = createCameraEnumerator().getDeviceNames();
-                final int camNum = Preference.getCameraNumber(null);
-                mCaptureDeviceName = (camNum >= 0 && camNum < names.length) ? names[camNum] : null;
+                // The capturer owns the id order; facing is the channel
+                // fallback id on this path.
+                mCaptureDeviceName = null;
             }
 
             @Override
@@ -665,49 +612,32 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
 
     public void setFlash (final int onOff)
     {
-        if (capturer instanceof AndruavCameraControl) {
-            ((AndruavCameraControl) capturer).setFlash(onOff);
-            return;
-        }
-        if (!(capturer instanceof CameraVideoCapturer)) return;
-        ((CameraVideoCapturer) capturer).setFlash(onOff);
+        if (!(capturer instanceof AndruavCameraControl)) return;
+        ((AndruavCameraControl) capturer).setFlash(onOff);
     }
 
     public int getFlash ()
     {
-        if (capturer instanceof AndruavCameraControl) {
-            return ((AndruavCameraControl) capturer).getFlash();
-        }
-        if (!(capturer instanceof CameraVideoCapturer)) return org.webrtc.AndruavWebRTCGlobals.FlashOff;
-        return ((CameraVideoCapturer) capturer).getFlash();
+        if (!(capturer instanceof AndruavCameraControl)) return AndruavCameraControl.FLASH_OFF;
+        return ((AndruavCameraControl) capturer).getFlash();
     }
 
     public void setZoom (final float zoom)
     {
-        if (capturer instanceof AndruavCameraControl) {
-            ((AndruavCameraControl) capturer).setZoom(zoom);
-            return;
-        }
-        if (!(capturer instanceof CameraVideoCapturer)) return;
-        ((CameraVideoCapturer) capturer).setZoom(zoom);
+        if (!(capturer instanceof AndruavCameraControl)) return;
+        ((AndruavCameraControl) capturer).setZoom(zoom);
     }
 
     public float getZoom ()
     {
-        if (capturer instanceof AndruavCameraControl) {
-            return ((AndruavCameraControl) capturer).getZoom();
-        }
-        if (!(capturer instanceof CameraVideoCapturer)) return 0f;
-        return ((CameraVideoCapturer) capturer).getZoom();
+        if (!(capturer instanceof AndruavCameraControl)) return 0f;
+        return ((AndruavCameraControl) capturer).getZoom();
     }
 
     public boolean isZoomSupported ()
     {
-        if (capturer instanceof AndruavCameraControl) {
-            return ((AndruavCameraControl) capturer).isZoomSupported();
-        }
-        return (capturer instanceof CameraVideoCapturer)
-                && ((CameraVideoCapturer) capturer).isZoomSupported();
+        return (capturer instanceof AndruavCameraControl)
+                && ((AndruavCameraControl) capturer).isZoomSupported();
     }
 
 
@@ -954,13 +884,18 @@ public class PeerConnectionManager implements CameraVideoCapturer.CameraEventsHa
         // throwing Java encode() on native-wrapped implementations
         // (VideoEncoderFallback, LibvpxVp8Encoder), killing the stream.
         @Override
-        public long createNativeVideoEncoder() {
-            return innerEncoder.createNativeVideoEncoder();
+        public long createNative(final long nativeEncoderFactory) {
+            return innerEncoder.createNative(nativeEncoderFactory);
         }
 
         @Override
         public boolean isHardwareEncoder() {
             return innerEncoder.isHardwareEncoder();
+        }
+
+        @Override
+        public EncoderInfo getEncoderInfo() {
+            return innerEncoder.getEncoderInfo();
         }
     }
 

@@ -10,6 +10,14 @@ package ap.andruavmiddlelibrary.webrtc.camera;
 public interface AndruavCameraControl {
 
     /**
+     * Flash states — same values the removed fork's AndruavWebRTCGlobals used,
+     * so the wire meaning sent to the GCS is unchanged.
+     */
+    int FLASH_ON = 1;
+    int FLASH_OFF = 2;
+    int FLASH_DISABLED = 999;
+
+    /**
      * Camera events — same shapes as the fork's
      * CameraVideoCapturer.CameraEventsHandler. Callbacks are executed from an
      * arbitrary thread.
