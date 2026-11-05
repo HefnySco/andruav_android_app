@@ -1079,6 +1079,14 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
             Thread.sleep(1000); // wait time to sendMessageToModule shut down message.
 
+            // Press "disconnect" before exit: same path as doLogout().
+            // de_comm / de_mavlink run in their own processes and outlive a
+            // killProcess, so without this the unit stays online on the
+            // comm server until the socket times out.
+            stopAndruavWS(false);
+
+            Thread.sleep(1000); // let the cross-process module stop land.
+
 
             EventBus.getDefault().post(new Event_ShutDown_Signalling(1));
 
