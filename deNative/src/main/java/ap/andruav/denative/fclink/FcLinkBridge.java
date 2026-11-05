@@ -280,11 +280,16 @@ public final class FcLinkBridge {
         } catch (IOException e) {
             lastError = "pump: " + e.getMessage();
         } finally {
-            onPumpFailure();
+            onPumpFailure(socket);
         }
     }
 
-    private void onPumpFailure() {
+    private void onPumpFailure(Socket failed) {
+        /* AN-0062 — a replaced client's pump can die after a new client
+         * took over: only its own socket may close the link. */
+        if (failed != clientSocket) {
+            return;
+        }
         synchronized (this) {
             pumpsRunning = false;
         }
