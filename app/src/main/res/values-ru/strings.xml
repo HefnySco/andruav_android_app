@@ -62,6 +62,36 @@
     <string name="home_fcb_udp_port_label">Порт</string>
     <string name="home_fcb_udp_helper">Прослушивает широковещательную телеметрию в локальной сети.</string>
 
+    <!-- AN-0134: PHONE screen (tabbed IMU/GPS/SMS) -->
+    <string name="home_tile_phone">ТЕЛЕФОН</string>
+    <string name="home_tile_state_sms_on">SMS ВКЛ · %1$d КОНТАКТОВ</string>
+    <string name="phone_title">ТЕЛЕФОН</string>
+    <string name="phone_tab_imu">IMU</string>
+    <string name="phone_tab_gps">GPS</string>
+    <string name="phone_tab_sms">SMS</string>
+    <string name="phone_menu_help">Помощь</string>
+    <string name="phone_coming_soon">Появится в следующем обновлении</string>
+    <string name="phone_imu_attitude">ОРИЕНТАЦИЯ</string>
+    <string name="phone_imu_source">IMU ТЕЛЕФОНА</string>
+    <string name="phone_imu_roll">КРЕН</string>
+    <string name="phone_imu_pitch">ТАНГАЖ</string>
+    <string name="phone_imu_heading">КУРС</string>
+    <string name="phone_status_title">СТАТУС ТЕЛЕФОНА</string>
+    <string name="phone_status_battery_phone">Батарея телефона</string>
+    <string name="phone_status_battery_fcb">Батарея FCB</string>
+    <string name="phone_status_flight_mode">Режим полёта</string>
+    <string name="phone_status_speed_alt">Скорость · Высота</string>
+    <string name="phone_status_armed">ВЗВЕДЕН</string>
+    <string name="phone_status_blocked">БЛОКИРОВАН</string>
+    <string name="phone_status_na">—</string>
+    <string name="phone_raw_title">СЫРЫЕ ДАТЧИКИ</string>
+    <string name="phone_raw_units">m/s² · rad/s · µT</string>
+    <string name="phone_raw_acc">ACC</string>
+    <string name="phone_raw_gyro">GYRO</string>
+    <string name="phone_raw_mag">MAG</string>
+    <string name="phone_raw_na">Н/Д</string>
+    <string name="phone_imu_tilt_done">Наклон датчика обновлён</string>
+
     <!-- i18n: extracted hardcoded strings -->
     <string name="toast_ping_time">Время пинга %1$s мс</string>
     <string name="toast_msg_duration">длительность сообщения: %1$s мс</string>

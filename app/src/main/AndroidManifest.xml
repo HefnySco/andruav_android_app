@@ -180,11 +180,14 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_hubcommunication"
             android:launchMode="singleTask" />
+        <!-- AN-0134: the old IMUShasha declaration is gone - the tile opens the
+             tabbed PhoneActivity; IMUShasha.java stays in the tree unreferenced. -->
         <activity
-            android:name="ap.andruav_ap.activities.drone.IMUShasha"
+            android:name="ap.andruav_ap.activities.phone.PhoneActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:label="@string/title_activity_imu"
-            android:launchMode="singleTask" />
+            android:label="@string/phone_title"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="ap.andruav_ap.activities.settings.SettingsDrone"
             android:configChanges="orientation|screenSize|keyboardHidden"

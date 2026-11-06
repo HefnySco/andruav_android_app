@@ -49,7 +49,7 @@ import java.io.UnsupportedEncodingException;
 import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.activities.settings.SettingsDrone;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
-import ap.andruav_ap.activities.drone.IMUShasha;
+import ap.andruav_ap.activities.phone.PhoneActivity;
 import ap.andruav_ap.activities.fpv.FPVActivityFactory;
 
 import ap.andruav_ap.App;
@@ -730,7 +730,17 @@ public class MainScreen extends BaseAndruavShasha {
         mStateCom = findViewById(R.id.home_state_com);
         mStateFcb = findViewById(R.id.home_state_fcb);
 
-        mTileImu.setOnClickListener(v -> startActivity(new Intent(MainScreen.this, IMUShasha.class)));
+        // AN-0134: the IMU tile became PHONE - same tile ids, new label/icon and
+        // the tabbed PhoneActivity behind it. The label TextView has no id; it is
+        // the first child of the caption group that also holds home_state_imu.
+        mIconImu.setImageResource(R.drawable.ic_home_phone);
+        final View captionGroup = (View) mStateImu.getParent();
+        if ((captionGroup instanceof ViewGroup)
+                && (((ViewGroup) captionGroup).getChildAt(0) instanceof TextView)) {
+            ((TextView) ((ViewGroup) captionGroup).getChildAt(0)).setText(R.string.home_tile_phone);
+        }
+
+        mTileImu.setOnClickListener(v -> startActivity(new Intent(MainScreen.this, PhoneActivity.class)));
         mTileFpv.setOnClickListener(v -> FPVActivityFactory.startFPVActivity(MainScreen.this));
         mTileCom.setOnClickListener(v -> HubConnectionSheet.newInstance().show(getSupportFragmentManager(), HubConnectionSheet.TAG));
         mTileFcb.setOnClickListener(new View.OnClickListener() {
@@ -981,11 +991,12 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
     /***
-     * Recomputes the IMU/FPV/Com/FCB module tile styling and the Flight Telemetry
+     * Recomputes the PHONE/FPV/Com/FCB module tile styling and the Flight Telemetry
      * card from current connection state, per the Home screen redesign state rules:
-     * IMU/FPV follow the FCB link, Com follows the Mission Server link, FCB reflects
-     * both (green when linked, blue when server-connected but not yet linked, gray
-     * otherwise).
+     * PHONE shows the SMS gate state (green SMS ON · N CONTACTS when SMS commands
+     * are enabled, gray OFFLINE otherwise), FPV follows the FCB link, Com follows
+     * the Mission Server link, FCB reflects both (green when linked, blue when
+     * server-connected but not yet linked, gray otherwise).
      */
     private void updateModuleTiles() {
         final boolean nativeMode = NativeUnitController.isNativeMode();
@@ -1001,9 +1012,13 @@ public class MainScreen extends BaseAndruavShasha {
                 ? NativeUnitMirror.isOwnFcLinked()
                 : TelemetryModeer.getConnectionInfo() != TelemetryModeer.CURRENTCONNECTION_NON;
 
+        // AN-0134: the PHONE tile subtitle reports the SMS gate, not the FCB
+        // link - the same key_sms_rx_* preferences Settings edits.
+        final boolean smsOn = Preference.isSMSRXEnabled(null);
         setTileState(mTileImu, mIconImu, mStateImu,
-                fcbConnected ? TileState.BLUE : TileState.GRAY,
-                fcbConnected ? R.string.home_tile_state_ready : R.string.home_tile_state_offline);
+                smsOn ? TileState.GREEN : TileState.GRAY,
+                smsOn ? getString(R.string.home_tile_state_sms_on, Preference.getSmsAllowedContacts(null).size())
+                        : getString(R.string.home_tile_state_offline));
         setTileState(mTileFpv, mIconFpv, mStateFpv,
                 fcbConnected ? TileState.BLUE : TileState.GRAY,
                 fcbConnected ? R.string.home_tile_state_ready : R.string.home_tile_state_offline);
@@ -1036,15 +1051,23 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
     private void setTileState(View tile, ImageView icon, TextView caption, TileState state, int captionRes) {
-        setTileState(tile, icon, caption, state, captionRes, state.opacity);
+        setTileState(tile, icon, caption, state, getString(captionRes), state.opacity);
+    }
+
+    private void setTileState(View tile, ImageView icon, TextView caption, TileState state, CharSequence captionText) {
+        setTileState(tile, icon, caption, state, captionText, state.opacity);
     }
 
     private void setTileState(View tile, ImageView icon, TextView caption, TileState state, int captionRes, float opacity) {
+        setTileState(tile, icon, caption, state, getString(captionRes), opacity);
+    }
+
+    private void setTileState(View tile, ImageView icon, TextView caption, TileState state, CharSequence captionText, float opacity) {
         tile.setBackgroundResource(state.background);
         final int color = ContextCompat.getColor(this, state.colorRes);
         icon.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
         icon.setAlpha(opacity);
-        caption.setText(captionRes);
+        caption.setText(captionText);
         caption.setTextColor(color);
         caption.setAlpha(opacity);
     }

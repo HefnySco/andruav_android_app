@@ -75,6 +75,36 @@
     <string name="home_fcb_udp_port_label">Port</string>
     <string name="home_fcb_udp_helper">Listens for broadcast telemetry on the local network.</string>
 
+    <!-- AN-0134: PHONE screen (tabbed IMU/GPS/SMS) -->
+    <string name="home_tile_phone">PHONE</string>
+    <string name="home_tile_state_sms_on">SMS ON · %1$d CONTACTS</string>
+    <string name="phone_title">PHONE</string>
+    <string name="phone_tab_imu">IMU</string>
+    <string name="phone_tab_gps">GPS</string>
+    <string name="phone_tab_sms">SMS</string>
+    <string name="phone_menu_help">Help</string>
+    <string name="phone_coming_soon">Coming in a later update</string>
+    <string name="phone_imu_attitude">ATTITUDE</string>
+    <string name="phone_imu_source">PHONE IMU</string>
+    <string name="phone_imu_roll">ROLL</string>
+    <string name="phone_imu_pitch">PITCH</string>
+    <string name="phone_imu_heading">HEADING</string>
+    <string name="phone_status_title">PHONE STATUS</string>
+    <string name="phone_status_battery_phone">Phone battery</string>
+    <string name="phone_status_battery_fcb">FCB battery</string>
+    <string name="phone_status_flight_mode">Flight mode</string>
+    <string name="phone_status_speed_alt">Speed · Alt</string>
+    <string name="phone_status_armed">ARMED</string>
+    <string name="phone_status_blocked">BLOCKED</string>
+    <string name="phone_status_na">—</string>
+    <string name="phone_raw_title">RAW SENSORS</string>
+    <string name="phone_raw_units">m/s² · rad/s · µT</string>
+    <string name="phone_raw_acc">ACC</string>
+    <string name="phone_raw_gyro">GYRO</string>
+    <string name="phone_raw_mag">MAG</string>
+    <string name="phone_raw_na">N/A</string>
+    <string name="phone_imu_tilt_done">Sensor tilt updated</string>
+
     <!-- i18n: extracted hardcoded strings -->
     <string name="toast_ping_time">Ping time %1$s ms</string>
     <string name="toast_msg_duration">msg duration: %1$sms</string>
