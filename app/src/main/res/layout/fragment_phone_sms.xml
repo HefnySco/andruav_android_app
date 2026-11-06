@@ -115,7 +115,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:text="@string/phone_sms_add_contact"
-                android:textColor="?attr/deAccent"
+                android:textColor="?attr/deAccentText"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.06" />
@@ -220,7 +220,7 @@
                             android:focusable="true"
                             android:gravity="center"
                             android:text="−"
-                            android:textColor="?attr/deAccent"
+                            android:textColor="?attr/deAccentText"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -245,7 +245,7 @@
                             android:focusable="true"
                             android:gravity="center"
                             android:text="+"
-                            android:textColor="?attr/deAccent"
+                            android:textColor="?attr/deAccentText"
                             android:textSize="16sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -331,7 +331,7 @@
             android:focusable="true"
             android:gravity="center"
             android:text="@string/phone_sms_dry_run"
-            android:textColor="?attr/deAccent"
+            android:textColor="?attr/deAccentText"
             android:textSize="14sp"
             android:textStyle="bold"
             android:letterSpacing="0.03" />

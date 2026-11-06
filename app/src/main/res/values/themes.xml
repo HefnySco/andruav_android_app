@@ -56,16 +56,63 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
-    <!-- Light and Sun inherit Dark until their palettes land (AN-0148/0149) -
-         the selector resolves them already, so they fall back to Dark. -->
-    <style name="Theme.Andruav.Light" parent="Theme.Andruav.Dark" />
+    <!-- AN-0148: Light maps every attribute to the light_* palette from the
+         mockup (.light). Dim text and green are darker than the mockup so
+         all body text reaches 4.5:1 (D-0032). Sun still falls back to Dark
+         until AN-0149 lands. -->
+    <style name="Theme.Andruav.Light" parent="Theme.Andruav.Dark">
+        <item name="deBg">@color/light_bg</item>
+        <item name="deSurface">@color/light_surface</item>
+        <item name="deSurfaceMuted">@color/light_surface_muted</item>
+        <item name="deInputBg">@color/light_bg</item>
+        <item name="deSheetBg">@color/light_sheet_bg</item>
+        <item name="deScrim">@color/light_scrim</item>
+
+        <item name="deBorder">@color/light_border</item>
+        <item name="deBorderSoft">@color/light_border_soft</item>
+        <item name="deBorderInput">@color/light_border_input</item>
+        <item name="deBorderWidth">1dp</item>
+        <item name="deBorderWidthStrong">1.5dp</item>
+        <item name="deTabUnderlineWidth">3dp</item>
+
+        <item name="deTextPrimary">@color/light_text_primary</item>
+        <item name="deTextSecondary">@color/light_text_secondary</item>
+        <item name="deTextDim">@color/light_text_dim</item>
+        <item name="deTextDimAlt">@color/light_text_dim_alt</item>
+        <item name="deTextDimDarker">@color/light_text_dim_darker</item>
+        <item name="deTextOnInput">@color/light_text_on_input</item>
+
+        <item name="deAccent">@color/light_amber</item>
+        <item name="deOnAccent">@color/light_amber_on</item>
+        <item name="deAccentText">@color/light_accent_text</item>
+        <item name="deWarnBorder">@color/light_amber_warning_border</item>
+        <item name="deBtnAmberBorder">@android:color/transparent</item>
+        <item name="deBtnAmberBorderWidth">0dp</item>
+
+        <item name="deBlueIcon">@color/light_blue_icon</item>
+        <item name="deBlueBorder">@color/light_blue_border</item>
+        <item name="deBlueBg">@color/light_blue_bg</item>
+        <item name="deGood">@color/light_good</item>
+        <item name="deGoodBorder">@color/light_good_border</item>
+        <item name="deGoodBg">@color/light_good_bg</item>
+        <item name="deBad">@color/light_bad</item>
+        <item name="deBadText">@color/light_bad_text</item>
+        <item name="deBadBorderSoft">@color/light_bad_border_soft</item>
+
+        <item name="deIconMuted">@color/light_icon_muted</item>
+        <item name="deIconGray">@color/light_icon_gray</item>
+        <item name="deSwitchOff">@color/light_switch_off</item>
+
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/light_status_bar</item>
+    </style>
+
     <style name="Theme.Andruav.Sun" parent="Theme.Andruav.Dark" />
 
     <style name="Theme.Andruav.Light.NoActionBar" parent="Theme.Andruav.Light">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="Theme.Andruav.Sun.NoActionBar" parent="Theme.Andruav.Sun">

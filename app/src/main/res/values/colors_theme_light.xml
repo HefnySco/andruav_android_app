@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light theme palette (AN-0148) -->
+    <!-- source: Tasks/.artifacts/android/theme-mockups.html (.light) -->
+    <!-- Dim text and green are darker than the mockup (#7B828A / #1E8E3E)
+         so every body text colour reaches 4.5:1 on its background (D-0032). -->
+
+    <color name="light_bg">#F3F4F6</color>
+    <color name="light_surface">#FFFFFF</color>
+    <color name="light_surface_muted">#E8EAED</color>
+    <color name="light_sheet_bg">#FFFFFF</color>
+    <color name="light_scrim">#66000000</color>
+
+    <color name="light_border">#D7DADF</color>
+    <color name="light_border_soft">#E8EAED</color>
+    <color name="light_border_input">#CDD1D6</color>
+
+    <color name="light_text_primary">#16181B</color>
+    <color name="light_text_secondary">#596069</color>
+    <color name="light_text_dim">#666D75</color>
+    <color name="light_text_dim_alt">#666D75</color>
+    <color name="light_text_dim_darker">#666D75</color>
+    <color name="light_text_on_input">#16181B</color>
+
+    <color name="light_amber">#F4A437</color>
+    <color name="light_amber_on">#130C05</color>
+    <color name="light_accent_text">#16181B</color>
+    <color name="light_amber_warning_border">#F4A437</color>
+
+    <color name="light_blue_icon">#1565C0</color>
+    <color name="light_blue_border">#8C1565C0</color>
+    <color name="light_blue_bg">#1A1565C0</color>
+
+    <color name="light_good">#17763A</color>
+    <color name="light_good_border">#8C17763A</color>
+    <color name="light_good_bg">#1A17763A</color>
+
+    <color name="light_bad">#D93025</color>
+    <color name="light_bad_text">#C62828</color>
+    <color name="light_bad_border_soft">#80D93025</color>
+
+    <color name="light_icon_muted">#7B828A</color>
+    <color name="light_icon_gray">#9AA0A6</color>
+    <color name="light_switch_off">#C9CDD2</color>
+    <color name="light_status_bar">#E6E8EB</color>
+</resources>
