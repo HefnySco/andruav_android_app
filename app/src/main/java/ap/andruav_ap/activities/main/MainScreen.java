@@ -975,7 +975,10 @@ public class MainScreen extends BaseAndruavShasha {
         mTileCom.setEnabled(BigButtonsenabled && enabled);
 
         mTileFcb.setEnabled(BigButtonsenabled);
-        mTileImu.setEnabled(BigButtonsenabled && enabled);
+        /* AN-0141: the PHONE tile gates like the FCB tile - the SMS tab's
+         * editors and the DRY RUN / LIVE TEST sheet are meant to be used
+         * during a live link, so the tile stays enabled when connected. */
+        mTileImu.setEnabled(BigButtonsenabled);
         mTileFpv.setEnabled(BigButtonsenabled);
 
         mMenu.findItem(R.id.mi_main_Settings_drone).setEnabled(enabled);
