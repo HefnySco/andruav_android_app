@@ -119,6 +119,38 @@
     <string name="phone_gps_source_board">board gps</string>
     <string name="phone_gps_footer">Same preferences as Settings > FCB &amp; Telemetry. Edits here change Settings too.</string>
 
+    <!-- AN-0138: PHONE SMS tab -->
+    <string name="phone_sms_commands_hint">Run commands from allowed contacts.</string>
+    <string name="phone_sms_contacts_title">ALLOWED CONTACTS</string>
+    <string name="phone_sms_contacts_empty">No contacts — commands refuse every sender.</string>
+    <string name="phone_sms_add_contact">+ ADD CONTACT</string>
+    <string name="phone_sms_pin_label">Command PIN</string>
+    <string name="phone_sms_pin_hint">PIN</string>
+    <string name="phone_sms_pin_show">SHOW</string>
+    <string name="phone_sms_pin_hide">HIDE</string>
+    <string name="phone_sms_age_label">Max age (s)</string>
+    <string name="phone_sms_keywords_label">Event keywords → fact phone.sms_&lt;kw&gt;</string>
+    <string name="phone_sms_keyword_add">+ ADD</string>
+    <string name="phone_sms_info_target">Emergency info SMS to %1$s</string>
+    <string name="phone_sms_info_no_target">Emergency info SMS — no target set. Tap to set.</string>
+    <string name="phone_sms_dry_run">▶ DRY RUN</string>
+    <string name="phone_sms_footer">Same preferences as Settings > Recovery. Edits here change Settings too.</string>
+    <string name="sheet_sms_add_contact_title">ADD ALLOWED CONTACT</string>
+    <string name="sheet_sms_target_title">SMS INFO TARGET</string>
+    <string name="sheet_sms_keyword_title">ADD EVENT KEYWORD</string>
+    <string name="sheet_sms_name_label">Name — used in facts and phone.sms_send</string>
+    <string name="sheet_sms_name_hint">Letters, digits and _ only.</string>
+    <string name="sheet_sms_keyword_label">Keyword — ATT:&lt;kw&gt;:&lt;pin&gt; fires the fact</string>
+    <string name="sheet_sms_number_label">Phone number</string>
+    <string name="sheet_sms_err_chars">Letters, digits and _ only.</string>
+    <string name="sheet_sms_err_long">Too long — keep it short.</string>
+    <string name="sheet_sms_err_reserved">Reserved command name.</string>
+    <string name="sheet_sms_err_duplicate">Already in the list.</string>
+    <string name="sheet_sms_err_required">Required.</string>
+    <string name="sheet_sms_err_number">Use the full international form, e.g. +966551234567.</string>
+    <string name="sheet_sms_cancel">CANCEL</string>
+    <string name="sheet_sms_save">SAVE</string>
+
     <!-- i18n: extracted hardcoded strings -->
     <string name="toast_ping_time">Ping time %1$s ms</string>
     <string name="toast_msg_duration">msg duration: %1$sms</string>
