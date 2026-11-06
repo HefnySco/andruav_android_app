@@ -41,6 +41,12 @@
     <string name="home_menu_settings">Ajustes</string>
     <string name="home_menu_export_logs">Exportar Registros de Errores</string>
     <string name="home_menu_language">Idioma</string>
+    <string name="home_menu_theme">Tema</string>
+    <string name="home_theme_sheet_title">APARIENCIA</string>
+    <string name="home_theme_dark">Oscuro</string>
+    <string name="home_theme_light">Claro</string>
+    <string name="home_theme_sun">Sol</string>
+    <string name="home_theme_system">Seguir el sistema</string>
     <string name="home_menu_clear_logs">Eliminar Registros de Errores</string>
 
     <string name="home_fcb_sheet_title">CENTRO DE TELEMETRÍA · CONEXIÓN FCB</string>

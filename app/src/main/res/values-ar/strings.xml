@@ -41,6 +41,12 @@
     <string name="home_menu_settings">الإعدادات</string>
     <string name="home_menu_export_logs">تصدير سجلات الأخطاء</string>
     <string name="home_menu_language">اللغة</string>
+    <string name="home_menu_theme">السمة</string>
+    <string name="home_theme_sheet_title">المظهر</string>
+    <string name="home_theme_dark">داكن</string>
+    <string name="home_theme_light">فاتح</string>
+    <string name="home_theme_sun">شمس</string>
+    <string name="home_theme_system">اتباع النظام</string>
     <string name="home_menu_clear_logs">حذف سجلات الأخطاء</string>
 
     <string name="home_fcb_sheet_title">مركز القياسات · اتصال FCB</string>

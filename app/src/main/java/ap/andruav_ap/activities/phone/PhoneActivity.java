@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import ap.andruav_ap.R;
+import ap.andruav_ap.activities.AppThemes;
 import ap.andruav_ap.activities.ThemeColors;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruavmiddlelibrary.factory.util.GMail;
@@ -43,6 +44,7 @@ public class PhoneActivity extends BaseAndruavShasha {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppThemes.apply(this, true);
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_phone);
@@ -145,6 +147,7 @@ public class PhoneActivity extends BaseAndruavShasha {
     @Override
     public void onResume() {
         super.onResume();
+        AppThemes.recreateIfChanged(this, true);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         updateSmsDot();
     }

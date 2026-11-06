@@ -48,6 +48,7 @@ import androidx.core.os.LocaleListCompat;
 import java.io.UnsupportedEncodingException;
 
 import org.greenrobot.eventbus.EventBus;
+import ap.andruav_ap.activities.AppThemes;
 import ap.andruav_ap.activities.ThemeColors;
 import ap.andruav_ap.activities.settings.SettingsDrone;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
@@ -1514,6 +1515,8 @@ public class MainScreen extends BaseAndruavShasha {
         bindMenuRow(content, R.id.home_menu_row_help, popup, this::doHelp, true);
         bindMenuRow(content, R.id.home_menu_row_settings, popup, this::doSettings_Drone, mSettingsEnabled);
         bindMenuRow(content, R.id.home_menu_row_language, popup, this::doLanguage, true);
+        bindMenuRow(content, R.id.home_menu_row_theme, popup,
+                () -> AppThemeSheet.newInstance().show(getSupportFragmentManager(), AppThemeSheet.TAG), true);
         bindMenuRow(content, R.id.home_menu_row_reset, popup, this::doFactoryReset, mMenuActionsEnabled);
         bindMenuRow(content, R.id.home_menu_row_export_logs, popup, this::doExportErrorLogs, true);
         bindMenuRow(content, R.id.home_menu_row_clear_logs, popup, this::doClearErrorLogs, true);
@@ -1566,6 +1569,7 @@ public class MainScreen extends BaseAndruavShasha {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppThemes.apply(this, false);
         super.onCreate(savedInstanceState);
 
         //IntentFilter filter = new IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED);
@@ -1938,6 +1942,7 @@ public class MainScreen extends BaseAndruavShasha {
     protected void onResume() {
         // The activity has become visible (it is now "resumed").
         super.onResume();
+        AppThemes.recreateIfChanged(this, false);
         //http://stackoverflow.com/questions/3611457/android-temporarily-disable-orientation-changes-in-an-activity
         // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         invalidateOptionsMenu();

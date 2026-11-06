@@ -55,6 +55,12 @@
     <string name="home_menu_export_logs">Export Error Logs</string>
     <string name="home_menu_clear_logs">Delete Error Logs</string>
     <string name="home_menu_language">Language</string>
+    <string name="home_menu_theme">Theme</string>
+    <string name="home_theme_sheet_title">APPEARANCE</string>
+    <string name="home_theme_dark">Dark</string>
+    <string name="home_theme_light">Light</string>
+    <string name="home_theme_sun">Sun</string>
+    <string name="home_theme_system">Follow system</string>
 
     <string name="home_fcb_sheet_title">TELEMETRY HUB · FCB CONNECTION</string>
     <string name="home_fcb_bluetooth">Bluetooth</string>

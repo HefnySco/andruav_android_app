@@ -41,6 +41,12 @@
     <string name="home_menu_settings">Настройки</string>
     <string name="home_menu_export_logs">Экспорт журналов ошибок</string>
     <string name="home_menu_language">Язык</string>
+    <string name="home_menu_theme">Тема</string>
+    <string name="home_theme_sheet_title">ОФОРМЛЕНИЕ</string>
+    <string name="home_theme_dark">Тёмная</string>
+    <string name="home_theme_light">Светлая</string>
+    <string name="home_theme_sun">Солнце</string>
+    <string name="home_theme_system">Как в системе</string>
     <string name="home_menu_clear_logs">Удалить журналы ошибок</string>
 
     <string name="home_fcb_sheet_title">ХАБ ТЕЛЕМЕТРИИ · ПОДКЛЮЧЕНИЕ FCB</string>

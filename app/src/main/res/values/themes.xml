@@ -55,4 +55,23 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+
+    <!-- Light and Sun inherit Dark until their palettes land (AN-0148/0149) -
+         the selector resolves them already, so they fall back to Dark. -->
+    <style name="Theme.Andruav.Light" parent="Theme.Andruav.Dark" />
+    <style name="Theme.Andruav.Sun" parent="Theme.Andruav.Dark" />
+
+    <style name="Theme.Andruav.Light.NoActionBar" parent="Theme.Andruav.Light">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.Andruav.Sun.NoActionBar" parent="Theme.Andruav.Sun">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
 </resources>
