@@ -56,7 +56,6 @@ import ap.andruav_ap.App;
 import ap.andruav_ap.BuildConfig;
 import ap.andruav.denative.DeNativeDebugActivity;
 import ap.andruav_ap.denative.NativeUnitController;
-import ap.andruav_ap.denative.config.DeConfigWriter;
 import ap.andruav_ap.communication.NativeUnitMirror;
 
 
@@ -1226,12 +1225,12 @@ public class MainScreen extends BaseAndruavShasha {
 
         // Normal green status text; only a verified-TLS connection gets a
         // small red "SECURED" sub-line. Non-secure shows nothing extra.
-        // "SECURED" reflects what de_comm will actually verify: an IP-literal
-        // auth host gets --auth_verify_ssl false even when req_ssl is on.
+        // AN-0132: "SECURED" shows the real state - the --auth_verify_ssl
+        // value the running de_comm was started with - not the req_ssl
+        // pref. An IP-literal auth host runs with verify off, so no badge.
         final boolean secureConn = connected
                 && (nativeMode
-                        ? Preference.isRequireSSL(null)
-                                && !DeConfigWriter.isIpLiteral(Preference.getAuthServerURL(null))
+                        ? NativeUnitController.isCommTlsVerified()
                         : TlsTrustPolicy.isLastConnectionSecure());
         final String mainText;
         if (nativeMode) {

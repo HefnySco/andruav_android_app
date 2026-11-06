@@ -48,6 +48,17 @@ public final class DeConfigWriter {
         return v == null ? "" : v;
     }
 
+    /** The --auth_verify_ssl value in a de_comm argv; false when absent. */
+    public static boolean verifySsl(String[] args) {
+        if (args == null) return false;
+        for (int i = 0; i + 1 < args.length; i++) {
+            if ("--auth_verify_ssl".equals(args[i])) {
+                return Boolean.parseBoolean(args[i + 1]);
+            }
+        }
+        return false;
+    }
+
     /** IPv4 dotted-quad or IPv6 literal (anything with a ':'). */
     public static boolean isIpLiteral(String host) {
         if (host == null) return false;

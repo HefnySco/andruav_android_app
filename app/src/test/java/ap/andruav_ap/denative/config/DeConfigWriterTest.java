@@ -75,6 +75,17 @@ public class DeConfigWriterTest {
     }
 
     @Test
+    public void verifySslReadsTheArgvFlag() {
+        DeConfigSettings s = settings();
+        s.authHost = "10.33.232.200";
+        assertEquals(false, DeConfigWriter.verifySsl(DeConfigWriter.commArgs(s)));
+        s.authHost = "auth.example.com";
+        assertEquals(true, DeConfigWriter.verifySsl(DeConfigWriter.commArgs(s)));
+        assertEquals(false, DeConfigWriter.verifySsl(null));
+        assertEquals(false, DeConfigWriter.verifySsl(new String[]{"--auth_verify_ssl"}));
+    }
+
+    @Test
     public void commArgsNeverNull() {
         DeConfigSettings s = new DeConfigSettings();
         s.email = null;

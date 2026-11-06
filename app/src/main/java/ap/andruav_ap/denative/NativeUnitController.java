@@ -27,6 +27,7 @@ import ap.andruav.denative.DeUnitSupervisor;
 import ap.andruav_ap.App;
 import ap.andruav_ap.communication.AndruavDeBusClient;
 import ap.andruav_ap.denative.config.DeConfigGenerator;
+import ap.andruav_ap.denative.config.DeConfigWriter;
 import ap.andruav_ap.denative.config.DeConfigSync;
 import ap.andruav_ap.services.DeAndroidModuleService;
 import ap.andruavmiddlelibrary.preference.Preference;
@@ -101,6 +102,14 @@ public final class NativeUnitController {
      */
     private static volatile boolean sNativeWanted = true;
 
+    /**
+     * AN-0132: the --auth_verify_ssl value the running de_comm was started
+     * with. Set each time the supervisor builds de_comm's argv, so it shows
+     * what de_comm really does, not what the preferences say now (a pref
+     * edit only reaches de_comm on its next start).
+     */
+    private static volatile boolean sCommVerifySsl;
+
     private NativeUnitController() {
     }
 
@@ -149,8 +158,14 @@ public final class NativeUnitController {
         // de_comm gets its connection settings and de_mavlink its FC link
         // (FCB screen) on the command line, read
         // fresh from the preferences on every (re)start.
-        supervisor.setArgsProvider(module -> module == DeUnitSupervisor.Module.DE_COMM
-                ? DeConfigGenerator.commArgs() : DeConfigGenerator.mavlinkArgs());
+        supervisor.setArgsProvider(module -> {
+            if (module != DeUnitSupervisor.Module.DE_COMM) {
+                return DeConfigGenerator.mavlinkArgs();
+            }
+            final String[] args = DeConfigGenerator.commArgs();
+            sCommVerifySsl = DeConfigWriter.verifySsl(args);
+            return args;
+        });
 
         List<String> changed = regenerateQuietly(app);
         DeConfigSync.start(app);
@@ -279,6 +294,15 @@ public final class NativeUnitController {
      */
     public static boolean isCommLineOnline() {
         return AndruavDeBusClient.commLineOnline();
+    }
+
+    /**
+     * AN-0132: true only while de_comm runs and was started with TLS
+     * certificate verification on. An IP-literal auth host or req_ssl off
+     * starts it with --auth_verify_ssl false, so this is false then.
+     */
+    public static boolean isCommTlsVerified() {
+        return sCommVerifySsl && isNativeStackActive();
     }
 
     /**
