@@ -96,6 +96,15 @@ public class PhoneSmsFragment extends Fragment {
         view.findViewById(R.id.phone_sms_age_plus)
                 .setOnClickListener(v -> stepAge(AGE_STEP_S));
 
+        /* AN-0139: the dry-run sheet - evaluate() only, no SMS leaves the
+         * phone; LIVE TEST inside the sheet is the guarded real path */
+        mBtnDryRun.setOnClickListener(v -> {
+            if (isAdded()) {
+                SmsDryRunSheet.newInstance()
+                        .show(getParentFragmentManager(), SmsDryRunSheet.TAG);
+            }
+        });
+
         mBtnPinShow.setOnClickListener(v -> togglePinVisibility());
         mEdtPin.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}

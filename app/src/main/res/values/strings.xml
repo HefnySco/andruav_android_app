@@ -151,6 +151,37 @@
     <string name="sheet_sms_cancel">CANCEL</string>
     <string name="sheet_sms_save">SAVE</string>
 
+    <!-- AN-0139: PHONE SMS dry-run sheet -->
+    <string name="phone_sms_dry_title">DRY RUN · LOCAL ONLY</string>
+    <string name="phone_sms_dry_from">From</string>
+    <string name="phone_sms_dry_unknown">unknown</string>
+    <string name="phone_sms_dry_message">Message</string>
+    <string name="phone_sms_dry_wrong_pin">wrong PIN</string>
+    <string name="phone_sms_dry_edit">EDIT</string>
+    <string name="phone_sms_dry_gate_receiver">Receiver</string>
+    <string name="phone_sms_dry_gate_lockout">PIN lockout</string>
+    <string name="phone_sms_dry_gate_sender">Sender allowed</string>
+    <string name="phone_sms_dry_gate_format">Format ATT:cmd:pin</string>
+    <string name="phone_sms_dry_gate_pin">PIN</string>
+    <string name="phone_sms_dry_gate_age">Age ≤ %1$d s</string>
+    <string name="phone_sms_dry_gate_command">Command</string>
+    <string name="phone_sms_dry_would_fire">would fire → %1$s</string>
+    <string name="phone_sms_dry_would_run">would run → %1$s</string>
+    <string name="phone_sms_dry_would_refuse">would refuse → %1$s</string>
+    <string name="phone_sms_dry_check_again">CHECK AGAIN</string>
+    <string name="phone_sms_dry_live_test">⚠ LIVE TEST</string>
+    <string name="phone_sms_live_title">⚠ Run this command for real?</string>
+    <string name="phone_sms_live_from">from %1$s</string>
+    <string name="phone_sms_live_body">This is not a dry run. The unit does what a real SMS would do:</string>
+    <string name="phone_sms_live_fact">• fires fact %1$s — a running mission can react</string>
+    <string name="phone_sms_live_command">• runs %1$s</string>
+    <string name="phone_sms_live_gcs">• sends a notice to the GCS (marked TEST)</string>
+    <string name="phone_sms_live_reply">• may send a reply SMS to %1$s (uses credit)</string>
+    <string name="phone_sms_live_pin">• a wrong PIN counts toward the 5-try lockout</string>
+    <string name="phone_sms_live_warn">Flight commands (rtl, lnd, …) move the vehicle. Disarm or keep clear of the props.</string>
+    <string name="phone_sms_live_cancel">CANCEL</string>
+    <string name="phone_sms_live_run">RUN LIVE</string>
+
     <!-- i18n: extracted hardcoded strings -->
     <string name="toast_ping_time">Ping time %1$s ms</string>
     <string name="toast_msg_duration">msg duration: %1$sms</string>
