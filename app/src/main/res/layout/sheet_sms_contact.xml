@@ -22,7 +22,7 @@
         android:paddingEnd="20dp"
         android:paddingBottom="12dp"
         android:text="@string/sheet_sms_add_contact_title"
-        android:textColor="@color/home_text_dim"
+        android:textColor="?attr/deTextDim"
         android:textSize="13sp"
         android:textStyle="bold"
         android:letterSpacing="0.04" />
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
             android:text="@string/sheet_sms_name_label"
-            android:textColor="@color/home_text_dim"
+            android:textColor="?attr/deTextDim"
             android:textSize="11sp" />
 
         <EditText
@@ -53,7 +53,7 @@
             android:inputType="text"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
-            android:textColor="@color/home_text_on_input"
+            android:textColor="?attr/deTextOnInput"
             android:textSize="14sp" />
 
         <TextView
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:text="@string/sheet_sms_name_hint"
-            android:textColor="@color/home_text_dim_darker"
+            android:textColor="?attr/deTextDimDarker"
             android:textSize="11sp" />
     </LinearLayout>
 
@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
             android:text="@string/sheet_sms_number_label"
-            android:textColor="@color/home_text_dim"
+            android:textColor="?attr/deTextDim"
             android:textSize="11sp" />
 
         <EditText
@@ -92,7 +92,7 @@
             android:inputType="phone"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
-            android:textColor="@color/home_text_on_input"
+            android:textColor="?attr/deTextOnInput"
             android:textSize="14sp" />
 
         <TextView
@@ -100,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:textColor="@color/home_red_text"
+            android:textColor="?attr/deBadText"
             android:textSize="11sp"
             android:visibility="gone"
             tools:text="Number too short. Use the full international form, e.g. +966551234567." />
@@ -126,7 +126,7 @@
             android:focusable="true"
             android:gravity="center"
             android:text="@string/sheet_sms_cancel"
-            android:textColor="@color/home_text_primary"
+            android:textColor="?attr/deTextPrimary"
             android:textSize="13sp"
             android:textStyle="bold" />
 
@@ -141,7 +141,7 @@
             android:focusable="true"
             android:gravity="center"
             android:text="@string/sheet_sms_save"
-            android:textColor="@color/home_amber_on"
+            android:textColor="?attr/deOnAccent"
             android:textSize="14sp"
             android:textStyle="bold"
             android:letterSpacing="0.03" />

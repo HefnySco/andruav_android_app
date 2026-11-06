@@ -21,7 +21,7 @@
         android:paddingEnd="20dp"
         android:paddingBottom="12dp"
         android:text="@string/phone_sms_dry_title"
-        android:textColor="@color/home_text_dim"
+        android:textColor="?attr/deTextDim"
         android:textSize="13sp"
         android:textStyle="bold"
         android:letterSpacing="0.04" />
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
                 android:text="@string/phone_sms_dry_from"
-                android:textColor="@color/home_text_dim"
+                android:textColor="?attr/deTextDim"
                 android:textSize="11sp" />
 
             <HorizontalScrollView
@@ -66,7 +66,7 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="6dp"
                 android:text="@string/phone_sms_dry_message"
-                android:textColor="@color/home_text_dim"
+                android:textColor="?attr/deTextDim"
                 android:textSize="11sp" />
 
             <HorizontalScrollView
@@ -101,7 +101,7 @@
                     android:fontFamily="monospace"
                     android:singleLine="true"
                     android:ellipsize="end"
-                    android:textColor="@color/home_text_on_input"
+                    android:textColor="?attr/deTextOnInput"
                     android:textSize="14sp"
                     tools:text="ATT:go:····" />
 
@@ -114,7 +114,7 @@
                     android:fontFamily="monospace"
                     android:inputType="text"
                     android:singleLine="true"
-                    android:textColor="@color/home_text_on_input"
+                    android:textColor="?attr/deTextOnInput"
                     android:textSize="14sp"
                     android:visibility="gone"
                     tools:text="ATT:go:1234" />
@@ -129,7 +129,7 @@
                     android:focusable="true"
                     android:gravity="center"
                     android:text="@string/phone_sms_dry_edit"
-                    android:textColor="@color/home_text_dim"
+                    android:textColor="?attr/deTextDim"
                     android:textSize="11sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -148,7 +148,7 @@
                 android:layout_marginTop="12dp"
                 android:fontFamily="monospace"
                 android:padding="12dp"
-                android:textColor="@color/home_green_icon"
+                android:textColor="?attr/deGood"
                 android:textSize="12sp"
                 android:visibility="gone"
                 tools:text="would fire → phone.sms_go" />
@@ -175,7 +175,7 @@
             android:focusable="true"
             android:gravity="center"
             android:text="@string/phone_sms_dry_check_again"
-            android:textColor="@color/home_amber_on"
+            android:textColor="?attr/deOnAccent"
             android:textSize="13sp"
             android:textStyle="bold"
             android:letterSpacing="0.03" />
@@ -191,7 +191,7 @@
             android:focusable="true"
             android:gravity="center"
             android:text="@string/phone_sms_dry_live_test"
-            android:textColor="@color/home_red_text"
+            android:textColor="?attr/deBadText"
             android:textSize="13sp"
             android:textStyle="bold" />
     </LinearLayout>

@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ap.andruav_ap.R;
+import ap.andruav_ap.activities.ThemeColors;
 
 /***
  * AN-0138 (TASK-117): the dark bottom sheet behind the SMS tab's "+ ADD"
@@ -178,14 +178,14 @@ public class SmsContactSheet extends BottomSheetDialogFragment {
         final boolean empty = edt.getText().toString().trim().isEmpty();
         if (!empty && !r.ok) {
             errView.setText(errorText(r.error));
-            errView.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_red_text));
+            errView.setTextColor(ThemeColors.get(requireContext(), R.attr.deBadText));
             errView.setVisibility(View.VISIBLE);
-            tintBorder(edt, R.color.home_red_text);
+            tintBorder(edt, ThemeColors.get(requireContext(), R.attr.deBadText));
         } else {
-            tintBorder(edt, R.color.home_border_input);
+            tintBorder(edt, ThemeColors.get(requireContext(), R.attr.deBorderInput));
             if (keepHelper) {
                 errView.setText(helperRes);
-                errView.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_dim_darker));
+                errView.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextDimDarker));
                 errView.setVisibility(View.VISIBLE);
             } else {
                 errView.setVisibility(View.GONE);
@@ -193,12 +193,11 @@ public class SmsContactSheet extends BottomSheetDialogFragment {
         }
     }
 
-    private void tintBorder(final View view, final int colorRes) {
+    private void tintBorder(final View view, final int color) {
         final Drawable bg = view.getBackground();
         if (bg instanceof GradientDrawable) {
             final int px = (int) (getResources().getDisplayMetrics().density + 0.5f);
-            ((GradientDrawable) bg.mutate()).setStroke(px,
-                    ContextCompat.getColor(requireContext(), colorRes));
+            ((GradientDrawable) bg.mutate()).setStroke(px, color);
         }
     }
 

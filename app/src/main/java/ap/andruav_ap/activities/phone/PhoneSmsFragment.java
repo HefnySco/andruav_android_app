@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.chip.ChipGroup;
@@ -26,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 
 import ap.andruav_ap.R;
+import ap.andruav_ap.activities.ThemeColors;
 import ap.andruav_ap.communication.telemetry.SmsKeywords;
 import ap.andruavmiddlelibrary.preference.Preference;
 
@@ -133,7 +133,7 @@ public class PhoneSmsFragment extends Fragment {
             if (inner instanceof GradientDrawable) {
                 final int px = (int) (1.5f * getResources().getDisplayMetrics().density + 0.5f);
                 ((GradientDrawable) inner).setStroke(px,
-                        ContextCompat.getColor(requireContext(), R.color.home_amber));
+                        ThemeColors.get(requireContext(), R.attr.deAccent));
             }
         }
     }
@@ -163,14 +163,14 @@ public class PhoneSmsFragment extends Fragment {
     private void updatePinState() {
         final boolean missing = Preference.isSMSRXEnabled(null)
                 && Preference.getSmsPin(null).isEmpty();
-        tintStroke(mPinBox, missing ? R.color.home_red_text : R.color.home_border_input);
+        tintStroke(mPinBox, ThemeColors.get(requireContext(),
+                missing ? R.attr.deBadText : R.attr.deBorderInput));
     }
 
-    private void tintStroke(final View view, final int colorRes) {
+    private void tintStroke(final View view, final int color) {
         final Drawable bg = view.getBackground();
         if (bg instanceof GradientDrawable) {
-            ((GradientDrawable) bg.mutate()).setStroke(dp(1),
-                    ContextCompat.getColor(requireContext(), colorRes));
+            ((GradientDrawable) bg.mutate()).setStroke(dp(1), color);
         }
     }
 
@@ -188,9 +188,9 @@ public class PhoneSmsFragment extends Fragment {
             final TextView empty = new TextView(requireContext());
             empty.setText(R.string.phone_sms_contacts_empty);
             /* red while commands are on - an empty list refuses every sender */
-            empty.setTextColor(ContextCompat.getColor(requireContext(),
+            empty.setTextColor(ThemeColors.get(requireContext(),
                     Preference.isSMSRXEnabled(null)
-                            ? R.color.home_red_text : R.color.home_text_dim_darker));
+                            ? R.attr.deBadText : R.attr.deTextDimDarker));
             empty.setTextSize(11);
             mContactsList.addView(empty);
             return;
@@ -199,8 +199,8 @@ public class PhoneSmsFragment extends Fragment {
             mContactsList.addView(contactRow(contacts.get(i), i));
             if (i < contacts.size() - 1) {
                 final View divider = new View(requireContext());
-                divider.setBackgroundColor(ContextCompat.getColor(
-                        requireContext(), R.color.home_border_soft));
+                divider.setBackgroundColor(ThemeColors.get(
+                        requireContext(), R.attr.deBorderSoft));
                 final LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, dp(1));
                 lp.topMargin = dp(4);
@@ -224,8 +224,8 @@ public class PhoneSmsFragment extends Fragment {
         final TextView avatar = new TextView(requireContext());
         avatar.setBackgroundResource(R.drawable.bg_home_icon_tile);
         avatar.setGravity(Gravity.CENTER);
-        avatar.setTextColor(ContextCompat.getColor(requireContext(),
-                name.isEmpty() ? R.color.home_text_dim : R.color.home_amber));
+        avatar.setTextColor(ThemeColors.get(requireContext(),
+                name.isEmpty() ? R.attr.deTextDim : R.attr.deAccentText));
         avatar.setTextSize(12);
         avatar.setText(initials(name));
         avatar.setTypeface(null, android.graphics.Typeface.BOLD);
@@ -240,13 +240,13 @@ public class PhoneSmsFragment extends Fragment {
                 0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         final TextView txtName = new TextView(requireContext());
         txtName.setText(name.isEmpty() ? maskNumber(number) : name);
-        txtName.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_primary));
+        txtName.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextPrimary));
         txtName.setTextSize(14);
         texts.addView(txtName);
         if (!name.isEmpty()) {
             final TextView txtNumber = new TextView(requireContext());
             txtNumber.setText(maskNumber(number));
-            txtNumber.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_dim));
+            txtNumber.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextDim));
             txtNumber.setTextSize(11);
             txtNumber.setTypeface(android.graphics.Typeface.MONOSPACE);
             texts.addView(txtNumber);
@@ -255,7 +255,7 @@ public class PhoneSmsFragment extends Fragment {
 
         final TextView btnRemove = new TextView(requireContext());
         btnRemove.setText("✕");
-        btnRemove.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_dim));
+        btnRemove.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextDim));
         btnRemove.setTextSize(14);
         btnRemove.setGravity(Gravity.CENTER);
         btnRemove.setPadding(dp(8), dp(4), dp(8), dp(4));
@@ -327,7 +327,7 @@ public class PhoneSmsFragment extends Fragment {
         }
         final TextView add = new TextView(requireContext());
         add.setText(R.string.phone_sms_keyword_add);
-        add.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_amber));
+        add.setTextColor(ThemeColors.get(requireContext(), R.attr.deAccentText));
         add.setTextSize(12);
         add.setTypeface(null, android.graphics.Typeface.BOLD);
         add.setGravity(Gravity.CENTER);
@@ -346,13 +346,13 @@ public class PhoneSmsFragment extends Fragment {
 
         final TextView label = new TextView(requireContext());
         label.setText(keyword);
-        label.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_primary));
+        label.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextPrimary));
         label.setTextSize(13);
         chip.addView(label);
 
         final TextView btnRemove = new TextView(requireContext());
         btnRemove.setText("✕");
-        btnRemove.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_dim));
+        btnRemove.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextDim));
         btnRemove.setTextSize(11);
         btnRemove.setPadding(dp(8), 0, 0, 0);
         btnRemove.setOnClickListener(v -> removeKeyword(keyword));

@@ -22,6 +22,7 @@ import com.andruav.sensors.AndruavIMU;
 
 import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.R;
+import ap.andruav_ap.activities.ThemeColors;
 import ap.andruavmiddlelibrary.factory.util.DialogHelper;
 import ap.andruavmiddlelibrary.preference.Preference;
 
@@ -116,15 +117,15 @@ public class PhoneGpsFragment extends Fragment {
         if (phone.GPS3DFix >= 3) {
             mTxtFix.setText(R.string.phone_gps_fix_3d);
             mTxtFix.setBackgroundResource(R.drawable.bg_home_tile_green);
-            mTxtFix.setTextColor(getResources().getColor(R.color.home_green_icon));
+            mTxtFix.setTextColor(ThemeColors.get(requireContext(), R.attr.deGood));
         } else if (phone.GPS3DFix == 2) {
             mTxtFix.setText(R.string.phone_gps_fix_2d);
             mTxtFix.setBackgroundResource(R.drawable.bg_home_tile_blue);
-            mTxtFix.setTextColor(getResources().getColor(R.color.home_blue_icon));
+            mTxtFix.setTextColor(ThemeColors.get(requireContext(), R.attr.deBlueIcon));
         } else {
             mTxtFix.setText(R.string.phone_gps_fix_nofix);
             mTxtFix.setBackgroundResource(R.drawable.bg_home_tile_gray);
-            mTxtFix.setTextColor(getResources().getColor(R.color.home_icon_gray));
+            mTxtFix.setTextColor(ThemeColors.get(requireContext(), R.attr.deIconGray));
         }
 
         mTxtSats.setText(String.valueOf(phone.SATC));
@@ -140,8 +141,8 @@ public class PhoneGpsFragment extends Fragment {
         // which source the unit reports: board gps when FCB IMU feeds it
         final boolean board = unit.getActiveGPS().getUseFCBIMU();
         mTxtSource.setText(board ? R.string.phone_gps_source_board : R.string.phone_gps_source_phone);
-        mTxtSource.setTextColor(getResources().getColor(
-                board ? R.color.home_red_text : R.color.home_green_icon));
+        mTxtSource.setTextColor(ThemeColors.get(requireContext(),
+                board ? R.attr.deBadText : R.attr.deGood));
     }
 
     private void updateToggles() {

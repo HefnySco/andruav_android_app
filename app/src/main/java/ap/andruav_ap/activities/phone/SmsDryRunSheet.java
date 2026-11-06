@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -26,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ap.andruav_ap.R;
+import ap.andruav_ap.activities.ThemeColors;
 import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
 import ap.andruav_ap.communication.telemetry.SmsGateVerdict;
 import ap.andruav_ap.communication.telemetry.SmsKeywords;
@@ -177,11 +177,11 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
                 bg.setCornerRadius(dp(6));
                 bg.setStroke(dp(1), 0x66F4A437);
                 seg.setBackground(bg);
-                seg.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_amber));
+                seg.setTextColor(ThemeColors.get(requireContext(), R.attr.deAccentText));
                 seg.setTypeface(null, android.graphics.Typeface.BOLD);
             } else {
                 seg.setBackground(null);
-                seg.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_dim));
+                seg.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextDim));
                 seg.setTypeface(null, android.graphics.Typeface.NORMAL);
             }
         }
@@ -303,22 +303,22 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
         switch (gate.status) {
             case PASS:
                 icon.setText("✓");
-                icon.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_green_icon));
+                icon.setTextColor(ThemeColors.get(requireContext(), R.attr.deGood));
                 break;
             case FAIL:
                 icon.setText("✕");
-                icon.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_red_text));
+                icon.setTextColor(ThemeColors.get(requireContext(), R.attr.deBadText));
                 break;
             default:
                 icon.setText("–");
-                icon.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_dim_darker));
+                icon.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextDimDarker));
                 break;
         }
         row.addView(icon);
 
         final TextView label = new TextView(requireContext());
         label.setText(gateLabel(gate.name));
-        label.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_primary));
+        label.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextPrimary));
         label.setTextSize(14);
         label.setLayoutParams(new LinearLayout.LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
@@ -326,7 +326,7 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
 
         final TextView detail = new TextView(requireContext());
         detail.setText(gate.detail);
-        detail.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_dim));
+        detail.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextDim));
         detail.setTextSize(11);
         detail.setTypeface(android.graphics.Typeface.MONOSPACE);
         row.addView(detail);
@@ -360,8 +360,8 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
             text = getString(R.string.phone_sms_dry_would_run, mVerdict.actionText);
         }
         mTxtResult.setText(text);
-        mTxtResult.setTextColor(ContextCompat.getColor(requireContext(),
-                mVerdict.allowed ? R.color.home_green_icon : R.color.home_red_text));
+        mTxtResult.setTextColor(ThemeColors.get(requireContext(),
+                mVerdict.allowed ? R.attr.deGood : R.attr.deBadText));
         final GradientDrawable bg = new GradientDrawable();
         bg.setColor(mVerdict.allowed ? 0x2965C67D : 0x29FD736D);
         bg.setCornerRadius(dp(8));
@@ -381,12 +381,12 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
         final LinearLayout box = new LinearLayout(requireContext());
         box.setOrientation(LinearLayout.VERTICAL);
         box.setBackgroundResource(R.drawable.bg_home_card_warning);
-        tintStroke(box, R.color.home_red_border_soft);
+        tintStroke(box, ThemeColors.get(requireContext(), R.attr.deBadBorderSoft));
         box.setPadding(dp(20), dp(18), dp(20), dp(16));
 
         final TextView title = new TextView(requireContext());
         title.setText(R.string.phone_sms_live_title);
-        title.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_primary));
+        title.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextPrimary));
         title.setTextSize(16);
         title.setTypeface(null, android.graphics.Typeface.BOLD);
         box.addView(title);
@@ -403,7 +403,7 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
         final TextView msgText = new TextView(requireContext());
         final int colon = mMessage.lastIndexOf(':');
         msgText.setText(colon > 0 ? mMessage.substring(0, colon + 1) + "····" : mMessage);
-        msgText.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_on_input));
+        msgText.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextOnInput));
         msgText.setTextSize(14);
         msgText.setTypeface(android.graphics.Typeface.MONOSPACE);
         msgText.setLayoutParams(new LinearLayout.LayoutParams(
@@ -412,14 +412,14 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
 
         final TextView fromText = new TextView(requireContext());
         fromText.setText(getString(R.string.phone_sms_live_from, currentSenderLabel()));
-        fromText.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_dim));
+        fromText.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextDim));
         fromText.setTextSize(12);
         msgBox.addView(fromText);
         box.addView(msgBox);
 
         final TextView body = new TextView(requireContext());
         body.setText(R.string.phone_sms_live_body);
-        body.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_secondary));
+        body.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextSecondary));
         body.setTextSize(13);
         final LinearLayout.LayoutParams bodyLp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -438,7 +438,7 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
         lines.append(getString(R.string.phone_sms_live_reply, currentSenderLabel())).append('\n');
         lines.append(getString(R.string.phone_sms_live_pin));
         bullets.setText(lines.toString());
-        bullets.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_secondary));
+        bullets.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextSecondary));
         bullets.setTextSize(13);
         final LinearLayout.LayoutParams bulletsLp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -448,7 +448,7 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
 
         final TextView warn = new TextView(requireContext());
         warn.setText(R.string.phone_sms_live_warn);
-        warn.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_red_text));
+        warn.setTextColor(ThemeColors.get(requireContext(), R.attr.deBadText));
         warn.setTextSize(13);
         final LinearLayout.LayoutParams warnLp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -496,14 +496,14 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
         if (danger) {
             lp.setMarginStart(dp(8));
             final GradientDrawable bg = new GradientDrawable();
-            bg.setColor(ContextCompat.getColor(requireContext(), R.color.home_red_dot));
+            bg.setColor(ThemeColors.get(requireContext(), R.attr.deBad));
             bg.setCornerRadius(dp(9));
             btn.setBackground(bg);
             btn.setTextColor(Color.WHITE);
         } else {
             lp.setMarginEnd(dp(8));
             btn.setBackgroundResource(R.drawable.bg_home_btn_outline);
-            btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_primary));
+            btn.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextPrimary));
         }
         return btn;
     }
@@ -517,11 +517,10 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
         evaluateAndRender();
     }
 
-    private void tintStroke(final View view, final int colorRes) {
+    private void tintStroke(final View view, final int color) {
         final Drawable bg = view.getBackground();
         if (bg instanceof GradientDrawable) {
-            ((GradientDrawable) bg.mutate()).setStroke(dp(1),
-                    ContextCompat.getColor(requireContext(), colorRes));
+            ((GradientDrawable) bg.mutate()).setStroke(dp(1), color);
         }
     }
 

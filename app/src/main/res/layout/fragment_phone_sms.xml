@@ -33,7 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/pref_gr_sms_rx_chk"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="14sp"
                     android:fontFamily="sans-serif-medium" />
 
@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="@string/phone_sms_commands_hint"
-                    android:textColor="@color/home_text_dim"
+                    android:textColor="?attr/deTextDim"
                     android:textSize="11sp" />
             </LinearLayout>
 
@@ -56,7 +56,7 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:text="@string/home_fcb_bt_off"
-                android:textColor="@color/home_text_primary"
+                android:textColor="?attr/deTextPrimary"
                 android:textSize="11sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -81,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/phone_sms_contacts_title"
-                    android:textColor="@color/home_text_dim"
+                    android:textColor="?attr/deTextDim"
                     android:textSize="11sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.09" />
@@ -91,7 +91,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
-                    android:textColor="@color/home_text_dim"
+                    android:textColor="?attr/deTextDim"
                     android:textSize="12sp"
                     tools:text="2" />
             </LinearLayout>
@@ -115,7 +115,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:text="@string/phone_sms_add_contact"
-                android:textColor="@color/home_amber"
+                android:textColor="?attr/deAccent"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.06" />
@@ -147,7 +147,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="6dp"
                         android:text="@string/phone_sms_pin_label"
-                        android:textColor="@color/home_text_dim"
+                        android:textColor="?attr/deTextDim"
                         android:textSize="11sp" />
 
                     <LinearLayout
@@ -169,10 +169,10 @@
                             android:fontFamily="monospace"
                             android:inputType="numberPassword"
                             android:maxLength="4"
-                            android:textColor="@color/home_text_on_input"
+                            android:textColor="?attr/deTextOnInput"
                             android:textSize="14sp"
                             android:hint="@string/phone_sms_pin_hint"
-                            android:textColorHint="@color/home_text_dim_darker" />
+                            android:textColorHint="?attr/deTextDimDarker" />
 
                         <TextView
                             android:id="@+id/phone_sms_pin_show"
@@ -184,7 +184,7 @@
                             android:focusable="true"
                             android:gravity="center"
                             android:text="@string/phone_sms_pin_show"
-                            android:textColor="@color/home_text_dim"
+                            android:textColor="?attr/deTextDim"
                             android:textSize="11sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -201,7 +201,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="6dp"
                         android:text="@string/phone_sms_age_label"
-                        android:textColor="@color/home_text_dim"
+                        android:textColor="?attr/deTextDim"
                         android:textSize="11sp" />
 
                     <LinearLayout
@@ -220,7 +220,7 @@
                             android:focusable="true"
                             android:gravity="center"
                             android:text="−"
-                            android:textColor="@color/home_amber"
+                            android:textColor="?attr/deAccent"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -231,7 +231,7 @@
                             android:layout_weight="1"
                             android:fontFamily="monospace"
                             android:gravity="center"
-                            android:textColor="@color/home_text_primary"
+                            android:textColor="?attr/deTextPrimary"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             tools:text="120" />
@@ -245,7 +245,7 @@
                             android:focusable="true"
                             android:gravity="center"
                             android:text="+"
-                            android:textColor="@color/home_amber"
+                            android:textColor="?attr/deAccent"
                             android:textSize="16sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -257,7 +257,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:text="@string/phone_sms_keywords_label"
-                android:textColor="@color/home_text_dim"
+                android:textColor="?attr/deTextDim"
                 android:textSize="11sp" />
 
             <com.google.android.material.chip.ChipGroup
@@ -292,7 +292,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/pref_gr_sms_chk"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="14sp"
                     android:fontFamily="sans-serif-medium" />
 
@@ -301,7 +301,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:textColor="@color/home_text_dim"
+                    android:textColor="?attr/deTextDim"
                     android:textSize="11sp"
                     tools:text="Emergency info SMS to +966 50 ···· 402" />
             </LinearLayout>
@@ -316,7 +316,7 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:text="@string/home_fcb_bt_off"
-                android:textColor="@color/home_text_primary"
+                android:textColor="?attr/deTextPrimary"
                 android:textSize="11sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -331,7 +331,7 @@
             android:focusable="true"
             android:gravity="center"
             android:text="@string/phone_sms_dry_run"
-            android:textColor="@color/home_amber"
+            android:textColor="?attr/deAccent"
             android:textSize="14sp"
             android:textStyle="bold"
             android:letterSpacing="0.03" />
@@ -341,7 +341,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="@string/phone_sms_footer"
-            android:textColor="@color/home_text_dim"
+            android:textColor="?attr/deTextDim"
             android:textSize="11sp" />
     </LinearLayout>
 </ScrollView>

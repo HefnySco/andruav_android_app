@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import ap.andruav_ap.R;
+import ap.andruav_ap.activities.ThemeColors;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruavmiddlelibrary.factory.util.GMail;
 import ap.andruavmiddlelibrary.preference.Preference;
@@ -75,7 +76,7 @@ public class PhoneActivity extends BaseAndruavShasha {
         final Drawable dotBg = mSmsDot.getBackground();
         if (dotBg instanceof GradientDrawable) {
             ((GradientDrawable) dotBg.mutate()).setColor(
-                    ContextCompat.getColor(this, R.color.home_green_icon));
+                    ThemeColors.get(this, R.attr.deGood));
         }
 
         mFragments[TAB_IMU] = new PhoneImuFragment();
@@ -85,8 +86,8 @@ public class PhoneActivity extends BaseAndruavShasha {
     }
 
     private void selectTab(final int index) {
-        final int active = ContextCompat.getColor(this, R.color.home_amber);
-        final int dim = ContextCompat.getColor(this, R.color.home_text_dim);
+        final int active = ThemeColors.get(this, R.attr.deAccentText);
+        final int dim = ThemeColors.get(this, R.attr.deTextDim);
         for (int i = 0; i < mTabLabels.length; i++) {
             mTabLabels[i].setTextColor(i == index ? active : dim);
             mTabIndicators[i].setVisibility(i == index ? View.VISIBLE : View.INVISIBLE);
@@ -120,7 +121,7 @@ public class PhoneActivity extends BaseAndruavShasha {
         final float density = getResources().getDisplayMetrics().density;
         final TextView item = new TextView(this);
         item.setText(R.string.phone_menu_help);
-        item.setTextColor(ContextCompat.getColor(this, R.color.home_text_primary));
+        item.setTextColor(ThemeColors.get(this, R.attr.deTextPrimary));
         item.setTextSize(14);
         item.setPadding((int) (16 * density), (int) (12 * density),
                 (int) (16 * density), (int) (12 * density));

@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.andruav.AndruavEngine;
@@ -43,6 +42,7 @@ import com.andruav.sensors.AndruavIMU;
 import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.App;
 import ap.andruav_ap.R;
+import ap.andruav_ap.activities.ThemeColors;
 import ap.andruavmiddlelibrary.factory.math.UnitConversion;
 import ap.andruavmiddlelibrary.preference.Preference;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_IMU_CMD;
@@ -209,7 +209,7 @@ public class PhoneImuFragment extends Fragment {
     private void updateFlightMode() {
         if (AndruavSettings.andruavWe7daBase == null) return;
         final AndruavUnitBase unit = AndruavSettings.andruavWe7daBase;
-        final int red = ContextCompat.getColor(requireContext(), R.color.home_red_text);
+        final int red = ThemeColors.get(requireContext(), R.attr.deBadText);
         final SpannableStringBuilder text = new SpannableStringBuilder(
                 FlightMode.getFlightModeText(unit.getFlightModeFromBoard()));
         if (unit.IsArmed()) {

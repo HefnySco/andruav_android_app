@@ -32,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/phone_imu_attitude"
-                    android:textColor="@color/home_text_dim"
+                    android:textColor="?attr/deTextDim"
                     android:textSize="11sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.09" />
@@ -41,7 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/phone_imu_source"
-                    android:textColor="@color/home_text_dim"
+                    android:textColor="?attr/deTextDim"
                     android:textSize="11sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.04" />
@@ -65,7 +65,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="monospace"
-                        android:textColor="@color/home_text_primary"
+                        android:textColor="?attr/deTextPrimary"
                         android:textSize="22sp"
                         android:textStyle="bold"
                         tools:text="+1.2°" />
@@ -75,7 +75,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="@string/phone_imu_roll"
-                        android:textColor="@color/home_text_dim_darker"
+                        android:textColor="?attr/deTextDimDarker"
                         android:textSize="10sp"
                         android:letterSpacing="0.07" />
                 </LinearLayout>
@@ -92,7 +92,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="monospace"
-                        android:textColor="@color/home_text_primary"
+                        android:textColor="?attr/deTextPrimary"
                         android:textSize="22sp"
                         android:textStyle="bold"
                         tools:text="-0.4°" />
@@ -102,7 +102,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="@string/phone_imu_pitch"
-                        android:textColor="@color/home_text_dim_darker"
+                        android:textColor="?attr/deTextDimDarker"
                         android:textSize="10sp"
                         android:letterSpacing="0.07" />
                 </LinearLayout>
@@ -119,7 +119,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="monospace"
-                        android:textColor="@color/home_text_primary"
+                        android:textColor="?attr/deTextPrimary"
                         android:textSize="22sp"
                         android:textStyle="bold"
                         tools:text="274°" />
@@ -129,7 +129,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="@string/phone_imu_heading"
-                        android:textColor="@color/home_text_dim_darker"
+                        android:textColor="?attr/deTextDimDarker"
                         android:textSize="10sp"
                         android:letterSpacing="0.07" />
                 </LinearLayout>
@@ -152,7 +152,7 @@
                     android:focusable="true"
                     android:gravity="center"
                     android:text="@string/action_calibrate"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.04"
@@ -170,7 +170,7 @@
                     android:focusable="true"
                     android:gravity="center"
                     android:text="@string/gen_front"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.04"
@@ -187,7 +187,7 @@
                     android:focusable="true"
                     android:gravity="center"
                     android:text="@string/action_zeroTilt"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.04"
@@ -208,7 +208,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/phone_status_title"
-                android:textColor="@color/home_text_dim"
+                android:textColor="?attr/deTextDim"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.09" />
@@ -224,7 +224,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/phone_status_battery_phone"
-                    android:textColor="@color/home_text_secondary"
+                    android:textColor="?attr/deTextSecondary"
                     android:textSize="13sp" />
 
                 <TextView
@@ -232,7 +232,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="13sp"
                     tools:text="87% · 4.25 V" />
             </LinearLayout>
@@ -241,7 +241,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/home_border_soft" />
+                android:background="?attr/deBorderSoft" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -254,7 +254,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/phone_status_battery_fcb"
-                    android:textColor="@color/home_text_secondary"
+                    android:textColor="?attr/deTextSecondary"
                     android:textSize="13sp" />
 
                 <TextView
@@ -262,7 +262,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="13sp"
                     tools:text="87% · 12.60 V" />
             </LinearLayout>
@@ -271,7 +271,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/home_border_soft" />
+                android:background="?attr/deBorderSoft" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -284,14 +284,14 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/phone_status_flight_mode"
-                    android:textColor="@color/home_text_secondary"
+                    android:textColor="?attr/deTextSecondary"
                     android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/phone_status_flight_mode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/home_green_icon"
+                    android:textColor="?attr/deGood"
                     android:textSize="13sp"
                     android:textStyle="bold"
                     tools:text="LAND" />
@@ -301,7 +301,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/home_border_soft" />
+                android:background="?attr/deBorderSoft" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -314,7 +314,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/phone_status_speed_alt"
-                    android:textColor="@color/home_text_secondary"
+                    android:textColor="?attr/deTextSecondary"
                     android:textSize="13sp" />
 
                 <TextView
@@ -322,7 +322,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="13sp"
                     tools:text="0.0 m/s · 584 m" />
             </LinearLayout>
@@ -347,7 +347,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/phone_raw_title"
-                    android:textColor="@color/home_text_dim"
+                    android:textColor="?attr/deTextDim"
                     android:textSize="11sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.09" />
@@ -356,7 +356,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/phone_raw_units"
-                    android:textColor="@color/home_text_dim"
+                    android:textColor="?attr/deTextDim"
                     android:textSize="11sp" />
             </LinearLayout>
 
@@ -371,7 +371,7 @@
                     android:layout_height="wrap_content"
                     android:minWidth="44dp"
                     android:text="@string/phone_raw_acc"
-                    android:textColor="@color/home_text_dim_darker"
+                    android:textColor="?attr/deTextDimDarker"
                     android:textSize="11sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.05" />
@@ -381,7 +381,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="12sp"
                     tools:text="+0.18 +0.65 +9.85" />
             </LinearLayout>
@@ -397,7 +397,7 @@
                     android:layout_height="wrap_content"
                     android:minWidth="44dp"
                     android:text="@string/phone_raw_gyro"
-                    android:textColor="@color/home_text_dim_darker"
+                    android:textColor="?attr/deTextDimDarker"
                     android:textSize="11sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.05" />
@@ -407,7 +407,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="12sp"
                     tools:text="-0.00 -0.00 -0.00" />
             </LinearLayout>
@@ -423,7 +423,7 @@
                     android:layout_height="wrap_content"
                     android:minWidth="44dp"
                     android:text="@string/phone_raw_mag"
-                    android:textColor="@color/home_text_dim_darker"
+                    android:textColor="?attr/deTextDimDarker"
                     android:textSize="11sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.05" />
@@ -433,7 +433,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="12sp"
                     tools:text="+40.19 -35.94 -22.00" />
             </LinearLayout>
