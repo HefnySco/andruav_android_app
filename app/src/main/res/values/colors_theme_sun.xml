@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sun theme palette (AN-0149) -->
+    <!-- source: Tasks/.artifacts/android/theme-mockups.html (.sun) -->
+    <!-- Maximum contrast for direct sunlight: black text and 2 dp black
+         borders on white, no grey secondary text, amber stays the accent. -->
+
+    <color name="sun_bg">#FFFFFF</color>
+    <color name="sun_surface">#FFFFFF</color>
+    <color name="sun_surface_muted">#FFFFFF</color>
+    <color name="sun_sheet_bg">#FFFFFF</color>
+    <color name="sun_scrim">#66000000</color>
+
+    <color name="sun_border">#000000</color>
+    <color name="sun_border_soft">#000000</color>
+    <color name="sun_border_input">#000000</color>
+
+    <color name="sun_text_primary">#000000</color>
+    <color name="sun_text_secondary">#000000</color>
+    <color name="sun_text_dim">#1A1A1A</color>
+    <color name="sun_text_dim_alt">#1A1A1A</color>
+    <color name="sun_text_dim_darker">#1A1A1A</color>
+    <color name="sun_text_on_input">#000000</color>
+
+    <color name="sun_amber">#F4A437</color>
+    <color name="sun_amber_on">#000000</color>
+    <color name="sun_accent_text">#000000</color>
+    <color name="sun_amber_warning_border">#F4A437</color>
+
+    <color name="sun_blue_icon">#000000</color>
+    <color name="sun_blue_border">#000000</color>
+    <color name="sun_blue_bg">#FFFFFF</color>
+
+    <color name="sun_good">#00661F</color>
+    <color name="sun_good_border">#00661F</color>
+    <color name="sun_good_bg">#1F00661F</color>
+
+    <color name="sun_bad">#B00000</color>
+    <color name="sun_bad_text">#B00000</color>
+    <color name="sun_bad_border_soft">#B00000</color>
+
+    <color name="sun_icon_muted">#000000</color>
+    <color name="sun_icon_gray">#000000</color>
+    <color name="sun_switch_off">#FFFFFF</color>
+    <color name="sun_status_bar">#FFFFFF</color>
+</resources>

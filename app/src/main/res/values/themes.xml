@@ -58,8 +58,7 @@
 
     <!-- AN-0148: Light maps every attribute to the light_* palette from the
          mockup (.light). Dim text and green are darker than the mockup so
-         all body text reaches 4.5:1 (D-0032). Sun still falls back to Dark
-         until AN-0149 lands. -->
+         all body text reaches 4.5:1 (D-0032). -->
     <style name="Theme.Andruav.Light" parent="Theme.Andruav.Dark">
         <item name="deBg">@color/light_bg</item>
         <item name="deSurface">@color/light_surface</item>
@@ -107,7 +106,99 @@
         <item name="android:statusBarColor">@color/light_status_bar</item>
     </style>
 
-    <style name="Theme.Andruav.Sun" parent="Theme.Andruav.Dark" />
+    <!-- AN-0149: Sun maps every attribute to the sun_* palette from the
+         mockup (.sun) - maximum contrast for direct sunlight: black text
+         on white, 2 dp black borders, no grey secondary text, dark green
+         and dark red for state. The widget default styles below make the
+         text one weight bolder: regular text moves to sans-serif-medium
+         where a layout does not set its own fontFamily. -->
+    <style name="Theme.Andruav.Sun" parent="Theme.Andruav.Dark">
+        <item name="deBg">@color/sun_bg</item>
+        <item name="deSurface">@color/sun_surface</item>
+        <item name="deSurfaceMuted">@color/sun_surface_muted</item>
+        <item name="deInputBg">@color/sun_bg</item>
+        <item name="deSheetBg">@color/sun_sheet_bg</item>
+        <item name="deScrim">@color/sun_scrim</item>
+
+        <item name="deBorder">@color/sun_border</item>
+        <item name="deBorderSoft">@color/sun_border_soft</item>
+        <item name="deBorderInput">@color/sun_border_input</item>
+        <item name="deBorderWidth">2dp</item>
+        <item name="deBorderWidthStrong">2.5dp</item>
+        <item name="deTabUnderlineWidth">4dp</item>
+
+        <item name="deTextPrimary">@color/sun_text_primary</item>
+        <item name="deTextSecondary">@color/sun_text_secondary</item>
+        <item name="deTextDim">@color/sun_text_dim</item>
+        <item name="deTextDimAlt">@color/sun_text_dim_alt</item>
+        <item name="deTextDimDarker">@color/sun_text_dim_darker</item>
+        <item name="deTextOnInput">@color/sun_text_on_input</item>
+
+        <item name="deAccent">@color/sun_amber</item>
+        <item name="deOnAccent">@color/sun_amber_on</item>
+        <item name="deAccentText">@color/sun_accent_text</item>
+        <item name="deWarnBorder">@color/sun_amber_warning_border</item>
+        <item name="deBtnAmberBorder">@color/sun_border</item>
+        <item name="deBtnAmberBorderWidth">2dp</item>
+
+        <item name="deBlueIcon">@color/sun_blue_icon</item>
+        <item name="deBlueBorder">@color/sun_blue_border</item>
+        <item name="deBlueBg">@color/sun_blue_bg</item>
+        <item name="deGood">@color/sun_good</item>
+        <item name="deGoodBorder">@color/sun_good_border</item>
+        <item name="deGoodBg">@color/sun_good_bg</item>
+        <item name="deBad">@color/sun_bad</item>
+        <item name="deBadText">@color/sun_bad_text</item>
+        <item name="deBadBorderSoft">@color/sun_bad_border_soft</item>
+
+        <item name="deIconMuted">@color/sun_icon_muted</item>
+        <item name="deIconGray">@color/sun_icon_gray</item>
+        <item name="deSwitchOff">@color/sun_switch_off</item>
+
+        <item name="android:textViewStyle">@style/Widget.Andruav.Sun.TextView</item>
+        <item name="android:buttonStyle">@style/Widget.Andruav.Sun.Button</item>
+        <item name="buttonStyle">@style/Widget.Andruav.Sun.Button</item>
+        <item name="android:editTextStyle">@style/Widget.Andruav.Sun.EditText</item>
+        <item name="editTextStyle">@style/Widget.Andruav.Sun.EditText</item>
+
+        <item name="android:textAppearance">@style/TextAppearance.Andruav.Sun</item>
+        <item name="android:textAppearanceSmall">@style/TextAppearance.Andruav.Sun.Small</item>
+        <item name="android:textAppearanceMedium">@style/TextAppearance.Andruav.Sun</item>
+        <item name="android:textAppearanceLarge">@style/TextAppearance.Andruav.Sun.Large</item>
+        <item name="android:textAppearanceButton">@style/TextAppearance.Andruav.Sun.Button</item>
+
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/sun_status_bar</item>
+    </style>
+
+    <style name="Widget.Andruav.Sun.TextView" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="Widget.Andruav.Sun.Button" parent="Widget.AppCompat.Button">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="Widget.Andruav.Sun.EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextAppearance.Andruav.Sun" parent="android:TextAppearance">
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextAppearance.Andruav.Sun.Small">
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="TextAppearance.Andruav.Sun.Large">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="TextAppearance.Andruav.Sun.Button">
+        <item name="android:textSize">15sp</item>
+    </style>
 
     <style name="Theme.Andruav.Light.NoActionBar" parent="Theme.Andruav.Light">
         <item name="windowActionBar">false</item>
@@ -119,6 +210,5 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 </resources>
