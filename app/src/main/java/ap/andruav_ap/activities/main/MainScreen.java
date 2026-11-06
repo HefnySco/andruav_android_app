@@ -56,6 +56,7 @@ import ap.andruav_ap.App;
 import ap.andruav_ap.BuildConfig;
 import ap.andruav.denative.DeNativeDebugActivity;
 import ap.andruav_ap.denative.NativeUnitController;
+import ap.andruav_ap.denative.config.DeConfigWriter;
 import ap.andruav_ap.communication.NativeUnitMirror;
 
 
@@ -1225,8 +1226,13 @@ public class MainScreen extends BaseAndruavShasha {
 
         // Normal green status text; only a verified-TLS connection gets a
         // small red "SECURED" sub-line. Non-secure shows nothing extra.
+        // "SECURED" reflects what de_comm will actually verify: an IP-literal
+        // auth host gets --auth_verify_ssl false even when req_ssl is on.
         final boolean secureConn = connected
-                && (nativeMode ? Preference.isRequireSSL(null) : TlsTrustPolicy.isLastConnectionSecure());
+                && (nativeMode
+                        ? Preference.isRequireSSL(null)
+                                && !DeConfigWriter.isIpLiteral(Preference.getAuthServerURL(null))
+                        : TlsTrustPolicy.isLastConnectionSecure());
         final String mainText;
         if (nativeMode) {
             mainText = connected ? "Native Unit Online" : "Native Unit Offline";
@@ -1381,7 +1387,11 @@ public class MainScreen extends BaseAndruavShasha {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mSslVerifyDialogShowing = false;
-                        Preference.isRequireSSL(MainScreen.this, false);
+                        // null context writes the DEFAULT shared prefs, where
+                        // TlsTrustPolicy/DeConfigGenerator read req_ssl; a
+                        // non-null context writes the named RCMOBILE_FPV file
+                        // and the change never reaches the readers.
+                        Preference.isRequireSSL(null, false);
                         NativeUnitController.connectNative(MainScreen.this);
                     }
                 })

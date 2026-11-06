@@ -62,6 +62,19 @@ public class DeConfigWriterTest {
     }
 
     @Test
+    public void commArgsIpLiteralSkipsVerify() {
+        DeConfigSettings s = settings();
+        s.authHost = "10.33.232.200";
+        assertEquals("false", arg(DeConfigWriter.commArgs(s), "--auth_verify_ssl"));
+        s.authHost = "::ffff:10.33.232.200";
+        assertEquals("false", arg(DeConfigWriter.commArgs(s), "--auth_verify_ssl"));
+        s.authHost = "auth.example.com";
+        assertEquals("true", arg(DeConfigWriter.commArgs(s), "--auth_verify_ssl"));
+        s.requireSsl = false;
+        assertEquals("false", arg(DeConfigWriter.commArgs(s), "--auth_verify_ssl"));
+    }
+
+    @Test
     public void commArgsNeverNull() {
         DeConfigSettings s = new DeConfigSettings();
         s.email = null;

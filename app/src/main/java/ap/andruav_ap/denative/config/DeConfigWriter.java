@@ -26,7 +26,11 @@ public final class DeConfigWriter {
         return new String[]{
                 "--auth_ip", nz(s.authHost),
                 "--auth_port", Integer.toString(s.authPort),
-                "--auth_verify_ssl", Boolean.toString(s.requireSsl),
+                // IP-literal targets can't carry a verifiable SAN, so TLS
+                // verification defaults off for them; host names follow the
+                // user's Require-SSL preference.
+                "--auth_verify_ssl", Boolean.toString(
+                        s.requireSsl && !isIpLiteral(s.authHost)),
                 // The app's 'local server' (Andruav Cloud Server off) is a custom
                 // AUTH server - its host/port are already authHost/authPort, the
                 // same as the Java client. It is NOT de_comm's mesh direct-connect
@@ -42,6 +46,12 @@ public final class DeConfigWriter {
 
     private static String nz(String v) {
         return v == null ? "" : v;
+    }
+
+    /** IPv4 dotted-quad or IPv6 literal (anything with a ':'). */
+    public static boolean isIpLiteral(String host) {
+        if (host == null) return false;
+        return host.matches("\\d+\\.\\d+\\.\\d+\\.\\d+") || host.contains(":");
     }
 
     /**
