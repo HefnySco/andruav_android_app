@@ -92,6 +92,20 @@
     <string name="phone_raw_na">Н/Д</string>
     <string name="phone_imu_tilt_done">Наклон датчика обновлён</string>
 
+    <!-- AN-0136: PHONE GPS tab -->
+    <string name="phone_gps_title">GPS ТЕЛЕФОНА</string>
+    <string name="phone_gps_fix_nofix">НЕТ ФИКСА</string>
+    <string name="phone_gps_fix_2d">ФИКС 2D</string>
+    <string name="phone_gps_fix_3d">ФИКС 3D</string>
+    <string name="phone_gps_sats">СПУТНИКИ</string>
+    <string name="phone_gps_acc">ТОЧН м</string>
+    <string name="phone_gps_age">ВОЗР с</string>
+    <string name="phone_gps_latlon">Шир / Долг</string>
+    <string name="phone_gps_source">Источник данных</string>
+    <string name="phone_gps_source_phone">gps телефона</string>
+    <string name="phone_gps_source_board">gps платы</string>
+    <string name="phone_gps_footer">Те же настройки, что и в Настройки > FCB и телеметрия. Правки здесь меняют и Настройки.</string>
+
     <!-- i18n: extracted hardcoded strings -->
     <string name="toast_ping_time">Время пинга %1$s мс</string>
     <string name="toast_msg_duration">длительность сообщения: %1$s мс</string>

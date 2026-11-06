@@ -92,6 +92,20 @@
     <string name="phone_raw_na">N/D</string>
     <string name="phone_imu_tilt_done">Inclinación del sensor actualizada</string>
 
+    <!-- AN-0136: PHONE GPS tab -->
+    <string name="phone_gps_title">GPS DEL TELÉFONO</string>
+    <string name="phone_gps_fix_nofix">SIN FIJO</string>
+    <string name="phone_gps_fix_2d">FIJO 2D</string>
+    <string name="phone_gps_fix_3d">FIJO 3D</string>
+    <string name="phone_gps_sats">SATS</string>
+    <string name="phone_gps_acc">PREC m</string>
+    <string name="phone_gps_age">EDAD s</string>
+    <string name="phone_gps_latlon">Lat / Lon</string>
+    <string name="phone_gps_source">Fuente usada por la unidad</string>
+    <string name="phone_gps_source_phone">gps del teléfono</string>
+    <string name="phone_gps_source_board">gps de la placa</string>
+    <string name="phone_gps_footer">Las mismas preferencias que Ajustes > FCB y Telemetría. Las ediciones aquí también cambian Ajustes.</string>
+
     <!-- i18n: extracted hardcoded strings -->
     <string name="toast_ping_time">Tiempo de ping %1$s ms</string>
     <string name="toast_msg_duration">duración del mensaje: %1$sms</string>
