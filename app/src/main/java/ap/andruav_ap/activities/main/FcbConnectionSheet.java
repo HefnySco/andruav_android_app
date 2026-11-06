@@ -20,7 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.annotation.ColorRes;
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -31,6 +31,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import ap.andruav_ap.App;
 import ap.andruav_ap.DeviceManagerFacade;
 import ap.andruav_ap.R;
+import ap.andruav_ap.activities.ThemeColors;
 import ap.andruav_ap.activities.fcb.drone.Adapter_BluetoothList;
 import ap.andruav_ap.activities.fcb.drone.ListItem_BluetoothUnit;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
@@ -201,13 +202,14 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
     }
 
     private void tintDot(View dot, boolean selected) {
-        setColor(dot, selected ? R.color.home_amber : R.color.home_border_input);
+        setColor(dot, ThemeColors.get(requireContext(),
+                selected ? R.attr.deAccent : R.attr.deBorderInput));
     }
 
-    private void setColor(View view, @ColorRes int colorRes) {
+    private void setColor(View view, @ColorInt int color) {
         final Drawable bg = view.getBackground();
         if (bg instanceof GradientDrawable) {
-            ((GradientDrawable) bg.mutate()).setColor(ContextCompat.getColor(requireContext(), colorRes));
+            ((GradientDrawable) bg.mutate()).setColor(color);
         }
     }
 

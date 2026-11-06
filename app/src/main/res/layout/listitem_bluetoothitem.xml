@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:textColor="@color/home_text_primary"
+        android:textColor="?attr/deTextPrimary"
         android:textSize="13sp"
         android:textStyle="bold"
         android:text="Medium" />
@@ -29,6 +29,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:fontFamily="monospace"
-        android:textColor="@color/home_text_dim"
+        android:textColor="?attr/deTextDim"
         android:textSize="11sp" />
 </RelativeLayout>

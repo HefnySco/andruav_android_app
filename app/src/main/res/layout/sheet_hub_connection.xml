@@ -21,7 +21,7 @@
         android:paddingEnd="20dp"
         android:paddingBottom="12dp"
         android:text="@string/home_hub_sheet_title"
-        android:textColor="@color/home_text_dim"
+        android:textColor="?attr/deTextDim"
         android:textSize="13sp"
         android:textStyle="bold"
         android:letterSpacing="0.04" />
@@ -47,7 +47,7 @@
                 android:layout_marginTop="14dp"
                 android:layout_marginBottom="6dp"
                 android:text="@string/websocket_IP"
-                android:textColor="@color/home_text_dim"
+                android:textColor="?attr/deTextDim"
                 android:textSize="11sp" />
 
             <EditText
@@ -59,8 +59,8 @@
                 android:inputType="text"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:textColor="@color/home_text_on_input"
-                android:textColorHint="@color/home_text_dim"
+                android:textColor="?attr/deTextOnInput"
+                android:textColorHint="?attr/deTextDim"
                 android:textSize="14sp" />
 
             <!-- Port -->
@@ -70,7 +70,7 @@
                 android:layout_marginTop="14dp"
                 android:layout_marginBottom="6dp"
                 android:text="@string/websocket_Port"
-                android:textColor="@color/home_text_dim"
+                android:textColor="?attr/deTextDim"
                 android:textSize="11sp" />
 
             <EditText
@@ -82,8 +82,8 @@
                 android:inputType="number"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:textColor="@color/home_text_on_input"
-                android:textColorHint="@color/home_text_dim"
+                android:textColor="?attr/deTextOnInput"
+                android:textColorHint="?attr/deTextDim"
                 android:textSize="14sp" />
 
             <!-- Cloud server toggle -->
@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/home_hub_cloud_toggle_label"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="15sp"
                     android:fontFamily="sans-serif-medium" />
 
@@ -112,7 +112,7 @@
                     android:focusable="true"
                     android:gravity="center"
                     android:text="@string/home_fcb_bt_off"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -122,7 +122,7 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:background="@color/home_border_soft" />
+                android:background="?attr/deBorderSoft" />
 
             <!-- Unit ID / username -->
             <TextView
@@ -130,7 +130,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
                 android:text="@string/websocket_UserName"
-                android:textColor="@color/home_text_dim"
+                android:textColor="?attr/deTextDim"
                 android:textSize="11sp" />
 
             <EditText
@@ -142,8 +142,8 @@
                 android:inputType="text"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:textColor="@color/home_text_on_input"
-                android:textColorHint="@color/home_text_dim"
+                android:textColor="?attr/deTextOnInput"
+                android:textColorHint="?attr/deTextDim"
                 android:textSize="14sp" />
 
             <!-- Description -->
@@ -153,7 +153,7 @@
                 android:layout_marginTop="14dp"
                 android:layout_marginBottom="6dp"
                 android:text="@string/websocket_Description"
-                android:textColor="@color/home_text_dim"
+                android:textColor="?attr/deTextDim"
                 android:textSize="11sp" />
 
             <EditText
@@ -168,8 +168,8 @@
                 android:paddingEnd="12dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:textColor="@color/home_text_on_input"
-                android:textColorHint="@color/home_text_dim"
+                android:textColor="?attr/deTextOnInput"
+                android:textColorHint="?attr/deTextDim"
                 android:textSize="14sp" />
 
         </LinearLayout>
@@ -193,7 +193,7 @@
             android:focusable="true"
             android:gravity="center"
             android:text="@string/home_btn_save"
-            android:textColor="@color/home_amber_on"
+            android:textColor="?attr/deOnAccent"
             android:textSize="14sp"
             android:textStyle="bold"
             android:letterSpacing="0.03" />

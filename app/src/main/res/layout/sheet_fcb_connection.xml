@@ -21,7 +21,7 @@
         android:paddingEnd="20dp"
         android:paddingBottom="12dp"
         android:text="@string/home_fcb_sheet_title"
-        android:textColor="@color/home_text_dim"
+        android:textColor="?attr/deTextDim"
         android:textSize="13sp"
         android:textStyle="bold"
         android:letterSpacing="0.04" />
@@ -40,7 +40,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/home_border_soft" />
+                android:background="?attr/deBorderSoft" />
 
             <LinearLayout
                 android:id="@+id/fcb_sheet_row_bt"
@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/home_fcb_bluetooth"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="15sp"
                     android:fontFamily="sans-serif-medium" />
 
@@ -98,7 +98,7 @@
                         android:focusable="true"
                         android:gravity="center"
                         android:text="@string/home_fcb_bt_off"
-                        android:textColor="@color/home_text_primary"
+                        android:textColor="?attr/deTextPrimary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
 
@@ -112,7 +112,7 @@
                         android:focusable="true"
                         android:gravity="center"
                         android:text="@string/home_fcb_bt_scan"
-                        android:textColor="@color/home_text_primary"
+                        android:textColor="?attr/deTextPrimary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -138,7 +138,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/home_border_soft" />
+                android:background="?attr/deBorderSoft" />
 
             <LinearLayout
                 android:id="@+id/fcb_sheet_row_usb"
@@ -159,7 +159,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/home_fcb_usb"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="15sp"
                     android:fontFamily="sans-serif-medium" />
 
@@ -185,7 +185,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
                     android:text="@string/home_fcb_baud_rate_label"
-                    android:textColor="@color/home_text_dim"
+                    android:textColor="?attr/deTextDim"
                     android:textSize="11sp" />
 
                 <Spinner
@@ -193,7 +193,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="38dp"
                     android:background="@drawable/bg_home_input"
-                    android:popupBackground="@color/home_popup_bg"
+                    android:popupBackground="?attr/deSheetBg"
                     android:spinnerMode="dropdown" />
 
                 <TextView
@@ -201,7 +201,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textColor="@color/home_text_dim"
+                    android:textColor="?attr/deTextDim"
                     android:textSize="11sp" />
             </LinearLayout>
 
@@ -209,7 +209,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/home_border_soft" />
+                android:background="?attr/deBorderSoft" />
 
             <LinearLayout
                 android:id="@+id/fcb_sheet_row_wifi"
@@ -230,7 +230,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/home_fcb_wifi"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="15sp"
                     android:fontFamily="sans-serif-medium" />
 
@@ -263,7 +263,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="6dp"
                         android:text="@string/home_fcb_hub_ip_label"
-                        android:textColor="@color/home_text_dim"
+                        android:textColor="?attr/deTextDim"
                         android:textSize="11sp" />
 
                     <EditText
@@ -275,7 +275,7 @@
                         android:inputType="text"
                         android:paddingStart="12dp"
                         android:paddingEnd="12dp"
-                        android:textColor="@color/home_text_on_input"
+                        android:textColor="?attr/deTextOnInput"
                         android:textSize="14sp" />
                 </LinearLayout>
 
@@ -290,7 +290,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="6dp"
                         android:text="@string/home_fcb_port_label"
-                        android:textColor="@color/home_text_dim"
+                        android:textColor="?attr/deTextDim"
                         android:textSize="11sp" />
 
                     <EditText
@@ -302,7 +302,7 @@
                         android:inputType="number"
                         android:paddingStart="12dp"
                         android:paddingEnd="12dp"
-                        android:textColor="@color/home_text_on_input"
+                        android:textColor="?attr/deTextOnInput"
                         android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -311,7 +311,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/home_border_soft" />
+                android:background="?attr/deBorderSoft" />
 
             <LinearLayout
                 android:id="@+id/fcb_sheet_row_udp"
@@ -332,7 +332,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/home_fcb_udp"
-                    android:textColor="@color/home_text_primary"
+                    android:textColor="?attr/deTextPrimary"
                     android:textSize="15sp"
                     android:fontFamily="sans-serif-medium" />
 
@@ -358,7 +358,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
                     android:text="@string/home_fcb_local_ip_label"
-                    android:textColor="@color/home_text_dim"
+                    android:textColor="?attr/deTextDim"
                     android:textSize="11sp" />
 
                 <TextView
@@ -371,7 +371,7 @@
                     android:gravity="center_vertical"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:textColor="@color/home_text_on_input"
+                    android:textColor="?attr/deTextOnInput"
                     android:textSize="14sp"
                     tools:text="10.123.124.200" />
 
@@ -380,7 +380,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
                     android:text="@string/home_fcb_udp_port_label"
-                    android:textColor="@color/home_text_dim"
+                    android:textColor="?attr/deTextDim"
                     android:textSize="11sp" />
 
                 <EditText
@@ -392,7 +392,7 @@
                     android:inputType="number"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:textColor="@color/home_text_on_input"
+                    android:textColor="?attr/deTextOnInput"
                     android:textSize="14sp" />
 
                 <TextView
@@ -400,7 +400,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/home_fcb_udp_helper"
-                    android:textColor="@color/home_text_dim"
+                    android:textColor="?attr/deTextDim"
                     android:textSize="11sp" />
             </LinearLayout>
 
@@ -425,7 +425,7 @@
             android:focusable="true"
             android:gravity="center"
             android:text="@string/home_btn_connect"
-            android:textColor="@color/home_amber_on"
+            android:textColor="?attr/deOnAccent"
             android:textSize="14sp"
             android:textStyle="bold"
             android:letterSpacing="0.03" />
@@ -439,7 +439,7 @@
             android:focusable="true"
             android:gravity="center"
             android:text="@string/home_btn_disconnect"
-            android:textColor="@color/home_red_text"
+            android:textColor="?attr/deBadText"
             android:textSize="13sp"
             android:textStyle="bold"
             android:visibility="gone" />

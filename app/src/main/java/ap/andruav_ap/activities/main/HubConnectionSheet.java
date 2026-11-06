@@ -9,14 +9,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import org.greenrobot.eventbus.EventBus;
 
 import ap.andruav_ap.App;
 import ap.andruav_ap.R;
+import ap.andruav_ap.activities.ThemeColors;
 import ap.andruav_ap.guiEvent.GUIEvent_MissionServerChanged;
 import ap.andruavmiddlelibrary.factory.util.DialogHelper;
 import ap.andruavmiddlelibrary.preference.Preference;
@@ -108,14 +107,14 @@ public class HubConnectionSheet extends BottomSheetDialogFragment {
 
         edtServerIp.setEnabled(!cloudServer);
         edtServerPort.setEnabled(!cloudServer);
-        edtServerIp.setTextColor(ContextCompat.getColor(requireContext(),
-                cloudServer ? R.color.home_text_on_input : R.color.home_red_text));
-        edtServerPort.setTextColor(ContextCompat.getColor(requireContext(),
-                cloudServer ? R.color.home_text_on_input : R.color.home_red_text));
+        edtServerIp.setTextColor(ThemeColors.get(requireContext(),
+                cloudServer ? R.attr.deTextOnInput : R.attr.deBadText));
+        edtServerPort.setTextColor(ThemeColors.get(requireContext(),
+                cloudServer ? R.attr.deTextOnInput : R.attr.deBadText));
         lblServerIp.setText(getString(ap.andruavmiddlelibrary.R.string.websocket_IP)
                 + (cloudServer ? "" : getString(R.string.home_hub_sheet_custom_suffix)));
-        lblServerIp.setTextColor(ContextCompat.getColor(requireContext(),
-                cloudServer ? R.color.home_text_dim : R.color.home_red_text));
+        lblServerIp.setTextColor(ThemeColors.get(requireContext(),
+                cloudServer ? R.attr.deTextDim : R.attr.deBadText));
         if (cloudServer) {
             edtServerIp.setText(AndruavEngine.getPreference().getContext().getResources().getString(ap.andruavmiddlelibrary.R.string.pref_auth_URL));
             edtServerPort.setText(String.valueOf(AndruavEngine.getPreference().getContext().getResources().getInteger(ap.andruavmiddlelibrary.R.integer.pref_auth_Port)));
