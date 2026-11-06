@@ -118,6 +118,8 @@
     <string name="phone_gps_source_phone">phone gps</string>
     <string name="phone_gps_source_board">board gps</string>
     <string name="phone_gps_footer">Same preferences as Settings > FCB &amp; Telemetry. Edits here change Settings too.</string>
+    <string name="phone_gps_restart_title">Restart needed</string>
+    <string name="phone_gps_restart_msg">Ignore Mobile Sensors is applied when the app starts. Restart the app to apply the change.</string>
 
     <!-- AN-0138: PHONE SMS tab -->
     <string name="phone_sms_commands_hint">Run commands from allowed contacts.</string>

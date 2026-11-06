@@ -22,6 +22,7 @@ import com.andruav.sensors.AndruavIMU;
 
 import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.R;
+import ap.andruavmiddlelibrary.factory.util.DialogHelper;
 import ap.andruavmiddlelibrary.preference.Preference;
 
 /***
@@ -93,6 +94,12 @@ public class PhoneGpsFragment extends Fragment {
         mTglIgnore.setOnClickListener(v -> {
             Preference.isMobileSensorsDisabled(null, !Preference.isMobileSensorsDisabled(null));
             updateToggles();
+            /* AN-0143: this flag is read when SensorService initializes -
+             * a running app keeps the old state, so tell the user. GPS
+             * Injection above applies live and needs no notice. */
+            DialogHelper.doModalDialog(requireContext(),
+                    getString(R.string.phone_gps_restart_title),
+                    getString(R.string.phone_gps_restart_msg), null);
         });
 
         updateToggles();
