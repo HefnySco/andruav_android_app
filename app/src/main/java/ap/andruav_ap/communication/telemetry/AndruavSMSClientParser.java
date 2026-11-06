@@ -3,8 +3,10 @@ package ap.andruav_ap.communication.telemetry;
 import android.location.Location;
 
 import com.andruav.AndruavEngine;
+import com.andruav.AndruavFacade;
 import com.andruav.AndruavSettings;
 import com.andruav.controlBoard.IControlBoard_Callback;
+import com.andruav.interfaces.INotification;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_GPS;
 import com.andruav.protocol.communication.sms.AndruavSMSClientParserBase;
 import com.andruav.sensors.AndruavIMU;
@@ -116,6 +118,44 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
     private static final String KEYWORD_FAIL_REPLY =
             "Andruav: event not delivered (unit offline).";
 
+    /** GCS notification seam: the default posts a 1008 Error message so
+     * the webclient LOG panel shows the SMS outcome; unit tests swap it
+     * to record. The facade call is wrapped - the engine may not be
+     * initialized in tests or early boot. Lines carry the allow-list
+     * contact NAME or nothing - never the number, the text or the PIN. */
+    public interface GcsNotifier { void notify(int notificationType, String text); }
+
+    private static final GcsNotifier GCS_NOTIFIER_DEFAULT = (notificationType, text) -> {
+        try {
+            AndruavFacade.sendErrorMessage(INotification.INFO_TYPE_TELEMETRY,
+                    notificationType, 0, text, null);
+        } catch (Throwable ignored) {
+            // engine/facade not initialized - the DAO log keeps the entry
+        }
+    };
+
+    private static volatile GcsNotifier sGcsNotifier = GCS_NOTIFIER_DEFAULT;
+    public static void setGcsNotifier(final GcsNotifier n) {
+        sGcsNotifier = (n != null) ? n : GCS_NOTIFIER_DEFAULT;
+    }
+
+    private static void notifyGcs(final int notificationType, final String text) {
+        final GcsNotifier n = sGcsNotifier;
+        if (n == null) return;
+        try {
+            n.notify(notificationType, text);
+        } catch (RuntimeException ignored) {
+        }
+    }
+
+    /** A gate refusal on a KNOWN sender: local log + a warning line on
+     * the GCS. The reason strings are fixed - no message text leaks. */
+    private static void refuseGcs(final String reason, final String sender, final String who) {
+        skip(reason, sender);
+        notifyGcs(INotification.NOTIFICATION_TYPE_WARNING,
+                "SMS refused " + who + ": " + reason);
+    }
+
     /* wrong-PIN rate limiting: 5 failures inside the window locks every
      * command (even correct ones) for the same window length */
     private static final int PIN_FAIL_MAX = 5;
@@ -214,37 +254,57 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
         if (cfg.contacts() == null || cfg.contacts().isEmpty()
                 || pin == null || pin.isEmpty()) {
             skip("executeCommand skipped: no allow-list or PIN configured", sender);
+            notifyGcs(INotification.NOTIFICATION_TYPE_WARNING,
+                    "SMS refused: no allow-list or PIN configured");
             return ;
         }
         if (lockedOut(nowMs)) {
             skip("executeCommand skipped: PIN lockout", sender);
+            notifyGcs(INotification.NOTIFICATION_TYPE_WARNING,
+                    "SMS refused: PIN lockout");
             return ;
         }
         if (!senderAllowed(sender, cfg.contacts())) {
             skip("executeCommand skipped: sender not allowed", sender);
+            // an unknown number tried a command - worth one warning line,
+            // the number itself never leaves the device
+            notifyGcs(INotification.NOTIFICATION_TYPE_WARNING,
+                    "SMS refused: sender not allow-listed");
             return ;
         }
+
+        /* who = the allow-list contact name the sender matched ("" for a
+         * bare-number entry) - every notification uses it, never the raw
+         * number. */
+        final String contact = contactName(sender, cfg.contacts());
+        final String who = contact.isEmpty() ? "an allow-listed contact" : "'" + contact + "'";
 
         // Split the input string by colon delimiter
         String[] parts = sms_msg != null ? sms_msg.split(":") : new String[0];
 
         // ATT:<command>:<pin> - exact prefix, command, then the PIN
         if (parts.length < 3 || !parts[0].trim().equalsIgnoreCase("ATT")) {
-            skip("executeCommand skipped: bad format (needs ATT:<cmd>:<pin>)", sender);
+            refuseGcs("bad format (needs ATT:<cmd>:<pin>)", sender, who);
             return ;
         }
         if (!parts[parts.length - 1].trim().equals(pin)) {
             notePinFailure(nowMs);
-            skip("executeCommand skipped: wrong PIN", sender);
+            refuseGcs("wrong PIN", sender, who);
             return ;
         }
         final long maxAgeMs = cfg.maxAgeS() * 1000L;
         if (timestampMs > 0 && maxAgeMs > 0 && nowMs - timestampMs > maxAgeMs) {
-            skip("executeCommand skipped: message too old", sender);
+            refuseGcs("message too old", sender, who);
             return ;
         }
         // Extract CMD field
         String cmd = parts[1].trim();
+
+        /* every gate passed - the GCS log gets one info line. The cmd
+         * token is the only user text shown, sanitized because the
+         * webclient appends the line as HTML. */
+        notifyGcs(INotification.NOTIFICATION_TYPE_NORMAL,
+                "SMS accepted '" + cmd.replaceAll("[^A-Za-z0-9_ ]", "?") + "' from " + who);
 
         // Handle "AUTO X" — engage auto mode and jump to mission step X
         String[] cmdTokens = cmd.split("\\s+");
@@ -254,18 +314,18 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
             try {
                 step = Integer.parseInt(cmdTokens[1]);
             } catch (NumberFormatException e) {
-                skip("AUTO skipped: bad step number", sender);
+                refuseGcs("AUTO skipped: bad step number", sender, who);
                 return;
             }
             if (AndruavSettings.andruavWe7daBase.FCBoard != null) {
                 if (AndruavSettings.andruavWe7daBase.FCBoard.do_RCChannelBlocked()) {
-                    skip("AUTO skipped: RC channel blocked (manual override active) step=" + step, sender);
+                    refuseGcs("AUTO skipped: RC channel blocked (manual override active) step=" + step, sender, who);
                     return;
                 }
                 AndruavSettings.andruavWe7daBase.FCBoard.do_SetCurrentMission(step);
                 AndruavSettings.andruavWe7daBase.FCBoard.do_Auto(logCallback("AUTO " + step, sender));
             } else {
-                skip("AUTO skipped: no FCBoard step=" + step, sender);
+                refuseGcs("AUTO skipped: no FCBoard step=" + step, sender, who);
             }
             return;
         }
@@ -279,12 +339,12 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
             case "RTL":
                 if (AndruavSettings.andruavWe7daBase.FCBoard!= null) {
                     if (AndruavSettings.andruavWe7daBase.FCBoard.do_RCChannelBlocked()) {
-                        skip("RTL skipped: RC channel blocked (manual override active)", sender);
+                        refuseGcs("RTL skipped: RC channel blocked (manual override active)", sender, who);
                         break;
                     }
                     AndruavSettings.andruavWe7daBase.FCBoard.do_RTL(logCallback("RTL", sender));
                 } else {
-                    skip("RTL skipped: no FCBoard", sender);
+                    refuseGcs("RTL skipped: no FCBoard", sender, who);
                 }
                 break;
 
@@ -292,12 +352,12 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
             case "LAND":
                 if (AndruavSettings.andruavWe7daBase.FCBoard!= null) {
                     if (AndruavSettings.andruavWe7daBase.FCBoard.do_RCChannelBlocked()) {
-                        skip("LAND skipped: RC channel blocked (manual override active)", sender);
+                        refuseGcs("LAND skipped: RC channel blocked (manual override active)", sender, who);
                         break;
                     }
                     AndruavSettings.andruavWe7daBase.FCBoard.do_Land(logCallback("LAND", sender));
                 } else {
-                    skip("LAND skipped: no FCBoard", sender);
+                    refuseGcs("LAND skipped: no FCBoard", sender, who);
                 }
                 break;
 
@@ -307,14 +367,14 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
             case "LOC": {
                 final AndruavIMU andruavIMU = AndruavSettings.andruavWe7daBase.getActiveGPS();
                 if (andruavIMU == null) {
-                    skip("LOC skipped: no active GPS", sender);
+                    refuseGcs("LOC skipped: no active GPS", sender, who);
                     return;
                 }
 
                 if (andruavIMU.hasCurrentLocation()) {
                     AndruavEngine.getEmergency().sendSMSLocation(sender, true);
                 } else {
-                    skip("LOC skipped: no current location", sender);
+                    refuseGcs("LOC skipped: no current location", sender, who);
                 }
             }
                 break;
@@ -328,16 +388,15 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
                  * logged, and the sender gets a short failure reply. */
                 final String keyword = SmsKeywords.match(cmd, cfg.keywords());
                 if (keyword == null) {
-                    skip("unknown command", sender);
+                    refuseGcs("unknown command", sender, who);
                     return;
                 }
                 final KeywordFactListener listener = sKeywordListener;
                 final long age_s = (timestampMs > 0)
                         ? Math.max(0L, (nowMs - timestampMs) / 1000L) : 0L;
-                final String contact = contactName(sender, cfg.contacts());
                 if (listener == null
                         || !listener.onKeyword(keyword, contact, age_s)) {
-                    skip("keyword event dropped: no provider attached", sender);
+                    refuseGcs("keyword event dropped: no provider attached", sender, who);
                     sSmsSender.send(sender, KEYWORD_FAIL_REPLY);
                 }
                 return;

@@ -98,6 +98,7 @@ public class SMSCommandGateTest {
     private FakeEmergency mEmergency;
     private FakeLog mLog;
     private final List<String[]> mSmsSent = new ArrayList<>();
+    private final List<String[]> mGcsNotes = new ArrayList<>();
     private EmergencyBase mOldEmergency;
 
     private void setGate(final List<String> contacts, final String pin) {
@@ -123,6 +124,9 @@ public class SMSCommandGateTest {
         mSmsSent.clear();
         AndruavSMSClientParser.setSmsSender(
                 (n, m) -> mSmsSent.add(new String[]{n, m}));
+        mGcsNotes.clear();
+        AndruavSMSClientParser.setGcsNotifier(
+                (t, text) -> mGcsNotes.add(new String[]{String.valueOf(t), text}));
         AndruavSMSClientParser.resetPinFailures();
         setGate(new ArrayList<>(Arrays.asList(ALLOWED)), PIN);
     }
@@ -134,6 +138,7 @@ public class SMSCommandGateTest {
         AndruavSettings.andruavWe7daBase = null;
         AndruavSMSClientParser.setGateConfigProvider(null);
         AndruavSMSClientParser.setSmsSender(null);
+        AndruavSMSClientParser.setGcsNotifier(null);
         AndruavSMSClientParser.resetPinFailures();
     }
 
@@ -155,6 +160,26 @@ public class SMSCommandGateTest {
         assertFalse(anyCommandRan());
         assertEquals(0, mEmergency.locCalls);
         assertTrue(mSmsSent.isEmpty());
+    }
+
+    /*** the GCS LOG gets an info line per accepted command, a warning
+     *  line per refusal - never the number, text or PIN */
+    @Test
+    public void gcsNotifiedOnAcceptAndRefuse() {
+        exec(ALLOWED, "ATT:RTL:" + PIN);
+        assertTrue(mGcsNotes.size() >= 1);
+        assertTrue(mGcsNotes.get(0)[0].equals("5")); // NOTIFICATION_TYPE_NORMAL
+        assertTrue(mGcsNotes.get(0)[1].contains("SMS accepted"));
+        assertTrue(mGcsNotes.get(0)[1].contains("RTL"));
+        assertFalse(mGcsNotes.get(0)[1].contains(ALLOWED));
+        assertFalse(mGcsNotes.get(0)[1].contains(PIN));
+
+        mGcsNotes.clear();
+        exec(STRANGER, "ATT:RTL:" + PIN);
+        assertEquals(1, mGcsNotes.size());
+        assertTrue(mGcsNotes.get(0)[0].equals("4")); // NOTIFICATION_TYPE_WARNING
+        assertTrue(mGcsNotes.get(0)[1].contains("not allow-listed"));
+        assertFalse(mGcsNotes.get(0)[1].contains(STRANGER));
     }
 
     @Test
