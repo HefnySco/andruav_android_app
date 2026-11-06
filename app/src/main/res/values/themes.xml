@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Theme.Andruav variants (AN-0145). Dark maps every attribute to the
+         home_* value it replaces, so the screens look exactly as before.
+         Light and Sun (later tasks) override the same attributes. -->
+    <style name="Theme.Andruav" parent="AppTheme" />
+
+    <style name="Theme.Andruav.Dark">
+        <item name="deBg">@color/home_bg</item>
+        <item name="deSurface">@color/home_surface</item>
+        <item name="deSurfaceMuted">@color/home_surface_disabled_tile</item>
+        <item name="deInputBg">@color/home_bg</item>
+        <item name="deSheetBg">@color/home_popup_bg</item>
+        <item name="deScrim">@color/home_scrim</item>
+
+        <item name="deBorder">@color/home_border</item>
+        <item name="deBorderSoft">@color/home_border_soft</item>
+        <item name="deBorderInput">@color/home_border_input</item>
+        <item name="deBorderWidth">1dp</item>
+        <item name="deBorderWidthStrong">1.5dp</item>
+        <item name="deTabUnderlineWidth">3dp</item>
+
+        <item name="deTextPrimary">@color/home_text_primary</item>
+        <item name="deTextSecondary">@color/home_text_secondary</item>
+        <item name="deTextDim">@color/home_text_dim</item>
+        <item name="deTextDimAlt">@color/home_text_dim_alt</item>
+        <item name="deTextDimDarker">@color/home_text_dim_darker</item>
+        <item name="deTextOnInput">@color/home_text_on_input</item>
+
+        <item name="deAccent">@color/home_amber</item>
+        <item name="deOnAccent">@color/home_amber_on</item>
+        <item name="deAccentText">@color/home_amber</item>
+        <item name="deWarnBorder">@color/home_amber_warning_border</item>
+        <item name="deBtnAmberBorder">@android:color/transparent</item>
+        <item name="deBtnAmberBorderWidth">0dp</item>
+
+        <item name="deBlueIcon">@color/home_blue_icon</item>
+        <item name="deBlueBorder">@color/home_blue_border</item>
+        <item name="deBlueBg">@color/home_blue_bg</item>
+        <item name="deGood">@color/home_green_icon</item>
+        <item name="deGoodBorder">@color/home_green_border</item>
+        <item name="deGoodBg">@color/home_green_bg</item>
+        <item name="deBad">@color/home_red_dot</item>
+        <item name="deBadText">@color/home_red_text</item>
+        <item name="deBadBorderSoft">@color/home_red_border_soft</item>
+
+        <item name="deIconMuted">@color/home_icon_muted</item>
+        <item name="deIconGray">@color/home_icon_gray</item>
+        <item name="deSwitchOff">@color/home_border_input</item>
+    </style>
+
+    <style name="Theme.Andruav.Dark.NoActionBar" parent="Theme.Andruav.Dark">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+</resources>

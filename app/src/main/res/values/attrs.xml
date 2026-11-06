@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Theme palette attributes (AN-0145). Theme.Andruav.* maps each
+         attribute to a palette value; layouts and drawables reference
+         ?attr/deX instead of @color/home_* so Dark / Light / Sun restyle
+         the screens with no code change. Dark keeps the exact home_*
+         values (AS IS). -->
+
+    <!-- backgrounds -->
+    <attr name="deBg" format="color" />
+    <attr name="deSurface" format="color" />
+    <attr name="deSurfaceMuted" format="color" />
+    <attr name="deInputBg" format="color" />
+    <attr name="deSheetBg" format="color" />
+    <attr name="deScrim" format="color" />
+
+    <!-- borders -->
+    <attr name="deBorder" format="color" />
+    <attr name="deBorderSoft" format="color" />
+    <attr name="deBorderInput" format="color" />
+    <attr name="deBorderWidth" format="dimension" />
+    <attr name="deBorderWidthStrong" format="dimension" />
+    <attr name="deTabUnderlineWidth" format="dimension" />
+
+    <!-- text -->
+    <attr name="deTextPrimary" format="color" />
+    <attr name="deTextSecondary" format="color" />
+    <attr name="deTextDim" format="color" />
+    <attr name="deTextDimAlt" format="color" />
+    <attr name="deTextDimDarker" format="color" />
+    <attr name="deTextOnInput" format="color" />
+
+    <!-- amber accent -->
+    <attr name="deAccent" format="color" />
+    <attr name="deOnAccent" format="color" />
+    <attr name="deAccentText" format="color" />
+    <attr name="deWarnBorder" format="color" />
+    <attr name="deBtnAmberBorder" format="color" />
+    <attr name="deBtnAmberBorderWidth" format="dimension" />
+
+    <!-- semantic colours -->
+    <attr name="deBlueIcon" format="color" />
+    <attr name="deBlueBorder" format="color" />
+    <attr name="deBlueBg" format="color" />
+    <attr name="deGood" format="color" />
+    <attr name="deGoodBorder" format="color" />
+    <attr name="deGoodBg" format="color" />
+    <attr name="deBad" format="color" />
+    <attr name="deBadText" format="color" />
+    <attr name="deBadBorderSoft" format="color" />
+
+    <!-- icons and toggles -->
+    <attr name="deIconMuted" format="color" />
+    <attr name="deIconGray" format="color" />
+    <attr name="deSwitchOff" format="color" />
+</resources>

@@ -157,6 +157,7 @@
             android:name="ap.andruav_ap.activities.main.MainScreen"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_main"
+            android:theme="@style/Theme.Andruav.Dark"
             android:launchMode="singleTask"> <!-- http://www.intridea.com/blog/2011/6/16/android-understanding-activity-launchmode -->
         </activity>
         <activity
@@ -187,7 +188,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/phone_title"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.Andruav.Dark.NoActionBar" />
         <activity
             android:name="ap.andruav_ap.activities.settings.SettingsDrone"
             android:configChanges="orientation|screenSize|keyboardHidden"
