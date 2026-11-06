@@ -47,6 +47,7 @@ public class PhoneSmsFragment extends Fragment {
     private TextView mTglCommands;
     private TextView mTxtContactsCount;
     private LinearLayout mContactsList;
+    private View mPinBox;
     private EditText mEdtPin;
     private TextView mBtnPinShow;
     private TextView mTxtAge;
@@ -71,6 +72,7 @@ public class PhoneSmsFragment extends Fragment {
         mTglCommands = view.findViewById(R.id.phone_sms_commands_toggle);
         mTxtContactsCount = view.findViewById(R.id.phone_sms_contacts_count);
         mContactsList = view.findViewById(R.id.phone_sms_contacts_list);
+        mPinBox = view.findViewById(R.id.phone_sms_pin_box);
         mEdtPin = view.findViewById(R.id.phone_sms_pin);
         mBtnPinShow = view.findViewById(R.id.phone_sms_pin_show);
         mTxtAge = view.findViewById(R.id.phone_sms_age_value);
@@ -113,6 +115,7 @@ public class PhoneSmsFragment extends Fragment {
                 /* write-through: the tab and Settings share key_sms_rx_pin */
                 if (!mUpdatingPin) {
                     Preference.setSmsPin(null, s.toString());
+                    updatePinState();
                 }
             }
         });
@@ -149,6 +152,26 @@ public class PhoneSmsFragment extends Fragment {
     private void updateToggles() {
         applyToggle(mTglCommands, Preference.isSMSRXEnabled(null));
         applyToggle(mTglInfo, Preference.isSMSTXEnabled(null));
+        updatePinState();
+    }
+
+    /***
+     * An empty PIN fails the gate's receiver check - every command is
+     * refused even with contacts set. While SMS Commands is on, the PIN
+     * box gets the red border the sheet uses for invalid fields.
+     */
+    private void updatePinState() {
+        final boolean missing = Preference.isSMSRXEnabled(null)
+                && Preference.getSmsPin(null).isEmpty();
+        tintStroke(mPinBox, missing ? R.color.home_red_text : R.color.home_border_input);
+    }
+
+    private void tintStroke(final View view, final int colorRes) {
+        final Drawable bg = view.getBackground();
+        if (bg instanceof GradientDrawable) {
+            ((GradientDrawable) bg.mutate()).setStroke(dp(1),
+                    ContextCompat.getColor(requireContext(), colorRes));
+        }
     }
 
     private void applyToggle(final TextView toggle, final boolean on) {
@@ -164,7 +187,10 @@ public class PhoneSmsFragment extends Fragment {
         if (contacts.isEmpty()) {
             final TextView empty = new TextView(requireContext());
             empty.setText(R.string.phone_sms_contacts_empty);
-            empty.setTextColor(ContextCompat.getColor(requireContext(), R.color.home_text_dim_darker));
+            /* red while commands are on - an empty list refuses every sender */
+            empty.setTextColor(ContextCompat.getColor(requireContext(),
+                    Preference.isSMSRXEnabled(null)
+                            ? R.color.home_red_text : R.color.home_text_dim_darker));
             empty.setTextSize(11);
             mContactsList.addView(empty);
             return;
