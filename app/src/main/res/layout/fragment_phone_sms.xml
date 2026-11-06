@@ -168,6 +168,7 @@
                             android:background="@android:color/transparent"
                             android:fontFamily="monospace"
                             android:inputType="numberPassword"
+                            android:maxLength="4"
                             android:textColor="@color/home_text_on_input"
                             android:textSize="14sp"
                             android:hint="@string/phone_sms_pin_hint"
