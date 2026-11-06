@@ -18,13 +18,13 @@
         android:paddingTop="13dp"
         android:paddingBottom="13dp"
         android:text="@string/gen_help"
-        android:textColor="@color/home_text_primary"
+        android:textColor="?attr/deTextPrimary"
         android:textSize="14sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/home_border_soft" />
+        android:background="?attr/deBorderSoft" />
 
     <TextView
         android:id="@+id/home_menu_row_settings"
@@ -38,13 +38,13 @@
         android:paddingTop="13dp"
         android:paddingBottom="13dp"
         android:text="@string/home_menu_settings"
-        android:textColor="@color/home_text_primary"
+        android:textColor="?attr/deTextPrimary"
         android:textSize="14sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/home_border_soft" />
+        android:background="?attr/deBorderSoft" />
 
     <TextView
         android:id="@+id/home_menu_row_language"
@@ -58,13 +58,13 @@
         android:paddingTop="13dp"
         android:paddingBottom="13dp"
         android:text="@string/home_menu_language"
-        android:textColor="@color/home_text_primary"
+        android:textColor="?attr/deTextPrimary"
         android:textSize="14sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/home_border_soft" />
+        android:background="?attr/deBorderSoft" />
 
     <TextView
         android:id="@+id/home_menu_row_reset"
@@ -78,13 +78,13 @@
         android:paddingTop="13dp"
         android:paddingBottom="13dp"
         android:text="@string/gen_FactoryReset"
-        android:textColor="@color/home_text_primary"
+        android:textColor="?attr/deTextPrimary"
         android:textSize="14sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/home_border_soft" />
+        android:background="?attr/deBorderSoft" />
 
     <TextView
         android:id="@+id/home_menu_row_export_logs"
@@ -98,13 +98,13 @@
         android:paddingTop="13dp"
         android:paddingBottom="13dp"
         android:text="@string/home_menu_export_logs"
-        android:textColor="@color/home_text_primary"
+        android:textColor="?attr/deTextPrimary"
         android:textSize="14sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/home_border_soft" />
+        android:background="?attr/deBorderSoft" />
 
     <TextView
         android:id="@+id/home_menu_row_clear_logs"
@@ -118,13 +118,13 @@
         android:paddingTop="13dp"
         android:paddingBottom="13dp"
         android:text="@string/home_menu_clear_logs"
-        android:textColor="@color/home_red_text"
+        android:textColor="?attr/deBadText"
         android:textSize="14sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/home_border_soft" />
+        android:background="?attr/deBorderSoft" />
 
     <TextView
         android:id="@+id/home_menu_row_about"
@@ -138,13 +138,13 @@
         android:paddingTop="13dp"
         android:paddingBottom="13dp"
         android:text="@string/gen_about"
-        android:textColor="@color/home_text_primary"
+        android:textColor="?attr/deTextPrimary"
         android:textSize="14sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/home_border_soft" />
+        android:background="?attr/deBorderSoft" />
 
     <TextView
         android:id="@+id/home_menu_row_exit"
@@ -158,7 +158,7 @@
         android:paddingTop="13dp"
         android:paddingBottom="13dp"
         android:text="@string/action_exit"
-        android:textColor="@color/home_red_text"
+        android:textColor="?attr/deBadText"
         android:textSize="14sp" />
 
 </LinearLayout>

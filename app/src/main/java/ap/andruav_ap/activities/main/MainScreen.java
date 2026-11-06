@@ -39,6 +39,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
@@ -47,6 +48,7 @@ import androidx.core.os.LocaleListCompat;
 import java.io.UnsupportedEncodingException;
 
 import org.greenrobot.eventbus.EventBus;
+import ap.andruav_ap.activities.ThemeColors;
 import ap.andruav_ap.activities.settings.SettingsDrone;
 import ap.andruav_ap.activities.baseview.BaseAndruavShasha;
 import ap.andruav_ap.activities.phone.PhoneActivity;
@@ -901,9 +903,9 @@ public class MainScreen extends BaseAndruavShasha {
         updateServerCard();
         updateModuleTiles(); // Com tile (and dependents) track server link too - keep in sync.
         // server-card globe mirrors the comm-line state - green only once online
-        tintStatIcon(mImgGlobe,
+        tintStatIcon(mImgGlobe, ThemeColors.get(this,
                 effectiveStatus == SOCKETSTATE_REGISTERED
-                        ? R.color.home_green_icon : R.color.home_icon_muted);
+                        ? R.attr.deGood : R.attr.deIconMuted));
         switch (effectiveStatus) {
             case SOCKETSTATE_CONNECTED:
                 miConnect.setIcon(R.drawable.connected_w_32x32);
@@ -1038,17 +1040,17 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
     private enum TileState {
-        GRAY(R.drawable.bg_home_tile_gray, R.color.home_icon_gray, 0.55f),
-        BLUE(R.drawable.bg_home_tile_blue, R.color.home_blue_icon, 1f),
-        GREEN(R.drawable.bg_home_tile_green, R.color.home_green_icon, 1f);
+        GRAY(R.drawable.bg_home_tile_gray, R.attr.deIconGray, 0.55f),
+        BLUE(R.drawable.bg_home_tile_blue, R.attr.deBlueIcon, 1f),
+        GREEN(R.drawable.bg_home_tile_green, R.attr.deGood, 1f);
 
         final int background;
-        final int colorRes;
+        final int colorAttr;
         final float opacity;
 
-        TileState(int background, int colorRes, float opacity) {
+        TileState(int background, int colorAttr, float opacity) {
             this.background = background;
-            this.colorRes = colorRes;
+            this.colorAttr = colorAttr;
             this.opacity = opacity;
         }
     }
@@ -1067,7 +1069,7 @@ public class MainScreen extends BaseAndruavShasha {
 
     private void setTileState(View tile, ImageView icon, TextView caption, TileState state, CharSequence captionText, float opacity) {
         tile.setBackgroundResource(state.background);
-        final int color = ContextCompat.getColor(this, state.colorRes);
+        final int color = ThemeColors.get(this, state.colorAttr);
         icon.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
         icon.setAlpha(opacity);
         caption.setText(captionText);
@@ -1077,17 +1079,17 @@ public class MainScreen extends BaseAndruavShasha {
 
     private void updateTelemetryCard(boolean fcbConnected) {
         mTxtTelemetryStatus.setText(fcbConnected ? R.string.home_telemetry_linked : R.string.home_telemetry_not_linked);
-        mTxtTelemetryStatus.setTextColor(ContextCompat.getColor(this,
-                fcbConnected ? R.color.home_green_icon : R.color.home_text_dim));
+        mTxtTelemetryStatus.setTextColor(ThemeColors.get(this,
+                fcbConnected ? R.attr.deGood : R.attr.deTextDim));
 
         mGroupTelemetryLinked.setVisibility(fcbConnected ? View.VISIBLE : View.GONE);
         mTxtTelemetryHelper.setVisibility(fcbConnected ? View.GONE : View.VISIBLE);
 
         if (!fcbConnected) {
             mImgBattery.setImageResource(R.drawable.ic_home_battery);
-            tintStatIcon(mImgGps, R.color.home_icon_muted);
-            tintStatIcon(mImgBattery, R.color.home_icon_muted);
-            tintStatIcon(mImgSignal, R.color.home_icon_muted);
+            tintStatIcon(mImgGps, ThemeColors.get(this, R.attr.deIconMuted));
+            tintStatIcon(mImgBattery, ThemeColors.get(this, R.attr.deIconMuted));
+            tintStatIcon(mImgSignal, ThemeColors.get(this, R.attr.deIconMuted));
             return;
         }
 
@@ -1122,16 +1124,16 @@ public class MainScreen extends BaseAndruavShasha {
                 ? getString(R.string.home_signal_format, signalDbm)
                 : getString(R.string.home_signal_unknown));
 
-        tintStatIcon(mImgGps, sats >= 8 ? R.color.home_green_icon
-                : sats >= 4 ? R.color.home_amber : R.color.home_red_text);
+        tintStatIcon(mImgGps, ThemeColors.get(this, sats >= 8 ? R.attr.deGood
+                : sats >= 4 ? R.attr.deAccent : R.attr.deBadText));
         mImgBattery.setImageResource(batteryPct > 50 ? R.drawable.ic_home_battery_full
                 : batteryPct > 20 ? R.drawable.ic_home_battery_mid
                 : R.drawable.ic_home_battery_low);
-        tintStatIcon(mImgBattery, batteryPct > 50 ? R.color.home_green_icon
-                : batteryPct > 20 ? R.color.home_amber : R.color.home_red_text);
-        tintStatIcon(mImgSignal, !signalKnown ? R.color.home_icon_muted
-                : signalDbm > -60 ? R.color.home_green_icon
-                : signalDbm > -70 ? R.color.home_amber : R.color.home_red_text);
+        tintStatIcon(mImgBattery, ThemeColors.get(this, batteryPct > 50 ? R.attr.deGood
+                : batteryPct > 20 ? R.attr.deAccent : R.attr.deBadText));
+        tintStatIcon(mImgSignal, ThemeColors.get(this, !signalKnown ? R.attr.deIconMuted
+                : signalDbm > -60 ? R.attr.deGood
+                : signalDbm > -70 ? R.attr.deAccent : R.attr.deBadText));
 
         final boolean proxyOn;
         final boolean streaming;
@@ -1157,16 +1159,16 @@ public class MainScreen extends BaseAndruavShasha {
         if (proxyOn) {
             mTxtTelemetryUdp.setText(getString(R.string.home_telemetry_udp_format,
                     proxyIp, proxyPort));
-            mTxtTelemetryUdp.setTextColor(ContextCompat.getColor(this,
-                    streaming ? R.color.home_green_icon : R.color.home_blue_icon));
+            mTxtTelemetryUdp.setTextColor(ThemeColors.get(this,
+                    streaming ? R.attr.deGood : R.attr.deBlueIcon));
         } else {
             mTxtTelemetryUdp.setText(R.string.home_telemetry_udp_unavailable);
-            mTxtTelemetryUdp.setTextColor(ContextCompat.getColor(this, R.color.home_amber));
+            mTxtTelemetryUdp.setTextColor(ThemeColors.get(this, R.attr.deAccentText));
         }
         if (mBtnEnableTelemetry != null) {
             mBtnEnableTelemetry.setVisibility(View.VISIBLE);
-            mBtnEnableTelemetry.setTextColor(ContextCompat.getColor(this,
-                    streaming ? R.color.home_icon_gray : R.color.home_amber));
+            mBtnEnableTelemetry.setTextColor(ThemeColors.get(this,
+                    streaming ? R.attr.deIconGray : R.attr.deAccentText));
         }
     }
 
@@ -1199,9 +1201,9 @@ public class MainScreen extends BaseAndruavShasha {
     }
 
     /*** Status tint for the telemetry stat glyphs (gps/battery/signal). */
-    private void tintStatIcon(final ImageView icon, final int colorRes) {
+    private void tintStatIcon(final ImageView icon, @ColorInt final int color) {
         if (icon != null) {
-            icon.setColorFilter(ContextCompat.getColor(this, colorRes));
+            icon.setColorFilter(color);
         }
     }
 
@@ -1247,7 +1249,8 @@ public class MainScreen extends BaseAndruavShasha {
                 : subtitle);
 
         mCardServer.setBackgroundResource(connected ? R.drawable.bg_home_card : R.drawable.bg_home_card_warning);
-        setViewColor(mDotServer, connected ? R.color.home_green_icon : R.color.home_red_dot);
+        setViewColor(mDotServer, ThemeColors.get(this,
+                connected ? R.attr.deGood : R.attr.deBad));
 
         // Normal green status text; only a verified-TLS connection gets a
         // small red "SECURED" sub-line. Non-secure shows nothing extra.
@@ -1268,20 +1271,21 @@ public class MainScreen extends BaseAndruavShasha {
         } else {
             mainText = getString(R.string.home_server_status_disconnected);
         }
-        final int mainColor = connected ? R.color.home_green_icon : R.color.home_red_text;
+        final int mainColor = ThemeColors.get(this,
+                connected ? R.attr.deGood : R.attr.deBadText);
         if (secureConn) {
             final String tail = "SECURED";
             final SpannableString status = new SpannableString(mainText + "\n" + tail);
-            status.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, mainColor)),
+            status.setSpan(new ForegroundColorSpan(mainColor),
                     0, mainText.length(), 0);
-            status.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.home_red_text)),
+            status.setSpan(new ForegroundColorSpan(ThemeColors.get(this, R.attr.deBadText)),
                     mainText.length() + 1, status.length(), 0);
             status.setSpan(new RelativeSizeSpan(0.7f),
                     mainText.length() + 1, status.length(), 0);
             mTxtServerStatus.setText(status);
         } else {
             mTxtServerStatus.setText(mainText);
-            mTxtServerStatus.setTextColor(ContextCompat.getColor(this, mainColor));
+            mTxtServerStatus.setTextColor(mainColor);
         }
 
         // AN-0103: in native mode the buttons follow whether the module stack
@@ -1348,10 +1352,10 @@ public class MainScreen extends BaseAndruavShasha {
         }
     }
 
-    private void setViewColor(View view, @ColorRes int colorRes) {
+    private void setViewColor(View view, @ColorInt int color) {
         final Drawable bg = view.getBackground();
         if (bg instanceof GradientDrawable) {
-            ((GradientDrawable) bg.mutate()).setColor(ContextCompat.getColor(this, colorRes));
+            ((GradientDrawable) bg.mutate()).setColor(color);
         }
     }
 

@@ -11,7 +11,7 @@
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
     android:fontFamily="monospace"
-    android:textColor="@color/home_text_on_input"
+    android:textColor="?attr/deTextOnInput"
     android:textSize="14sp"
     android:singleLine="true"
     android:ellipsize="end" />

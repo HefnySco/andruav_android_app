@@ -10,5 +10,5 @@
     android:paddingBottom="12dp"
     android:background="?attr/selectableItemBackground"
     android:fontFamily="monospace"
-    android:textColor="@color/home_text_primary"
+    android:textColor="?attr/deTextPrimary"
     android:textSize="14sp" />

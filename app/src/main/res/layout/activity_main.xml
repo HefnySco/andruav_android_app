@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/home_bg"
+    android:background="?attr/deBg"
     tools:context=".activities.main.MainScreen">
 
     <!-- Header: replaces the system ActionBar for this screen -->
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="@string/main_activity_header_title"
-                android:textColor="@color/home_text_primary"
+                android:textColor="?attr/deTextPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-black"
@@ -64,7 +64,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/home_border" />
+        android:background="?attr/deBorder" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -128,7 +128,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/home_server_title"
-                                android:textColor="@color/home_text_primary"
+                                android:textColor="?attr/deTextPrimary"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:maxLines="1"
@@ -143,7 +143,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:textColor="@color/home_text_secondary"
+                                android:textColor="?attr/deTextSecondary"
                                 android:textSize="12sp"
                                 android:maxLines="3"
                                 android:ellipsize="end"
@@ -172,7 +172,7 @@
                             android:layout_marginStart="6dp"
                             android:maxWidth="150dp"
                             android:text="@string/home_server_status_disconnected"
-                            android:textColor="@color/home_red_text"
+                            android:textColor="?attr/deBadText"
                             android:textSize="11sp"
                             android:textStyle="bold"
                             android:letterSpacing="0.04"
@@ -199,7 +199,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Connecting"
-                        android:textColor="@color/home_text_secondary"
+                        android:textColor="?attr/deTextSecondary"
                         android:textSize="13sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.04"
@@ -215,7 +215,7 @@
                         android:focusable="true"
                         android:gravity="center"
                         android:text="@string/home_btn_signin"
-                        android:textColor="@color/home_text_primary"
+                        android:textColor="?attr/deTextPrimary"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.03"
@@ -237,7 +237,7 @@
                         android:focusable="true"
                         android:gravity="center"
                         android:text="@string/home_btn_connect"
-                        android:textColor="@color/home_amber_on"
+                        android:textColor="?attr/deOnAccent"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.03"
@@ -260,7 +260,7 @@
                     android:focusable="true"
                     android:padding="6dp"
                     android:text="@string/home_btn_disconnect"
-                    android:textColor="@color/home_text_secondary"
+                    android:textColor="?attr/deTextSecondary"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:visibility="gone" />
@@ -285,7 +285,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/home_telemetry_title"
-                        android:textColor="@color/home_text_dim"
+                        android:textColor="?attr/deTextDim"
                         android:textSize="11sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.09"
@@ -302,7 +302,7 @@
                         android:layout_height="wrap_content"
                         android:maxWidth="150dp"
                         android:text="@string/home_telemetry_not_linked"
-                        android:textColor="@color/home_text_dim"
+                        android:textColor="?attr/deTextDim"
                         android:textSize="11sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.04"
@@ -326,7 +326,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:textColor="@color/home_text_primary"
+                        android:textColor="?attr/deTextPrimary"
                         android:textSize="15sp"
                         android:textStyle="bold"
                         android:maxLines="1"
@@ -342,7 +342,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="1dp"
-                        android:textColor="@color/home_text_secondary"
+                        android:textColor="?attr/deTextSecondary"
                         android:textSize="12sp"
                         android:maxLines="1"
                         android:ellipsize="end"
@@ -356,7 +356,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="14dp"
-                        android:background="@color/home_border_soft" />
+                        android:background="?attr/deBorderSoft" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -384,7 +384,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:fontFamily="monospace"
-                                android:textColor="@color/home_text_primary"
+                                android:textColor="?attr/deTextPrimary"
                                 android:textSize="13sp"
                                 android:textStyle="bold"
                                 tools:text="11 SATS" />
@@ -394,7 +394,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
                                 android:text="@string/home_stat_gps"
-                                android:textColor="@color/home_text_dim_darker"
+                                android:textColor="?attr/deTextDimDarker"
                                 android:textSize="9sp"
                                 android:letterSpacing="0.07" />
                         </LinearLayout>
@@ -419,7 +419,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:fontFamily="monospace"
-                                android:textColor="@color/home_text_primary"
+                                android:textColor="?attr/deTextPrimary"
                                 android:textSize="13sp"
                                 android:textStyle="bold"
                                 tools:text="78%" />
@@ -429,7 +429,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
                                 android:text="@string/home_stat_battery"
-                                android:textColor="@color/home_text_dim_darker"
+                                android:textColor="?attr/deTextDimDarker"
                                 android:textSize="9sp"
                                 android:letterSpacing="0.07" />
                         </LinearLayout>
@@ -454,7 +454,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:fontFamily="monospace"
-                                android:textColor="@color/home_text_primary"
+                                android:textColor="?attr/deTextPrimary"
                                 android:textSize="13sp"
                                 android:textStyle="bold"
                                 tools:text="-58 dBm" />
@@ -464,7 +464,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
                                 android:text="@string/home_stat_signal"
-                                android:textColor="@color/home_text_dim_darker"
+                                android:textColor="?attr/deTextDimDarker"
                                 android:textSize="9sp"
                                 android:letterSpacing="0.07" />
                         </LinearLayout>
@@ -483,7 +483,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="monospace"
-                            android:textColor="@color/home_green_icon"
+                            android:textColor="?attr/deGood"
                             android:textSize="11sp"
                             android:maxLines="2"
                             android:ellipsize="end"
@@ -507,7 +507,7 @@
                             android:paddingTop="7dp"
                             android:paddingBottom="7dp"
                             android:text="@string/home_btn_enable_telemetry"
-                            android:textColor="@color/home_green_icon"
+                            android:textColor="?attr/deGood"
                             android:textSize="10sp"
                             android:textStyle="bold"
                             android:letterSpacing="0.04"
@@ -523,7 +523,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="@string/home_telemetry_helper"
-                    android:textColor="@color/home_text_dim"
+                    android:textColor="?attr/deTextDim"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -534,7 +534,7 @@
                 android:layout_marginTop="22dp"
                 android:layout_marginBottom="10dp"
                 android:text="@string/home_modules_title"
-                android:textColor="@color/home_text_dim"
+                android:textColor="?attr/deTextDim"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.11" />
@@ -580,7 +580,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/home_tile_imu"
-                            android:textColor="@color/home_text_primary"
+                            android:textColor="?attr/deTextPrimary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
@@ -590,7 +590,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="@string/home_tile_state_offline"
-                            android:textColor="@color/home_icon_gray"
+                            android:textColor="?attr/deIconGray"
                             android:textSize="10sp"
                             android:letterSpacing="0.05" />
                     </LinearLayout>
@@ -627,7 +627,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/home_tile_fpv"
-                            android:textColor="@color/home_text_primary"
+                            android:textColor="?attr/deTextPrimary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
@@ -637,7 +637,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="@string/home_tile_state_offline"
-                            android:textColor="@color/home_icon_gray"
+                            android:textColor="?attr/deIconGray"
                             android:textSize="10sp"
                             android:letterSpacing="0.05" />
                     </LinearLayout>
@@ -681,7 +681,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/home_tile_com"
-                            android:textColor="@color/home_text_primary"
+                            android:textColor="?attr/deTextPrimary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
@@ -691,7 +691,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="@string/home_tile_state_offline"
-                            android:textColor="@color/home_icon_gray"
+                            android:textColor="?attr/deIconGray"
                             android:textSize="10sp"
                             android:letterSpacing="0.05" />
                     </LinearLayout>
@@ -728,7 +728,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/home_tile_fcb"
-                            android:textColor="@color/home_text_primary"
+                            android:textColor="?attr/deTextPrimary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
@@ -738,7 +738,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="@string/home_tile_state_tap_to_link"
-                            android:textColor="@color/home_icon_gray"
+                            android:textColor="?attr/deIconGray"
                             android:textSize="10sp"
                             android:letterSpacing="0.05" />
                     </LinearLayout>
