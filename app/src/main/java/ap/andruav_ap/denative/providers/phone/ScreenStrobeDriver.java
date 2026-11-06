@@ -35,7 +35,7 @@ final class ScreenStrobeDriver implements PhoneOutput.Driver {
             if (on) {
                 FlashActivity.requestStrobe(m_context, m_strobe_hz, m_color);
             } else {
-                FlashActivity.stopStrobe();
+                FlashActivity.stopStrobe(m_context);
             }
             final AndruavUnitBase unit = AndruavSettings.andruavWe7daBase;
             if (unit != null) {

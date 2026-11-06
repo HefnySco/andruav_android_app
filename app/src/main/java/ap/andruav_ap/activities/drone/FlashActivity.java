@@ -113,12 +113,17 @@ public class FlashActivity extends AppCompatActivity {
         postStrobeNotification(context, intent);
     }
 
-    /** Turn the screen strobe off: finish the activity when it is up. */
-    public static void stopStrobe() {
+    /***
+     * Turn the screen strobe off. The notification is cancelled on every
+     * stop - when the direct launch failed and the activity never came up,
+     * a stop must still remove it from the shade. The activity, when it is
+     * running, is finished too.
+     */
+    public static void stopStrobe(final Context context) {
         sStrobeRequested.set(false);
+        cancelStrobeNotification(context.getApplicationContext());
         final FlashActivity instance = sInstance;
         if (instance != null) {
-            cancelStrobeNotification(instance);
             instance.runOnUiThread(instance::finish);
         }
     }
