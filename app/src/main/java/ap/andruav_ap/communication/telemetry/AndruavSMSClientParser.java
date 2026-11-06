@@ -67,6 +67,12 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
         default long maxAgeS() {
             return DEFAULT_MAX_AGE_S;
         }
+        /* AN-0137: the receiver switch SMSReceiver checks before calling in -
+         * evaluate() models it as the first gate so the dry run shows the
+         * full real path. */
+        default boolean receiverOn() {
+            return true;
+        }
     }
 
     /** AN-0128: default accepted message age (seconds). */
@@ -96,6 +102,10 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
             @Override public long maxAgeS() {
                 return ap.andruavmiddlelibrary.preference.Preference
                         .getSmsMaxAgeS(null);
+            }
+            @Override public boolean receiverOn() {
+                return ap.andruavmiddlelibrary.preference.Preference
+                        .isSMSRXEnabled(null);
             }
         };
     }
@@ -140,10 +150,17 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
     }
 
     private static void notifyGcs(final int notificationType, final String text) {
+        notifyGcs(notificationType, text, false);
+    }
+
+    private static void notifyGcs(final int notificationType, final String text,
+                                  final boolean testRun) {
         final GcsNotifier n = sGcsNotifier;
         if (n == null) return;
         try {
-            n.notify(notificationType, text);
+            /* AN-0137: a LIVE TEST notice is prefixed so the operator can
+             * tell it from a real SMS outcome in the GCS log. */
+            n.notify(notificationType, testRun ? "TEST: " + text : text);
         } catch (RuntimeException ignored) {
         }
     }
@@ -151,9 +168,14 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
     /** A gate refusal on a KNOWN sender: local log + a warning line on
      * the GCS. The reason strings are fixed - no message text leaks. */
     private static void refuseGcs(final String reason, final String sender, final String who) {
+        refuseGcs(reason, sender, who, false);
+    }
+
+    private static void refuseGcs(final String reason, final String sender,
+                                  final String who, final boolean testRun) {
         skip(reason, sender);
         notifyGcs(INotification.NOTIFICATION_TYPE_WARNING,
-                "SMS refused " + who + ": " + reason);
+                "SMS refused " + who + ": " + reason, testRun);
     }
 
     /* wrong-PIN rate limiting: 5 failures inside the window locks every
@@ -244,93 +266,200 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
     public void executeCommand (final String sender, final String sms_msg,
                                 final long timestampMs)
     {
+        executeCommand(sender, sms_msg, timestampMs, false);
+    }
+
+    /***
+     * AN-0137 (TASK-118's LIVE TEST): testRun=true does exactly what a real
+     * SMS does - fact, command, reply SMS, PIN failure count - except that
+     * every GCS notice starts with "TEST: " so the operator can tell it
+     * from a real SMS in the log.
+     */
+    public void executeCommand (final String sender, final String sms_msg,
+                                final boolean testRun)
+    {
+        executeCommand(sender, sms_msg, System.currentTimeMillis(), testRun);
+    }
+
+    /***
+     * AN-0137: the side-effect-free half of the gate. Returns a
+     * {@link SmsGateVerdict} - one entry per gate in the live order plus the
+     * action that would follow. Nothing here logs, notifies, counts PIN
+     * failures, sends an SMS or touches the board, so the dry-run sheet can
+     * call it freely. The 4-arg form treats the message as fresh.
+     */
+    public static SmsGateVerdict evaluate(final String sender, final String sms_msg,
+                                          final long nowMs, final GateConfigProvider cfg)
+    {
+        return evaluate(sender, sms_msg, nowMs, nowMs, cfg);
+    }
+
+    public static SmsGateVerdict evaluate(final String sender, final String sms_msg,
+                                          final long timestampMs, final long nowMs,
+                                          final GateConfigProvider cfg)
+    {
+        final SmsGateVerdict.Builder v = new SmsGateVerdict.Builder();
         if (sender == null || sender.isEmpty()) {
-            skip("executeCommand skipped: empty sender", "");
-            return ;
+            v.fail("receiver", "empty sender");
+            v.refuseReason = "executeCommand skipped: empty sender";
+            return v.build();
         }
-        final long nowMs = System.currentTimeMillis();
-        final GateConfigProvider cfg = gateConfig();
+        if (!cfg.receiverOn()) {
+            v.fail("receiver", "SMS commands off");
+            v.refuseReason = "executeCommand skipped: SMS commands off";
+            return v.build();
+        }
         final String pin = cfg.pin();
         if (cfg.contacts() == null || cfg.contacts().isEmpty()
                 || pin == null || pin.isEmpty()) {
-            skip("executeCommand skipped: no allow-list or PIN configured", sender);
-            notifyGcs(INotification.NOTIFICATION_TYPE_WARNING,
-                    "SMS refused: no allow-list or PIN configured");
-            return ;
+            v.fail("receiver", "no allow-list or PIN configured");
+            v.gcsRefuseText = "SMS refused: no allow-list or PIN configured";
+            v.refuseReason = "executeCommand skipped: no allow-list or PIN configured";
+            return v.build();
         }
-        if (lockedOut(nowMs)) {
-            skip("executeCommand skipped: PIN lockout", sender);
-            notifyGcs(INotification.NOTIFICATION_TYPE_WARNING,
-                    "SMS refused: PIN lockout");
-            return ;
-        }
-        if (!senderAllowed(sender, cfg.contacts())) {
-            skip("executeCommand skipped: sender not allowed", sender);
-            // an unknown number tried a command - worth one warning line,
-            // the number itself never leaves the device
-            notifyGcs(INotification.NOTIFICATION_TYPE_WARNING,
-                    "SMS refused: sender not allow-listed");
-            return ;
-        }
+        v.pass("receiver", "on, allow-list + PIN configured");
 
+        if (lockedOut(nowMs)) {
+            v.fail("lockout", "PIN lockout");
+            v.gcsRefuseText = "SMS refused: PIN lockout";
+            v.refuseReason = "executeCommand skipped: PIN lockout";
+            return v.build();
+        }
+        v.pass("lockout", "no PIN lockout");
+
+        if (!senderAllowed(sender, cfg.contacts())) {
+            v.fail("sender", "sender not allow-listed");
+            v.gcsRefuseText = "SMS refused: sender not allow-listed";
+            v.refuseReason = "executeCommand skipped: sender not allowed";
+            return v.build();
+        }
         /* who = the allow-list contact name the sender matched ("" for a
          * bare-number entry) - every notification uses it, never the raw
          * number. */
-        final String contact = contactName(sender, cfg.contacts());
-        final String who = contact.isEmpty() ? "an allow-listed contact" : "'" + contact + "'";
-
-        // Split the input string by colon delimiter
-        String[] parts = sms_msg != null ? sms_msg.split(":") : new String[0];
+        v.contact = contactName(sender, cfg.contacts());
+        v.who = v.contact.isEmpty() ? "an allow-listed contact" : "'" + v.contact + "'";
+        v.pass("sender", v.contact.isEmpty()
+                ? "allow-listed number" : "allow-listed as " + v.who);
 
         // ATT:<command>:<pin> - exact prefix, command, then the PIN
+        final String[] parts = sms_msg != null ? sms_msg.split(":") : new String[0];
+        final java.util.function.BiConsumer<String, String> failKnown = (name, reason) -> {
+            v.fail(name, reason);
+            v.gcsRefuseText = "SMS refused " + v.who + ": " + reason;
+            v.refuseReason = reason;
+        };
         if (parts.length < 3 || !parts[0].trim().equalsIgnoreCase("ATT")) {
-            refuseGcs("bad format (needs ATT:<cmd>:<pin>)", sender, who);
-            return ;
+            failKnown.accept("format", "bad format (needs ATT:<cmd>:<pin>)");
+            return v.build();
         }
+        v.pass("format", "ATT:<cmd>:<pin>");
+
         if (!parts[parts.length - 1].trim().equals(pin)) {
-            notePinFailure(nowMs);
-            refuseGcs("wrong PIN", sender, who);
-            return ;
+            failKnown.accept("pin", "wrong PIN");
+            v.pinFailure = true;
+            return v.build();
         }
+        v.pass("pin", "PIN match");
+
         final long maxAgeMs = cfg.maxAgeS() * 1000L;
+        v.age_s = (timestampMs > 0) ? Math.max(0L, (nowMs - timestampMs) / 1000L) : 0L;
         if (timestampMs > 0 && maxAgeMs > 0 && nowMs - timestampMs > maxAgeMs) {
-            refuseGcs("message too old", sender, who);
+            failKnown.accept("age", "message too old");
+            return v.build();
+        }
+        v.pass("age", timestampMs > 0 ? v.age_s + "s (max " + cfg.maxAgeS() + "s)"
+                : "no SMSC timestamp - fresh");
+
+        final String cmd = parts[1].trim();
+        final String[] cmdTokens = cmd.split("\\s+");
+        if (cmdTokens.length >= 2 && cmdTokens[0].equalsIgnoreCase("AUTO")) {
+            final int step;
+            try {
+                step = Integer.parseInt(cmdTokens[1]);
+            } catch (NumberFormatException e) {
+                failKnown.accept("command", "AUTO skipped: bad step number");
+                return v.build();
+            }
+            v.command = "AUTO";
+            v.autoStep = step;
+            v.actionText = "AUTO mission step " + step;
+            v.pass("command", "AUTO " + step);
+            return v.build();
+        }
+        switch (cmd.toUpperCase()) {
+            case "HLP":
+                v.command = "HLP";
+                v.actionText = "help reply SMS";
+                v.pass("command", "HLP - replies with the command list");
+                break;
+            case "RTL":
+            case "LND":
+            case "LAND":
+            case "GOTO":
+            case "LOC":
+                v.command = cmd.toUpperCase();
+                v.actionText = v.command + " command"
+                        + ("LOC".equals(v.command) ? " (location reply SMS)" : "");
+                v.pass("command", v.command);
+                break;
+            default: {
+                final String keyword = SmsKeywords.match(cmd, cfg.keywords());
+                if (keyword == null) {
+                    failKnown.accept("command", "unknown command");
+                    return v.build();
+                }
+                v.keyword = keyword;
+                v.actionText = "fact phone.sms_" + keyword;
+                v.pass("command", "keyword " + keyword);
+                break;
+            }
+        }
+        return v.build();
+    }
+
+    private void executeCommand (final String sender, final String sms_msg,
+                                 final long timestampMs, final boolean testRun)
+    {
+        final long nowMs = System.currentTimeMillis();
+        final SmsGateVerdict v = evaluate(sender, sms_msg, timestampMs, nowMs, gateConfig());
+
+        /* side effects replayed from the verdict - a wrong PIN counts toward
+         * the lockout exactly as the live path did before the refactor. */
+        if (v.pinFailure) notePinFailure(nowMs);
+        if (!v.allowed) {
+            skip(v.refuseReason, sender);
+            if (v.gcsRefuseText != null) {
+                notifyGcs(INotification.NOTIFICATION_TYPE_WARNING, v.gcsRefuseText, testRun);
+            }
             return ;
         }
-        // Extract CMD field
-        String cmd = parts[1].trim();
 
         /* every gate passed - the GCS log gets one info line. The cmd
          * token is the only user text shown, sanitized because the
          * webclient appends the line as HTML. */
+        final String cmdShown = v.autoStep >= 0 ? "AUTO " + v.autoStep
+                : !v.command.isEmpty() ? v.command : v.keyword;
         notifyGcs(INotification.NOTIFICATION_TYPE_NORMAL,
-                "SMS accepted '" + cmd.replaceAll("[^A-Za-z0-9_ ]", "?") + "' from " + who);
+                "SMS accepted '" + cmdShown.replaceAll("[^A-Za-z0-9_ ]", "?") + "' from " + v.who,
+                testRun);
 
-        // Handle "AUTO X" — engage auto mode and jump to mission step X
-        String[] cmdTokens = cmd.split("\\s+");
-        if (cmdTokens.length >= 2 && cmdTokens[0].equalsIgnoreCase("AUTO"))
-        {
-            int step;
-            try {
-                step = Integer.parseInt(cmdTokens[1]);
-            } catch (NumberFormatException e) {
-                refuseGcs("AUTO skipped: bad step number", sender, who);
-                return;
-            }
+        final String who = v.who;
+        if ("AUTO".equals(v.command)) {
+            final int step = v.autoStep;
             if (AndruavSettings.andruavWe7daBase.FCBoard != null) {
                 if (AndruavSettings.andruavWe7daBase.FCBoard.do_RCChannelBlocked()) {
-                    refuseGcs("AUTO skipped: RC channel blocked (manual override active) step=" + step, sender, who);
+                    refuseGcs("AUTO skipped: RC channel blocked (manual override active) step=" + step, sender, who, testRun);
                     return;
                 }
                 AndruavSettings.andruavWe7daBase.FCBoard.do_SetCurrentMission(step);
                 AndruavSettings.andruavWe7daBase.FCBoard.do_Auto(logCallback("AUTO " + step, sender));
             } else {
-                refuseGcs("AUTO skipped: no FCBoard step=" + step, sender, who);
+                refuseGcs("AUTO skipped: no FCBoard step=" + step, sender, who, testRun);
             }
             return;
         }
 
-        switch (cmd.toUpperCase())
+        switch (v.command)
         {
             case "HLP":
                 sendHelp(sender);
@@ -339,12 +468,12 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
             case "RTL":
                 if (AndruavSettings.andruavWe7daBase.FCBoard!= null) {
                     if (AndruavSettings.andruavWe7daBase.FCBoard.do_RCChannelBlocked()) {
-                        refuseGcs("RTL skipped: RC channel blocked (manual override active)", sender, who);
+                        refuseGcs("RTL skipped: RC channel blocked (manual override active)", sender, who, testRun);
                         break;
                     }
                     AndruavSettings.andruavWe7daBase.FCBoard.do_RTL(logCallback("RTL", sender));
                 } else {
-                    refuseGcs("RTL skipped: no FCBoard", sender, who);
+                    refuseGcs("RTL skipped: no FCBoard", sender, who, testRun);
                 }
                 break;
 
@@ -352,12 +481,12 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
             case "LAND":
                 if (AndruavSettings.andruavWe7daBase.FCBoard!= null) {
                     if (AndruavSettings.andruavWe7daBase.FCBoard.do_RCChannelBlocked()) {
-                        refuseGcs("LAND skipped: RC channel blocked (manual override active)", sender, who);
+                        refuseGcs("LAND skipped: RC channel blocked (manual override active)", sender, who, testRun);
                         break;
                     }
                     AndruavSettings.andruavWe7daBase.FCBoard.do_Land(logCallback("LAND", sender));
                 } else {
-                    refuseGcs("LAND skipped: no FCBoard", sender, who);
+                    refuseGcs("LAND skipped: no FCBoard", sender, who, testRun);
                 }
                 break;
 
@@ -367,14 +496,14 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
             case "LOC": {
                 final AndruavIMU andruavIMU = AndruavSettings.andruavWe7daBase.getActiveGPS();
                 if (andruavIMU == null) {
-                    refuseGcs("LOC skipped: no active GPS", sender, who);
+                    refuseGcs("LOC skipped: no active GPS", sender, who, testRun);
                     return;
                 }
 
                 if (andruavIMU.hasCurrentLocation()) {
                     AndruavEngine.getEmergency().sendSMSLocation(sender, true);
                 } else {
-                    refuseGcs("LOC skipped: no current location", sender, who);
+                    refuseGcs("LOC skipped: no current location", sender, who, testRun);
                 }
             }
                 break;
@@ -386,18 +515,13 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
                  * capability path via the listener the module service
                  * installs - with none attached the event is dropped,
                  * logged, and the sender gets a short failure reply. */
-                final String keyword = SmsKeywords.match(cmd, cfg.keywords());
-                if (keyword == null) {
-                    refuseGcs("unknown command", sender, who);
-                    return;
-                }
-                final KeywordFactListener listener = sKeywordListener;
-                final long age_s = (timestampMs > 0)
-                        ? Math.max(0L, (nowMs - timestampMs) / 1000L) : 0L;
-                if (listener == null
-                        || !listener.onKeyword(keyword, contact, age_s)) {
-                    refuseGcs("keyword event dropped: no provider attached", sender, who);
-                    sSmsSender.send(sender, KEYWORD_FAIL_REPLY);
+                if (!v.keyword.isEmpty()) {
+                    final KeywordFactListener listener = sKeywordListener;
+                    if (listener == null
+                            || !listener.onKeyword(v.keyword, v.contact, v.age_s)) {
+                        refuseGcs("keyword event dropped: no provider attached", sender, who, testRun);
+                        sSmsSender.send(sender, KEYWORD_FAIL_REPLY);
+                    }
                 }
                 return;
             }
