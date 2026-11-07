@@ -58,7 +58,6 @@ public class AppThemeSheet extends BottomSheetDialogFragment {
         view.findViewById(R.id.theme_row_light).setOnClickListener(v -> onPick(AppThemes.VALUE_LIGHT));
         view.findViewById(R.id.theme_row_sun).setOnClickListener(v -> onPick(AppThemes.VALUE_SUN));
         view.findViewById(R.id.theme_row_system).setOnClickListener(v -> onPick(AppThemes.VALUE_SYSTEM));
-        view.findViewById(R.id.theme_row_brightness).setOnClickListener(v -> onToggleBrightness());
 
         updateBrightnessToggle();
         tintDots();
@@ -73,6 +72,16 @@ public class AppThemeSheet extends BottomSheetDialogFragment {
     }
 
     private void updateBrightnessToggle() {
+        // the option only makes sense under Sun - in other themes the row
+        // stays visible but disabled and the pill is hidden (the empty
+        // switch read as a dead shadow)
+        final boolean sun = AppThemes.isSun(requireContext());
+        final View row = requireView().findViewById(R.id.theme_row_brightness);
+        row.setEnabled(sun);
+        row.setAlpha(sun ? 1f : 0.4f);
+        row.setOnClickListener(sun ? v -> onToggleBrightness() : null);
+        mBrightnessToggle.setVisibility(sun ? View.VISIBLE : View.GONE);
+
         final boolean on = AppThemes.isFullBrightness(requireContext());
         mBrightnessToggle.setText(AppThemes.switchLabel(requireContext(), on));
         mBrightnessToggle.setBackgroundResource(on
