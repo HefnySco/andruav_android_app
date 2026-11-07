@@ -65,6 +65,24 @@ public final class AppThemes {
         activity.getIntent().putExtra(PREF_KEY, styleFor(activity, noActionBar));
     }
 
+    /** AN-0149: Sun draws text about 8% larger. fontScale scales every sp
+     *  size, so it also covers views with an explicit textSize and the
+     *  Java-built rows, where no theme attribute can reach. A themed
+     *  activity wraps its attachBaseContext with this; a theme change
+     *  recreates the activity, so the wrap is re-evaluated on every
+     *  (re)create and needs no reset. */
+    private static final float SUN_FONT_SCALE = 1.08f;
+
+    public static Context wrapFontScale(final Context newBase) {
+        if (!VALUE_SUN.equals(get(newBase))) {
+            return newBase;
+        }
+        final Configuration override = new Configuration(
+                newBase.getResources().getConfiguration());
+        override.fontScale *= SUN_FONT_SCALE;
+        return newBase.createConfigurationContext(override);
+    }
+
     /** Recreates the activity when the stored theme no longer matches the
      *  one applied at onCreate - covers sheets changed on another screen. */
     public static void recreateIfChanged(final Activity activity, final boolean noActionBar) {

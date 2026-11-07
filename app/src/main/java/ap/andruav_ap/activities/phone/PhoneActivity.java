@@ -1,5 +1,6 @@
 package ap.andruav_ap.activities.phone;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.media.AudioManager;
@@ -41,6 +42,11 @@ public class PhoneActivity extends BaseAndruavShasha {
     private View mSmsDot;
 
     private final Fragment[] mFragments = new Fragment[3];
+
+    @Override
+    protected void attachBaseContext(final Context newBase) {
+        super.attachBaseContext(AppThemes.wrapFontScale(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

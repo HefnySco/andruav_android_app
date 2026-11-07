@@ -1568,6 +1568,11 @@ public class MainScreen extends BaseAndruavShasha {
 
 
     @Override
+    protected void attachBaseContext(final Context newBase) {
+        super.attachBaseContext(AppThemes.wrapFontScale(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppThemes.apply(this, false);
         super.onCreate(savedInstanceState);
