@@ -207,6 +207,14 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
         }
     }
 
+    /** DE-0082: constant-time PIN compare (no early exit on first byte). */
+    static boolean pinMatches(final String given, final String pin) {
+        if (given == null || pin == null) return false;
+        return java.security.MessageDigest.isEqual(
+                given.getBytes(java.nio.charset.StandardCharsets.UTF_8),
+                pin.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+    }
+
     private static void skip(final String reason, final String sender) {
         /* AN-0127: never log the PIN or the message text - only why the
          * command was refused and who sent it */
@@ -341,8 +349,10 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
         v.pass("sender", v.contact.isEmpty()
                 ? "allow-listed number" : "allow-listed as " + v.who);
 
-        // ATT:<command>:<pin> - exact prefix, command, then the PIN
-        final String[] parts = sms_msg != null ? sms_msg.split(":") : new String[0];
+        // ATT:<command>:<pin> - exact prefix, command, then the PIN.
+        // DE-0082: split limit 3 - parts[2] is the whole rest, so a PIN
+        // that contains a colon still matches.
+        final String[] parts = sms_msg != null ? sms_msg.split(":", 3) : new String[0];
         final java.util.function.BiConsumer<String, String> failKnown = (name, reason) -> {
             v.fail(name, reason);
             v.gcsRefuseText = "SMS refused " + v.who + ": " + reason;
@@ -361,7 +371,7 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
         }
         v.pass("format", "ATT:<cmd>:<pin>");
 
-        if (!parts[parts.length - 1].trim().equals(pin)) {
+        if (!pinMatches(parts[2].trim(), pin)) {
             failKnown.accept("pin", "wrong PIN");
             v.pinFailure = true;
             return v.build();
