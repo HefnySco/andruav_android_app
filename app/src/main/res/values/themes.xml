@@ -6,9 +6,14 @@
     <style name="Theme.Andruav" parent="AppTheme" />
 
     <style name="Theme.Andruav.Dark">
-        <!-- AN-0150: same preferenceTheme the manifest SettingsTheme used, so
-             settings under Dark look exactly as before. -->
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <!-- AN-0150: dark preference screen - the stock overlay showed a
+             white page so Dark looked identical to Light. windowBackground
+             and text colours make it dark; accent is the Dark amber. -->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.AndruavDark</item>
+        <item name="android:windowBackground">@color/home_bg</item>
+        <item name="android:textColorPrimary">@color/home_text_primary</item>
+        <item name="android:textColorSecondary">@color/home_text_secondary</item>
+        <item name="colorAccent">@color/home_amber</item>
 
         <item name="deBg">@color/home_bg</item>
         <item name="deSurface">@color/home_surface</item>
@@ -113,7 +118,7 @@
         <item name="android:windowBackground">@color/light_bg</item>
         <item name="android:textColorPrimary">@color/light_text_primary</item>
         <item name="android:textColorSecondary">@color/light_text_secondary</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Andruav.Light.ActionBar</item>
 
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/light_status_bar</item>
@@ -177,7 +182,7 @@
         <item name="android:textColorSecondary">@color/sun_text_secondary</item>
         <item name="checkboxStyle">@style/Widget.Andruav.Sun.CheckBox</item>
         <item name="android:checkboxStyle">@style/Widget.Andruav.Sun.CheckBox</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Andruav.Sun.ActionBar</item>
 
         <item name="android:textViewStyle">@style/Widget.Andruav.Sun.TextView</item>
         <item name="android:buttonStyle">@style/Widget.Andruav.Sun.Button</item>
