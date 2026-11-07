@@ -165,6 +165,37 @@ public class SmsGateEvaluateTest {
         assertEquals("", v.contact);
     }
 
+    /*** DE-0093: after a FAIL, every later gate is listed as SKIP and the
+     *  verdict always carries the full gate set, as the class doc says. */
+    @Test
+    public void gatesAfterFailAreListedSkip() {
+        // sender gate fails: the four later gates are SKIP, nothing missing
+        final SmsGateVerdict v = eval(STRANGER, "ATT:go:" + PIN);
+        assertEquals(SmsGateVerdict.GATE_ORDER.length, v.gates.size());
+        boolean seenFail = false;
+        for (final SmsGateVerdict.Gate g : v.gates) {
+            if (g.status == SmsGateVerdict.Status.FAIL) seenFail = true;
+            else if (seenFail) assertEquals(SmsGateVerdict.Status.SKIP, g.status);
+        }
+
+        // receiver gate fails first: all six later gates are SKIP
+        final SmsGateVerdict off = AndruavSMSClientParser.evaluate(ALLOWED, "ATT:go:" + PIN,
+                System.currentTimeMillis(), new AndruavSMSClientParser.GateConfigProvider() {
+                    @Override public List<String> contacts() {
+                        return new ArrayList<>(Arrays.asList(ALLOWED));
+                    }
+                    @Override public String pin() { return PIN; }
+                    @Override public boolean receiverOn() { return false; }
+                });
+        assertEquals(SmsGateVerdict.Status.FAIL, gate(off, "receiver").status);
+        assertEquals(SmsGateVerdict.GATE_ORDER.length, off.gates.size());
+        for (final SmsGateVerdict.Gate g : off.gates) {
+            if (!g.name.equals("receiver")) {
+                assertEquals(SmsGateVerdict.Status.SKIP, g.status);
+            }
+        }
+    }
+
     @Test
     public void dryRunsNeverLockOut() {
         for (int i = 0; i < 5; i++) {

@@ -37,6 +37,9 @@ public final class SmsGateVerdict {
     public final String refuseReason;
     /** The GCS line the live path would emit on refusal, or null when it emits none. */
     public final String gcsRefuseText;
+    /** The "SMS accepted" info line the live path emits before the refusal when
+     *  the identity gates already passed (command-gate failures), or null. */
+    public final String gcsAcceptText;
     /** The matched allow-list contact name ("" for a bare-number entry or no match). */
     public final String contact;
     /** Display form of the sender for notices: "'name'" or "an allow-listed contact". */
@@ -60,6 +63,7 @@ public final class SmsGateVerdict {
                            final boolean allowed,
                            final String refuseReason,
                            final String gcsRefuseText,
+                           final String gcsAcceptText,
                            final String contact,
                            final String who,
                            final String command,
@@ -72,6 +76,7 @@ public final class SmsGateVerdict {
         this.allowed = allowed;
         this.refuseReason = refuseReason;
         this.gcsRefuseText = gcsRefuseText;
+        this.gcsAcceptText = gcsAcceptText;
         this.contact = contact;
         this.who = who;
         this.command = command;
@@ -89,6 +94,7 @@ public final class SmsGateVerdict {
         boolean allowed = true;
         String refuseReason = "";
         String gcsRefuseText = null;
+        String gcsAcceptText = null;
         String contact = "";
         String who = "";
         String command = "";
@@ -125,7 +131,7 @@ public final class SmsGateVerdict {
                     }
                 }
             }
-            return new SmsGateVerdict(gates, allowed, refuseReason, gcsRefuseText,
+            return new SmsGateVerdict(gates, allowed, refuseReason, gcsRefuseText, gcsAcceptText,
                     contact, who, command, keyword, age_s, pinFailure, autoStep, actionText);
         }
     }

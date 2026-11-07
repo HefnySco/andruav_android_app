@@ -182,6 +182,29 @@ public class SMSCommandGateTest {
         assertFalse(mGcsNotes.get(0)[1].contains(STRANGER));
     }
 
+    /*** DE-0093: an unknown command or a bad AUTO step first shows the
+     *  SMS accepted info line, then the refusal warning - like before
+     *  AN-0137, because the identity gates already passed. */
+    @Test
+    public void commandGateRefusalKeepsAcceptedLine() {
+        exec(ALLOWED, "ATT:BOGUS:" + PIN);
+        assertEquals(2, mGcsNotes.size());
+        assertTrue(mGcsNotes.get(0)[0].equals("5")); // NOTIFICATION_TYPE_NORMAL
+        assertTrue(mGcsNotes.get(0)[1].contains("SMS accepted"));
+        assertTrue(mGcsNotes.get(0)[1].contains("BOGUS"));
+        assertTrue(mGcsNotes.get(1)[0].equals("4")); // NOTIFICATION_TYPE_WARNING
+        assertTrue(mGcsNotes.get(1)[1].contains("unknown command"));
+
+        mGcsNotes.clear();
+        exec(ALLOWED, "ATT:AUTO x:" + PIN);
+        assertEquals(2, mGcsNotes.size());
+        assertTrue(mGcsNotes.get(0)[0].equals("5"));
+        assertTrue(mGcsNotes.get(0)[1].contains("SMS accepted"));
+        assertTrue(mGcsNotes.get(0)[1].contains("AUTO x"));
+        assertTrue(mGcsNotes.get(1)[0].equals("4"));
+        assertTrue(mGcsNotes.get(1)[1].contains("bad step"));
+    }
+
     @Test
     public void wrongPinRunsNothing() {
         exec(ALLOWED, "ATT:RTL:9999");

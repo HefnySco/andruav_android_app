@@ -347,6 +347,13 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
             v.fail(name, reason);
             v.gcsRefuseText = "SMS refused " + v.who + ": " + reason;
             v.refuseReason = reason;
+            /* DE-0093: a failure at the command gate (unknown command, bad
+             * AUTO step) used to show the accepted info line first - the
+             * identity gates already passed at that point. */
+            if ("command".equals(name)) {
+                v.gcsAcceptText = "SMS accepted '" + parts[1].trim().replaceAll("[^A-Za-z0-9_ ]", "?")
+                        + "' from " + v.who;
+            }
         };
         if (parts.length < 3 || !parts[0].trim().equalsIgnoreCase("ATT")) {
             failKnown.accept("format", "bad format (needs ATT:<cmd>:<pin>)");
@@ -428,6 +435,11 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
         if (v.pinFailure) notePinFailure(nowMs);
         if (!v.allowed) {
             skip(v.refuseReason, sender);
+            /* DE-0093: command-gate failures (unknown command, bad AUTO
+             * step) first show the accepted info line, like before AN-0137. */
+            if (v.gcsAcceptText != null) {
+                notifyGcs(INotification.NOTIFICATION_TYPE_NORMAL, v.gcsAcceptText, testRun);
+            }
             if (v.gcsRefuseText != null) {
                 notifyGcs(INotification.NOTIFICATION_TYPE_WARNING, v.gcsRefuseText, testRun);
             }
