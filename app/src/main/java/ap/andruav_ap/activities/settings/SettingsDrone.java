@@ -1,5 +1,6 @@
 package ap.andruav_ap.activities.settings;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -13,6 +14,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import com.andruav.Constants;
 
 import ap.andruav_ap.R;
+import ap.andruav_ap.activities.AppThemes;
 
 /**
  * Created by mhefny on 2/27/17.
@@ -23,7 +25,13 @@ import ap.andruav_ap.R;
 public class SettingsDrone extends AppCompatActivity {
 
     @Override
+    protected void attachBaseContext(final Context newBase) {
+        super.attachBaseContext(AppThemes.wrapFontScale(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppThemes.apply(this, false);
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
@@ -31,6 +39,12 @@ public class SettingsDrone extends AppCompatActivity {
                     .replace(android.R.id.content, new SettingsDroneFragment())
                     .commit();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppThemes.recreateIfChanged(this, false);
     }
 
 
