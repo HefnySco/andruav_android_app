@@ -117,6 +117,14 @@ public abstract class DeModuleService extends Service {
             try {
                 moduleThread.join(STOP_GRACE_MS);
             } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
+            }
+            if (moduleThread.isAlive()) {
+                /* DE-0084: the old nativeRun did not end in time. Never
+                 * start a second one next to it (no double init). */
+                Log.e(TAG, getModuleName() + " old thread still alive after "
+                        + STOP_GRACE_MS + " ms - restart refused");
+                return;
             }
             moduleThread = null;
             releaseLocks();
