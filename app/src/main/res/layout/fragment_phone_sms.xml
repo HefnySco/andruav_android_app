@@ -142,13 +142,35 @@
                     android:layout_marginEnd="10dp"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="6dp"
-                        android:text="@string/phone_sms_pin_label"
-                        android:textColor="?attr/deTextDim"
-                        android:textSize="11sp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="6dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/phone_sms_pin_label"
+                            android:textColor="?attr/deTextDim"
+                            android:textSize="11sp" />
+
+                        <!-- built-in commands list - opens SmsCommandsSheet -->
+                        <TextView
+                            android:id="@+id/phone_sms_cmd_help"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="6dp"
+                            android:background="@drawable/bg_home_info_circle"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:text="@string/phone_sms_pin_help"
+                            android:textColor="?attr/deTextDim"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/phone_sms_pin_box"

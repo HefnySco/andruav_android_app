@@ -192,6 +192,18 @@
     <string name="phone_sms_live_cancel">CANCEL</string>
     <string name="phone_sms_live_run">RUN LIVE</string>
 
+    <!-- PHONE SMS built-in commands sheet -->
+    <string name="phone_sms_pin_help">?</string>
+    <string name="phone_sms_cmds_title">BUILT-IN COMMANDS</string>
+    <string name="phone_sms_cmds_format">ATT:&lt;cmd&gt;:&lt;PIN&gt; — e.g. ATT:RTL:1234</string>
+    <string name="phone_sms_cmd_hlp">Replies with this list by SMS</string>
+    <string name="phone_sms_cmd_rtl">Return to launch</string>
+    <string name="phone_sms_cmd_lnd">Land immediately — LAND also works</string>
+    <string name="phone_sms_cmd_loc">Replies with the unit location by SMS</string>
+    <string name="phone_sms_cmd_auto">Jumps to mission step n, then AUTO</string>
+    <string name="phone_sms_cmd_goto">Accepted — does nothing yet</string>
+    <string name="phone_sms_cmds_note">Event keywords fire a fact (phone.sms_&lt;kw&gt;) — they never run a command. 5 wrong PINs in 10 min lock every command for 10 min.</string>
+
     <!-- i18n: extracted hardcoded strings -->
     <string name="toast_ping_time">Ping time %1$s ms</string>
     <string name="toast_msg_duration">msg duration: %1$sms</string>

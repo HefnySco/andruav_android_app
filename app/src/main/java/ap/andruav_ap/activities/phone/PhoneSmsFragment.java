@@ -108,6 +108,14 @@ public class PhoneSmsFragment extends Fragment {
             }
         });
 
+        view.findViewById(R.id.phone_sms_cmd_help)
+                .setOnClickListener(v -> {
+                    if (isAdded()) {
+                        SmsCommandsSheet.newInstance()
+                                .show(getParentFragmentManager(), SmsCommandsSheet.TAG);
+                    }
+                });
+
         mBtnPinShow.setOnClickListener(v -> togglePinVisibility());
         mEdtPin.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
