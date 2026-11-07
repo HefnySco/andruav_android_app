@@ -266,7 +266,26 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
             }
         });
 
+        listBtScroll.setNestedScrollingEnabled(false);
+        applySheetDragLock(listBtScroll);
+
         updateBtToggleUi();
+    }
+
+    /***
+     * The device list must keep its drag gestures: BottomSheetBehavior checks
+     * only the sheet's outer scroll view, so a downward drag on the list was
+     * intercepted and pulled the whole sheet down. While the list is scrollable
+     * this blocks ancestor touch interception for the gesture; it is attached
+     * to each row as well because clickable rows consume ACTION_DOWN before the
+     * scroll container sees it.
+     */
+    private void applySheetDragLock(final View view) {
+        view.setOnTouchListener((v, event) -> {
+            listBtScroll.getParent().requestDisallowInterceptTouchEvent(
+                    listBtScroll.canScrollVertically(-1) || listBtScroll.canScrollVertically(1));
+            return false;
+        });
     }
 
     private void turnOnBlueTooth() {
@@ -333,10 +352,18 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
      */
     private void refreshBtList() {
         listBt.removeAllViews();
+        selectedBtRow = null;
+        final String savedMac = Preference.getFCBBlueToothMAC(null);
         final int count = btAdapter.getCount();
         for (int i = 0; i < count; i++) {
             final View child = btAdapter.getView(i, null, listBt);
+            applySheetDragLock(child);
             listBt.addView(child);
+            final ListItem_BluetoothUnit item = (ListItem_BluetoothUnit) btAdapter.getItem(i);
+            if ((item != null) && item.getDeviceMAC().equalsIgnoreCase(savedMac)) {
+                child.setBackgroundResource(R.drawable.bg_home_bt_row_selected);
+                selectedBtRow = child;
+            }
         }
         capBtListHeight();
     }
@@ -370,9 +397,6 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
         selectedBtRow = aView;
 
         btCancelDiscovery();
-        savePreferences();
-        TelemetryModeer.connectToPreferredConnection(requireActivity(), false);
-        dismiss();
     }
 
     private void loadFields() {

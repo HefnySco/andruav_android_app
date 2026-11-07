@@ -94,12 +94,10 @@ public final class AppThemes {
         activity.getWindow().setAttributes(lp);
     }
 
-    /** AN-0155: Sun shows ON/OFF next to every switch; Dark and Light
-     *  rely on colour only and get an empty label. */
+    /** AN-0155: every theme shows the ON/OFF label - a colour-only switch reads
+     *  as a blank button in Dark and Light. */
     public static CharSequence switchLabel(final Context context, final boolean on) {
-        return isSun(context)
-                ? context.getString(on ? R.string.home_fcb_bt_on : R.string.home_fcb_bt_off)
-                : "";
+        return context.getString(on ? R.string.home_fcb_bt_on : R.string.home_fcb_bt_off);
     }
 
     /** Header theme button (human request): cycles Dark -> Light -> Sun -> Dark. */
