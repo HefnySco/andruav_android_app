@@ -3,6 +3,7 @@ package ap.andruav_ap.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.view.WindowManager;
 
 import androidx.annotation.StyleRes;
 import androidx.preference.PreferenceManager;
@@ -20,6 +21,23 @@ public final class AppThemes {
 
     public static final String PREF_KEY = "pref_app_theme";
 
+    /** AN-0155: full screen brightness while Sun is active. */
+    public static final String PREF_BRIGHTNESS = "pref_sun_full_brightness";
+
+    /** Set on the activity intent before recreate() for a theme switch -
+     *  recreate() keeps the intent, so onCreate can tell a theme change
+     *  from a cold start and skip the auto-connect / login retry. */
+    public static final String EXTRA_THEME_SWITCH = "extra_theme_switch";
+
+    /** Marks the activity intent before a theme-change recreate(). */
+    public static void markThemeSwitch(final Activity activity) {
+        activity.getIntent().putExtra(EXTRA_THEME_SWITCH, true);
+    }
+
+    public static boolean isThemeSwitch(final Activity activity) {
+        return activity.getIntent().getBooleanExtra(EXTRA_THEME_SWITCH, false);
+    }
+
     public static final String VALUE_DARK = "dark";
     public static final String VALUE_LIGHT = "light";
     public static final String VALUE_SUN = "sun";
@@ -36,6 +54,59 @@ public final class AppThemes {
     public static void set(final Context context, final String value) {
         PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putString(PREF_KEY, value).apply();
+    }
+
+    /** Resolves the stored choice to a concrete value - Follow system
+     *  maps to Dark or Light. */
+    private static String resolvedValue(final Context context) {
+        String value = get(context);
+        if (VALUE_SYSTEM.equals(value)) {
+            final int night = context.getResources().getConfiguration().uiMode
+                    & Configuration.UI_MODE_NIGHT_MASK;
+            value = night == Configuration.UI_MODE_NIGHT_YES ? VALUE_DARK : VALUE_LIGHT;
+        }
+        return value;
+    }
+
+    /** AN-0155: true when the effective theme is Sun. */
+    public static boolean isSun(final Context context) {
+        return VALUE_SUN.equals(resolvedValue(context));
+    }
+
+    public static boolean isFullBrightness(final Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(PREF_BRIGHTNESS, false);
+    }
+
+    public static void setFullBrightness(final Context context, final boolean on) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit()
+                .putBoolean(PREF_BRIGHTNESS, on).apply();
+    }
+
+    /** AN-0155: full screen brightness while Sun is active and the option
+     *  is on; any other theme restores the system level. Called from
+     *  apply() so every themed activity follows the option. */
+    public static void applyBrightness(final Activity activity) {
+        final WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
+        lp.screenBrightness = isSun(activity) && isFullBrightness(activity)
+                ? WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
+                : WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
+        activity.getWindow().setAttributes(lp);
+    }
+
+    /** AN-0155: Sun shows ON/OFF next to every switch; Dark and Light
+     *  rely on colour only and get an empty label. */
+    public static CharSequence switchLabel(final Context context, final boolean on) {
+        return isSun(context)
+                ? context.getString(on ? R.string.home_fcb_bt_on : R.string.home_fcb_bt_off)
+                : "";
+    }
+
+    /** Header theme button (human request): cycles Dark -> Light -> Sun -> Dark. */
+    public static void cycle(final Context context) {
+        final String current = get(context);
+        set(context, VALUE_DARK.equals(current) ? VALUE_LIGHT
+                : VALUE_LIGHT.equals(current) ? VALUE_SUN : VALUE_DARK);
     }
 
     /** Resolves the stored choice to a Theme.Andruav style. Follow system
@@ -63,6 +134,7 @@ public final class AppThemes {
     public static void apply(final Activity activity, final boolean noActionBar) {
         activity.setTheme(styleFor(activity, noActionBar));
         activity.getIntent().putExtra(PREF_KEY, styleFor(activity, noActionBar));
+        applyBrightness(activity);
     }
 
     /** AN-0149: Sun draws text about 8% larger. fontScale scales every sp
@@ -88,6 +160,7 @@ public final class AppThemes {
     public static void recreateIfChanged(final Activity activity, final boolean noActionBar) {
         final int applied = activity.getIntent().getIntExtra(PREF_KEY, styleFor(activity, noActionBar));
         if (applied != styleFor(activity, noActionBar)) {
+            markThemeSwitch(activity);
             activity.recreate();
         }
     }

@@ -61,6 +61,8 @@
     <string name="home_theme_light">Light</string>
     <string name="home_theme_sun">Sun</string>
     <string name="home_theme_system">Follow system</string>
+    <string name="home_theme_brightness">Full brightness in Sun</string>
+    <string name="home_theme_button_desc">Switch theme</string>
 
     <string name="home_fcb_sheet_title">TELEMETRY HUB · FCB CONNECTION</string>
     <string name="home_fcb_bluetooth">Bluetooth</string>

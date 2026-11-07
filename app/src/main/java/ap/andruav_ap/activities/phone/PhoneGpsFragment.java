@@ -22,6 +22,7 @@ import com.andruav.sensors.AndruavIMU;
 
 import org.greenrobot.eventbus.EventBus;
 import ap.andruav_ap.R;
+import ap.andruav_ap.activities.AppThemes;
 import ap.andruav_ap.activities.ThemeColors;
 import ap.andruavmiddlelibrary.factory.util.DialogHelper;
 import ap.andruavmiddlelibrary.preference.Preference;
@@ -151,7 +152,7 @@ public class PhoneGpsFragment extends Fragment {
     }
 
     private void applyToggle(final TextView toggle, final boolean on) {
-        toggle.setText(on ? R.string.home_fcb_bt_on : R.string.home_fcb_bt_off);
+        toggle.setText(AppThemes.switchLabel(requireContext(), on));
         toggle.setBackgroundResource(on
                 ? R.drawable.bg_home_bt_toggle_on : R.drawable.bg_home_bt_toggle_off);
     }

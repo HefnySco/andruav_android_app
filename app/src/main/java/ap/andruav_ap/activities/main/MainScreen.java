@@ -690,6 +690,13 @@ public class MainScreen extends BaseAndruavShasha {
         mBtnSound.setOnClickListener(v -> onToggleSound());
         updateSoundIcon();
 
+        // cycles Dark -> Light -> Sun and recreates so it applies at once
+        findViewById(R.id.home_btn_theme).setOnClickListener(v -> {
+            AppThemes.cycle(this);
+            AppThemes.markThemeSwitch(this);
+            recreate();
+        });
+
         mCardServer = findViewById(R.id.home_card_server);
         mDotServer = findViewById(R.id.home_dot_server);
         mTxtServerStatus = findViewById(R.id.home_txt_server_status);
@@ -1634,13 +1641,14 @@ public class MainScreen extends BaseAndruavShasha {
 
 
 
-        if ((getIntent().getBooleanExtra("autoconnect",false)  || Preference.isAutoStart(null)))
+        if (!AppThemes.isThemeSwitch(this) &&
+                (getIntent().getBooleanExtra("autoconnect",false)  || Preference.isAutoStart(null)))
         {
 
             autoConnect = true;
             Log.d("ac","autoconnect onCreate  true");
         }
-        else {
+        else if (!AppThemes.isThemeSwitch(this)) {
             // login to test if there is an account.
             doLogin(false);  // true makes a bg
         }

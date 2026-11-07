@@ -15,6 +15,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import ap.andruav_ap.App;
 import ap.andruav_ap.R;
+import ap.andruav_ap.activities.AppThemes;
 import ap.andruav_ap.activities.ThemeColors;
 import ap.andruav_ap.guiEvent.GUIEvent_MissionServerChanged;
 import ap.andruavmiddlelibrary.factory.util.DialogHelper;
@@ -102,7 +103,7 @@ public class HubConnectionSheet extends BottomSheetDialogFragment {
     }
 
     private void updateCloudToggleUi() {
-        btnCloudToggle.setText(cloudServer ? R.string.home_fcb_bt_on : R.string.home_fcb_bt_off);
+        btnCloudToggle.setText(AppThemes.switchLabel(requireContext(), cloudServer));
         btnCloudToggle.setBackgroundResource(cloudServer ? R.drawable.bg_home_bt_toggle_on : R.drawable.bg_home_bt_toggle_off);
 
         edtServerIp.setEnabled(!cloudServer);

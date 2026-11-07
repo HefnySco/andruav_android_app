@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
@@ -34,6 +35,7 @@ public class AppThemeSheet extends BottomSheetDialogFragment {
     private View mDotLight;
     private View mDotSun;
     private View mDotSystem;
+    private TextView mBrightnessToggle;
 
     @Nullable
     @Override
@@ -50,18 +52,37 @@ public class AppThemeSheet extends BottomSheetDialogFragment {
         mDotLight = view.findViewById(R.id.theme_dot_light);
         mDotSun = view.findViewById(R.id.theme_dot_sun);
         mDotSystem = view.findViewById(R.id.theme_dot_system);
+        mBrightnessToggle = view.findViewById(R.id.theme_brightness_toggle);
 
         view.findViewById(R.id.theme_row_dark).setOnClickListener(v -> onPick(AppThemes.VALUE_DARK));
         view.findViewById(R.id.theme_row_light).setOnClickListener(v -> onPick(AppThemes.VALUE_LIGHT));
         view.findViewById(R.id.theme_row_sun).setOnClickListener(v -> onPick(AppThemes.VALUE_SUN));
         view.findViewById(R.id.theme_row_system).setOnClickListener(v -> onPick(AppThemes.VALUE_SYSTEM));
+        view.findViewById(R.id.theme_row_brightness).setOnClickListener(v -> onToggleBrightness());
 
+        updateBrightnessToggle();
         tintDots();
+    }
+
+    /** AN-0155: flips the full-brightness option and applies it at once -
+     *  Sun goes to full brightness, anything else restores the system level. */
+    private void onToggleBrightness() {
+        AppThemes.setFullBrightness(requireContext(), !AppThemes.isFullBrightness(requireContext()));
+        AppThemes.applyBrightness(requireActivity());
+        updateBrightnessToggle();
+    }
+
+    private void updateBrightnessToggle() {
+        final boolean on = AppThemes.isFullBrightness(requireContext());
+        mBrightnessToggle.setText(AppThemes.switchLabel(requireContext(), on));
+        mBrightnessToggle.setBackgroundResource(on
+                ? R.drawable.bg_home_bt_toggle_on : R.drawable.bg_home_bt_toggle_off);
     }
 
     private void onPick(final String value) {
         AppThemes.set(requireContext(), value);
         dismiss();
+        AppThemes.markThemeSwitch(requireActivity());
         requireActivity().recreate();
     }
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- sun: filled centre plus eight rays - theme toggle button -->
+    <path
+        android:pathData="M12,17.5 A5.5,5.5 0 1,1 17.5,12 A5.5,5.5 0 1,1 12,17.5 Z"
+        android:fillColor="?attr/deIconGray" />
+    <path
+        android:pathData="M11,2 L13,2 L13,5 L11,5 Z M11,19 L13,19 L13,22 L11,22 Z M2,11 L5,11 L5,13 L2,13 Z M19,11 L22,11 L22,13 L19,13 Z M4.2,4.2 L6.3,6.3 L4.9,7.7 L2.8,5.6 Z M17.7,16.3 L19.8,18.4 L18.4,19.8 L16.3,17.7 Z M19.8,4.2 L21.2,5.6 L19.1,7.7 L17.7,6.3 Z M6.3,17.7 L7.7,19.1 L5.6,21.2 L4.2,19.8 Z"
+        android:fillColor="?attr/deIconGray" />
+</vector>

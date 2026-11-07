@@ -31,6 +31,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import ap.andruav_ap.App;
 import ap.andruav_ap.DeviceManagerFacade;
 import ap.andruav_ap.R;
+import ap.andruav_ap.activities.AppThemes;
 import ap.andruav_ap.activities.ThemeColors;
 import ap.andruav_ap.activities.fcb.drone.Adapter_BluetoothList;
 import ap.andruav_ap.activities.fcb.drone.ListItem_BluetoothUnit;
@@ -320,7 +321,7 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
 
     private void updateBtToggleUi() {
         final boolean on = btEnabled();
-        btnBtToggle.setText(on ? R.string.home_fcb_bt_on : R.string.home_fcb_bt_off);
+        btnBtToggle.setText(AppThemes.switchLabel(requireContext(), on));
         btnBtToggle.setBackgroundResource(on ? R.drawable.bg_home_bt_toggle_on : R.drawable.bg_home_bt_toggle_off);
         listBtScroll.setVisibility(on ? View.VISIBLE : View.GONE);
     }

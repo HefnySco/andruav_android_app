@@ -132,5 +132,36 @@
                 android:layout_height="10dp"
                 android:background="@drawable/bg_home_status_dot" />
         </LinearLayout>
+
+        <!-- AN-0155: extra option - full screen brightness while Sun is
+             active. Uses the same pill toggle as the other switch rows. -->
+        <LinearLayout
+            android:id="@+id/theme_row_brightness"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/home_theme_brightness"
+                android:textColor="?attr/deTextPrimary"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/theme_brightness_toggle"
+                android:layout_width="48dp"
+                android:layout_height="28dp"
+                android:background="@drawable/bg_home_bt_toggle_off"
+                android:gravity="center"
+                android:textColor="?attr/deTextPrimary"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
