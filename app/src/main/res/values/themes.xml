@@ -6,6 +6,10 @@
     <style name="Theme.Andruav" parent="AppTheme" />
 
     <style name="Theme.Andruav.Dark">
+        <!-- AN-0150: same preferenceTheme the manifest SettingsTheme used, so
+             settings under Dark look exactly as before. -->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+
         <item name="deBg">@color/home_bg</item>
         <item name="deSurface">@color/home_surface</item>
         <item name="deSurfaceMuted">@color/home_surface_disabled_tile</item>
@@ -102,6 +106,15 @@
         <item name="deIconGray">@color/light_icon_gray</item>
         <item name="deSwitchOff">@color/light_switch_off</item>
 
+        <!-- AN-0150: standard attrs so settings and dialogs pick up the
+             Light palette - amber accent instead of the stock teal. -->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.Light</item>
+        <item name="colorAccent">@color/light_amber</item>
+        <item name="android:windowBackground">@color/light_bg</item>
+        <item name="android:textColorPrimary">@color/light_text_primary</item>
+        <item name="android:textColorSecondary">@color/light_text_secondary</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Light</item>
+
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/light_status_bar</item>
     </style>
@@ -154,6 +167,17 @@
         <item name="deIconMuted">@color/sun_icon_muted</item>
         <item name="deIconGray">@color/sun_icon_gray</item>
         <item name="deSwitchOff">@color/sun_switch_off</item>
+
+        <!-- AN-0150: standard attrs so settings and dialogs read black on
+             white with strong black dividers and black-bordered checkboxes. -->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.Sun</item>
+        <item name="colorAccent">@color/sun_amber</item>
+        <item name="android:windowBackground">@color/sun_bg</item>
+        <item name="android:textColorPrimary">@color/sun_text_primary</item>
+        <item name="android:textColorSecondary">@color/sun_text_secondary</item>
+        <item name="checkboxStyle">@style/Widget.Andruav.Sun.CheckBox</item>
+        <item name="android:checkboxStyle">@style/Widget.Andruav.Sun.CheckBox</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Light</item>
 
         <item name="android:textViewStyle">@style/Widget.Andruav.Sun.TextView</item>
         <item name="android:buttonStyle">@style/Widget.Andruav.Sun.Button</item>
