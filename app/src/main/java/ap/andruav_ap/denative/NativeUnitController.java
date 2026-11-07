@@ -210,13 +210,16 @@ public final class NativeUnitController {
         // never comes online most likely means the server certificate failed
         // verification (de_comm cannot tell Java which curl error it hit).
         // Watch once per bring-up and offer the user an escape hatch.
+        // The post also requires sCommVerifySsl - the flag the running
+        // de_comm was started with: an IP-literal auth host runs verify off
+        // even when req_ssl is on, so there the cert cannot be the cause.
         if (Preference.isRequireSSL(null)) {
             final int generation = sSwitchGeneration;
             handler.postDelayed(() -> {
                 if (generation != sSwitchGeneration || !sNativeWanted) {
                     return;
                 }
-                if (!Preference.isRequireSSL(null) || isCommLineOnline()) {
+                if (!sCommVerifySsl || isCommLineOnline()) {
                     return;
                 }
                 EventBus.getDefault().post(new Event_SSLVerifyFailed());
