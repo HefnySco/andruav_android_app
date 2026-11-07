@@ -56,7 +56,6 @@ public class SettingsDrone extends AppCompatActivity {
      */
     public static class SettingsDroneFragment extends PreferenceFragmentCompat {
 
-        private EditTextPreference txtMobileNum;
         private EditTextPreference txtGCSBlockChannelNumber;
         private EditTextPreference txtGCSBlockPMWMinValue;
         private EditTextPreference txtRCCamChannelNumber;
@@ -77,7 +76,6 @@ public class SettingsDrone extends AppCompatActivity {
 
             txtRCCamChannelNumber = findPreference("sw_cam_rc_num");
             txtRCCamPMWMinValue = findPreference("sw_cam_rc_pwm");
-            txtMobileNum = findPreference("key_mobile_recovery");
             txtGCSBlockChannelNumber = findPreference("key_block_channel");
             txtGCSBlockPMWMinValue = findPreference("key_block_pwm_min");
             txtBatteryMinPercentage = findPreference("WiDVQ");

@@ -195,45 +195,9 @@
             android:summary="@string/pref_gr_recovery_siren_chk_summary"
             android:defaultValue="false" />
 
-        <CheckBoxPreference
-            android:title="@string/pref_gr_sms_rx_chk"
-            android:key="key_sms_rx_chk"
-            android:summary="@string/pref_gr_sms_rx_chk_summary"
-            android:defaultValue="false" />
-
-        <EditTextPreference
-            android:title="@string/pref_gr_sms_rx_contacts"
-            android:key="key_sms_rx_contacts"
-            android:summary="@string/pref_gr_sms_rx_contacts_summary" />
-
-        <EditTextPreference
-            android:title="@string/pref_gr_sms_rx_pin"
-            android:key="key_sms_rx_pin"
-            android:summary="@string/pref_gr_sms_rx_pin_summary"
-            android:inputType="numberPassword" />
-
-        <EditTextPreference
-            android:title="@string/pref_gr_sms_rx_keywords"
-            android:key="key_sms_rx_keywords"
-            android:summary="@string/pref_gr_sms_rx_keywords_summary" />
-
-        <EditTextPreference
-            android:title="@string/pref_gr_sms_rx_max_age"
-            android:key="key_sms_rx_max_age_s"
-            android:summary="@string/pref_gr_sms_rx_max_age_summary"
-            android:defaultValue="120"
-            android:inputType="number" />
-
-        <CheckBoxPreference
-            android:title="@string/pref_gr_sms_chk"
-            android:key="key_sms_chk"
-            android:summary="@string/pref_gr_sms_chk_summary"
-            android:defaultValue="false" />
-
-        <EditTextPreference
-            android:title="@string/pref_gr_sms_recovery_txt"
-            android:key="key_mobile_recovery"
-            android:inputType="phone" />
+        <!-- SMS settings moved to the PHONE SMS tab (PhoneSmsFragment);
+             the same key_sms_rx_* / key_sms_chk / key_mobile_recovery
+             SharedPreferences still back them. -->
 
         <CheckBoxPreference
             android:title="@string/pref_gr_recovery_chk_rc_block"

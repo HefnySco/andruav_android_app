@@ -29,7 +29,6 @@ import ap.andruav_ap.activities.ThemeColors;
 import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
 import ap.andruav_ap.communication.telemetry.SmsGateVerdict;
 import ap.andruav_ap.communication.telemetry.SmsKeywords;
-import ap.andruavmiddlelibrary.preference.Preference;
 
 /***
  * AN-0139 (TASK-118): the DRY RUN sheet of the SMS tab. The user picks a
@@ -64,6 +63,8 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
     private boolean mEditing;
     /** The last computed verdict - the LIVE TEST dialog reads it. */
     private SmsGateVerdict mVerdict;
+    /** The parser's own gate config - same reads the real SMS path makes. */
+    private AndruavSMSClientParser.GateConfigProvider mGateConfig;
 
     private LinearLayout mFromGroup;
     private LinearLayout mMessageGroup;
@@ -100,6 +101,8 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
         view.findViewById(R.id.phone_dry_btn_live)
                 .setOnClickListener(v -> showLiveWarning());
 
+        mGateConfig = AndruavSMSClientParser.gateConfigProvider();
+
         mBtnEdit.setOnClickListener(v -> toggleEdit());
         mMsgEdit.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
@@ -119,7 +122,7 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
     private void buildPickers() {
         mSenderLabels.clear();
         mSenderNumbers.clear();
-        for (final String entry : Preference.getSmsAllowedContacts(null)) {
+        for (final String entry : mGateConfig.contacts()) {
             final String name = SmsKeywords.entryName(entry);
             mSenderLabels.add(name.isEmpty()
                     ? PhoneSmsFragment.maskNumber(SmsKeywords.entryNumber(entry)) : name);
@@ -130,7 +133,7 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
 
         mMessageTokens.clear();
         mMessageLabels.clear();
-        for (final String kw : SmsKeywords.parse(Preference.getSmsKeywords(null))) {
+        for (final String kw : mGateConfig.keywords()) {
             mMessageTokens.add(kw);
             mMessageLabels.add(kw);
         }
@@ -204,7 +207,7 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
     }
 
     private String buildMessage(final String token) {
-        final String pin = Preference.getSmsPin(null);
+        final String pin = mGateConfig.pin();
         if (TOKEN_WRONG_PIN.equals(token)) {
             final String command = mMessageTokens.isEmpty()
                     ? "rtl" : mMessageTokens.get(0);
@@ -257,31 +260,9 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
     private void evaluateAndRender() {
         mVerdict = AndruavSMSClientParser.evaluate(
                 currentSender(), mMessage,
-                System.currentTimeMillis(), gateConfig());
+                System.currentTimeMillis(), mGateConfig);
         renderGates();
         renderResult();
-    }
-
-    /*** The same preference reads the parser's default provider makes -
-     *  duplicated here because that provider is private. */
-    private static AndruavSMSClientParser.GateConfigProvider gateConfig() {
-        return new AndruavSMSClientParser.GateConfigProvider() {
-            @Override public List<String> contacts() {
-                return Preference.getSmsAllowedContacts(null);
-            }
-            @Override public String pin() {
-                return Preference.getSmsPin(null);
-            }
-            @Override public List<String> keywords() {
-                return SmsKeywords.parse(Preference.getSmsKeywords(null));
-            }
-            @Override public long maxAgeS() {
-                return Preference.getSmsMaxAgeS(null);
-            }
-            @Override public boolean receiverOn() {
-                return Preference.isSMSRXEnabled(null);
-            }
-        };
     }
 
     private void renderGates() {
@@ -342,7 +323,7 @@ public class SmsDryRunSheet extends BottomSheetDialogFragment {
             case "format": return getString(R.string.phone_sms_dry_gate_format);
             case "pin": return getString(R.string.phone_sms_dry_gate_pin);
             case "age": return getString(R.string.phone_sms_dry_gate_age,
-                    Preference.getSmsMaxAgeS(null));
+                    mGateConfig.maxAgeS());
             case "command": return getString(R.string.phone_sms_dry_gate_command);
             default: return name;
         }

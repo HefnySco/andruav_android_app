@@ -83,7 +83,11 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
         sGateConfig = p;
     }
 
-    private static GateConfigProvider gateConfig() {
+    /*** The provider the real SMS path evaluates with - the injected one
+     *  when a test set it, otherwise the Preference-backed default.
+     *  AN-0139: also used by the dry-run sheet so it can never drift from
+     *  these reads. */
+    public static GateConfigProvider gateConfigProvider() {
         if (sGateConfig != null) return sGateConfig;
         return new GateConfigProvider() {
             @Override public java.util.List<String> contacts() {
@@ -438,7 +442,7 @@ public class AndruavSMSClientParser extends AndruavSMSClientParserBase {
                                  final long timestampMs, final boolean testRun)
     {
         final long nowMs = System.currentTimeMillis();
-        final SmsGateVerdict v = evaluate(sender, sms_msg, timestampMs, nowMs, gateConfig());
+        final SmsGateVerdict v = evaluate(sender, sms_msg, timestampMs, nowMs, gateConfigProvider());
 
         /* side effects replayed from the verdict - a wrong PIN counts toward
          * the lockout exactly as the live path did before the refactor. */
