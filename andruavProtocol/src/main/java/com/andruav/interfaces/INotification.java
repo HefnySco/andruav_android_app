@@ -41,4 +41,5 @@ public interface  INotification {
 
     void Speak(String message);
     void SpeakNow(String message);
+    void SpeakNow(String message, String lang, int pitch, int volume);
 }

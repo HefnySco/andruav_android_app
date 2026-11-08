@@ -12,6 +12,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 public class UDPProxy extends UDPServerBase {
@@ -89,7 +90,8 @@ public class UDPProxy extends UDPServerBase {
     {
         final byte[] token = mToken;
         if (token == null) return ;
-        if (!AndruavSettings.andruavWe7daBase.isUdpProxyEnabled()) return ;
+        if ((AndruavSettings.andruavWe7daBase == null)
+                || !AndruavSettings.andruavWe7daBase.isUdpProxyEnabled()) return ;
 
         final InetAddress destAddress = AndruavSettings.andruavWe7daBase.getUdp_iaddress_socket_unit();
         if (destAddress == null) return ;
@@ -102,7 +104,14 @@ public class UDPProxy extends UDPServerBase {
     {
         if ((mHelloScheduler != null) && !mHelloScheduler.isShutdown()) return ;
 
-        mHelloScheduler = Executors.newSingleThreadScheduledExecutor();
+        mHelloScheduler = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
+            @Override
+            public Thread newThread(final Runnable r) {
+                final Thread thread = new Thread(r, "UDPProxy-hello");
+                thread.setDaemon(true);
+                return thread;
+            }
+        });
         mHelloScheduler.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {

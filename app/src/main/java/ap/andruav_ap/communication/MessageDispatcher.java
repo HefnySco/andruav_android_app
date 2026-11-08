@@ -22,6 +22,7 @@ import com.andruav.protocol.commands.textMessages.AndruavMessage_DroneReport;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_Error;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_CameraList;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_ServoChannel;
+import com.andruav.protocol.commands.textMessages.AndruavMessage_Sound_PlayFile;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_Sound_TextToSpeech;
 import com.andruav.protocol.commands.textMessages.AndruavMessage_UDPProxy_Info;
 import com.andruav.protocol.commands.textMessages.Andruav_2MR;
@@ -41,6 +42,7 @@ import ap.andruav_ap.denative.providers.phone.PhoneOutput;
 import ap.andruavmiddlelibrary.eventClasses.fpvEvent.Event_FPV_Image;
 import ap.andruavmiddlelibrary.eventClasses.fpvEvent.Event_FPV_VideoURL;
 import ap.andruavmiddlelibrary.eventClasses.remoteControl.Event_RemoteServo;
+import ap.andruavmiddlelibrary.factory.tts.SoundManager;
 import ap.andruavmiddlelibrary.preference.Preference;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_IMU_CMD;
 
@@ -363,8 +365,27 @@ public class MessageDispatcher {
             case AndruavMessage_Sound_TextToSpeech.TYPE_AndruavMessage_Sound_TextToSpeech:
                 andruav2MR.processed = true;
                 AndruavMessage_Sound_TextToSpeech andruavMessage_textToSpeech = (AndruavMessage_Sound_TextToSpeech) andruav2MR.andruavMessageBase;
-                AndruavEngine.notification().SpeakNow(andruavMessage_textToSpeech.text);
+                AndruavEngine.notification().SpeakNow(andruavMessage_textToSpeech.text,
+                        andruavMessage_textToSpeech.language,
+                        andruavMessage_textToSpeech.pitch,
+                        andruavMessage_textToSpeech.volume);
                 break;
+
+            case AndruavMessage_Sound_PlayFile.TYPE_AndruavMessage_Sound_PlayFile: {
+                andruav2MR.processed = true;
+                final AndruavUnitShadow andruavUnit = (AndruavUnitShadow) AndruavEngine.getAndruavWe7daMapBase().get(andruav2MR.partyID);
+                if ((andruavUnit != null) && (!andruavUnit.canControl())) break;
+                if (!App.soundManager.isEnabled()) break;
+                final AndruavMessage_Sound_PlayFile andruavMessage_playFile = (AndruavMessage_Sound_PlayFile) andruav2MR.andruavMessageBase;
+                if ("siren".equals(andruavMessage_playFile.fileName)) {
+                    App.soundManager.playSound(SoundManager.SND_EMERGENCY);
+                } else if ("beep".equals(andruavMessage_playFile.fileName) || "error".equals(andruavMessage_playFile.fileName)) {
+                    App.soundManager.playSound(SoundManager.SND_ERR);
+                } else {
+                    App.soundManager.playFile(andruavMessage_playFile.fileName);
+                }
+            }
+            break;
 
             default:
                 // Other message are either reply, IMU or other info data.

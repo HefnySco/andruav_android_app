@@ -1,8 +1,6 @@
 package com.andruav.protocol.commands.textMessages.systemCommands;
 
-import com.andruav.AndruavEngine;
 import com.andruav.protocol.commands.textMessages.AndruavMessageBase;
-import com.andruav.protocol.communication.udpproxy.UDPProxy;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,11 +49,6 @@ public class AndruavSystem_UdpProxy extends AndruavMessageBase {
         enabled = json_receive_data.getBoolean("en");
 
         token = json_receive_data.has("tk") ? json_receive_data.getString("tk") : null;
-
-        final UDPProxy udpProxy = AndruavEngine.getUDPProxy();
-        if (udpProxy != null) {
-            udpProxy.setToken(token);
-        }
     }
 
 
