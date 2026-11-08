@@ -88,7 +88,7 @@ public final class PhoneDevices {
         final PhoneOutputSpec torch = new PhoneOutputSpec("torch", PhoneOutputSpec.KIND_TORCH);
         torch.strobeHz = 0;
         specs.add(torch);
-        specs.add(new PhoneOutputSpec("torch_strobe", PhoneOutputSpec.KIND_TORCH));
+        specs.add(new PhoneOutputSpec("strobe", PhoneOutputSpec.KIND_TORCH));
         specs.add(new PhoneOutputSpec("vibrate", PhoneOutputSpec.KIND_VIBRATE));
         return specs;
     }

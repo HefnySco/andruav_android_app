@@ -58,6 +58,13 @@ public final class PhoneOutput {
     /** pulse {@code ms} / {@code pulse_ms} / {@code length_ms} bound (PROTOCOL.md). */
     public static final int PULSE_MS_MAX = 4000;
 
+    /** {@code phone.strobe} full blink period: the shortest is {@link #MAX_STROBE_HZ}. */
+    public static final int STROBE_PERIOD_MIN_MS = 80;
+    public static final int STROBE_PERIOD_MAX_MS = 4000;
+    public static final int STROBE_PERIOD_DEFAULT_MS = 250;
+    /** {@code phone.strobe} duty cycle in percent. */
+    public static final int STROBE_DUTY_DEFAULT = 50;
+
     private final PhoneOutputSpec m_spec;
     private final Driver m_driver;
     private final FactSink m_fact_sink;

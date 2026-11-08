@@ -258,7 +258,8 @@ same GE verbs and facts, so missions look the same whichever one they drive.
 | Namespace | Resource key (default) | Class | Backed by | `on` / `off` | `pulse {ms}` | Notes |
 |---|---|---|---|---|---|---|
 | `phone` | `screen` | `out` | strobe activity (§4.3) | start / stop strobe | strobe for ms | config `strobe_hz` (default 4), `color` (`#FFFFFF`), full brightness |
-| `phone` | `torch` | `out` | `CameraManager.setTorchMode`; if WebRTC owns the camera → `PeerConnectionManager.setFlash` | torch on / off | on for ms | `strobe_hz` (0 = steady) |
+| `phone` | `torch` | `out` | `CameraManager.setTorchMode`; if WebRTC owns the camera → `PeerConnectionManager.setFlash` | torch on / off | on for ms (event command only) | steady; the action takes only `on` (true or false) |
+| `phone` | `strobe` | `out` | same flash unit as `torch` | blink / stop | on for ms (event command only) | action `{pulse_ms: full period 80..4000, duty: percent 0..100}`; duty 0 stops |
 | `phone` | `vibrate` | `out` | `Vibrator` | pattern on / off | vibrate ms | |
 | `fc_io` | `relay_<n>` | `out` | FC `MAV_CMD_DO_SET_RELAY` (ClientLib now, the FC core after D4) | relay 1 / 0 | pulse | only with an FC; `active_low` honoured |
 | `fc_io` | `servo_<ch>` | `pwm` | FC `MAV_CMD_DO_SET_SERVO` (the 6001 path) | `on_width` / 0 | — | `set {v}` maps 0..1024 onto a configured µs range (documented, not raw µs) |

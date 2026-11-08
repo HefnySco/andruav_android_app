@@ -42,7 +42,10 @@ final class TorchDriver implements PhoneOutput.RateDriver {
 
     @Override
     public String apply(final boolean on) {
-        return apply(on, m_strobe_hz, 512);
+        if (m_strobe_hz > 0) return apply(on, m_strobe_hz, 512);
+        // steady torch: the rate path below reads rate 0 as "off"
+        _stop_blink();
+        return _set_torch(on);
     }
 
     /**

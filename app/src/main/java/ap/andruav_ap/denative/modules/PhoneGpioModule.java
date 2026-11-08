@@ -72,10 +72,10 @@ public final class PhoneGpioModule {
     public static final String PIN_FLASH_STROBE = "flash_strobe";
 
     static final Pin[] PINS = {
-            new Pin(1, PIN_CAMERA_FLASH, "torch", "torch_strobe", PIN_MODE_OUTPUT),   // steady on/off
+            new Pin(1, PIN_CAMERA_FLASH, "torch", "strobe", PIN_MODE_OUTPUT),   // steady on/off
             new Pin(2, "screen_flash", "screen", null, PIN_MODE_OUTPUT),
             new Pin(3, "vibrate", "vibrate", null, PIN_MODE_OUTPUT),
-            new Pin(4, PIN_FLASH_STROBE, "torch_strobe", "torch", PIN_MODE_PWM),      // blinking torch
+            new Pin(4, PIN_FLASH_STROBE, "strobe", "torch", PIN_MODE_PWM),      // blinking torch
     };
 
     /** The phone output bank, narrowed to what the pins need. */

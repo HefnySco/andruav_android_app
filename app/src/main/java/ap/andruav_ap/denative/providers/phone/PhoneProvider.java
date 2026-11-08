@@ -26,7 +26,8 @@ import de.databus.caps.DeCapabilityProvider;
  *  - commands {@code phone.<key>.on|off|toggle|pulse {ms?}} (PF-02
  *    {@code event_patterns}, kind "command", res ["out"]);
  *  - facts {@code phone.<key>.went_on|went_off} {@code {v, src}};
- *  - actions {@code phone.<key> {on, pulse_ms?}} flagged
+ *  - actions {@code phone.<key> {on, pulse_ms?}}, {@code phone.torch {on}}
+ *    and {@code phone.strobe {pulse_ms, duty}} flagged
  *    {@code claim:"action"}, plus the reserved generic actions
  *    {@code write {pin, value}} and {@code pulse {pin, length_ms}}.
  * Every output request lands on the {@link PhoneOutputBank} choke points,
@@ -189,14 +190,7 @@ public class PhoneProvider implements DeCapabilityProvider {
                             "desc", spec.kind + " output",
                             "claim", "action",
                             "timeout_s", 5,
-                            "params", _kv(
-                                    "on", _kv("type", "bool"),
-                                    "pulse_ms", _kv(
-                                            "type", "int",
-                                            "min", 1,
-                                            "max", PhoneOutput.PULSE_MS_MAX,
-                                            "unit", "ms",
-                                            "optional", true))));
+                            "params", _action_params(spec)));
                 }
             }
             actions.put("write", _kv("params", _kv(
@@ -264,6 +258,58 @@ public class PhoneProvider implements DeCapabilityProvider {
         }
     }
 
+    /** The advertised {@code with} of one per-resource action. */
+    private static JSONObject _action_params(final PhoneOutputSpec spec) {
+        if (spec.isSteadyTorch()) {
+            return _kv("on", _kv("type", "bool", "default", true));
+        }
+        if (spec.isTorchStrobe()) {
+            return _kv(
+                    "pulse_ms", _kv(
+                            "type", "int",
+                            "min", PhoneOutput.STROBE_PERIOD_MIN_MS,
+                            "max", PhoneOutput.STROBE_PERIOD_MAX_MS,
+                            "unit", "ms",
+                            "default", PhoneOutput.STROBE_PERIOD_DEFAULT_MS,
+                            "desc", "full period of one blink"),
+                    "duty", _kv(
+                            "type", "int",
+                            "min", 0,
+                            "max", 100,
+                            "unit", "%",
+                            "default", PhoneOutput.STROBE_DUTY_DEFAULT,
+                            "desc", "lit share of the period; 0 stops the strobe"));
+        }
+        return _kv(
+                "on", _kv("type", "bool"),
+                "pulse_ms", _kv(
+                        "type", "int",
+                        "min", 1,
+                        "max", PhoneOutput.PULSE_MS_MAX,
+                        "unit", "ms",
+                        "optional", true));
+    }
+
+    /** {@code phone.strobe {pulse_ms, duty}}: blinks until a duty of 0 stops it. */
+    private void _invoke_strobe(final String act, final PhoneOutput output,
+                                final JSONObject params, final ResultSink sink) {
+        final int period_ms = params.optInt("pulse_ms", PhoneOutput.STROBE_PERIOD_DEFAULT_MS);
+        final int duty = params.optInt("duty", PhoneOutput.STROBE_DUTY_DEFAULT);
+        if (period_ms < PhoneOutput.STROBE_PERIOD_MIN_MS
+                || period_ms > PhoneOutput.STROBE_PERIOD_MAX_MS) {
+            sink.err(NS + "." + act + ": pulse_ms must be "
+                    + PhoneOutput.STROBE_PERIOD_MIN_MS + ".." + PhoneOutput.STROBE_PERIOD_MAX_MS);
+            return;
+        }
+        if (duty < 0 || duty > 100) {
+            sink.err(NS + "." + act + ": duty must be 0..100");
+            return;
+        }
+        final String err = output.writePwm(duty > 0, 1000.0 / period_ms,
+                duty * 1024 / 100, PhoneOutput.SRC_INVOKE);
+        _answer_write(output, err, sink);
+    }
+
     /**
      * 6543 invoke. Runs on the module's invoke worker; a pulse blocks it
      * until the restore ran ({@code timeout_s: 5} covers the 4 s max).
@@ -309,11 +355,26 @@ public class PhoneProvider implements DeCapabilityProvider {
                 return;
             }
 
+            if (output.spec().isTorchStrobe()) {
+                _invoke_strobe(act, output, params, sink);
+                return;
+            }
+
             if (!params.has("on")) {
                 sink.err(NS + "." + act + " needs 'on' (bool)");
                 return;
             }
-            final boolean on = params.optBoolean("on");
+            final boolean on;
+            try {
+                on = params.getBoolean("on");
+            } catch (JSONException e) {
+                sink.err(NS + "." + act + ": 'on' must be true or false");
+                return;
+            }
+            if (output.spec().isSteadyTorch() && params.has("pulse_ms")) {
+                sink.err(NS + "." + act + " takes only 'on'");
+                return;
+            }
             if (params.has("pulse_ms")) {
                 // a pulse asserts the on-level; 'on' must be true (gpio rule)
                 if (!on) {

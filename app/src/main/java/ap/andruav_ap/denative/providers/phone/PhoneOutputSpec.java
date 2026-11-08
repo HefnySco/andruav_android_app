@@ -37,4 +37,14 @@ public final class PhoneOutputSpec {
         this.name = name;
         this.kind = kind;
     }
+
+    /** A torch with no blink rate: its action takes only {@code on}. */
+    public boolean isSteadyTorch() {
+        return KIND_TORCH.equals(kind) && strobeHz <= 0;
+    }
+
+    /** A blinking torch: its action takes {@code pulse_ms} and {@code duty}. */
+    public boolean isTorchStrobe() {
+        return KIND_TORCH.equals(kind) && strobeHz > 0;
+    }
 }

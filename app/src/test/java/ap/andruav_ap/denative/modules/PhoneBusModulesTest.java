@@ -30,7 +30,7 @@ public class PhoneBusModulesTest {
     @Before
     public void setUp() throws Exception {
         mOutputs.put("torch", false);
-        mOutputs.put("torch_strobe", false);
+        mOutputs.put("strobe", false);
         mOutputs.put("screen", false);
         mOutputs.put("vibrate", false);
         mGpio = new PhoneGpioModule(new PhoneGpioModule.Outputs() {
@@ -129,11 +129,11 @@ public class PhoneBusModulesTest {
     /** AN-0120: toolbar flash on while flash_strobe is on stops the strobe. */
     @Test
     public void flashCommandStopsStrobe() throws Exception {
-        mOutputs.put("torch_strobe", true);
+        mOutputs.put("strobe", true);
 
         mGpio.writeFlash(true);
 
-        assertFalse(mOutputs.get("torch_strobe"));
+        assertFalse(mOutputs.get("strobe"));
         assertTrue(mOutputs.get("torch"));
         // the exclusive free + the write both happened; status carries all pins
         final JSONArray list = lastStatusList("");
@@ -147,9 +147,9 @@ public class PhoneBusModulesTest {
                 .put("a", 2).put("n", PhoneGpioModule.PIN_FLASH_STROBE)
                 .put("v", 2).put("d", 512)));
 
-        assertTrue(mOutputs.get("torch_strobe"));
-        assertEquals(2.0, mRates.get("torch_strobe"), 0.001);
-        assertEquals(512, (int) mDuties.get("torch_strobe"));
+        assertTrue(mOutputs.get("strobe"));
+        assertEquals(2.0, mRates.get("strobe"), 0.001);
+        assertEquals(512, (int) mDuties.get("strobe"));
 
         JSONObject strobe = null;
         final JSONArray list = lastStatusList("");
@@ -167,7 +167,7 @@ public class PhoneBusModulesTest {
         mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
                 .put("a", 2).put("n", PhoneGpioModule.PIN_FLASH_STROBE)
                 .put("v", 0).put("d", 512)));
-        assertFalse(mOutputs.get("torch_strobe"));
+        assertFalse(mOutputs.get("strobe"));
     }
 
     /** AN-0119: a rate above the 12.5 Hz limit is clamped and reported clamped. */
@@ -177,7 +177,7 @@ public class PhoneBusModulesTest {
                 .put("a", 2).put("n", PhoneGpioModule.PIN_FLASH_STROBE)
                 .put("v", 50).put("d", 256)));
 
-        assertEquals(12.5, mRates.get("torch_strobe"), 0.001);
+        assertEquals(12.5, mRates.get("strobe"), 0.001);
         final JSONArray list = lastStatusList("");
         for (int i = 0; i < list.length(); i++) {
             final JSONObject pin = list.getJSONObject(i);
@@ -193,8 +193,8 @@ public class PhoneBusModulesTest {
         mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
                 .put("a", 2).put("n", PhoneGpioModule.PIN_FLASH_STROBE).put("v", 4)));
 
-        assertFalse(mOutputs.get("torch_strobe"));
-        assertTrue(mRates.get("torch_strobe") == null);
+        assertFalse(mOutputs.get("strobe"));
+        assertTrue(mRates.get("strobe") == null);
     }
 
     /** AN-0119: camera_flash and flash_strobe stay exclusive across the PWM path. */
@@ -207,11 +207,11 @@ public class PhoneBusModulesTest {
                 .put("v", 3).put("d", 512)));
 
         assertFalse(mOutputs.get("torch"));
-        assertTrue(mOutputs.get("torch_strobe"));
+        assertTrue(mOutputs.get("strobe"));
 
         // and back: camera_flash on frees the strobe
         mGpio.writeFlash(true);
-        assertFalse(mOutputs.get("torch_strobe"));
+        assertFalse(mOutputs.get("strobe"));
         assertTrue(mOutputs.get("torch"));
     }
 
@@ -261,12 +261,12 @@ public class PhoneBusModulesTest {
     public void steadyAndStrobeAreExclusive() throws Exception {
         mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
                 .put("a", 2).put("n", "flash_strobe").put("v", 4).put("d", 512)));
-        assertTrue(mOutputs.get("torch_strobe"));
+        assertTrue(mOutputs.get("strobe"));
 
         mGpio.onMessage(frame(PhoneGpioModule.TYPE_GPIO_ACTION, new JSONObject()
                 .put("a", 2).put("p", 1).put("v", 1)));
         assertTrue(mOutputs.get("torch"));
-        assertFalse(mOutputs.get("torch_strobe"));
+        assertFalse(mOutputs.get("strobe"));
         // both pins changed, so the broadcast carries the whole list
         final JSONArray list = lastStatusList("");
         assertEquals(4, list.length());

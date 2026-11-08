@@ -191,6 +191,64 @@ public class PhoneProviderTest {
     }
 
     @Test
+    public void torchTakesOnOnly() throws Exception {
+        final PhoneProvider provider = makeProvider();
+        final JSONObject params = ((JSONObject) provider.adverts().get(0))
+                .getJSONObject("actions").getJSONObject("torch").getJSONObject("params");
+        assertEquals(1, params.length());
+        assertEquals("bool", params.getJSONObject("on").getString("type"));
+
+        Sink sink = new Sink();
+        provider.invoke("t1", "phone", "torch",
+                new JSONObject().put("on", true).put("pulse_ms", 40), 10000, sink);
+        assertNotNull(sink.err);
+
+        sink = new Sink();
+        provider.invoke("t2", "phone", "torch", new JSONObject().put("on", 5), 10000, sink);
+        assertNotNull(sink.err);
+
+        sink = new Sink();
+        provider.invoke("t3", "phone", "torch", new JSONObject().put("on", true), 10000, sink);
+        assertNull(sink.err);
+        assertTrue(m_bank.output("torch").isOn());
+    }
+
+    @Test
+    public void strobeTakesPeriodAndDutyPercent() throws Exception {
+        final PhoneProvider provider = makeProvider();
+        final JSONObject actions = ((JSONObject) provider.adverts().get(0)).getJSONObject("actions");
+        assertFalse(actions.has("torch_strobe"));
+        final JSONObject params = actions.getJSONObject("strobe").getJSONObject("params");
+        assertEquals(2, params.length());
+        assertEquals(100, params.getJSONObject("duty").getInt("max"));
+
+        Sink sink = new Sink();
+        provider.invoke("s1", "phone", "strobe",
+                new JSONObject().put("pulse_ms", 200).put("duty", 25), 10000, sink);
+        assertNull(sink.err);
+        final PhoneOutput strobe = m_bank.output("strobe");
+        assertTrue(strobe.isOn());
+        assertEquals(5.0, strobe.pwmHz(), 0.001);
+        assertEquals(256, strobe.pwmDuty());
+
+        sink = new Sink();
+        provider.invoke("s2", "phone", "strobe",
+                new JSONObject().put("pulse_ms", 200).put("duty", 0), 10000, sink);
+        assertNull(sink.err);
+        assertFalse(strobe.isOn());
+
+        sink = new Sink();
+        provider.invoke("s3", "phone", "strobe",
+                new JSONObject().put("pulse_ms", 79).put("duty", 50), 10000, sink);
+        assertNotNull(sink.err);
+
+        sink = new Sink();
+        provider.invoke("s4", "phone", "strobe",
+                new JSONObject().put("pulse_ms", 200).put("duty", 101), 10000, sink);
+        assertNotNull(sink.err);
+    }
+
+    @Test
     public void eventCommandsDispatchByKeyAndVerb() throws Exception {
         final PhoneProvider provider = makeProvider();
         provider.onEvent("phone.vibrate.on", new JSONObject(), "n1");
