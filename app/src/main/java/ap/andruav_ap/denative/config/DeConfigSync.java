@@ -80,19 +80,31 @@ public final class DeConfigSync implements SharedPreferences.OnSharedPreferenceC
         }
     }
 
+    /** The START still waiting per module - a newer restart replaces it. */
+    private final java.util.Map<String, Runnable> pendingStart = new java.util.HashMap<>();
+
     private void restart(String module) {
-        final Class<?> cls = DeConfigGenerator.COMM.equals(module)
-                ? DeCommService.class : DeMavlinkService.class;
-        app.startService(new Intent(app, cls).setAction(DeModuleService.ACTION_STOP));
-        handler.postDelayed(() -> {
-            Intent start = DeUnitSupervisor.get().startIntent(app,
-                    cls == DeCommService.class ? DeUnitSupervisor.Module.DE_COMM
-                            : DeUnitSupervisor.Module.DE_MAVLINK);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                app.startForegroundService(start);
-            } else {
-                app.startService(start);
+        final DeUnitSupervisor.Module m = DeConfigGenerator.COMM.equals(module)
+                ? DeUnitSupervisor.Module.DE_COMM : DeUnitSupervisor.Module.DE_MAVLINK;
+        // Restart through the supervisor: a raw ACTION_STOP looked like a
+        // crash to it, so it queued its own START that later hit the new
+        // instance ("restart on repeated START") - a restart loop. Keep only
+        // the newest pending START too (Disconnect then Connect in a row).
+        final Runnable old = pendingStart.remove(module);
+        if (old != null) {
+            handler.removeCallbacks(old);
+        }
+        DeUnitSupervisor.get().stop(m);
+        final Runnable startLater = new Runnable() {
+            @Override
+            public void run() {
+                if (pendingStart.get(module) == this) {
+                    pendingStart.remove(module);
+                }
+                DeUnitSupervisor.get().start(m);
             }
-        }, RESTART_DELAY_MS);
+        };
+        pendingStart.put(module, startLater);
+        handler.postDelayed(startLater, RESTART_DELAY_MS);
     }
 }

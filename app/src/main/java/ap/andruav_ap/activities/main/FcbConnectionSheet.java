@@ -36,6 +36,7 @@ import ap.andruav_ap.activities.ThemeColors;
 import ap.andruav_ap.activities.fcb.drone.Adapter_BluetoothList;
 import ap.andruav_ap.activities.fcb.drone.ListItem_BluetoothUnit;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
+import ap.andruav_ap.denative.NativeUnitController;
 import ap.andruavmiddlelibrary.factory.communication.NetInfoAdapter;
 import ap.andruavmiddlelibrary.factory.util.ProgressDialogHelper;
 import ap.andruavmiddlelibrary.preference.Preference;
@@ -108,7 +109,14 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        isConnected = TelemetryModeer.getConnectionInfo() != TelemetryModeer.CURRENTCONNECTION_NON;
+        // native mode: the FC link belongs to de_mavlink (TelemetryModeer
+        // stays at CURRENTCONNECTION_NON). The button follows the user's
+        // switch only: Disconnect while the link is on (linked or still
+        // trying), Connect right after Disconnect. Live telemetry lags both
+        // ways by seconds (link up, staleness timeout), so it cannot drive it.
+        isConnected = NativeUnitController.isNativeMode()
+                ? Preference.isFCBLinkEnabled(null)
+                : TelemetryModeer.getConnectionInfo() != TelemetryModeer.CURRENTCONNECTION_NON;
         selectedType = Preference.getFCBTargetComm(null);
 
         bindViews(view);
@@ -439,11 +447,15 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
 
         btnConnect.setOnClickListener(v -> {
             savePreferences();
+            Preference.setFCBLinkEnabled(null, true);
             TelemetryModeer.connectToPreferredConnection(requireActivity(), false);
             dismiss();
         });
 
         btnDisconnect.setOnClickListener(v -> {
+            // native mode: DeConfigSync sees the change and restarts
+            // de_mavlink with no FC link
+            Preference.setFCBLinkEnabled(null, false);
             TelemetryModeer.closeAllConnections();
             dismiss();
         });

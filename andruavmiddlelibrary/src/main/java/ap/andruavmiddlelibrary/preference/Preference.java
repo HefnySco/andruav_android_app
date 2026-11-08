@@ -807,6 +807,18 @@ public class Preference {
     public static void setFCBTargetComm(final android.content.ContextWrapper contextWrapper, final int targetComm) {
         SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "a8TQ", targetComm);
     }
+
+    /***
+     * false after the FCB sheet's Disconnect: the FC link stays down (the
+     * chosen transport is kept) until Connect sets it back to true.
+     */
+    public static boolean isFCBLinkEnabled(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "fcbLinkOn", true);
+    }
+
+    public static void setFCBLinkEnabled(final android.content.ContextWrapper contextWrapper, final boolean enabled) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "fcbLinkOn", enabled);
+    }
     //////////////////////// EOF HUB COMMUNICATION
 
 

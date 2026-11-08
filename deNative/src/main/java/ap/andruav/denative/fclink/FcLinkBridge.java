@@ -220,7 +220,8 @@ public final class FcLinkBridge {
 
     private void linkLoop() {
         while (true) {
-            int commType = Preference.getFCBTargetComm(null);
+            int commType = Preference.isFCBLinkEnabled(null)
+                    ? Preference.getFCBTargetComm(null) : 0;   // 0: FCB sheet Disconnect
             FcLink link = null;
             try {
                 if (commType == Preference.FCB_COM_USB) {
@@ -231,8 +232,11 @@ public final class FcLinkBridge {
                 // tcp / udp / 'none': de_mavlink reaches the FC itself (the FCB
                 // screen's target is on its command line). Opening it here too
                 // would take the FC's only TCP slot away from de_mavlink.
-            } catch (IOException e) {
-                lastError = e.getMessage();
+            } catch (IOException | RuntimeException e) {
+                // rfcomm connect failures often carry a null detail message -
+                // lastError must never be null (statsLoop calls isEmpty() on it)
+                String message = e.getMessage();
+                lastError = (message == null) ? e.getClass().getSimpleName() : message;
             }
             if (link == null) {
                 sleepQuiet(RETRY_MS);
@@ -400,7 +404,19 @@ public final class FcLinkBridge {
         if (device == null) {
             throw new IOException("no bluetooth device configured");
         }
+        adapter.cancelDiscovery();
+        // a secure rfcomm needs a stored link key that survives reboots; SPP
+        // servers that never persist bonds (e.g. ESP32) fail authentication
+        // on every later connect - fall back to an insecure channel, which
+        // needs no bond at all
         BluetoothSocket socket = device.createRfcommSocketToServiceRecord(SPP_UUID);
+        try {
+            socket.connect();
+            return new BluetoothLink(socket);
+        } catch (IOException e) {
+            try { socket.close(); } catch (IOException ignored) { }
+        }
+        socket = device.createInsecureRfcommSocketToServiceRecord(SPP_UUID);
         adapter.cancelDiscovery();
         socket.connect();
         return new BluetoothLink(socket);
@@ -417,6 +433,7 @@ public final class FcLinkBridge {
                     + " bytes_in:" + bytesFromFc.get()
                     + " bytes_out:" + bytesToFc.get()
                     + " reconnects:" + reconnects.get()
+                    + (Preference.isFCBLinkEnabled(null) ? "" : " disabled")
                     + (lastError.isEmpty() ? "" : " err:" + lastError);
             try (FileOutputStream out = new FileOutputStream(stats)) {
                 out.write(line.getBytes());

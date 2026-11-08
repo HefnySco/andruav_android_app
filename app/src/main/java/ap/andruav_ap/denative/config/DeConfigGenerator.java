@@ -65,7 +65,10 @@ public final class DeConfigGenerator {
         s.isLocalServer = Preference.isLocalServer(null);
         s.localServerHost = Preference.getLocalServerURL(null);
         s.localServerPort = Preference.getLocalServerPort(null);
-        s.fcType = Preference.getFCBTargetComm(null);
+        // FCB sheet Disconnect: no FC link - de_mavlink points at the bridge,
+        // and the bridge opens nothing
+        s.fcType = Preference.isFCBLinkEnabled(null)
+                ? Preference.getFCBTargetComm(null) : DeConfigSettings.FC_NONE;
         int sel = Preference.getFCBUSBBaudRateSelector(null);
         int[] bauds = Constants.baudRateItemsValue;
         s.fcBaud = (sel >= 0 && sel < bauds.length) ? bauds[sel] : 57600;
