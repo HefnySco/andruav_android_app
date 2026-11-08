@@ -216,7 +216,8 @@ for_each_pin() {
         if [ -n "$sub" ] && [[ "$seen" != *" $sub "* ]]; then
             seen+="$sub "
             local dc
-            dc="$(de_common_checkouts "$co" | while IFS= read -r c; do has_commit "$c" "$sub" && { echo "$c"; break; }; done)"
+            # process substitution, not a pipe: break would SIGPIPE the producer under pipefail
+            dc="$(while IFS= read -r c; do has_commit "$c" "$sub" && { echo "$c"; break; }; done < <(de_common_checkouts "$co"))" || true
             [ -n "$dc" ] || die "de_common ${sub:0:8} not found in any local de_common checkout"
             [ -n "$DE_COMMON_URL" ] || die "the lock has no 'de_common <url>' line"
             "$fn" "$dc" "$sub" "$DE_COMMON_URL"
