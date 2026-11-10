@@ -79,6 +79,8 @@ public final class Messages {
     public static final int TYPE_AndruavModule_ID = 9100;
     public static final int TYPE_AndruavModule_RemoteExecute = 9101;
     public static final int TYPE_AndruavModule_Location_Info = 9102;
+    // GNSS fix to de_mavlink for GPS_INPUT (intermodule only, MV-0023)
+    public static final int TYPE_AndruavModule_GNSS_Fix = 9103;
 
     // Andruav Messages
     public static final int TYPE_AndruavMessage_GPS = 1002;
@@ -203,6 +205,10 @@ public final class Messages {
 
     // per-frame AI observations (perceiver -> de_comm, intermodule only)
     public static final int TYPE_AndruavMessage_AI_OBSERVATIONS = 6546;
+
+    // GNSS / RTCM injection (MV-0023): binary RTCM3 to de_mavlink, injection state
+    public static final int TYPE_AndruavMessage_RTCM_DATA = 6548;
+    public static final int TYPE_AndruavMessage_GNSS_INJECT_STATUS = 6549;
 
     public static final int TYPE_AndruavMessage_DUMMY = 9999;
     public static final int TYPE_AndruavMessage_USER_RANGE_START = 80000;
