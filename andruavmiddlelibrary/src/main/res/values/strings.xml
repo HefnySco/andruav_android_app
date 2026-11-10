@@ -512,7 +512,7 @@
     <!--FCB Acvitiy -->
     <string name="fcbdroneactivity_edtLocalIP">Wifi IP of this device</string>
     <string name="fcbdroneactivity_edtUDPPort">UDP port of drone</string>
-
-
+    <string name="gps_inject_coming_note">Not active in this version - coming</string>
+    <string name="gps_inject_coming_summary">%1$s\n\n%2$s</string>
 
 </resources>

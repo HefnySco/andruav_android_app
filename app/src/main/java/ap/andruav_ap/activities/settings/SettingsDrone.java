@@ -83,7 +83,16 @@ public class SettingsDrone extends AppCompatActivity {
             chkIgnoreMobileSensors = findPreference("mePMWRUHZFwA");
             chkNtripEnable = findPreference("ntrip_enable");
             txtNtripPort = findPreference("ntrip_port");
-            baseGPSInjectionSummary = chkGPSInjection.getSummary();
+            baseGPSInjectionSummary = comingSummary(chkGPSInjection.getSummary());
+
+            // AN-0170: GPS injection and NTRIP do nothing in this version. Mark them as coming.
+            // The stored values stay as they are (SensorService reads gps_inject).
+            final Preference injectHeading = findPreference("gps_inject_heading");
+            if (injectHeading != null) {
+                injectHeading.setSummary(comingSummary(injectHeading.getSummary()));
+            }
+            chkNtripEnable.setSummary(comingSummary(chkNtripEnable.getSummary()));
+            chkNtripEnable.setEnabled(false);
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 chkGPSInjection.setEnabled(false);
@@ -267,6 +276,11 @@ public class SettingsDrone extends AppCompatActivity {
             edtFailsafeMode.setSummary("Mode driven on comm loss: rtl (default), smart_rtl, land, loiter, pos_hold, brake - unknown names fall back to rtl.");
             edtFailsafeMode.setDefaultValue("rtl");
             nativeCategory.addPreference(edtFailsafeMode);
+        }
+
+        private CharSequence comingSummary(CharSequence base) {
+            return getString(ap.andruavmiddlelibrary.R.string.gps_inject_coming_summary,
+                    getString(ap.andruavmiddlelibrary.R.string.gps_inject_coming_note), base);
         }
 
         @Override

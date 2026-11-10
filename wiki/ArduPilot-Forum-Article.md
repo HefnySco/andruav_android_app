@@ -1,7 +1,7 @@
-# Andruav 14 — a new look, a rebuilt core, and your phone as a companion computer
+# Andruav 14 — a new look, a rebuilt core, and your phone as a companion computer (GPS injection and RTK coming)
 
 <!-- Forum title suggestion (keep under ~80 chars):
-     "Andruav 14: new UI, always-on link, phone GPS/RTK injection — turn any Android phone into a companion computer" -->
+     "Andruav 14: new UI, always-on link, phone GPS/RTK injection coming — turn any Android phone into a companion computer" -->
 <!-- Suggested category: Cloud / Companion Computers. Tags: andruav, android, telemetry, fpv, rtk -->
 
 ![Andruav new Home screen|247x499](upload://7OSD8jdJOTgyc2Tb93yr895lVTi.png)
@@ -10,7 +10,7 @@ Hi everyone,
 
 If you haven't looked at **Andruav** for a while, it's worth another look. I've spent the last months rebuilding the Android app from the inside out and giving it a completely new face.
 
-**The one-line pitch:** put a cheap Android phone on your ArduPilot vehicle and you get **telemetry over Wi-Fi / 4G / 5G with no range limit, live FPV video, and RTK / GPS injection** — with no Raspberry Pi, no modem, no wiring harness.
+**The one-line pitch:** put a cheap Android phone on your ArduPilot vehicle and you get **telemetry over Wi-Fi / 4G / 5G with no range limit, live FPV video** — with no modem and no wiring harness. RTK / GPS injection is **coming in a later release**. Start on a phone, then move to a Pi with DroneEngage when you need more.
 
 ## What's new
 
@@ -32,9 +32,10 @@ A dark, high-contrast "tactical" Home screen with amber accents, designed to be 
 ### 3. A link that stays up — the "link guardian"
 A dedicated background service now owns the connection. It reconnects when the network drops, shows a single status notification, and can bring the link back after the app is killed or the phone reboots. Lock the screen, press the power button — the telemetry keeps flowing.
 
-### 4. Phone as a sensor: GPS injection + NTRIP RTK
-- **GPS injection** — the phone's GNSS is sent to ArduPilot as `GPS_INPUT`. Set `GPS1_TYPE = 14` (MAV) and the phone *is* your GPS, or a second GPS beside your main one. The Drone Settings page even checks your FC's `GPS_TYPE` and warns you if the stream would be ignored.
-- **NTRIP client** — pull RTCM3 corrections from your caster (VRS/GGA supported) and forward them to the FC's GPS for RTK-level accuracy.
+### 4. Phone as a sensor: GPS injection + NTRIP RTK (coming in a later release)
+_These two features are not active in this version. They come in a later release. The notes below describe the plan._
+- **GPS injection (coming)** — the phone's GNSS is sent to ArduPilot as `GPS_INPUT`. Set `GPS1_TYPE = 14` (MAV) and the phone *is* your GPS, or a second GPS beside your main one. The Drone Settings page even checks your FC's `GPS_TYPE` and warns you if the stream would be ignored.
+- **NTRIP client (coming)** — pull RTCM3 corrections from your caster (VRS/GGA supported) and forward them to the FC's GPS for RTK-level accuracy.
 - **Smart battery use** — the phone's own GPS/IMU switch off automatically when the flight controller already has good position data.
 
 ### 5. FPV that survives real life

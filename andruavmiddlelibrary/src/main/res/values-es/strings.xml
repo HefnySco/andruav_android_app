@@ -496,5 +496,7 @@
     <string name="pref_gr_rtk_ntrip_pass_summary">NTRIP caster account password</string>
     <string name="pref_gr_rtk_ntrip_send_gga">Send GGA to Caster</string>
     <string name="pref_gr_rtk_ntrip_send_gga_summary">Upload the phone\'s position to the caster roughly every 10 s. Required by VRS / network-RTK casters; plain mountpoint casters ignore it.</string>
+    <string name="gps_inject_coming_note">Not active in this version - coming</string>
+    <string name="gps_inject_coming_summary">%1$s\n\n%2$s</string>
 
 </resources>

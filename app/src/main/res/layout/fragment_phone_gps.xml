@@ -229,6 +229,15 @@
                     android:text="@string/pref_gr_fcb_gps_injection_summary"
                     android:textColor="?attr/deTextDim"
                     android:textSize="11sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/gps_inject_coming_note"
+                    android:textColor="?attr/deTextDim"
+                    android:textSize="11sp"
+                    android:textStyle="italic" />
             </LinearLayout>
 
             <TextView
