@@ -163,21 +163,20 @@ public class PhonePositionSource implements LocationListener {
             // de_andruav_phone worker thread, which has no Looper, and the
             // 4-arg overload throws RuntimeException there (listener stayed
             // off, the unit never reported a phone position).
-            if (m_location_manager.getAllProviders().contains(
-                    LocationManager.GPS_PROVIDER)) {
-                m_location_manager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        MIN_UPDATE_INTERVAL_MS, MIN_UPDATE_DISTANCE_M, this,
-                        Looper.getMainLooper());
-                m_listening = true;
-            }
-            // The unit position tolerates network/Wi-Fi fixes - unlike the
-            // FC GPS_INPUT feed, which is deliberately GNSS-only.
-            if (m_location_manager.getAllProviders().contains(
-                    LocationManager.NETWORK_PROVIDER)) {
-                m_location_manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                        MIN_UPDATE_INTERVAL_MS, MIN_UPDATE_DISTANCE_M, this,
-                        Looper.getMainLooper());
-                m_listening = true;
+            // DE-0141: register on every provider the device offers - gps,
+            // network, fused (the GMS wifi/cell/ble source, the reliable
+            // non-satellite fix on modern Android) and passive alike. The
+            // unit position is the "app location": any fix source counts,
+            // unlike the FC GPS_INPUT feed, which is deliberately GNSS-only.
+            for (final String provider : m_location_manager.getAllProviders()) {
+                try {
+                    m_location_manager.requestLocationUpdates(provider,
+                            MIN_UPDATE_INTERVAL_MS, MIN_UPDATE_DISTANCE_M, this,
+                            Looper.getMainLooper());
+                    m_listening = true;
+                } catch (RuntimeException e) {
+                    Log.w(TAG, "provider " + provider + " refused registration", e);
+                }
             }
         } catch (SecurityException e) {
             Log.w(TAG, "location listener denied", e);
