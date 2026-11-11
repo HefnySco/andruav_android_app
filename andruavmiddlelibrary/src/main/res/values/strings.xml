@@ -75,6 +75,8 @@
     <string name="pref_feedback_support">Feedback &amp;  Support</string>
     <string name="pref_gr_help_web">Visit www.cloud.ardupilot.org</string>
     <string name="pref_gr_help_weburl">http://www.cloud.ardupilot.org</string>
+    <string name="pref_feedback_eventbus_debug_log">EventBus debug logging</string>
+    <string name="pref_feedback_eventbus_debug_log_summary">Show \'No subscribers registered for event\' lines in logcat. Exit the app with the Exit command to apply the change. The Hide command does not apply it.</string>
     <string name="pref_gr_general_settings">General Settings</string>
     <string name="pref_gr_advanced_settings">Advanced &amp;  Settings</string>
     <string name="pref_gr_fpv_settings">FPV &amp;  Settings</string>

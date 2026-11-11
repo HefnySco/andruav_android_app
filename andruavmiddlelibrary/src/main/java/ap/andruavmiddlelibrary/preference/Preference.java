@@ -1518,4 +1518,19 @@ public class Preference {
     }
 
 
+    /***
+     * Whether the EventBus default instance keeps the verbose
+     * 'No subscribers registered for event class' logcat lines.
+     * Read once at app start in App.onCreate - the bus is installed
+     * there, so a change needs an app restart to take effect.
+     */
+    public static boolean isEventBusDebugLoggingEnabled(final android.content.ContextWrapper contextWrapper) {
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, "eventbus_debug_log", false);
+    }
+
+    public static void setEventBusDebugLoggingEnabled(final android.content.ContextWrapper contextWrapper, final boolean bEnabled) {
+        SharedPreferenceHelper.writeSavedPreference(PREFS_COUNT, contextWrapper, "eventbus_debug_log", bEnabled);
+    }
+
+
 }

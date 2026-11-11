@@ -67,6 +67,8 @@
     <string name="pref_feedback_support">Comentarios y Soporte</string>
     <string name="pref_gr_help_web">Visite www.cloud.ardupilot.org</string>
     <string name="pref_gr_help_weburl">http://www.cloud.ardupilot.org</string>
+    <string name="pref_feedback_eventbus_debug_log">Registro de depuración de EventBus</string>
+    <string name="pref_feedback_eventbus_debug_log_summary">Muestra las líneas \'No subscribers registered for event\' en logcat. Salga de la aplicación con el comando Exit para aplicar el cambio. El comando Hide no lo aplica.</string>
     <string name="pref_gr_general_settings">Ajustes Generales</string>
     <string name="pref_gr_advanced_settings">Ajustes Avanzados</string>
     <string name="pref_gr_fpv_settings">Ajustes de FPV</string>

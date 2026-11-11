@@ -67,6 +67,8 @@
     <string name="pref_feedback_support">الملاحظات والدعم</string>
     <string name="pref_gr_help_web">زيارة www.cloud.ardupilot.org</string>
     <string name="pref_gr_help_weburl">http://www.cloud.ardupilot.org</string>
+    <string name="pref_feedback_eventbus_debug_log">تسجيل تصحيح EventBus</string>
+    <string name="pref_feedback_eventbus_debug_log_summary">عرض سطور \'No subscribers registered for event\' في logcat. اخرج من التطبيق بأمر Exit لتطبيق التغيير. أمر Hide لا يطبق التغيير.</string>
     <string name="pref_gr_general_settings">إعدادات عامة</string>
     <string name="pref_gr_advanced_settings">إعدادات متقدمة</string>
     <string name="pref_gr_fpv_settings">إعدادات FPV</string>

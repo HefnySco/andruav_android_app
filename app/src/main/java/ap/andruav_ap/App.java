@@ -63,13 +63,12 @@ import com.andruav.interfaces.IPreference;
 import ap.andruav_ap.helpers.CheckAppPermissions;
 import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.EventBusException;
 import ap.andruav_ap.communication.ControlBoardFactory;
 import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 
 import com.andruav.event.networkEvent.EventSocketState;
 import ap.andruav_ap.communication.AndruavUnitFactory;
-
-import com.andruav.FeatureSwitch;
 
 import ap.andruavmiddlelibrary.LoginClient;
 import ap.andruavmiddlelibrary.com.serenegiant.encoder.MediaVideoEncoder;
@@ -814,12 +813,20 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
         App.context = getApplicationContext();
         AndruavEngine.AppContext = App.context;
 
+        // must run before any Preference.*(null) read below - the null path
+        // needs AndruavEngine.getPreference().getContext()
+        AndruavEngine.setPreference(this);
+
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(App.context));
 
-        if (FeatureSwitch.DEBUG_MODE)
+        if (!Preference.isEventBusDebugLoggingEnabled(null))
         {
             // turn off the log 'No subscribers registered for event class xxx.xxx'
-            EventBus.builder().logNoSubscriberMessages(false).installDefaultEventBus();
+            try {
+                EventBus.builder().logNoSubscriberMessages(false).sendNoSubscriberEvent(false).installDefaultEventBus();
+            } catch (EventBusException e) {
+                Log.e("App", "EventBus default instance already installed", e);
+            }
         }
         DaoManager.init();
 
@@ -830,8 +837,6 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         MediaVideoEncoder.SetVideoEncoder();
 
-
-        AndruavEngine.setPreference(this);
 
         DeviceFeatures.scanDevice(App.context);
 
