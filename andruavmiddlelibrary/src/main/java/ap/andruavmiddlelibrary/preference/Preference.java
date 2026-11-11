@@ -269,7 +269,9 @@ public class Preference {
      * OFF restores the legacy trust-all behaviour as an explicit opt-out.
      */
     public static boolean isRequireSSL(final android.content.ContextWrapper contextWrapper) {
-        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, com.andruav.protocol.communication.tls.TlsTrustPolicy.PREF_REQUIRE_SSL, false);
+        // DE-0139: default must match the checkbox (pref_drone_root.xml
+        // defaultValue true) and TlsTrustPolicy - an unwritten key means ON.
+        return SharedPreferenceHelper.readSavedPreference(PREFS_COUNT, contextWrapper, com.andruav.protocol.communication.tls.TlsTrustPolicy.PREF_REQUIRE_SSL, true);
     }
 
     public static void isRequireSSL(final android.content.ContextWrapper contextWrapper, final boolean requireSSL) {
