@@ -724,7 +724,7 @@ public class MainScreen extends BaseAndruavShasha {
         mTxtTelemetryUdp = findViewById(R.id.home_txt_telemetry_udp);
         mBtnEnableTelemetry = findViewById(R.id.home_btn_enable_telemetry);
         if (mBtnEnableTelemetry != null) {
-            mBtnEnableTelemetry.setOnClickListener(v -> requestTelemetryProxyEnable());
+            mBtnEnableTelemetry.setOnClickListener(v -> requestTelemetryProxyToggle());
         }
 
         mTileImu = findViewById(R.id.home_tile_imu);
@@ -1175,30 +1175,36 @@ public class MainScreen extends BaseAndruavShasha {
         }
         if (mBtnEnableTelemetry != null) {
             mBtnEnableTelemetry.setVisibility(View.VISIBLE);
+            mBtnEnableTelemetry.setText(streaming ? R.string.home_btn_disable_telemetry
+                    : R.string.home_btn_enable_telemetry);
             mBtnEnableTelemetry.setTextColor(ThemeColors.get(this,
                     streaming ? R.attr.deIconGray : R.attr.deAccentText));
         }
     }
 
     /**
-     * Asks this unit's own de_mavlink to open the UDP telemetry proxy pair
-     * (RemoteExecute 506). The pair-open reply lands back as a 9008 config,
+     * Toggles this unit's own de_mavlink UDP telemetry proxy pair
+     * (RemoteExecute 506). The pair reply lands back as a 9008 config,
      * so the card flips to the relay endpoint on the next refresh.
      */
-    private void requestTelemetryProxyEnable() {
+    private void requestTelemetryProxyToggle() {
         final com.andruav.protocol.communication.websocket.AndruavWSClientBase ws =
                 AndruavEngine.getAndruavWS();
         if (!(ws instanceof ap.andruav_ap.communication.AndruavDeBusClient)) {
             return;
         }
         try {
-            // Same wire messages a GCS sends to start telemetry:
-            // {C:108 TELEMETRYCTRL, Act:1 REQUEST_START} opens the pair,
-            // {C:108, Act:3 REQUEST_RESUME} unpauses the MAVLink stream.
+            // Same wire messages a GCS sends over {C:108 TELEMETRYCTRL}:
+            // streaming -> Act:2 REQUEST_END closes the pair;
+            // idle      -> Act:1 REQUEST_START opens it, Act:3 REQUEST_RESUME unpauses.
+            final com.andruav.protocol.commands.textMessages.AndruavMessage_UDPProxy_Info proxy =
+                    NativeUnitMirror.ownUdpProxy();
+            final boolean streaming = (proxy != null) && proxy.udp_enabled
+                    && (proxy.udp_port != 0) && !proxy.udp_paused;
             final ap.andruav_ap.communication.AndruavDeBusClient bus =
                     (ap.andruav_ap.communication.AndruavDeBusClient) ws;
             final String target = AndruavSettings.andruavWe7daBase.PartyID;
-            for (final int act : new int[]{1, 3}) {
+            for (final int act : (streaming ? new int[]{2} : new int[]{1, 3})) {
                 final JSONObject ms = new JSONObject();
                 ms.put("C", 108);
                 ms.put("Act", act);

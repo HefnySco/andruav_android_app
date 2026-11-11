@@ -31,6 +31,7 @@
     <string name="home_telemetry_udp_format">telemetry: [%1$s:%2$d]  MP-UDPC connection</string>
     <string name="home_telemetry_udp_unavailable">telemetry: not available</string>
     <string name="home_btn_enable_telemetry">ENABLE TELEMETRY</string>
+    <string name="home_btn_disable_telemetry">DISABLE TELEMETRY</string>
     <string name="home_stat_gps">GPS FIX</string>
     <string name="home_stat_battery">BATTERY</string>
     <string name="home_stat_signal">SIGNAL</string>
