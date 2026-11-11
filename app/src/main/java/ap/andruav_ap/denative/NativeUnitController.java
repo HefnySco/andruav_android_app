@@ -31,6 +31,7 @@ import ap.andruav_ap.denative.config.DeConfigWriter;
 import ap.andruav_ap.denative.config.DeConfigSync;
 import ap.andruav_ap.services.DeAndroidModuleService;
 import ap.andruavmiddlelibrary.preference.Preference;
+import ap.andruavmiddlelibrary.preference.PreferenceValidator;
 
 /**
  * C3 (AN-0051): the "Native unit" switch and the mutual-exclusion engine
@@ -149,6 +150,13 @@ public final class NativeUnitController {
     public static void startNativeStack(final Context context) {
         if (!sNativeWanted) {
             // User disconnected; only an explicit connect re-arms it.
+            return;
+        }
+        if (PreferenceValidator.isInvalidLoginCode()) {
+            // DE-0138: no account - de_comm cannot authenticate, so no
+            // entry point (CONNECT, auto-start, resumeLink) may bring
+            // the stack up. The UI sends the user to the login screen.
+            Log.i(TAG, "native stack start refused - no access code");
             return;
         }
         final Context app = context.getApplicationContext();

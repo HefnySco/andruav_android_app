@@ -1468,7 +1468,20 @@ public class MainScreen extends BaseAndruavShasha {
                 NativeUnitController.stopNativeStack(this);
                 showStoppingDialog();
             } else if (wantConnect && !active) {
-                NativeUnitController.connectNative(this);
+                // DE-0138: no Java login round exists here - check for an
+                // account first, as doLogin does on the Java path.
+                if (PreferenceValidator.isInvalidLoginCode()) {
+                    // You need an internet connection here to register
+                    // for the first time.
+                    NetInfoAdapter.Update();
+                    if ((!FeatureSwitch.IGNORE_NO_INTERNET_CONNECTION) && (!NetInfoAdapter.isHasValidIPAddress())) {
+                        DialogHelper.doModalDialog(this, getString(ap.andruavmiddlelibrary.R.string.gen_connection), getString(ap.andruavmiddlelibrary.R.string.err_no_internet), null);
+                    } else {
+                        startActivity(new Intent(this, GUI.getLoginActivity()));
+                    }
+                } else {
+                    NativeUnitController.connectNative(this);
+                }
             }
             updateServerCard();
             // AN-0052: re-gate the Com tile + menu items now; the
