@@ -318,6 +318,7 @@ public class ModuleScreen extends BaseAndruavShasha {
             AndruavSettings.andruavWe7daBase.setVehicleType(Preference.getVehicleType(null));
         }
 
-        AndruavEngine.notification().Speak(getString(ap.andruavmiddlelibrary.R.string.gen_speak_droneactivated));
+        // AN-0175: no "Drone Mode activated" voice - it ran on every screen
+        // open/rotation and sounded like a flight-mode change or an armed drone.
     }
 }
