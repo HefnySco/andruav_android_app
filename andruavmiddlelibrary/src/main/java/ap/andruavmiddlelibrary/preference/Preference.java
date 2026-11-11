@@ -357,7 +357,13 @@ public class Preference {
      * @return
      */
     public static double[] getAccZeroTilt(final android.content.ContextWrapper contextWrapper) {
-        return Preference.readSavedPreference(contextWrapper, "dM4eS068o", "0.0,0.0,0.0");
+        final double[] tiltReference = Preference.readSavedPreference(contextWrapper, "dM4eS068o", "0.0,0.0,0.0");
+        // A reference saved while the attitude was NaN (old getPitch bug) must
+        // not poison every subsequent attitude read - fall back to no reference.
+        for (int index = 0; index < tiltReference.length; index++) {
+            if (!Double.isFinite(tiltReference[index])) tiltReference[index] = 0.0;
+        }
+        return tiltReference;
     }
 
     /***

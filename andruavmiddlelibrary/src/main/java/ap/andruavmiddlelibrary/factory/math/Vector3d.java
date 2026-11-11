@@ -282,7 +282,10 @@ public class Vector3d {
     }
 
     public double getPitch() {
-        return Math.asin(points[1] / (- Math.sqrt(getLength())));
+        // MultiWii form (atan2(y, hypot(x,z))): identical to asin(y/|v|) for a
+        // unit vector, but magnitude-correct for the ~1G estGravity vector and
+        // never NaN (the old asin(y/sqrt(|v|)) broke past ~18 deg of tilt).
+        return - Math.atan2(points[1], Math.sqrt(points[0] * points[0] + points[2] * points[2]));
     }
 
     public void zeroVector ()

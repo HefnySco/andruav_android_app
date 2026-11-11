@@ -29,6 +29,8 @@ public class Sensor_Accelerometer extends GenericIMUSensor implements SensorEven
     public Boolean misTilted;
     public long LastTimestamp;
 
+    private boolean misFirstSample = true;
+
 
     ///////////EOF Attributes
 
@@ -82,10 +84,21 @@ public class Sensor_Accelerometer extends GenericIMUSensor implements SensorEven
         rawValues[1]= event.values[1];
         rawValues[2]= event.values[2];
 
-
-        smoothedValues[0] = alpha * smoothedValues[0] + (1 - alpha) * (rawValues[0] - calibrationValues[0]);
-        smoothedValues[1] = alpha * smoothedValues[1] + (1 - alpha) * (rawValues[1] - calibrationValues[1]);
-        smoothedValues[2] = alpha * smoothedValues[2] + (1 - alpha) * (rawValues[2] - calibrationValues[2]);
+        // Seed the filter with the first reading instead of ramping up from zero,
+        // so vAcc and the displayed raw-ACC values are correct from the first sample.
+        if (misFirstSample)
+        {
+            misFirstSample = false;
+            smoothedValues[0] = rawValues[0] - calibrationValues[0];
+            smoothedValues[1] = rawValues[1] - calibrationValues[1];
+            smoothedValues[2] = rawValues[2] - calibrationValues[2];
+        }
+        else
+        {
+            smoothedValues[0] = alpha * smoothedValues[0] + (1 - alpha) * (rawValues[0] - calibrationValues[0]);
+            smoothedValues[1] = alpha * smoothedValues[1] + (1 - alpha) * (rawValues[1] - calibrationValues[1]);
+            smoothedValues[2] = alpha * smoothedValues[2] + (1 - alpha) * (rawValues[2] - calibrationValues[2]);
+        }
 
         if (!misTilted)
         {

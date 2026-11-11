@@ -114,8 +114,15 @@ public class SensorService extends Service {
         {
             case Event_IMU_CMD.IMU_CMD_UpdateZeroTilt:
                 if (Preference.isMobileSensorsDisabled(null)) break; // mobile sensors overridden off: mEventAcc was never created
-                Preference.setAccZeroTilt(null,new double[]{AndruavSettings.andruavWe7daBase.LastEvent_IMU.P, AndruavSettings.andruavWe7daBase.LastEvent_IMU.R,0.0});
-                mEventAcc.tiltValues = Preference.getAccZeroTilt(null);
+                // LastEvent_IMU.P/R are tilt-relative (see runnableIMU); add the current
+                // reference back to store the ABSOLUTE mounting attitude, so pressing
+                // Zero Tilt again at a different position re-zeroes correctly.
+                final double zeroTiltAbsolutePitch = AndruavSettings.andruavWe7daBase.LastEvent_IMU.P + mEventAcc.tiltValues[0];
+                final double zeroTiltAbsoluteRoll = AndruavSettings.andruavWe7daBase.LastEvent_IMU.R + mEventAcc.tiltValues[1];
+                if (Double.isFinite(zeroTiltAbsolutePitch) && Double.isFinite(zeroTiltAbsoluteRoll)) {
+                    Preference.setAccZeroTilt(null, new double[]{zeroTiltAbsolutePitch, zeroTiltAbsoluteRoll, 0.0});
+                    mEventAcc.tiltValues = Preference.getAccZeroTilt(null);
+                }
                 break;
 
             case Event_IMU_CMD.IMU_CMD_ReadGPS:
@@ -286,10 +293,13 @@ public class SensorService extends Service {
 
             if (mEventGyro.isSupported())
             {
-                mEventGyro.updateGyrofromAcc(mEventAcc.vAcc);
+                // MultiWii-style complementary filter on the raw acc vector.
+                mEventGyro.updateGyrofromAcc(mEventAcc.rawValues);
 
-                AndruavSettings.andruavWe7daBase.LastEvent_IMU.P = -mEventGyro.vGyro.getPitch();
-                AndruavSettings.andruavWe7daBase.LastEvent_IMU.R = mEventGyro.vGyro.getRoll();
+                // estGravity lives in the Android device frame; R is negated to keep
+                // the app's roll convention (right edge down = positive roll).
+                AndruavSettings.andruavWe7daBase.LastEvent_IMU.P = -mEventGyro.estGravity.getPitch();
+                AndruavSettings.andruavWe7daBase.LastEvent_IMU.R = -mEventGyro.estGravity.getRoll();
                 AndruavSettings.andruavWe7daBase.LastEvent_IMU.Y = mCompassCalculation.azimuthCompass;
             }
             else
@@ -319,6 +329,11 @@ public class SensorService extends Service {
                     AndruavSettings.andruavWe7daBase.LastEvent_IMU.R = -temp;
                     break;
             }
+
+            // Zero Tilt reference (IMU_CMD_UpdateZeroTilt): report the attitude
+            // relative to the phone's mounted position, so a tilted mount reads level.
+            AndruavSettings.andruavWe7daBase.LastEvent_IMU.P = AndruavSettings.andruavWe7daBase.LastEvent_IMU.P - mEventAcc.tiltValues[0];
+            AndruavSettings.andruavWe7daBase.LastEvent_IMU.R = AndruavSettings.andruavWe7daBase.LastEvent_IMU.R - mEventAcc.tiltValues[1];
 
             AndruavSettings.andruavWe7daBase.LastEvent_IMU.PT = mEventAcc.tiltValues[0];
             AndruavSettings.andruavWe7daBase.LastEvent_IMU.RT = mEventAcc.tiltValues [1];

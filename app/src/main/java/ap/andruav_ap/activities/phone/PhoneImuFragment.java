@@ -368,7 +368,15 @@ public class PhoneImuFragment extends Fragment {
 
                 Thread.sleep(100);
 
-                Preference.FactoryReset_Sensors(null);
+                // Reset only the sensor calibration values. The Zero Tilt reference,
+                // the mobile direction and the preferred units describe the phone's
+                // mount and the user's choices - Calibrate must not wipe them.
+                Preference.isAccCalibrated(null, false);
+                Preference.isGyroCalibrated(null, false);
+                final double[] zeroCalibration = {0.0, 0.0, 0.0};
+                Preference.setAccCalibratedValue(null, zeroCalibration);
+                Preference.setGyroCalibratedValue(null, zeroCalibration);
+                Preference.setMagCalibratedValue(null, zeroCalibration);
 
                 Step("Initialize Sensors...Acc", 10);
                 mEventAcc = new Sensor_Accelerometer(mSensorManager);
