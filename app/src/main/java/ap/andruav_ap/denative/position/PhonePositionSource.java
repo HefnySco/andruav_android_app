@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -158,10 +159,15 @@ public class PhonePositionSource implements LocationListener {
             final Location seed = _best_last_known();
             if (seed != null) m_last_fix = _to_fix(seed);
 
+            // DE-0140: explicit main looper - start() runs on the module's
+            // de_andruav_phone worker thread, which has no Looper, and the
+            // 4-arg overload throws RuntimeException there (listener stayed
+            // off, the unit never reported a phone position).
             if (m_location_manager.getAllProviders().contains(
                     LocationManager.GPS_PROVIDER)) {
                 m_location_manager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        MIN_UPDATE_INTERVAL_MS, MIN_UPDATE_DISTANCE_M, this);
+                        MIN_UPDATE_INTERVAL_MS, MIN_UPDATE_DISTANCE_M, this,
+                        Looper.getMainLooper());
                 m_listening = true;
             }
             // The unit position tolerates network/Wi-Fi fixes - unlike the
@@ -169,7 +175,8 @@ public class PhonePositionSource implements LocationListener {
             if (m_location_manager.getAllProviders().contains(
                     LocationManager.NETWORK_PROVIDER)) {
                 m_location_manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                        MIN_UPDATE_INTERVAL_MS, MIN_UPDATE_DISTANCE_M, this);
+                        MIN_UPDATE_INTERVAL_MS, MIN_UPDATE_DISTANCE_M, this,
+                        Looper.getMainLooper());
                 m_listening = true;
             }
         } catch (SecurityException e) {
