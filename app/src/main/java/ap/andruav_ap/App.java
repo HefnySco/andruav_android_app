@@ -352,7 +352,13 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
                 else if (msg.obj instanceof _7adath_FCB_2AMR) {
                     final _7adath_FCB_2AMR adath_fcb_2AMR = (_7adath_FCB_2AMR)msg.obj;
 
-                    TelemetryModeer.startAutoConnection(adath_fcb_2AMR.enForceConnection);
+                    if (NativeUnitController.isNativeMode()) {
+                        // AN-0174: remote CONNECT_FCB = the FCB sheet's
+                        // CONNECT button (enable the saved FCB link).
+                        ap.andruav_ap.activities.main.FcbConnectionSheet.connectFcbLink();
+                    } else {
+                        TelemetryModeer.startAutoConnection(adath_fcb_2AMR.enForceConnection);
+                    }
 
                 }
                 else if (msg.obj instanceof Event_ProtocolChanged) {

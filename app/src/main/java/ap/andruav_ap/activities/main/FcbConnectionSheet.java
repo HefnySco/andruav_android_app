@@ -447,8 +447,7 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
 
         btnConnect.setOnClickListener(v -> {
             savePreferences();
-            Preference.setFCBLinkEnabled(null, true);
-            TelemetryModeer.connectToPreferredConnection(requireActivity(), false);
+            connectFcbLink();
             dismiss();
         });
 
@@ -459,5 +458,49 @@ public class FcbConnectionSheet extends BottomSheetDialogFragment implements Ada
             TelemetryModeer.closeAllConnections();
             dismiss();
         });
+    }
+
+    /** AN-0174: the FCB link switch, behind a seam for JVM unit tests. */
+    interface FcbLinkSwitch {
+        boolean isEnabled();
+        void setEnabled(boolean enabled);
+    }
+
+    private static final FcbLinkSwitch PREFERENCE_LINK_SWITCH = new FcbLinkSwitch() {
+        @Override
+        public boolean isEnabled() {
+            return Preference.isFCBLinkEnabled(null);
+        }
+
+        @Override
+        public void setEnabled(final boolean enabled) {
+            Preference.setFCBLinkEnabled(null, enabled);
+        }
+    };
+
+    /**
+     * AN-0174: the one "connect FCB" action - the CONNECT button in this
+     * sheet and a remote CONNECT_FCB (WebClient FLIGHT MODE "No FCB"
+     * click) both call it. In native mode the FC link belongs to
+     * de_mavlink: enabling the saved link makes DeConfigSync restart
+     * de_mavlink with the saved FCB connection (USB, Bluetooth, TCP or
+     * UDP broadcast).
+     *
+     * @return true when the link was off and is now switched on; false
+     *         when it was already on - nothing changes, so de_mavlink is
+     *         not restarted.
+     */
+    public static boolean connectFcbLink() {
+        final boolean switched = connectFcbLink(PREFERENCE_LINK_SWITCH);
+        if (switched) {
+            TelemetryModeer.connectToPreferredConnection(null, false);
+        }
+        return switched;
+    }
+
+    static boolean connectFcbLink(final FcbLinkSwitch link) {
+        if (link.isEnabled()) return false;
+        link.setEnabled(true);
+        return true;
     }
 }
