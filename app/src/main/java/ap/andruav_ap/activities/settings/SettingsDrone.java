@@ -91,8 +91,8 @@ public class SettingsDrone extends AppCompatActivity {
             if (injectHeading != null) {
                 injectHeading.setSummary(comingSummary(injectHeading.getSummary()));
             }
-            chkNtripEnable.setSummary(comingSummary(chkNtripEnable.getSummary()));
-            chkNtripEnable.setEnabled(false);
+            // AN-0168: NTRIP is wired now - the switch works. The host/mount
+            // guard below stays the only gate on enabling it.
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 chkGPSInjection.setEnabled(false);

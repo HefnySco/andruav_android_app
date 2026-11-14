@@ -11,6 +11,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import ap.andruav_ap.communication.AndruavDeBusClient;
 import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
 import ap.andruav_ap.communication.telemetry.SmsKeywords;
 import ap.andruav_ap.denative.NativeUnitController;
+import ap.andruav_ap.denative.config.DeConfigGenerator;
 import ap.andruav_ap.denative.modules.PhoneBusModules;
 import ap.andruav_ap.denative.modules.PhoneCameraModule;
 import ap.andruav_ap.denative.position.PhoneGnssFixSource;
@@ -95,6 +97,8 @@ public class DeAndroidModuleService extends Service {
     private volatile boolean mModuleRunning;
     private String mStatusText = "starting";
 
+    private static volatile DeAndroidModuleService sInstance;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -103,6 +107,15 @@ public class DeAndroidModuleService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        sInstance = this;
+        // AN-0168: an NTRIP-only settings change reaches the running
+        // de_mavlink as CONFIG_ACTION_APPLY_CONFIG instead of a restart.
+        DeConfigGenerator.setRuntimeConfigListener(config -> {
+            final DeAndroidModuleService svc = sInstance;
+            if (svc != null) {
+                svc.sendMavlinkApplyConfig(config);
+            }
+        });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID, "DroneEngage unit", NotificationManager.IMPORTANCE_MIN);
@@ -125,8 +138,31 @@ public class DeAndroidModuleService extends Service {
 
     @Override
     public void onDestroy() {
+        sInstance = null;
         stopModule();
         super.onDestroy();
+    }
+
+    /** AN-0168: sends the NTRIP keys to the running de_mavlink as
+     *  CONFIG_ACTION_APPLY_CONFIG (6525, intermodule). A no-op while the
+     *  module is down - the config file already carries the values, and
+     *  de_mavlink's own file watch applies them anyway. */
+    private void sendMavlinkApplyConfig(final JSONObject config) {
+        final CModule module;
+        synchronized (this) {
+            module = mModuleRunning ? mModule : null;
+        }
+        if (module == null) {
+            return;
+        }
+        try {
+            final JSONObject apply = new JSONObject()
+                    .put("a", Messages.CONFIG_ACTION_APPLY_CONFIG)
+                    .put("c", config);
+            module.sendJMSG("", apply, Messages.TYPE_AndruavMessage_CONFIG_ACTION, true);
+        } catch (Exception e) {
+            Log.w(TAG, "NTRIP apply-config send failed", e);
+        }
     }
 
     /** A repeated START re-initializes the module so new config applies. */

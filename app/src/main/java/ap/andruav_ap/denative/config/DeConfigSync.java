@@ -75,6 +75,7 @@ public final class DeConfigSync implements SharedPreferences.OnSharedPreferenceC
         // listener only runs while the stack is wanted (start/stop arm it),
         // which is the guard the old pref check provided.
         List<String> changed = DeConfigGenerator.regenerate(app);
+        android.util.Log.i("DeConfigSync", "regenerate done, restarting: " + changed);
         for (String module : changed) {
             restart(module);
         }

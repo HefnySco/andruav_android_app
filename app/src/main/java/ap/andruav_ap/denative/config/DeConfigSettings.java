@@ -35,6 +35,18 @@ public final class DeConfigSettings {
     public int fcTcpPort = 5760;
     public String fcBtMac = "";
 
+    // AN-0168: NTRIP / RTK caster settings, seeded into the generated
+    // de_mavlink config (flat ntrip_* keys CNtripClient::settingsFromConfig
+    // reads). The password stays inside the private config file only - it
+    // is never sent on the bus, so it never reaches logcat.
+    public boolean ntripEnable = false;
+    public String ntripHost = "";
+    public int ntripPort = 2101;
+    public String ntripMount = "";
+    public String ntripUser = "";
+    public String ntripPassword = "";
+    public boolean ntripSendGga = true;
+
     public DeConfigSettings() {
     }
 }
