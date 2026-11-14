@@ -23,6 +23,7 @@ import ap.andruav_ap.communication.telemetry.SmsKeywords;
 import ap.andruav_ap.denative.NativeUnitController;
 import ap.andruav_ap.denative.modules.PhoneBusModules;
 import ap.andruav_ap.denative.modules.PhoneCameraModule;
+import ap.andruav_ap.denative.position.PhoneGnssFixSource;
 import ap.andruav_ap.denative.position.PhonePositionSource;
 import ap.andruav_ap.denative.providers.camera.CameraProvider;
 import ap.andruav_ap.denative.providers.phone.PhoneDevices;
@@ -89,6 +90,7 @@ public class DeAndroidModuleService extends Service {
     private PhoneHealthMonitor mHealthMonitor;
     private SoundProvider mSoundProvider;
     private PhonePositionSource mPositionSource;
+    private PhoneGnssFixSource mGnssFixSource;
     private PhoneBusModules mBusModules;
     private volatile boolean mModuleRunning;
     private String mStatusText = "starting";
@@ -233,6 +235,14 @@ public class DeAndroidModuleService extends Service {
             }
         });
 
+        // AN-0167: the phone is also a GNSS source for the FC. Each new
+        // GPS_PROVIDER fix goes out once as a 9103; de_mavlink repeats it
+        // as GPS_INPUT at 10 Hz. The sender is a no-op while gps_inject
+        // or "Ignore Mobile Sensors" says so - Sensor_GPS then keeps no
+        // fix copy to send anyway.
+        final PhoneGnssFixSource gnssFixSource = new PhoneGnssFixSource(
+                this, module);
+
         final PhoneBusModules busModules = new PhoneBusModules();
         // Socket bind + receiver threads off the main thread, mirroring
         // DeModuleService's moduleThread pattern.
@@ -283,6 +293,7 @@ public class DeAndroidModuleService extends Service {
                 }
                 // Socket is up: start the location feed + 1 Hz emitter.
                 positionSource.start();
+                gnssFixSource.start();
                 mStatusText = MODULE_ID + " on 127.0.0.1:" + port;
                 Log.i(TAG, mStatusText);
                 updateNotificationText(mStatusText);
@@ -299,6 +310,7 @@ public class DeAndroidModuleService extends Service {
         mHealthMonitor = monitor;
         mSoundProvider = soundProvider;
         mPositionSource = positionSource;
+        mGnssFixSource = gnssFixSource;
         mBusModules = busModules;
     }
 
@@ -333,6 +345,7 @@ public class DeAndroidModuleService extends Service {
         final PhoneHealthMonitor monitor;
         final SoundProvider soundProvider;
         final PhonePositionSource positionSource;
+        final PhoneGnssFixSource gnssFixSource;
         final AndruavDeBusClient busClient;
         final PhoneBusModules busModules;
         synchronized (this) {
@@ -341,6 +354,7 @@ public class DeAndroidModuleService extends Service {
             monitor = mHealthMonitor;
             soundProvider = mSoundProvider;
             positionSource = mPositionSource;
+            gnssFixSource = mGnssFixSource;
             busClient = mDeBusClient;
             busModules = mBusModules;
             mBusModules = null;
@@ -350,6 +364,7 @@ public class DeAndroidModuleService extends Service {
             mHealthMonitor = null;
             mSoundProvider = null;
             mPositionSource = null;
+            mGnssFixSource = null;
             mDeBusClient = null;
             mModuleRunning = false;
         }
@@ -368,6 +383,9 @@ public class DeAndroidModuleService extends Service {
         }
         if (positionSource != null) {
             positionSource.stop();
+        }
+        if (gnssFixSource != null) {
+            gnssFixSource.stop();
         }
         if (monitor != null) {
             monitor.stop();

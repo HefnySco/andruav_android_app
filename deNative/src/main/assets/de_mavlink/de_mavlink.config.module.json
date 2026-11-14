@@ -946,6 +946,13 @@
     // "payload_provider": "fc_gripper",
     // "gripper_instance": 1,
     // "payload_bays": [ { "key": "left", "instance": 1 }, { "key": "right", "instance": 2 } ],
+    // AN-0167: the phone's andruav_phone module feeds its GNSS fix as a
+    // 9103 on the module bus; this source makes de_mavlink turn it into
+    // MAVLink GPS_INPUT - the same bus path a Pi receiver would use.
+    // The gps_inject app switch still gates whether fixes flow at all.
+    "gnss_source": {
+        "type": "bus"
+    },
     "geo_projection": {
         "enabled": false,               // project AI best-object boxes (1078) to the ground; fire detect.detected
         // "camera_registry": "camera_registry.json",  // per-unit cam_id table; when set it is
