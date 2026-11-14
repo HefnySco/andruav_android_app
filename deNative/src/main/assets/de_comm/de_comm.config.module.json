@@ -42,7 +42,8 @@
     // sometimes you need to reconnect the app when connection is silent and not timedout yet:
     "ping_server_rate_in_ms": 1500,
     "max_allowed_ping_delay_in_ms": 5000,
-    // max failed reconnection attempts before app exits (for systemd restart)
+    // max unregistered windows before the watchdog fuse fires.
+    // Android: in-process reset, the process never exits. (Linux: abort so systemd restarts de_comm.)
     "max_offline_count": 5,
 
     // "led_pins_enabled" is optional and default value is true                           
