@@ -92,3 +92,4 @@ Thumbs.db
 *.7z
 Image\Library/Thumbs.db:encryptable
 
+.claude/
