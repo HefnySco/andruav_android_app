@@ -131,6 +131,12 @@
     <string name="pref_gr_fcb_gps_injection_status_checking">%1$s\n\nChecking the flight controller\'s GPS_TYPE…</string>
     <string name="pref_gr_fcb_gps_injection_status_ready">%1$s\n\n✓ Flight controller GPS%2$d_TYPE is set to MAVLink (14) - it will accept injected GPS.</string>
     <string name="pref_gr_fcb_gps_injection_status_not_ready">%1$s\n\n⚠ Flight controller is not set to receive it: GPS_TYPE=%2$d, GPS_TYPE2=%3$d. Set GPS_TYPE (or GPS1_TYPE) to 14 (MAV) on the flight controller first, or injection will be silently ignored.</string>
+    <string name="gnss_inject_status_fc_gps_mav">✓ FC GPS%1$d_TYPE = MAV (14) - it accepts injected GPS.</string>
+    <string name="gnss_inject_status_fc_gps_wrong">⚠ FC GPS%1$d_TYPE = %2$s, not MAV (14). Set GPS1_TYPE to 14 on the flight controller or injected GPS is ignored.</string>
+    <string name="gnss_inject_status_inject_line">Injection: %1$s · GPS_INPUT %2$s</string>
+    <string name="gnss_inject_status_ntrip_line">NTRIP: %1$s</string>
+    <string name="gnss_inject_status_ntrip_connected">connected</string>
+    <string name="gnss_inject_status_ntrip_off">off</string>
     <string name="pref_gr_fcb_gps_injection_heading">Inject Heading</string>
     <string name="pref_gr_fcb_gps_injection_heading_summary">Also send phone compass heading as vehicle yaw. Only enable if the phone is rigidly fixed to the airframe with a known, fixed orientation — a loose or handheld phone will feed the flight controller a false heading and corrupt its EKF.</string>
     <string name="pref_gr_rtk">RTK / NTRIP</string>
@@ -512,7 +518,5 @@
     <!--FCB Acvitiy -->
     <string name="fcbdroneactivity_edtLocalIP">Wifi IP of this device</string>
     <string name="fcbdroneactivity_edtUDPPort">UDP port of drone</string>
-    <string name="gps_inject_coming_note">Not active in this version - coming</string>
-    <string name="gps_inject_coming_summary">%1$s\n\n%2$s</string>
 
 </resources>

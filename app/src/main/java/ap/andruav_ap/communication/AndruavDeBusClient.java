@@ -18,7 +18,9 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Executor;
 
+import ap.andruav_ap.denative.GnssInjectStatus;
 import ap.andruav_ap.guiEvent.GUIEvent_CommLineChanged;
+import ap.andruav_ap.guiEvent.GUIEvent_GnssInjectStatus;
 import de.databus.CModule;
 import de.databus.Messages;
 
@@ -191,6 +193,8 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
         return new JSONArray()
                 // intermodule: sibling modules' position reports (B8 gate)
                 .put(Messages.TYPE_AndruavModule_Location_Info)
+                // AN-0169: de_mavlink's GNSS injection status (intermodule copy)
+                .put(Messages.TYPE_AndruavMessage_GNSS_INJECT_STATUS)
                 // unit view: identity + telemetry
                 .put(Messages.TYPE_AndruavMessage_ID)
                 .put(Messages.TYPE_AndruavMessage_GPS)
@@ -483,6 +487,15 @@ public class AndruavDeBusClient extends AndruavWSClientBase implements CModule.O
                     }
                 } else if (messageType == Messages.TYPE_AndruavMessage_Sync_EventFire) {
                     applyCommLineEvent(jMsg);
+                } else if (messageType == Messages.TYPE_AndruavMessage_GNSS_INJECT_STATUS) {
+                    // AN-0169: de_mavlink emits 6549 twice - this local copy
+                    // feeds Settings + the PHONE > GPS tab; the group-route
+                    // copy goes to GCSs and needs no handling here.
+                    final Object cmd = jMsg.opt(Messages.ANDRUAV_PROTOCOL_MESSAGE_CMD);
+                    if (cmd instanceof JSONObject) {
+                        GnssInjectStatus.getInstance().update((JSONObject) cmd);
+                        AndruavEngine.getEventBus().post(new GUIEvent_GnssInjectStatus());
+                    }
                 }
                 return;
             }

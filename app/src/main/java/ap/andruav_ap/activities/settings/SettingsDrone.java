@@ -83,14 +83,8 @@ public class SettingsDrone extends AppCompatActivity {
             chkIgnoreMobileSensors = findPreference("mePMWRUHZFwA");
             chkNtripEnable = findPreference("ntrip_enable");
             txtNtripPort = findPreference("ntrip_port");
-            baseGPSInjectionSummary = comingSummary(chkGPSInjection.getSummary());
+            baseGPSInjectionSummary = chkGPSInjection.getSummary();
 
-            // AN-0170: GPS injection and NTRIP do nothing in this version. Mark them as coming.
-            // The stored values stay as they are (SensorService reads gps_inject).
-            final Preference injectHeading = findPreference("gps_inject_heading");
-            if (injectHeading != null) {
-                injectHeading.setSummary(comingSummary(injectHeading.getSummary()));
-            }
             // AN-0168: NTRIP is wired now - the switch works. The host/mount
             // guard below stays the only gate on enabling it.
 
@@ -278,14 +272,21 @@ public class SettingsDrone extends AppCompatActivity {
             nativeCategory.addPreference(edtFailsafeMode);
         }
 
-        private CharSequence comingSummary(CharSequence base) {
-            return getString(ap.andruavmiddlelibrary.R.string.gps_inject_coming_summary,
-                    getString(ap.andruavmiddlelibrary.R.string.gps_inject_coming_note), base);
-        }
-
         @Override
         public void onResume() {
             super.onResume();
+            org.greenrobot.eventbus.EventBus.getDefault().register(this);
+            refreshGPSInjectionStatus();
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            org.greenrobot.eventbus.EventBus.getDefault().unregister(this);
+        }
+
+        @org.greenrobot.eventbus.Subscribe
+        public void onEvent(final ap.andruav_ap.guiEvent.GUIEvent_GnssInjectStatus event) {
             refreshGPSInjectionStatus();
         }
 
@@ -293,18 +294,60 @@ public class SettingsDrone extends AppCompatActivity {
          * Appends the flight controller's actual GPS_TYPE state to the GPS-injection preference's
          * summary, so enabling the checkbox is never a blind toggle: a user should not be able to
          * turn this on, see nothing happen once connected, and have no way to tell why.
-         * Re-evaluated in onResume() - the common flow is connect first, then open Settings, and
-         * a fragment already on screen when the connection completes will show the next time it
-         * regains focus (e.g. the user backs out of a connect dialog).
+         * AN-0169: de_mavlink reports the state over the bus (6549) - the summary shows the FC
+         * GPS slot type, the injection state with the GPS_INPUT rate, and the NTRIP state.
          */
         private void refreshGPSInjectionStatus() {
-            if (chkGPSInjection == null) return;
+            if ((chkGPSInjection == null) || (getContext() == null)) return;
 
-            // C6 (AN-0054): the GPS_TYPE param read-out was a DroneKit-board
-            // feature - the bus board has no equivalent query yet, so the
-            // summary falls back to the not-connected text for now.
-            chkGPSInjection.setSummary(getString(
-                    ap.andruavmiddlelibrary.R.string.pref_gr_fcb_gps_injection_status_not_connected, baseGPSInjectionSummary));
+            final ap.andruav_ap.denative.GnssInjectStatus status =
+                    ap.andruav_ap.denative.GnssInjectStatus.getInstance();
+            if (!status.isFresh()) {
+                chkGPSInjection.setSummary(getString(
+                        ap.andruavmiddlelibrary.R.string.pref_gr_fcb_gps_injection_status_not_connected,
+                        baseGPSInjectionSummary));
+                return;
+            }
+
+            final StringBuilder summary = new StringBuilder(baseGPSInjectionSummary);
+            summary.append("\n\n").append(fcGpsTypeLine(status));
+            summary.append('\n').append(getString(
+                    ap.andruavmiddlelibrary.R.string.gnss_inject_status_inject_line,
+                    status.injectState,
+                    status.framesPerSecond >= 0
+                            ? String.format(java.util.Locale.US, "%.1f Hz", status.framesPerSecond)
+                            : getString(R.string.phone_status_na)));
+            summary.append('\n').append(getString(
+                    ap.andruavmiddlelibrary.R.string.gnss_inject_status_ntrip_line,
+                    ntripStateText(status)));
+            chkGPSInjection.setSummary(summary);
+        }
+
+        private CharSequence fcGpsTypeLine(final ap.andruav_ap.denative.GnssInjectStatus status) {
+            if (status.fcGpsType == ap.andruav_ap.denative.GnssInjectStatus.GPS_TYPE_MAV) {
+                return getString(
+                        ap.andruavmiddlelibrary.R.string.gnss_inject_status_fc_gps_mav,
+                        status.gpsId >= 0 ? status.gpsId + 1 : 1);
+            }
+            return getString(
+                    ap.andruavmiddlelibrary.R.string.gnss_inject_status_fc_gps_wrong,
+                    status.gpsId >= 0 ? status.gpsId + 1 : 1,
+                    status.fcGpsType >= 0 ? String.valueOf(status.fcGpsType) : "?");
+        }
+
+        private String ntripStateText(final ap.andruav_ap.denative.GnssInjectStatus status) {
+            final String state = status.ntripState;
+            if ("connected".equals(state)) {
+                final String base = getString(ap.andruavmiddlelibrary.R.string.gnss_inject_status_ntrip_connected);
+                return status.ntripBps >= 0 ? base + " (" + status.ntripBps + " B/s)" : base;
+            }
+            if ("off".equals(state)) {
+                return getString(ap.andruavmiddlelibrary.R.string.gnss_inject_status_ntrip_off);
+            }
+            if (status.ntripError != null) {
+                return state + " (" + status.ntripError + ")";
+            }
+            return state;
         }
     }
 }

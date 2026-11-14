@@ -36,6 +36,7 @@ import ap.andruav_ap.denative.providers.phone.PhoneSmsConfig;
 import ap.andruav_ap.denative.providers.sound.AndroidSoundBackend;
 import ap.andruav_ap.denative.providers.sound.SoundProvider;
 import ap.andruav_ap.denative.providers.sound.SoundProviderConfig;
+import ap.andruav_ap.guiEvent.GUIEvent_GnssInjectStatus;
 import ap.andruav_ap.services.fpv.CameraController;
 import ap.andruavmiddlelibrary.factory.DeviceFeatures;
 import ap.andruavmiddlelibrary.factory.communication.SMS;
@@ -408,6 +409,12 @@ public class DeAndroidModuleService extends Service {
             // shutDown() also clears the AndruavEngine.getAndruavWS() ref.
             busClient.shutDown();
         }
+        // AN-0169: the stack is down, so no 6549 will follow. The status is
+        // NOT cleared - Settings is only reachable while disconnected, and
+        // its summary should still show the FC's last-reported GPS type.
+        // isFresh() flips the UIs to "not connected" after the freshness
+        // window.
+        AndruavEngine.getEventBus().post(new GUIEvent_GnssInjectStatus());
         // F3 (AN-0070): drop the bus-backed board; the Java stack rebuilds
         // its own FCBoard when the DroneKit link comes back.
         final com.andruav.andruavUnit.AndruavUnitMe me = com.andruav.AndruavSettings.andruavWe7daBase;

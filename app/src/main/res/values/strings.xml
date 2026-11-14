@@ -123,6 +123,8 @@
     <string name="phone_gps_acc">ACC m</string>
     <string name="phone_gps_age">AGE s</string>
     <string name="phone_gps_latlon">Lat / Lon</string>
+    <string name="phone_gps_inject_status">%1$s · GPS_INPUT %2$s · NTRIP %3$s</string>
+    <string name="phone_gps_inject_status_none">no FC link - no injection status</string>
     <string name="phone_gps_source">Source used by unit</string>
     <string name="phone_gps_source_phone">phone gps</string>
     <string name="phone_gps_source_board">board gps</string>

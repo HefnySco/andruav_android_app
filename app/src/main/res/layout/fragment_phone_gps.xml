@@ -231,13 +231,13 @@
                     android:textSize="11sp" />
 
                 <TextView
+                    android:id="@+id/phone_gps_inject_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="@string/gps_inject_coming_note"
                     android:textColor="?attr/deTextDim"
                     android:textSize="11sp"
-                    android:textStyle="italic" />
+                    tools:text="idle · GPS_INPUT - · NTRIP off" />
             </LinearLayout>
 
             <TextView

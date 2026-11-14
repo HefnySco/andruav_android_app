@@ -44,6 +44,7 @@ public class PhoneGpsFragment extends Fragment {
     private TextView mTxtSource;
     private TextView mTglInject;
     private TextView mTglIgnore;
+    private TextView mTxtInjectStatus;
 
     private Handler mhandle;
 
@@ -59,6 +60,12 @@ public class PhoneGpsFragment extends Fragment {
     public void onEvent(final Event_IMU_Ready a7adath_imu_ready) {
         if (!isOwnUnit(a7adath_imu_ready.mAndruavWe7da)) return;
         mhandle.post(this::updateGps);
+    }
+
+    @Subscribe
+    public void onEvent(final ap.andruav_ap.guiEvent.GUIEvent_GnssInjectStatus event) {
+        if (mhandle == null) return;
+        mhandle.post(this::updateInjectStatus);
     }
 
     //////////EOF BUS EVENT
@@ -88,6 +95,7 @@ public class PhoneGpsFragment extends Fragment {
         mTxtSource = view.findViewById(R.id.phone_gps_source);
         mTglInject = view.findViewById(R.id.phone_gps_inject_toggle);
         mTglIgnore = view.findViewById(R.id.phone_gps_ignore_toggle);
+        mTxtInjectStatus = view.findViewById(R.id.phone_gps_inject_status);
 
         mTglInject.setOnClickListener(v -> {
             Preference.isGPSInjecttionEnabled(null, !Preference.isGPSInjecttionEnabled(null));
@@ -106,6 +114,40 @@ public class PhoneGpsFragment extends Fragment {
 
         updateToggles();
         updateGps();
+        updateInjectStatus();
+    }
+
+    /***
+     * AN-0169: one-line injection/NTRIP state under the GPS Injection card,
+     * fed by de_mavlink's 6549 status (GnssInjectStatus). Shows the inject
+     * state, the GPS_INPUT frame rate, and the NTRIP state.
+     */
+    private void updateInjectStatus() {
+        if (mTxtInjectStatus == null) return;
+        final ap.andruav_ap.denative.GnssInjectStatus status =
+                ap.andruav_ap.denative.GnssInjectStatus.getInstance();
+        if (!status.isFresh()) {
+            mTxtInjectStatus.setText(R.string.phone_gps_inject_status_none);
+            mTxtInjectStatus.setTextColor(ThemeColors.get(requireContext(), R.attr.deTextDim));
+            return;
+        }
+
+        final String rate = status.framesPerSecond >= 0
+                ? String.format(java.util.Locale.US, "%.1f Hz", status.framesPerSecond)
+                : getString(R.string.phone_status_na);
+        mTxtInjectStatus.setText(getString(R.string.phone_gps_inject_status,
+                status.injectState, rate, ntripText(status)));
+        mTxtInjectStatus.setTextColor(ThemeColors.get(requireContext(),
+                "active".equals(status.injectState) ? R.attr.deGood : R.attr.deTextDim));
+    }
+
+    private String ntripText(final ap.andruav_ap.denative.GnssInjectStatus status) {
+        if ("connected".equals(status.ntripState) && status.ntripBps >= 0) {
+            return status.ntripState + " " + status.ntripBps + " B/s";
+        }
+        return status.ntripError != null
+                ? status.ntripState + " (" + status.ntripError + ")"
+                : status.ntripState;
     }
 
     private void updateGps() {
@@ -163,6 +205,7 @@ public class PhoneGpsFragment extends Fragment {
         EventBus.getDefault().register(this);
         updateToggles();
         updateGps();
+        updateInjectStatus();
     }
 
     @Override
