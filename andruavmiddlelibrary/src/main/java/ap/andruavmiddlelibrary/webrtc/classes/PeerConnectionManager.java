@@ -750,6 +750,25 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
         }
     }
 
+    /***
+     * VC-8: remote voice audio (a GCS Talk dial) must be audible on a unit
+     * strapped to a drone - force loudspeaker routing and max voice-call
+     * volume when the first remote audio track arrives.
+     */
+    private void routeSpeakerAtMaxVolume() {
+        try {
+            final android.media.AudioManager audioManager =
+                    (android.media.AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+            if (audioManager == null) return;
+            audioManager.setMode(android.media.AudioManager.MODE_IN_COMMUNICATION);
+            audioManager.setSpeakerphoneOn(true);
+            audioManager.setStreamVolume(android.media.AudioManager.STREAM_VOICE_CALL,
+                    audioManager.getStreamMaxVolume(android.media.AudioManager.STREAM_VOICE_CALL), 0);
+        } catch (Exception e) {
+            AndruavEngine.log().logException("rtc-spk-vol", e);
+        }
+    }
+
     /**
      * Real, full teardown of capture + peer connections - disconnects all peers, disposes the
      * local video track/source, and stops the capturer. Call only when genuinely told to stop
@@ -1198,6 +1217,9 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
                 // before the video early-return below - honoring the speaker-mute
                 // capability state. Enabled remote audio plays on the phone speaker
                 // through the factory's audio device module.
+                if (remoteStream.audioTracks.size() > 0) {
+                    routeSpeakerAtMaxVolume();
+                }
                 for (final AudioTrack track : remoteStream.audioTracks) {
                     track.setEnabled(!mSpeakerMuted);
                 }
