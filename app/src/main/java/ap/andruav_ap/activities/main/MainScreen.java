@@ -2,6 +2,8 @@ package ap.andruav_ap.activities.main;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import android.Manifest;
+
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -29,12 +31,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,8 +85,11 @@ import com.andruav.event.networkEvent.EventSocketState;
 import ap.andruav_ap.guiEvent.GUIEvent_CommLineChanged;
 import ap.andruav_ap.guiEvent.GUIEvent_MissionServerChanged;
 import ap.andruav_ap.guiEvent.GUIEvent_UpdateConnection;
+import ap.andruav_ap.communication.UnitVoiceRegistry;
+import ap.andruav_ap.helpers.CheckAppPermissions;
 import ap.andruav_ap.helpers.GUI;
 import ap.andruav_ap.helpers.RemoteControl;
+import ap.andruav_ap.helpers.VoiceChannelController;
 import com.andruav.FeatureSwitch;
 
 import ap.andruavmiddlelibrary.preference.Preference;
@@ -167,6 +174,13 @@ public class MainScreen extends BaseAndruavShasha {
     private View mTileFpv;
     private View mTileCom;
     private View mTileFcb;
+
+    // VC-9: push-to-listen / push-to-talk voice row, shown when a remote unit on the
+    // group advertises ns=microphone / ns=speaker (see UnitVoiceRegistry).
+    private LinearLayout mVoiceRow;
+    private Button mBtnVoiceListen;
+    private Button mBtnVoiceTalk;
+    private final VoiceChannelController mVoiceController = new VoiceChannelController();
     private ImageView mIconImu;
     private ImageView mIconFpv;
     private ImageView mIconCom;
@@ -768,7 +782,92 @@ public class MainScreen extends BaseAndruavShasha {
         App.notification.showSnack(INotification.NOTIFICATION_TYPE_NORMAL, "Info", "Andruav version: " + App.versionName);
 
         updateServerCard();
+        buildVoiceRow();
         updateModuleTiles();
+    }
+
+
+    /**
+     * VC-9: builds the push-to-listen / push-to-talk row under the module tiles. It is
+     * added programmatically (no layout change) and stays hidden until a remote unit
+     * advertises ns=microphone or ns=speaker - see updateVoiceRow().
+     */
+    private void buildVoiceRow() {
+        final View tilesGrid = (View) mTileFcb.getParent();
+        final ViewGroup contentColumn = (ViewGroup) tilesGrid.getParent();
+        if (contentColumn == null) return;
+
+        final int margin = (int) (10 * getResources().getDisplayMetrics().density);
+
+        mVoiceRow = new LinearLayout(this);
+        mVoiceRow.setOrientation(LinearLayout.HORIZONTAL);
+        final LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        rowParams.topMargin = margin;
+        mVoiceRow.setLayoutParams(rowParams);
+        mVoiceRow.setVisibility(View.GONE);
+
+        mBtnVoiceListen = buildVoiceButton("LISTEN", VoiceChannelController.CHANNEL_LISTEN, margin);
+        mBtnVoiceTalk = buildVoiceButton("TALK", VoiceChannelController.CHANNEL_TALK, margin);
+        mVoiceRow.addView(mBtnVoiceListen);
+        mVoiceRow.addView(mBtnVoiceTalk);
+
+        contentColumn.addView(mVoiceRow, contentColumn.indexOfChild(tilesGrid) + 1);
+
+        mVoiceController.setStateListener(this::updateVoiceRow);
+    }
+
+    private Button buildVoiceButton(final String label, final String channel, final int margin) {
+        final Button button = new Button(this, null, android.R.attr.buttonStyleSmall);
+        final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        params.setMarginStart(margin / 2);
+        params.setMarginEnd(margin / 2);
+        button.setLayoutParams(params);
+        button.setText(label);
+        button.setOnTouchListener((view, event) -> {
+            final int action = event.getActionMasked();
+            if (action == MotionEvent.ACTION_DOWN) {
+                onVoicePressed(channel);
+            }
+            else if ((action == MotionEvent.ACTION_UP) || (action == MotionEvent.ACTION_CANCEL)) {
+                mVoiceController.release();
+            }
+            return true;
+        });
+        return button;
+    }
+
+    private void onVoicePressed(final String channel) {
+        if (VoiceChannelController.CHANNEL_TALK.equals(channel)
+                && !CheckAppPermissions.checkPermission(this, Manifest.permission.RECORD_AUDIO)) {
+            CheckAppPermissions.checkPermissionAndRequest(this,
+                    Manifest.permission.RECORD_AUDIO, "Voice talk needs the microphone.");
+            return;
+        }
+        mVoiceController.press(this, channel);
+    }
+
+    /**
+     * Gates the voice row on the remote-unit capability registry: Listen shows only when
+     * a remote unit advertises ns=microphone, Talk only for ns=speaker; the row hides
+     * when neither exists. Held buttons stay pressed-looking via isEnabled gating - one
+     * channel at a time (half duplex).
+     */
+    private void updateVoiceRow() {
+        if (mVoiceRow == null) return;
+
+        final UnitVoiceRegistry registry = UnitVoiceRegistry.getInstance();
+        final boolean micAvailable = registry.findUnitWith(UnitVoiceRegistry.NS_MICROPHONE) != null;
+        final boolean spkAvailable = registry.findUnitWith(UnitVoiceRegistry.NS_SPEAKER) != null;
+
+        mVoiceRow.setVisibility((micAvailable || spkAvailable) ? View.VISIBLE : View.GONE);
+
+        final String heldChannel = mVoiceController.getHeldChannel();
+        mBtnVoiceListen.setEnabled(micAvailable && (heldChannel == null
+                || VoiceChannelController.CHANNEL_LISTEN.equals(heldChannel)));
+        mBtnVoiceTalk.setEnabled(spkAvailable && (heldChannel == null
+                || VoiceChannelController.CHANNEL_TALK.equals(heldChannel)));
     }
 
 
@@ -1045,6 +1144,7 @@ public class MainScreen extends BaseAndruavShasha {
         setTileState(mTileFcb, mIconFcb, mStateFcb, fcbState, fcbCaption, fcbOpacity);
 
         updateTelemetryCard(fcbConnected);
+        updateVoiceRow();
     }
 
     private enum TileState {
@@ -1981,6 +2081,10 @@ public class MainScreen extends BaseAndruavShasha {
         invalidateOptionsMenu();
         updateFCBButton();
         updateFPVButton();
+        // VC-9: pick up a PeerConnectionManager if the streaming service is already
+        // running (bind flag 0 never creates it), then refresh the voice row gate.
+        mVoiceController.bindQuiet(this);
+        updateVoiceRow();
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         // onPause calls mhandle.removeCallbacksAndMessages(null) which cancels
@@ -2047,6 +2151,8 @@ public class MainScreen extends BaseAndruavShasha {
         mhandle.removeCallbacksAndMessages(null);
         // AN-0104: the dot pulse is an animator, not a handler post.
         setConnectingAnimation(false);
+        // VC-9: leaving the screen drops any held voice channel and the service binding.
+        mVoiceController.unbind(this);
         super.onPause();
 
 

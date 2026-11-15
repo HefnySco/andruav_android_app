@@ -69,6 +69,7 @@ import ap.andruav_ap.communication.telemetry.TelemetryModeer;
 
 import com.andruav.event.networkEvent.EventSocketState;
 import ap.andruav_ap.communication.AndruavUnitFactory;
+import ap.andruav_ap.communication.UnitVoiceRegistry;
 
 import ap.andruavmiddlelibrary.LoginClient;
 import ap.andruavmiddlelibrary.com.serenegiant.encoder.MediaVideoEncoder;
@@ -903,6 +904,7 @@ public class App  extends MultiDexApplication implements IEventBus, IPreference 
 
         EventBus.getDefault().register(this);
         AndruavEngine.setEventBus(this);
+        UnitVoiceRegistry.init();
         AndruavEngine.setEmergency(new Emergency());
 
         UIHandler();
