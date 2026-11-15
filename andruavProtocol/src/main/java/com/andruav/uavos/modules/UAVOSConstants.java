@@ -33,4 +33,11 @@ final public class UAVOSConstants {
     public final static String CAMERA_RECORDING_NOW     = "r";
 
     public final static String CAMERA_SPECIFICATION     = "s";
+
+    // Voice chat (VC-7/VC-8): the wire channels a GCS dials for the
+    // ns=microphone / ns=speaker capabilities. They are not camera entries,
+    // so signaling on them resolves to the built-in camera module that owns
+    // the PeerConnectionManager.
+    public final static String VOICE_CHANNEL_MIC        = "mic";
+    public final static String VOICE_CHANNEL_SPK        = "spk";
 }

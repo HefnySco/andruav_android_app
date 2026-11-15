@@ -39,9 +39,9 @@ public final class PhoneAudioModule implements DeCapabilityProvider {
     public static final String NS_SPEAKER = "speaker";
 
     /** The mic track id is the wire channel the GCS dials (channel=mic). */
-    public static final String CHANNEL_MIC = "mic";
+    public static final String CHANNEL_MIC = com.andruav.uavos.modules.UAVOSConstants.VOICE_CHANNEL_MIC;
     /** The GCS-to-unit voice direction dials channel=spk. */
-    public static final String CHANNEL_SPK = "spk";
+    public static final String CHANNEL_SPK = com.andruav.uavos.modules.UAVOSConstants.VOICE_CHANNEL_SPK;
 
     /** The app's microphone surface. */
     public interface Mic {

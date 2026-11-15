@@ -1072,7 +1072,14 @@ public abstract class AndruavWSClientBase {
 
 
                     // get Module for Requested Camera
-                    UAVOSModuleCamera cameraModule = UAVOSHelper.getCameraByID(andruavMessage_signaling.getJsonResala().getString("channel"));
+                    final String signalingChannel = andruavMessage_signaling.getJsonResala().getString("channel");
+                    UAVOSModuleCamera cameraModule = UAVOSHelper.getCameraByID(signalingChannel);
+                    if (cameraModule == null && UAVOSHelper.isVoiceChannel(signalingChannel)) {
+                        // Voice chat (VC-7/VC-8): channel=mic/spk are not camera
+                        // entries; they are served by the same PeerConnectionManager
+                        // the built-in camera module owns.
+                        cameraModule = UAVOSHelper.getBuiltInCamera();
+                    }
                     if (cameraModule == null) {
                         // camera is not available
                         break;

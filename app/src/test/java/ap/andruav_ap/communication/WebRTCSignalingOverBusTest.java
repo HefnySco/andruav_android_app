@@ -207,6 +207,39 @@ public class WebRTCSignalingOverBusTest {
 
 
     /***
+     * Voice chat (VC-7/VC-8): channel=mic and channel=spk are not camera-list
+     * entries; they resolve to the built-in camera module that owns the
+     * PeerConnectionManager, so a GCS Listen/Talk dial is not dropped.
+     */
+    @Test
+    public void joinmeOnVoiceChannelsPostsSignalling() throws Exception {
+        AndruavDeBusClient client = new AndruavDeBusClient(new FakeModule(), Runnable::run);
+
+        feed(client, scalarFrame(GCS_PARTY_ID, OWN_PARTY_ID,
+                Messages.TYPE_AndruavMessage_Signaling,
+                signalingMs(UAVOSConstants.VOICE_CHANNEL_MIC,
+                        new JSONObject().put("joinme", true))));
+
+        Event_Signalling signalling = mEventBus.lastSignalling();
+        assertNotNull(signalling);
+        assertEquals(UAVOSConstants.VOICE_CHANNEL_MIC,
+                signalling.jsonObject.getString("channel"));
+
+        client = new AndruavDeBusClient(new FakeModule(), Runnable::run);
+
+        feed(client, scalarFrame(GCS_PARTY_ID, OWN_PARTY_ID,
+                Messages.TYPE_AndruavMessage_Signaling,
+                signalingMs(UAVOSConstants.VOICE_CHANNEL_SPK,
+                        new JSONObject().put("joinme", true))));
+
+        signalling = mEventBus.lastSignalling();
+        assertNotNull(signalling);
+        assertEquals(UAVOSConstants.VOICE_CHANNEL_SPK,
+                signalling.jsonObject.getString("channel"));
+    }
+
+
+    /***
      * The 1012 camera list and the 1021 dispatch share one source:
      * {@link UAVOSHelper#getCameraList()} publishes the stream entry and
      * {@link UAVOSHelper#getCameraByID} resolves its channel key back to the

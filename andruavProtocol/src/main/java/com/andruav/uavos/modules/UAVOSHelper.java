@@ -96,6 +96,20 @@ public final  class UAVOSHelper {
     }
 
 
+    /**
+     * Voice chat (VC-7/VC-8): true when the dialed channel is a voice
+     * channel (channel=mic / channel=spk). Voice channels are advertised by
+     * the ns=microphone / ns=speaker capabilities and are not camera-list
+     * entries, so they resolve to {@link #getBuiltInCamera()} rather than
+     * {@link #getCameraByID(String)}.
+     */
+    public static boolean isVoiceChannel (final String channel)
+    {
+        return UAVOSConstants.VOICE_CHANNEL_MIC.equals(channel)
+                || UAVOSConstants.VOICE_CHANNEL_SPK.equals(channel);
+    }
+
+
     public static UAVOSModuleCamera getBuiltInCamera ()
     {
 

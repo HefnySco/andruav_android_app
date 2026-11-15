@@ -25,8 +25,8 @@ import ap.andruavmiddlelibrary.webrtc.classes.PeerConnectionManager;
  */
 public class VoiceChannelController {
 
-    public static final String CHANNEL_LISTEN = "mic";
-    public static final String CHANNEL_TALK = "spk";
+    public static final String CHANNEL_LISTEN = com.andruav.uavos.modules.UAVOSConstants.VOICE_CHANNEL_MIC;
+    public static final String CHANNEL_TALK = com.andruav.uavos.modules.UAVOSConstants.VOICE_CHANNEL_SPK;
 
     private static final int JOIN_RETRY_DELAY_MS = 400;
     private static final int JOIN_RETRY_LIMIT = 15;
