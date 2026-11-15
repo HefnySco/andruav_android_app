@@ -23,6 +23,7 @@ import ap.andruav_ap.communication.telemetry.AndruavSMSClientParser;
 import ap.andruav_ap.communication.telemetry.SmsKeywords;
 import ap.andruav_ap.denative.NativeUnitController;
 import ap.andruav_ap.denative.config.DeConfigGenerator;
+import ap.andruav_ap.denative.modules.PhoneAudioModule;
 import ap.andruav_ap.denative.modules.PhoneBusModules;
 import ap.andruav_ap.denative.modules.PhoneCameraModule;
 import ap.andruav_ap.denative.position.PhoneGnssFixSource;
@@ -233,6 +234,13 @@ public class DeAndroidModuleService extends Service {
         final CameraProvider cameraProvider =
                 new CameraProvider(CameraController.getInstance(), BuildConfig.VERSION_NAME);
         providers.add(cameraProvider);
+        // "microphone" namespace: the VC-7 voice-chat advert - the audio
+        // itself is the mic track PeerConnectionManager puts on the
+        // WebRTC stream, gated on the same RECORD_AUDIO grant.
+        providers.add(new PhoneAudioModule(
+                () -> checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)
+                        == android.content.pm.PackageManager.PERMISSION_GRANTED,
+                BuildConfig.VERSION_NAME));
         final CapabilityHost host = new CapabilityHost(module, providers);
         // Registers adverts + takes over invoke/event routing before the
         // socket exists; the advert goes out on the first ID reply.

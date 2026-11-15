@@ -1,7 +1,9 @@
 package ap.andruavmiddlelibrary.webrtc.classes;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -17,6 +19,8 @@ import java.util.Map;
 import com.andruav.AndruavDroneFacade;
 import com.andruav.AndruavEngine;
 
+import org.webrtc.AudioSource;
+import org.webrtc.AudioTrack;
 import org.webrtc.Camera1Enumerator;
 import org.webrtc.Camera2Enumerator;
 import org.webrtc.CameraEnumerator;
@@ -25,6 +29,7 @@ import org.webrtc.DefaultVideoDecoderFactory;
 import org.webrtc.DefaultVideoEncoderFactory;
 import org.webrtc.EglBase;
 import org.webrtc.GlRectDrawer;
+import org.webrtc.MediaConstraints;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.RendererCommon;
@@ -43,6 +48,9 @@ import org.webrtc.VideoTrack;
 
 
 import com.andruav.FeatureSwitch;
+
+import androidx.core.content.ContextCompat;
+
 import ap.andruavmiddlelibrary.Voting;
 import ap.andruavmiddlelibrary.factory.LooperExecutor;
 import ap.andruavmiddlelibrary.preference.Preference;
@@ -118,6 +126,10 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
     private boolean     videoSourceStopped = true;
     private VideoTrack localVideoTrack;
     private MediaStream mediaStream;
+    // VC-7 voice chat: present only while RECORD_AUDIO is granted at init -
+    // the local stream then carries the mic on every dial (channel=mic too).
+    private AudioSource localAudioSource;
+    private AudioTrack localAudioTrack;
 
     private SurfaceTextureHelper mVideoCapturerSurfaceTextureHelper;
     private SurfaceViewRenderer mSurfaceViewRenderer;
@@ -136,6 +148,8 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
 
     private boolean connected ;
     public static final String LOCAL_MEDIA_STREAM_ID = "localStreamPN";
+    /** Mic track id = the voice-chat wire channel the GCS dials (channel=mic). */
+    public static final String MICROPHONE_TRACK_ID = "mic";
 
     private MediaStream mRemoteStream;
 
@@ -263,6 +277,19 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
                     if (mLocalPreviewSink != null) mLocalPreviewSink.onFrame(videoFrame);
                     mExternalVideoSink.onFrame(videoFrame);
                 });
+            }
+
+            // Voice chat (VC-7): with RECORD_AUDIO granted the local stream also carries the
+            // phone microphone - PnPeer then attaches it as a SEND_ONLY transceiver on every
+            // dial, and a GCS dialing channel=mic receives the audio track. The track id is the
+            // same channel value the ns=microphone advert points the GCS at. Without the
+            // permission the stream stays video-only - mic access is optional and must never
+            // block or break camera streaming.
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
+                    == PackageManager.PERMISSION_GRANTED) {
+                localAudioSource = pcFactory.createAudioSource(new MediaConstraints());
+                localAudioTrack = pcFactory.createAudioTrack(MICROPHONE_TRACK_ID, localAudioSource);
+                mediaStream.addTrack(localAudioTrack);
             }
 
             // Construct PnRTC_3ameel (and with it, the incoming-signaling/EventBus listener) only
@@ -948,13 +975,14 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
 
             // Renderer lifecycle is owned exclusively by attachLocalRenderer()/detachLocalRenderer()
             // now - capture teardown must not touch it.
-            // dont uncomment
-            /*
-            if (localAudioSource != null && !audioSourceStopped) {
-                localAudioSource.dispose();
-                audioSourceStopped = true;
+            if (localAudioTrack != null) {
+                localAudioTrack.dispose();
+                localAudioTrack = null;
             }
-            */
+            if (localAudioSource != null) {
+                localAudioSource.dispose();
+                localAudioSource = null;
+            }
 
             synchronized (_waitClose)
             {
