@@ -130,6 +130,11 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
     // the local stream then carries the mic on every dial (channel=mic too).
     private AudioSource localAudioSource;
     private AudioTrack localAudioTrack;
+    // VC-8 voice chat: the ns=speaker mute. Static because the mute invoke
+    // lands on the andruav_phone capability host while the remote stream
+    // lives on whichever manager FPVStreamingService currently owns.
+    private static volatile boolean mSpeakerMuted;
+    private static PeerConnectionManager sActiveManager;
 
     private SurfaceTextureHelper mVideoCapturerSurfaceTextureHelper;
     private SurfaceViewRenderer mSurfaceViewRenderer;
@@ -203,6 +208,7 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
 
         try {
             Me = this;
+            sActiveManager = this;
             mDisplayLocal = displayLocal;
             mExternalVideoSink = externalVideoSink;
             mContext = context;
@@ -721,6 +727,27 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
         if (this.pnRTC3ameel != null) {
             this.pnRTC3ameel.onDestroy();
         }
+        if (sActiveManager == this) sActiveManager = null;
+    }
+
+    /** VC-8: ns=speaker mute/unmute invoked through the capability host. */
+    public static void setSpeakerMuted(final boolean muted) {
+        mSpeakerMuted = muted;
+        final PeerConnectionManager active = sActiveManager;
+        if (active != null) active.applySpeakerMute();
+    }
+
+    public static boolean isSpeakerMuted() {
+        return mSpeakerMuted;
+    }
+
+    /** Applies the mute flag to the live remote stream's audio tracks. */
+    private void applySpeakerMute() {
+        final MediaStream stream = mRemoteStream;
+        if (stream == null) return;
+        for (final AudioTrack track : stream.audioTracks) {
+            track.setEnabled(!mSpeakerMuted);
+        }
     }
 
     /**
@@ -1165,6 +1192,15 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
                 connected = true;
 
                 mRemoteStream = remoteStream;
+
+                // Voice chat (VC-8): a GCS push-to-talk dial (channel=spk) can arrive
+                // as an audio-only stream, so remote audio tracks are enabled here -
+                // before the video early-return below - honoring the speaker-mute
+                // capability state. Enabled remote audio plays on the phone speaker
+                // through the factory's audio device module.
+                for (final AudioTrack track : remoteStream.audioTracks) {
+                    track.setEnabled(!mSpeakerMuted);
+                }
 
                 // TODO: WEBRTC fix This
                 if (remoteStream.videoTracks.size() == 0)

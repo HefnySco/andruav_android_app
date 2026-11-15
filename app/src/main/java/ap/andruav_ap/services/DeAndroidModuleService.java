@@ -42,6 +42,7 @@ import ap.andruav_ap.services.fpv.CameraController;
 import ap.andruavmiddlelibrary.factory.DeviceFeatures;
 import ap.andruavmiddlelibrary.factory.communication.SMS;
 import ap.andruavmiddlelibrary.preference.Preference;
+import ap.andruavmiddlelibrary.webrtc.classes.PeerConnectionManager;
 import com.andruav.AndruavEngine;
 import com.andruav.uavos.modules.UAVOSHelper;
 import com.andruav.andruavUnit.AndruavUnitBase;
@@ -234,13 +235,26 @@ public class DeAndroidModuleService extends Service {
         final CameraProvider cameraProvider =
                 new CameraProvider(CameraController.getInstance(), BuildConfig.VERSION_NAME);
         providers.add(cameraProvider);
-        // "microphone" namespace: the VC-7 voice-chat advert - the audio
-        // itself is the mic track PeerConnectionManager puts on the
-        // WebRTC stream, gated on the same RECORD_AUDIO grant.
-        providers.add(new PhoneAudioModule(
+        // "microphone" + "speaker" namespaces: the VC-7/VC-8 voice-chat
+        // adverts - the audio itself rides the WebRTC stream
+        // PeerConnectionManager owns, gated on the RECORD_AUDIO grant
+        // (mic) and its speaker-mute flag (speaker mute/unmute).
+        final PhoneAudioModule phoneAudioModule = new PhoneAudioModule(
                 () -> checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)
                         == android.content.pm.PackageManager.PERMISSION_GRANTED,
-                BuildConfig.VERSION_NAME));
+                new PhoneAudioModule.Speaker() {
+                    @Override
+                    public void setMuted(final boolean muted) {
+                        PeerConnectionManager.setSpeakerMuted(muted);
+                    }
+
+                    @Override
+                    public boolean muted() {
+                        return PeerConnectionManager.isSpeakerMuted();
+                    }
+                },
+                BuildConfig.VERSION_NAME);
+        providers.add(phoneAudioModule);
         final CapabilityHost host = new CapabilityHost(module, providers);
         // Registers adverts + takes over invoke/event routing before the
         // socket exists; the advert goes out on the first ID reply.
@@ -248,6 +262,7 @@ public class DeAndroidModuleService extends Service {
         phoneProvider.attach(host);
         soundProvider.attach(host);
         cameraProvider.attach(host);
+        phoneAudioModule.attach(host);
         soundProvider.setSirenHook(whistling -> {
             if (com.andruav.AndruavSettings.andruavWe7daBase != null) {
                 com.andruav.AndruavSettings.andruavWe7daBase.setIsWhisling(whistling);
