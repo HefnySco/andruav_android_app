@@ -11,6 +11,7 @@ import org.webrtc.AudioTrack;
 import org.webrtc.DataChannel;
 import org.webrtc.IceCandidate;
 import org.webrtc.MediaStream;
+import org.webrtc.MediaStreamTrack;
 import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnection.SignalingState;
 import org.webrtc.RtpReceiver;
@@ -57,7 +58,7 @@ public class PnPeer implements SdpObserver, PeerConnection.Observer {
 
     // Todo: Maybe attach MediaStream as private var?
 
-    public PnPeer(final String id, final String channel, PeerConnectionClientBase pcClient, final AndruavUnitBase andruavUnitBase) {
+    public PnPeer(final String id, final String channel, PeerConnectionClientBase pcClient, final AndruavUnitBase andruavUnitBase, final boolean offeringParty) {
         Log.d(TAG, "new Peer: " + id);
         this.id = id;
         this.type = TYPE_NONE;
@@ -76,16 +77,45 @@ public class PnPeer implements SdpObserver, PeerConnection.Observer {
         //BUG: seems that pc can be null and crash the APP.
         // not sure why it can be NULL
         mChannel = channel;
-        final MediaStream localStream = pcClient.getLocalMediaStream();
-        if (localStream != null) {
-            final List<String> streamIds = Collections.singletonList(localStream.getId());
-            final RtpTransceiver.RtpTransceiverInit sendOnly = new RtpTransceiver.RtpTransceiverInit(
-                    RtpTransceiver.RtpTransceiverDirection.SEND_ONLY, streamIds);
-            for (final VideoTrack track : localStream.videoTracks) {
-                pc.addTransceiver(track, sendOnly);
+        // Voice chat (VC-7/VC-8): channel=mic carries unit->GCS audio and
+        // channel=spk carries GCS->unit audio, so the transceiver direction is
+        // channel-relative, not role-relative. On a video channel the local
+        // tracks (video + the bundled mic) go out as before.
+        final boolean voiceSpk = com.andruav.uavos.modules.UAVOSConstants.VOICE_CHANNEL_SPK.equals(channel);
+        final boolean voiceMic = com.andruav.uavos.modules.UAVOSConstants.VOICE_CHANNEL_MIC.equals(channel);
+        final boolean receivesAudio = voiceSpk == offeringParty;
+        if (voiceSpk || voiceMic) {
+            if (receivesAudio) {
+                // The far end is the audio source on this channel: a
+                // receive-only m-line lets its track land.
+                pc.addTransceiver(MediaStreamTrack.MediaType.MEDIA_TYPE_AUDIO,
+                        new RtpTransceiver.RtpTransceiverInit(
+                                RtpTransceiver.RtpTransceiverDirection.RECV_ONLY));
+            } else {
+                // This side is the audio source: send the mic only - a voice
+                // session carries no video.
+                final MediaStream localStream = pcClient.getLocalMediaStream();
+                if (localStream != null) {
+                    final List<String> streamIds = Collections.singletonList(localStream.getId());
+                    final RtpTransceiver.RtpTransceiverInit sendOnly = new RtpTransceiver.RtpTransceiverInit(
+                            RtpTransceiver.RtpTransceiverDirection.SEND_ONLY, streamIds);
+                    for (final AudioTrack track : localStream.audioTracks) {
+                        pc.addTransceiver(track, sendOnly);
+                    }
+                }
             }
-            for (final AudioTrack track : localStream.audioTracks) {
-                pc.addTransceiver(track, sendOnly);
+        } else {
+            final MediaStream localStream = pcClient.getLocalMediaStream();
+            if (localStream != null) {
+                final List<String> streamIds = Collections.singletonList(localStream.getId());
+                final RtpTransceiver.RtpTransceiverInit sendOnly = new RtpTransceiver.RtpTransceiverInit(
+                        RtpTransceiver.RtpTransceiverDirection.SEND_ONLY, streamIds);
+                for (final VideoTrack track : localStream.videoTracks) {
+                    pc.addTransceiver(track, sendOnly);
+                }
+                for (final AudioTrack track : localStream.audioTracks) {
+                    pc.addTransceiver(track, sendOnly);
+                }
             }
         }
     }

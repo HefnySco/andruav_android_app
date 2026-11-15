@@ -91,7 +91,11 @@ public class AndruavPeerConnectionClientClient extends PeerConnectionClientBase 
                             return;
                         }
 
-                        peer = addPeer(peerId,channel, a7adath_signalling.andruavUnitBase);
+                        // offeringParty: a "joinme" turns this peer into the offerer
+                        // (broadcaster/unit role); any other first packet means we are
+                        // the answerer (GCS/dialer role).
+                        peer = addPeer(peerId,channel, a7adath_signalling.andruavUnitBase,
+                                packet.has(PnRTCResala.JSON_JOINME));
                     } else {
                         peer = peers.get(peerId+channel);
                     }

@@ -57,7 +57,17 @@ public class PeerConnectionClientBase {
 
 
     protected PnPeer addPeer(final String id, final String channel, final AndruavUnitBase andruavUnitBase) {
-        PnPeer peer = new PnPeer(id, channel, this, andruavUnitBase);
+        return addPeer(id, channel, andruavUnitBase, false);
+    }
+
+    /***
+     * @param offeringParty true when this side will produce the offer (the
+     * broadcaster answering a "joinme", or an outbound dial) - on a
+     * channel=spk session that is the unit/speaker role which offers a
+     * receive-only audio m-line.
+     */
+    protected PnPeer addPeer(final String id, final String channel, final AndruavUnitBase andruavUnitBase, final boolean offeringParty) {
+        PnPeer peer = new PnPeer(id, channel, this, andruavUnitBase, offeringParty);
         peers.put(id + channel, peer);
         return peer;
     }
@@ -172,7 +182,7 @@ public class PeerConnectionClientBase {
     boolean connect(final String userId, final String channel,final AndruavUnitBase andruavUnitBase) {
         if (!peers.containsKey(userId)) { // Prevents duplicate dials.
             if (peers.size() < MAX_CONNECTIONS) {
-                final PnPeer peer = addPeer(userId, channel, andruavUnitBase);
+                final PnPeer peer = addPeer(userId, channel, andruavUnitBase, true);
                // if (localMediaStream!=null)  peer.pc.addStream(this.localMediaStream);  //DONT addStream ... u r GCS ... why do u want to add a stream?
                 try {
                     actionMap.get(CreateOfferAction.TRIGGER).execute(userId,channel, new JSONObject());
