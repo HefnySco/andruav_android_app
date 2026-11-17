@@ -291,12 +291,7 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
             // same channel value the ns=microphone advert points the GCS at. Without the
             // permission the stream stays video-only - mic access is optional and must never
             // block or break camera streaming.
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
-                    == PackageManager.PERMISSION_GRANTED) {
-                localAudioSource = pcFactory.createAudioSource(new MediaConstraints());
-                localAudioTrack = pcFactory.createAudioTrack(MICROPHONE_TRACK_ID, localAudioSource);
-                mediaStream.addTrack(localAudioTrack);
-            }
+            ensureMicrophoneTrack();
 
             // Construct PnRTC_3ameel (and with it, the incoming-signaling/EventBus listener) only
             // now that mediaStream/localVideoTrack are fully built. PnRTC_3ameel's constructor makes
@@ -340,6 +335,9 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
      * repeatedly (e.g. each time an Activity resumes) and safe to call while capture is running.
      */
     public void attachLocalRenderer(final SurfaceViewRenderer renderer) {
+        // DE-0171: an Activity (re)bind is the first moment a RECORD_AUDIO
+        // grant made in Settings can be observed - create the track here.
+        ensureMicrophoneTrack();
         if (renderer == null) return;
         if (mSurfaceViewRenderer == renderer) return;
 
@@ -808,12 +806,44 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
 
         if (localVideoSource==null) return;
 
+        ensureMicrophoneTrack();
         startLocalVideoSource();
 
     }
 
+    /**
+     * DE-0171: creates the mic audio track when RECORD_AUDIO is granted
+     * after init. VC-7 created the track only inside init(), so a grant
+     * given later (in-app prompt or Android Settings) left the phone
+     * advertising ns=microphone with no track to send until the next
+     * init. Called from init(), onResume(), attachLocalRenderer(),
+     * joinToDrone() and on inbound mic-channel signalling, so the track
+     * exists before the next mic peer reads the local stream. No-op
+     * without the permission, before init builds mediaStream/pcFactory,
+     * or once the track exists.
+     * @return true while the local stream carries the mic track.
+     */
+    public synchronized boolean ensureMicrophoneTrack() {
+        if (localAudioTrack != null) return true;
+        if ((mediaStream == null) || (pcFactory == null) || (mContext == null)) return false;
+        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }
+        localAudioSource = pcFactory.createAudioSource(new MediaConstraints());
+        localAudioTrack = pcFactory.createAudioTrack(MICROPHONE_TRACK_ID, localAudioSource);
+        mediaStream.addTrack(localAudioTrack);
+        return true;
+    }
+
+    /** DE-0171: true once the mic track lives on the local stream. */
+    public synchronized boolean hasMicrophoneTrack() {
+        return localAudioTrack != null;
+    }
+
     public void joinToDrone (final String unitID, final String channel)
     {
+        ensureMicrophoneTrack();
         try
         {
             if (!FeatureSwitch.IGNORE_NO_INTERNET_CONNECTION) {
@@ -1282,7 +1312,14 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
         }
 
         public void onDebug(PnRTCResala message){
-
+            // DE-0171: an inbound packet on channel=mic means a GCS is
+            // reaching for the microphone. This runs before addPeer
+            // builds the PnPeer, so creating the track here puts it in
+            // the local stream the peer's SEND_ONLY transceiver reads.
+            if (com.andruav.uavos.modules.UAVOSConstants.VOICE_CHANNEL_MIC
+                    .equals(message.optString(PnRTCResala.JSON_CHANNEL))) {
+                ensureMicrophoneTrack();
+            }
         }
     }
 
