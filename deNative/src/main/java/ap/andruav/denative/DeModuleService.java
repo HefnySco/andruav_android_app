@@ -10,7 +10,9 @@ import android.content.res.AssetManager;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.os.Process;
 import android.util.Log;
@@ -196,7 +198,11 @@ public abstract class DeModuleService extends Service {
             }
         }
         releaseLocks();
-        Process.killProcess(Process.myPid());
+        /* The kill must run after onStartCommand returns: dying while the
+         * STOP delivery is still pending makes ActivityManager reschedule
+         * the intent as a crashed service, and the redelivery loops. */
+        new Handler(Looper.getMainLooper()).post(
+                () -> Process.killProcess(Process.myPid()));
     }
 
     private void copyAssetsIfMissing(File workDir) {
