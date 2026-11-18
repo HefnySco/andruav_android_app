@@ -195,8 +195,10 @@ public class PhoneProviderTest {
         final PhoneProvider provider = makeProvider();
         final JSONObject params = ((JSONObject) provider.adverts().get(0))
                 .getJSONObject("actions").getJSONObject("torch").getJSONObject("params");
-        assertEquals(1, params.length());
+        assertEquals(2, params.length());
         assertEquals("bool", params.getJSONObject("on").getString("type"));
+        // AN-0130: optional strobe_hz turns the steady torch into a blink
+        assertTrue(params.getJSONObject("strobe_hz").getBoolean("optional"));
 
         Sink sink = new Sink();
         provider.invoke("t1", "phone", "torch",
@@ -214,13 +216,66 @@ public class PhoneProviderTest {
     }
 
     @Test
+    public void torchStrobeHzBlinksTheSteadyTorch() throws Exception {
+        final PhoneProvider provider = makeProvider();
+        final PhoneOutput torch = m_bank.output("torch");
+
+        // an explicit rate blinks the otherwise steady torch at 50% duty
+        Sink sink = new Sink();
+        provider.invoke("r1", "phone", "torch",
+                new JSONObject().put("on", true).put("strobe_hz", 8), 10000, sink);
+        assertNull(sink.err);
+        assertTrue(torch.isOn());
+        assertEquals(8.0, torch.pwmHz(), 0.001);
+        assertEquals(512, torch.pwmDuty());
+
+        // strobe_hz of 0 keeps the configured (steady) behavior
+        sink = new Sink();
+        provider.invoke("r2", "phone", "torch",
+                new JSONObject().put("on", true).put("strobe_hz", 0), 10000, sink);
+        assertNull(sink.err);
+        assertTrue(torch.isOn());
+
+        // out of range is an invoke error
+        sink = new Sink();
+        provider.invoke("r3", "phone", "torch",
+                new JSONObject().put("on", true).put("strobe_hz", 99), 10000, sink);
+        assertNotNull(sink.err);
+    }
+
+    @Test
+    public void torchDriverPlanKeepsSteadyOnForZeroRate() {
+        // AN-0119 regression: a zero configured rate through the rate
+        // overload is the steady-on path, never an off
+        final double[] rate = new double[1];
+        assertEquals(TorchDriver.PLAN_STEADY,
+                TorchDriver.planApply(true, 0, 512, 0, rate));
+        assertEquals(TorchDriver.PLAN_OFF,
+                TorchDriver.planApply(false, 0, 512, 0, rate));
+        assertEquals(TorchDriver.PLAN_OFF,
+                TorchDriver.planApply(true, 0, 0, 4.0, rate));
+        assertEquals(TorchDriver.PLAN_STEADY,
+                TorchDriver.planApply(true, 0, 1024, 0, rate));
+        assertEquals(TorchDriver.PLAN_BLINK,
+                TorchDriver.planApply(true, 8, 512, 0, rate));
+        assertEquals(8.0, rate[0], 0.001);
+        assertEquals(TorchDriver.PLAN_BLINK,
+                TorchDriver.planApply(true, 0, 512, 4.0, rate));
+        assertEquals(4.0, rate[0], 0.001);
+    }
+
+    @Test
     public void strobeTakesPeriodAndDutyPercent() throws Exception {
         final PhoneProvider provider = makeProvider();
         final JSONObject actions = ((JSONObject) provider.adverts().get(0)).getJSONObject("actions");
         assertFalse(actions.has("torch_strobe"));
         final JSONObject params = actions.getJSONObject("strobe").getJSONObject("params");
-        assertEquals(2, params.length());
+        assertEquals(3, params.length());
         assertEquals(100, params.getJSONObject("duty").getInt("max"));
+        // AN-0130: optional rate override, exposed for *.pwm role binding
+        assertTrue(params.getJSONObject("strobe_hz").getBoolean("optional"));
+        assertEquals(PhoneOutput.MAX_STROBE_HZ,
+                params.getJSONObject("strobe_hz").getDouble("max"), 0.001);
 
         Sink sink = new Sink();
         provider.invoke("s1", "phone", "strobe",
@@ -245,6 +300,33 @@ public class PhoneProviderTest {
         sink = new Sink();
         provider.invoke("s4", "phone", "strobe",
                 new JSONObject().put("pulse_ms", 200).put("duty", 101), 10000, sink);
+        assertNotNull(sink.err);
+    }
+
+    @Test
+    public void strobeHzOverridesThePeriod() throws Exception {
+        final PhoneProvider provider = makeProvider();
+        final PhoneOutput strobe = m_bank.output("strobe");
+
+        // an explicit rate wins over pulse_ms
+        Sink sink = new Sink();
+        provider.invoke("h1", "phone", "strobe",
+                new JSONObject().put("strobe_hz", 8).put("duty", 25), 10000, sink);
+        assertNull(sink.err);
+        assertEquals(8.0, strobe.pwmHz(), 0.001);
+        assertEquals(256, strobe.pwmDuty());
+
+        // strobe_hz <= 0 falls back to the configured (pulse_ms) behavior
+        sink = new Sink();
+        provider.invoke("h2", "phone", "strobe",
+                new JSONObject().put("strobe_hz", 0).put("pulse_ms", 200), 10000, sink);
+        assertNull(sink.err);
+        assertEquals(5.0, strobe.pwmHz(), 0.001);
+
+        // out of range is an invoke error
+        sink = new Sink();
+        provider.invoke("h3", "phone", "strobe",
+                new JSONObject().put("strobe_hz", 99), 10000, sink);
         assertNotNull(sink.err);
     }
 

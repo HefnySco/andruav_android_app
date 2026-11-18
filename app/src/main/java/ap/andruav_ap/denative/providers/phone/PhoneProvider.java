@@ -261,7 +261,10 @@ public class PhoneProvider implements DeCapabilityProvider {
     /** The advertised {@code with} of one per-resource action. */
     private static JSONObject _action_params(final PhoneOutputSpec spec) {
         if (spec.isSteadyTorch()) {
-            return _kv("on", _kv("type", "bool", "default", true));
+            return _kv(
+                    "on", _kv("type", "bool", "default", true),
+                    "strobe_hz", _strobe_hz_param(
+                            "blink at this rate instead of steady; 0 or absent keeps steady"));
         }
         if (spec.isTorchStrobe()) {
             return _kv(
@@ -278,7 +281,9 @@ public class PhoneProvider implements DeCapabilityProvider {
                             "max", 100,
                             "unit", "%",
                             "default", PhoneOutput.STROBE_DUTY_DEFAULT,
-                            "desc", "lit share of the period; 0 stops the strobe"));
+                            "desc", "lit share of the period; 0 stops the strobe"),
+                    "strobe_hz", _strobe_hz_param(
+                            "blink rate override; 0 or absent keeps pulse_ms"));
         }
         return _kv(
                 "on", _kv("type", "bool"),
@@ -290,22 +295,52 @@ public class PhoneProvider implements DeCapabilityProvider {
                         "optional", true));
     }
 
-    /** {@code phone.strobe {pulse_ms, duty}}: blinks until a duty of 0 stops it. */
+    /** AN-0130: the optional {@code strobe_hz} param shape both torch actions share. */
+    private static JSONObject _strobe_hz_param(final String desc) {
+        return _kv(
+                "type", "number",
+                "min", 0,
+                "max", PhoneOutput.MAX_STROBE_HZ,
+                "unit", "Hz",
+                "optional", true,
+                "desc", desc);
+    }
+
+    /**
+     * {@code phone.strobe {pulse_ms?, duty?, strobe_hz?}}: blinks until a
+     * duty of 0 stops it. A {@code strobe_hz > 0} overrides the
+     * {@code pulse_ms} period; absent or {@code <= 0} keeps the
+     * configured behavior (AN-0130).
+     */
     private void _invoke_strobe(final String act, final PhoneOutput output,
                                 final JSONObject params, final ResultSink sink) {
-        final int period_ms = params.optInt("pulse_ms", PhoneOutput.STROBE_PERIOD_DEFAULT_MS);
         final int duty = params.optInt("duty", PhoneOutput.STROBE_DUTY_DEFAULT);
-        if (period_ms < PhoneOutput.STROBE_PERIOD_MIN_MS
-                || period_ms > PhoneOutput.STROBE_PERIOD_MAX_MS) {
-            sink.err(NS + "." + act + ": pulse_ms must be "
-                    + PhoneOutput.STROBE_PERIOD_MIN_MS + ".." + PhoneOutput.STROBE_PERIOD_MAX_MS);
-            return;
-        }
         if (duty < 0 || duty > 100) {
             sink.err(NS + "." + act + ": duty must be 0..100");
             return;
         }
-        final String err = output.writePwm(duty > 0, 1000.0 / period_ms,
+        final double strobe_hz = params.optDouble("strobe_hz", 0);
+        final double rate_hz;
+        if (strobe_hz > 0) {
+            if (strobe_hz > PhoneOutput.MAX_STROBE_HZ) {
+                sink.err(NS + "." + act + ": strobe_hz must be 0.."
+                        + PhoneOutput.MAX_STROBE_HZ);
+                return;
+            }
+            rate_hz = strobe_hz;
+        } else {
+            final int period_ms = params.optInt("pulse_ms",
+                    PhoneOutput.STROBE_PERIOD_DEFAULT_MS);
+            if (period_ms < PhoneOutput.STROBE_PERIOD_MIN_MS
+                    || period_ms > PhoneOutput.STROBE_PERIOD_MAX_MS) {
+                sink.err(NS + "." + act + ": pulse_ms must be "
+                        + PhoneOutput.STROBE_PERIOD_MIN_MS + ".."
+                        + PhoneOutput.STROBE_PERIOD_MAX_MS);
+                return;
+            }
+            rate_hz = 1000.0 / period_ms;
+        }
+        final String err = output.writePwm(duty > 0, rate_hz,
                 duty * 1024 / 100, PhoneOutput.SRC_INVOKE);
         _answer_write(output, err, sink);
     }
@@ -371,9 +406,25 @@ public class PhoneProvider implements DeCapabilityProvider {
                 sink.err(NS + "." + act + ": 'on' must be true or false");
                 return;
             }
-            if (output.spec().isSteadyTorch() && params.has("pulse_ms")) {
-                sink.err(NS + "." + act + " takes only 'on'");
-                return;
+            if (output.spec().isSteadyTorch()) {
+                if (params.has("pulse_ms")) {
+                    sink.err(NS + "." + act + " takes only 'on' and 'strobe_hz'");
+                    return;
+                }
+                final double strobe_hz = params.optDouble("strobe_hz", 0);
+                if (strobe_hz > PhoneOutput.MAX_STROBE_HZ) {
+                    sink.err(NS + "." + act + ": strobe_hz must be 0.."
+                            + PhoneOutput.MAX_STROBE_HZ);
+                    return;
+                }
+                if (strobe_hz > 0) {
+                    // AN-0130: a steady torch still blinks at an explicit rate
+                    final String err = output.writePwm(on, strobe_hz,
+                            PhoneOutput.STROBE_DUTY_DEFAULT * 1024 / 100,
+                            PhoneOutput.SRC_INVOKE);
+                    _answer_write(output, err, sink);
+                    return;
+                }
             }
             if (params.has("pulse_ms")) {
                 // a pulse asserts the on-level; 'on' must be true (gpio rule)

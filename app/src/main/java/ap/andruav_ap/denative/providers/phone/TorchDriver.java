@@ -52,16 +52,45 @@ final class TorchDriver implements PhoneOutput.RateDriver {
      * AN-0119: timed blink with an explicit rate - {@code hz} is the
      * frequency (already clamped by the output), {@code duty} the lit
      * share 0..1024. Each phase keeps the 40 ms minimum half period;
-     * a full duty is a steady on, a zero duty or hz is off.
+     * a full duty is a steady on, a zero duty is off. A resolved rate of
+     * zero is the steady-torch path: it holds the torch ON, never off
+     * (AN-0130 regression fix - a zero configured rate used to read as
+     * "off" through this overload).
      */
     @Override
     public String apply(final boolean on, final double hz, final int duty) {
         _stop_blink();
-        final double rate = (hz > 0) ? hz : m_strobe_hz;
-        if (!on || rate <= 0 || duty <= 0) return _set_torch(false);
-        if (duty >= 1024) return _set_torch(true);
-        _start_blink(rate, duty);
-        return null;
+        final double[] rate_out = new double[1];
+        switch (planApply(on, hz, duty, m_strobe_hz, rate_out)) {
+            case PLAN_OFF:
+                return _set_torch(false);
+            case PLAN_STEADY:
+                return _set_torch(true);
+            default:
+                _start_blink(rate_out[0], duty);
+                return null;
+        }
+    }
+
+    /** The three results {@link #apply(boolean, double, int)} can produce. */
+    static final int PLAN_OFF = 0;
+    static final int PLAN_STEADY = 1;
+    static final int PLAN_BLINK = 2;
+
+    /**
+     * The apply() decision as pure data, kept Android-free for unit
+     * tests: {@code on=false} or {@code duty<=0} is off; a resolved rate
+     * {@code <=0} (no override and none configured) or a full duty is a
+     * steady on; anything else blinks and {@code rate_out[0]} gets the
+     * resolved rate.
+     */
+    static int planApply(final boolean on, final double hz, final int duty,
+                         final double configured_hz, final double[] rate_out) {
+        final double rate = (hz > 0) ? hz : configured_hz;
+        if (!on || duty <= 0) return PLAN_OFF;
+        if (rate <= 0 || duty >= 1024) return PLAN_STEADY;
+        if (rate_out != null && rate_out.length > 0) rate_out[0] = rate;
+        return PLAN_BLINK;
     }
 
     private synchronized void _start_blink(final double hz, final int duty) {
