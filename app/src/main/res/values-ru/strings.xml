@@ -156,4 +156,10 @@
     <string name="lang_spanish">Español</string>
     <string name="lang_russian">Русский</string>
 
+    <string name="fpv_chip_streaming">STREAMING</string>
+    <string name="fpv_chip_preview_only">PREVIEW ONLY</string>
+    <string name="fpv_chip_back_camera">BACK CAMERA</string>
+    <string name="fpv_chip_front_camera">FRONT CAMERA</string>
+    <string name="fpv_camera_error_title">Camera did not open</string>
+    <string name="fpv_camera_error_hint">Close the other app, or tap SWAP to try the other camera.</string>
 </resources>

@@ -23,12 +23,13 @@
         android:id="@+id/fpvactivity_btn_ZeroTilt"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="@drawable/sel_trans_button_color"
+        android:background="@drawable/fpv_tile_button"
         android:drawableTop="@drawable/angle_w_32x32"
-        android:layout_margin="2dp"
+        android:layout_margin="4dp"
         android:textSize="10sp"
+        android:textColor="@color/home_text_primary"
         android:text="@string/action_imu_zero"
-        android:padding="1dp"
+        android:padding="6dp"
         android:layout_alignParentTop="true" />
 
     <Button
@@ -38,12 +39,13 @@
         android:id="@+id/fpvactivity_btn_CameraSwitch"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="@drawable/sel_trans_button_color"
+        android:background="@drawable/fpv_tile_button"
         android:drawableTop="@drawable/camera_switch_w_32x32"
-        android:layout_margin="2dp"
+        android:layout_margin="4dp"
         android:textSize="10sp"
+        android:textColor="@color/home_text_primary"
         android:text="@string/action_cam_swap"
-        android:padding="1dp"
+        android:padding="6dp"
         android:layout_below="@+id/fpvactivity_btn_ZeroTilt" />
 
     <Button
@@ -53,15 +55,97 @@
         android:id="@+id/fpvactivity_btn_StopStream"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="@drawable/sel_trans_button_color"
+        android:background="@drawable/fpv_tile_exit"
         android:drawableTop="@drawable/signout_w_32x32"
-        android:layout_margin="2dp"
+        android:layout_margin="4dp"
         android:textSize="10sp"
+        android:textColor="@color/home_red_text"
         android:text="@string/action_exit"
-        android:padding="1dp"
+        android:padding="6dp"
         android:layout_below="@+id/fpvactivity_btn_CameraSwitch" />
 
+    <LinearLayout
+        android:id="@+id/fpvactivity_chipRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/fpvactivity_btn_ZeroTilt"
+        android:layout_toEndOf="@+id/fpvactivity_btn_ZeroTilt"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp">
 
+        <TextView
+            android:id="@+id/fpvactivity_chipStream"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/fpv_chip"
+            android:textColor="@color/home_text_secondary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:text="@string/fpv_chip_preview_only" />
+
+        <TextView
+            android:id="@+id/fpvactivity_chipCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/fpv_chip"
+            android:textColor="@color/home_text_primary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:text="@string/fpv_chip_back_camera" />
+
+        <TextView
+            android:id="@+id/fpvactivity_chipFormat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/fpv_chip"
+            android:textColor="@color/home_text_primary"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fpvactivity_cameraErrorPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/home_red_text"
+            android:text="@string/fpv_camera_error_title" />
+
+        <TextView
+            android:id="@+id/fpvactivity_cameraErrorReason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="14sp"
+            android:textColor="@color/home_text_primary"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/home_text_secondary"
+            android:gravity="center"
+            android:text="@string/fpv_camera_error_hint" />
+
+    </LinearLayout>
 
     <TextView
         android:text="@string/action_video_on"

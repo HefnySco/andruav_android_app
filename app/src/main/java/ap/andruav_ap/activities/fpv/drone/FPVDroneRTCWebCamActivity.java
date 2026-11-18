@@ -47,7 +47,7 @@ import com.andruav.event.fpv7adath._7adath_InitAndroidCamera;
 import com.andruav.event.fpv7adath._7adath_StopAndroidCamera;
 import com.andruav.andruavUnit.AndruavUnitBase;
 import com.andruav.event.fpv7adath.Event_FPV_CMD;
-import com.andruav.FeatureSwitch;
+import com.andruav.event.fpv7adath._7adath_CameraError;
 import com.andruav.andruavUnit.AndruavUnitSystem;
 import com.andruav.controlBoard.shared.common.FlightMode;
 
@@ -65,6 +65,7 @@ import ap.andruav_ap.DeviceManagerFacade;
 import ap.andruav_ap.services.fpv.CameraController;
 import ap.andruav_ap.services.fpv.FPVStreamingService;
 import ap.andruavmiddlelibrary.factory.util.ActivityMosa3ed;
+import ap.andruavmiddlelibrary.webrtc.classes.PeerConnectionManager;
 import ap.andruavmiddlelibrary.webrtc.events.Event_WebRTC;
 import ap.andruav_ap.R;
 import ap.andruavmiddlelibrary.sensors._7asasatEvents.Event_IMU_CMD;
@@ -105,6 +106,11 @@ public class FPVDroneRTCWebCamActivity extends Activity {
     private Button btnZeroTilt;
     private Button btnCameraSwitch;
     private Button btnStopStream;
+    private TextView txtChipStream;
+    private TextView txtChipCamera;
+    private TextView txtChipFormat;
+    private View pnlCameraError;
+    private TextView txtCameraErrorReason;
 
     int mImgWidth =0;
     int mImgHeight =0;
@@ -126,6 +132,7 @@ public class FPVDroneRTCWebCamActivity extends Activity {
             mBoundService = ((FPVStreamingService.LocalBinder) service).getService();
             mServiceBound = true;
             mBoundService.attachRenderer(mSurfaceViewRenderer);
+            mHandle.post(mChipRefreshLoop);
         }
 
         @Override
@@ -223,6 +230,13 @@ public class FPVDroneRTCWebCamActivity extends Activity {
     }
 
     @Subscribe
+    public void onEvent (final _7adath_CameraError adath_cameraError) {
+        // The camera could not open: say so on screen (with the reason and the
+        // SWAP hint) instead of leaving a black preview.
+        mHandle.post(() -> _show_camera_error(adath_cameraError.description));
+    }
+
+    @Subscribe
     public void onEvent (final _7adath_FPVStreamingStatusChanged a7adath_fpvStreamingStatusChanged) {
         // FPVStreamingService stopped itself (remote STREAMVIDEO Act:false once no viewer remains,
         // or any other stop path) without going through our own stop button/finish(). Because this
@@ -295,6 +309,7 @@ public class FPVDroneRTCWebCamActivity extends Activity {
 
                 else if (msg.obj instanceof Event_WebRTC) {
                     Event_WebRTC event_webRTC = (Event_WebRTC) msg.obj;
+                    _refresh_chips(); // a peer joined or left: STREAMING vs PREVIEW ONLY
                     switch (event_webRTC.getEventType())
                     {
                         case Event_WebRTC.EVENT_CLOSED_CONNECTION:
@@ -352,6 +367,8 @@ public class FPVDroneRTCWebCamActivity extends Activity {
             rcRepeater = Executors.newSingleThreadScheduledExecutor();
             rcRepeater.scheduleWithFixedDelay(defaultSchedular, 10, 30, TimeUnit.SECONDS);
         }
+
+        mHandle.post(mChipRefreshLoop);
     }
 
 
@@ -367,6 +384,12 @@ public class FPVDroneRTCWebCamActivity extends Activity {
         txtVideoStatus = findViewById(R.id.fpvactivity_txtVideoStatus);
         txtVideoStatus.setVisibility(View.INVISIBLE);
 
+        txtChipStream = findViewById(R.id.fpvactivity_chipStream);
+        txtChipCamera = findViewById(R.id.fpvactivity_chipCamera);
+        txtChipFormat = findViewById(R.id.fpvactivity_chipFormat);
+        pnlCameraError = findViewById(R.id.fpvactivity_cameraErrorPanel);
+        txtCameraErrorReason = findViewById(R.id.fpvactivity_cameraErrorReason);
+
         mSurfaceViewRenderer = findViewById(R.id.fpvactivity_rtc_glviewsurface);
         mSurfaceViewRenderer.setEnableHardwareScaler(true);
 
@@ -374,16 +397,7 @@ public class FPVDroneRTCWebCamActivity extends Activity {
         btnZeroTilt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (FeatureSwitch.DEBUG_MODE)
-                {
-                    if ((mBoundService != null) && (mBoundService.getPeerConnectionManager() != null)) {
-                        mBoundService.getPeerConnectionManager().setFlash(mBoundService.getPeerConnectionManager().getFlash());
-                    }
-                }
-                else {
-                    EventBus.getDefault().post(new Event_IMU_CMD(Event_IMU_CMD.IMU_CMD_UpdateZeroTilt)); // tel IMU to reread Tilt
-                }
+                EventBus.getDefault().post(new Event_IMU_CMD(Event_IMU_CMD.IMU_CMD_UpdateZeroTilt)); // tel IMU to reread Tilt
             }
         });
 
@@ -396,6 +410,9 @@ public class FPVDroneRTCWebCamActivity extends Activity {
                 if (andruavUnit_selected.UnitID.equals(AndruavSettings.andruavWe7daBase.UnitID)) {
                     if ((mBoundService != null) && (mBoundService.getPeerConnectionManager() != null)) {
                         mBoundService.getPeerConnectionManager().switchCamera();
+                        pnlCameraError.setVisibility(View.GONE);
+                        // facing/format settle asynchronously - refresh shortly after
+                        mHandle.postDelayed(mChipRefreshLoop, 1500);
                     }
                 }
             }
@@ -615,6 +632,49 @@ public class FPVDroneRTCWebCamActivity extends Activity {
 
     }
 
+
+    /**
+     * Keeps the info chips in step with whatever changed the capture
+     * underneath - SWAP, a peer join/leave, or the weak-link
+     * changeCaptureFormat path, which fires no event of its own.
+     * Cleared with every other callback in onPause, re-posted on
+     * service (re)connect and from UIHandler.
+     */
+    private final Runnable mChipRefreshLoop = new Runnable() {
+        @Override
+        public void run() {
+            _refresh_chips();
+            mHandle.postDelayed(this, 2000);
+        }
+    };
+
+    private void _refresh_chips() {
+        if (txtChipStream == null) return;
+        final PeerConnectionManager pcm =
+                (mBoundService != null) ? mBoundService.getPeerConnectionManager() : null;
+        final boolean streaming = (pcm != null) && pcm.hasActivePeers();
+        txtChipStream.setText(streaming ? R.string.fpv_chip_streaming
+                                        : R.string.fpv_chip_preview_only);
+        txtChipStream.setBackgroundResource(streaming ? R.drawable.fpv_chip_green
+                                                      : R.drawable.fpv_chip);
+        txtChipStream.setTextColor(getColor(streaming ? R.color.home_green_icon
+                                                      : R.color.home_text_secondary));
+
+        final boolean front = (pcm != null) && pcm.isCaptureFrontFacing();
+        txtChipCamera.setText(front ? R.string.fpv_chip_front_camera
+                                    : R.string.fpv_chip_back_camera);
+
+        txtChipFormat.setText((pcm != null)
+                ? pcm.getCaptureWidth() + "x" + pcm.getCaptureHeight()
+                        + " · " + pcm.getCaptureFps() + " fps"
+                : "");
+    }
+
+    private void _show_camera_error(final String description) {
+        if (pnlCameraError == null) return;
+        txtCameraErrorReason.setText((description == null) ? "" : description);
+        pnlCameraError.setVisibility(View.VISIBLE);
+    }
 
     private long lastSSImage =0;
     /***

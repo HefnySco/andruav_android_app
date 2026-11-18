@@ -18,6 +18,7 @@ import java.util.Map;
 
 import com.andruav.AndruavDroneFacade;
 import com.andruav.AndruavEngine;
+import com.andruav.event.fpv7adath._7adath_CameraError;
 
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
@@ -656,6 +657,22 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
         return mCaptureFrontFacing;
     }
 
+    /** Capture resolution/rate the capturer was configured with (AN-0142 info chips). */
+    public int getCaptureWidth ()
+    {
+        return mCaptureWidth;
+    }
+
+    public int getCaptureHeight ()
+    {
+        return mCaptureHeight;
+    }
+
+    public int getCaptureFps ()
+    {
+        return mCaptureFps;
+    }
+
 
     public void setFlash (final int onOff)
     {
@@ -1114,6 +1131,8 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
     public void onCameraError(String s) {
         Log.w("fpvstream", "onCameraError: " + s);
         Voting.onCameraIssue();
+        // let a UI surface the reason instead of a black preview (AN-0142)
+        AndruavEngine.getEventBus().post(new _7adath_CameraError(s));
     }
 
     @Override
