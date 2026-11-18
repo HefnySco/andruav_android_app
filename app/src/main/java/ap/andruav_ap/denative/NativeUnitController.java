@@ -88,7 +88,15 @@ public final class NativeUnitController {
         }
     }
 
-    private static final Handler handler = new Handler(Looper.getMainLooper());
+    /** DE-0103: built lazily - eager construction kept the class unloadable
+     *  under plain JUnit (no Looper), which hid the watch decision from
+     *  unit tests. */
+    private static Handler sHandler;
+
+    private static Handler handler() {
+        if (sHandler == null) sHandler = new Handler(Looper.getMainLooper());
+        return sHandler;
+    }
 
     /*** Bumped per switch so a stale pending wait cannot fire after a newer toggle. */
     private static int sSwitchGeneration;
@@ -202,7 +210,7 @@ public final class NativeUnitController {
         startAndroidModuleService(app);
         final int busCheckGen = sSwitchGeneration;
         for (final long delay : MODULE_BUS_VERIFY_MS) {
-            handler.postDelayed(() -> {
+            handler().postDelayed(() -> {
                 if (busCheckGen != sSwitchGeneration || !sNativeWanted) {
                     return;
                 }
@@ -223,11 +231,11 @@ public final class NativeUnitController {
         // even when req_ssl is on, so there the cert cannot be the cause.
         if (Preference.isRequireSSL(null)) {
             final int generation = sSwitchGeneration;
-            handler.postDelayed(() -> {
+            handler().postDelayed(() -> {
                 if (generation != sSwitchGeneration || !sNativeWanted) {
                     return;
                 }
-                if (!sCommVerifySsl || isCommLineOnline()) {
+                if (!sslVerifyWatchPosts(sCommVerifySsl, isCommLineOnline())) {
                     return;
                 }
                 EventBus.getDefault().post(new Event_SSLVerifyFailed());
@@ -317,6 +325,17 @@ public final class NativeUnitController {
     }
 
     /**
+     * DE-0103: the SSL-verify watch's post decision, kept pure so it runs
+     * under plain JUnit. The event posts only when the running de_comm
+     * verifies TLS ({@link #sCommVerifySsl} - off for IP-literal auth
+     * hosts even with req_ssl on) and the comm line is still down.
+     */
+    public static boolean sslVerifyWatchPosts(final boolean commVerifySsl,
+                                              final boolean commOnline) {
+        return commVerifySsl && !commOnline;
+    }
+
+    /**
      * AN-0052: the {@link AndruavWSClientBase} socket state the legacy
      * connection gating (menu items, tile enablement, Com tile) should
      * apply in native mode: {@code SOCKETSTATE_REGISTERED} only while
@@ -382,7 +401,7 @@ public final class NativeUnitController {
     private static void waitFor(final String what, final int generation, final BooleanSupplier down,
                                 final Runnable then) {
         final long deadline = SystemClock.elapsedRealtime() + WAIT_TIMEOUT_MS;
-        handler.post(new Runnable() {
+        handler().post(new Runnable() {
             @Override
             public void run() {
                 if (generation != sSwitchGeneration) {
@@ -394,7 +413,7 @@ public final class NativeUnitController {
                     Log.w(TAG, "timeout waiting for " + what + " - starting anyway");
                     then.run();
                 } else {
-                    handler.postDelayed(this, POLL_MS);
+                    handler().postDelayed(this, POLL_MS);
                 }
             }
         });
