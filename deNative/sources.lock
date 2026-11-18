@@ -6,6 +6,6 @@
 # URLs are the private prv_* repos until the public release (see AGENTS.md).
 #   droneengage_communication_pro = A3/DE-0012 + DE-0017 compat fixes (de_comm)
 #   droneengage_mavlink           = A4/MV-0019 (de_mavlink)
-droneengage_communication_pro git@github.com:HefnySco/prv_drone_engage_communication.git 6a37b25cc01a2bb08f74f7d97ce133c2e25d5deb
+droneengage_communication_pro git@github.com:HefnySco/prv_drone_engage_communication.git 9a58949e8f5fa8f98cf04168ba8a8bc75a07b4b9
 droneengage_mavlink git@github.com:HefnySco/prv_droneengage_mavlink.git 7829641e4094317b25ed6de5b94f9f9b54ec450b
 de_common git@github.com:HefnySco/droneengage_common.git
