@@ -84,7 +84,7 @@ public abstract class DeModuleService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForegroundNotification();
         if (intent != null && ACTION_STOP.equals(intent.getAction())) {
-            stopModule();
+            stopModule(startId);
         } else if (intent != null && ACTION_START.equals(intent.getAction())) {
             startModule(intent.getStringArrayExtra(EXTRA_ARGS));
         }
@@ -188,7 +188,7 @@ public abstract class DeModuleService extends Service {
         return all;
     }
 
-    private void stopModule() {
+    private void stopModule(int startId) {
         nativeRequestStop();
         final Thread t = moduleThread;
         if (t != null) {
@@ -198,9 +198,12 @@ public abstract class DeModuleService extends Service {
             }
         }
         releaseLocks();
-        /* The kill must run after onStartCommand returns: dying while the
-         * STOP delivery is still pending makes ActivityManager reschedule
-         * the intent as a crashed service, and the redelivery loops. */
+        /* stopSelfResult consumes the STOP delivery up front; the kill
+         * still runs after onStartCommand returns - dying mid-delivery
+         * made ActivityManager reschedule the intent as a crashed
+         * service and the redelivery looped (start -> self-kill ->
+         * restart). */
+        stopSelfResult(startId);
         new Handler(Looper.getMainLooper()).post(
                 () -> Process.killProcess(Process.myPid()));
     }
