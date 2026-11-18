@@ -739,6 +739,20 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
         return mSpeakerMuted;
     }
 
+    /** DE-0199: fired when the local stream gains the mic track after init. */
+    private static volatile Runnable sMicTrackReadyHook;
+
+    /** DE-0199: the capability host registers its advert refresh here. */
+    public static void setMicrophoneTrackReadyHook(final Runnable hook) {
+        sMicTrackReadyHook = hook;
+    }
+
+    /** DE-0199: true once the live manager's local stream carries the mic track. */
+    public static boolean microphoneTrackReady() {
+        final PeerConnectionManager active = sActiveManager;
+        return (active != null) && active.hasMicrophoneTrack();
+    }
+
     /** Applies the mute flag to the live remote stream's audio tracks. */
     private void applySpeakerMute() {
         final MediaStream stream = mRemoteStream;
@@ -833,6 +847,11 @@ public class PeerConnectionManager implements AndruavCameraControl.Listener, Cap
         localAudioSource = pcFactory.createAudioSource(new MediaConstraints());
         localAudioTrack = pcFactory.createAudioTrack(MICROPHONE_TRACK_ID, localAudioSource);
         mediaStream.addTrack(localAudioTrack);
+        // DE-0199: the mic appeared after init - refresh the capability
+        // adverts so ns=microphone is advertised only now that the track
+        // really exists.
+        final Runnable hook = sMicTrackReadyHook;
+        if (hook != null) hook.run();
         return true;
     }
 

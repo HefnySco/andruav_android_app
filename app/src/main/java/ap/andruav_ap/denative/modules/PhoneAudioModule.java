@@ -18,10 +18,10 @@ import de.databus.caps.DeCapabilityProvider;
  * speaker with no mic.
  * <ul>
  * <li>ns=microphone (VC-7): the audio is the mic track
- * PeerConnectionManager puts on the WebRTC local media stream while
- * the app holds RECORD_AUDIO; a GCS dialing channel=mic receives it.
- * Advertised only while the permission is granted - a GCS must never
- * see a microphone that cannot capture.</li>
+ * PeerConnectionManager puts on the WebRTC local media stream; a GCS
+ * dialing channel=mic receives it. DE-0199: advertised only once the
+ * track exists - the permission alone advertises a mic that cannot
+ * capture.</li>
  * <li>ns=speaker (VC-8): a GCS dialing channel=spk sends its mic audio;
  * the remote track plays on the phone speaker once enabled in
  * PeerConnectionManager.onAddRemoteStream. mute/unmute invokes reach
@@ -45,7 +45,7 @@ public final class PhoneAudioModule implements DeCapabilityProvider {
 
     /** The app's microphone surface. */
     public interface Mic {
-        /** True while the app holds RECORD_AUDIO (the capability exists). */
+        /** DE-0199: true once the WebRTC mic track exists, not just on grant. */
         boolean usable();
     }
 

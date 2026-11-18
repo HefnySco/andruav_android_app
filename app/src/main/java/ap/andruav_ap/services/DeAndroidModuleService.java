@@ -237,11 +237,11 @@ public class DeAndroidModuleService extends Service {
         providers.add(cameraProvider);
         // "microphone" + "speaker" namespaces: the VC-7/VC-8 voice-chat
         // adverts - the audio itself rides the WebRTC stream
-        // PeerConnectionManager owns, gated on the RECORD_AUDIO grant
-        // (mic) and its speaker-mute flag (speaker mute/unmute).
+        // PeerConnectionManager owns, gated on the mic track existing
+        // (DE-0199: the permission alone advertises a mic that cannot
+        // capture) and its speaker-mute flag (speaker mute/unmute).
         final PhoneAudioModule phoneAudioModule = new PhoneAudioModule(
-                () -> checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)
-                        == android.content.pm.PackageManager.PERMISSION_GRANTED,
+                PeerConnectionManager::microphoneTrackReady,
                 new PhoneAudioModule.Speaker() {
                     @Override
                     public void setMuted(final boolean muted) {
@@ -263,6 +263,9 @@ public class DeAndroidModuleService extends Service {
         soundProvider.attach(host);
         cameraProvider.attach(host);
         phoneAudioModule.attach(host);
+        // DE-0199: a RECORD_AUDIO grant that lands after init creates the
+        // mic track on the next PCM trigger - republish the adverts then.
+        PeerConnectionManager.setMicrophoneTrackReadyHook(host::refreshAdverts);
         soundProvider.setSirenHook(whistling -> {
             if (com.andruav.AndruavSettings.andruavWe7daBase != null) {
                 com.andruav.AndruavSettings.andruavWe7daBase.setIsWhisling(whistling);
@@ -419,6 +422,8 @@ public class DeAndroidModuleService extends Service {
             busModules = mBusModules;
             mBusModules = null;
             mModule = null;
+            // DE-0199: no host to refresh once the capability surface is gone.
+            PeerConnectionManager.setMicrophoneTrackReadyHook(null);
             mCapabilityHost = null;
             mPhoneProvider = null;
             mHealthMonitor = null;
