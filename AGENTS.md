@@ -131,6 +131,15 @@ Rules:
   only the URLs in `sources.lock` (the SHAs stay identical) and push the
   andruav repo to its public `origin`.
 
+### Release APK sim gate
+
+`deNative/check_apk_no_sim.sh <apk>` extracts every `lib/*/*.so` from the
+APK and runs the vendored `check_no_sim.sh` on each; it refuses an APK
+whose libraries carry the `DE_SIM_BUILD_MARKER_V1` sim marker.
+`build_release_apk.sh` calls it right after the APK is built — a failure
+stops the script before the APK is copied out. Sim code belongs in the
+debug APK only.
+
 ## Notes
 
 - `gradle.properties` enables `org.gradle.configuration-cache=true`.

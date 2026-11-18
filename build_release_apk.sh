@@ -216,6 +216,11 @@ fi
 
 APK_NAME=$(basename "$APK_PATH")
 
+# Sim gate: a release APK must not carry sim code in any native library.
+# A failure here stops the script before the APK reaches the output dir.
+echo "==> Checking the APK for sim code..."
+deNative/check_apk_no_sim.sh "$APK_PATH"
+
 # Copy to the requested output directory (skip if it's already there).
 mkdir -p "$OUTPUT_DIR"
 FINAL_PATH="$OUTPUT_DIR/$APK_NAME"
